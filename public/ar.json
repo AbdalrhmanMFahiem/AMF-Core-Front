@@ -1,4 +1,38 @@
 {
+  "Common": {
+    "Code": "الكود",
+    "Name": "الاسم",
+    "Notes": "ملاحظات",
+    "Status": "الحالة",
+    "Actions": "الإجراءات",
+    "Active": "نشط",
+    "Inactive": "غير نشط",
+    "Showing": "عرض",
+    "Of": "من",
+    "Entries": "سجل",
+    "Previous": "السابق",
+    "Next": "التالي",
+    "Page": "صفحة",
+    "NoRecordsFound": "لا توجد سجلات.",
+    "View": "عرض",
+    "Edit": "تعديل",
+    "ToggleStatus": "تغيير الحالة",
+    "SearchPlaceholder": "بحث...",
+    "Home": "الرئيسية",
+    "Add": "إضافة",
+    "Cancel": "إلغاء",
+    "Save": "حفظ"
+  },
+  "Pages": {
+    "ItemProperties": {
+      "Title": "خصائص الأصناف",
+      "AddTitle": "إضافة خاصية صنف",
+      "EditTitle": "تعديل خاصية صنف",
+      "ViewTitle": "عرض خاصية صنف",
+      "Add": "إضافة خاصية جديدة",
+      "SearchPlaceholder": "ابحث بالكود أو الاسم..."
+    }
+  },
   "login": {
     "welcome": "مرحباً بك مجدداً",
     "subtext": "الدخول إلى البوابة الخاصة بـ",

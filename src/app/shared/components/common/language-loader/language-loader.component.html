@@ -1,0 +1,24 @@
+<div *ngIf="visible" class="loader-overlay" [class.rtl]="isArabic">
+  <div class="loader-content">
+    <!-- Animated Logo Ring -->
+    <div class="logo-ring">
+      <div class="ring-outer"></div>
+      <div class="ring-inner"></div>
+      <div class="logo-text">AMF</div>
+    </div>
+
+    <!-- Primary Name (target language) -->
+    <h1 class="primary-name">{{ primaryName }}</h1>
+
+    <!-- Secondary Name (other language) -->
+    <p class="secondary-name">{{ secondaryName }}</p>
+
+    <!-- Loading bar -->
+    <div class="loading-bar-container">
+      <div class="loading-bar"></div>
+    </div>
+
+    <!-- Loading text -->
+    <p class="loading-text">{{ loadingText }}</p>
+  </div>
+</div>

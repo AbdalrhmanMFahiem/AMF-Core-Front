@@ -1,4 +1,38 @@
 {
+  "Common": {
+    "Code": "Code",
+    "Name": "Name",
+    "Notes": "Notes",
+    "Status": "Status",
+    "Actions": "Actions",
+    "Active": "Active",
+    "Inactive": "Inactive",
+    "Showing": "Showing",
+    "Of": "of",
+    "Entries": "entries",
+    "Previous": "Previous",
+    "Next": "Next",
+    "Page": "Page",
+    "NoRecordsFound": "No records found.",
+    "View": "View",
+    "Edit": "Edit",
+    "ToggleStatus": "Toggle Status",
+    "SearchPlaceholder": "Search...",
+    "Home": "Home",
+    "Add": "Add",
+    "Cancel": "Cancel",
+    "Save": "Save"
+  },
+  "Pages": {
+    "ItemProperties": {
+      "Title": "Item Properties",
+      "AddTitle": "Add Item Property",
+      "EditTitle": "Edit Item Property",
+      "ViewTitle": "View Item Property",
+      "Add": "Add New Property",
+      "SearchPlaceholder": "Search code or name..."
+    }
+  },
   "login": {
     "welcome": "Welcome Back",
     "subtext": "Access your portal under",

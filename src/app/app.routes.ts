@@ -107,6 +107,27 @@ export const routes: Routes = [
         component:VideosComponent,
         title:'Angular Videos Dashboard | TailAdmin - Angular Admin Dashboard Template'
       },
+      // Inventory
+      {
+        path: 'inventory/item-properties',
+        loadComponent: () => import('./pages/inventory/item-properties/item-properties-list/item-properties-list.component').then(c => c.ItemPropertiesListComponent),
+        title: 'Item Properties | AMF Core'
+      },
+      {
+        path: 'inventory/item-properties/add',
+        loadComponent: () => import('./pages/inventory/item-properties/item-property-form/item-property-form.component').then(c => c.ItemPropertyFormComponent),
+        title: 'Add Item Property | AMF Core'
+      },
+      {
+        path: 'inventory/item-properties/edit/:id',
+        loadComponent: () => import('./pages/inventory/item-properties/item-property-form/item-property-form.component').then(c => c.ItemPropertyFormComponent),
+        title: 'Edit Item Property | AMF Core'
+      },
+      {
+        path: 'inventory/item-properties/view/:id',
+        loadComponent: () => import('./pages/inventory/item-properties/item-property-form/item-property-form.component').then(c => c.ItemPropertyFormComponent),
+        title: 'View Item Property | AMF Core'
+      },
     ]
   },
   // auth pages

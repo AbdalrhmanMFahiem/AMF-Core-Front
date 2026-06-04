@@ -8,7 +8,7 @@
   </button>
 
   <app-dropdown [isOpen]="isOpen" (close)="closeDropdown()"
-    [className]="'absolute right-0 flex w-[150px] flex-col rounded-2xl border border-gray-200 bg-white p-2 shadow-theme-lg dark:border-gray-800 dark:bg-gray-dark ' + (openUp ? 'bottom-full mb-2' : 'mt-[17px]')">
+    [className]="'absolute ltr:right-0 rtl:left-0 rtl:right-auto flex w-[150px] flex-col rounded-2xl border border-gray-200 bg-white p-2 shadow-theme-lg dark:border-gray-800 dark:bg-gray-dark ' + (openUp ? 'bottom-full mb-2' : 'mt-[17px]')">
     <ul class="flex flex-col gap-1">
       <li>
         <button (click)="changeLanguage('en')"

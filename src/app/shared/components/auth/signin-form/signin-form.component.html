@@ -24,7 +24,7 @@
           <app-input-field [type]="showPassword ? 'text' : 'password'" placeholder="Enter your password"
             [(value)]="password" name="password" class="form-input" required />
           <span (click)="togglePasswordVisibility()"
-            class="absolute z-30 -translate-y-1/2 cursor-pointer right-4 top-1/2">
+            class="absolute z-30 -translate-y-1/2 cursor-pointer top-1/2 ltr:right-4 rtl:left-4 rtl:right-auto">
             @if (showPassword) {
             <svg width="1em" height="1em" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"
               class="fill-gray-500 dark:fill-gray-400 size-5">
