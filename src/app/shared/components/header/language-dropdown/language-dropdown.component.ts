@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, Input } from '@angular/core';
 import { DropdownComponent } from '../../ui/dropdown/dropdown.component';
 import { CommonModule } from '@angular/common';
 import { TranslateService } from '@ngx-translate/core';
@@ -9,6 +9,9 @@ import { TranslateService } from '@ngx-translate/core';
   imports: [CommonModule, DropdownComponent]
 })
 export class LanguageDropdownComponent {
+  @Input() sizeClass = 'w-10 h-10';
+  @Input() openUp = false;
+
   isOpen = false;
   currentLang = 'en';
 

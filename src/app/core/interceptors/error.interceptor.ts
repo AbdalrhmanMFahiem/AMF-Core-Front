@@ -13,9 +13,9 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
       if (error.error && Array.isArray(error.error.errors)) {
         const errors = error.error.errors;
         errors.forEach((errItem: any) => {
-          const code = errItem.code ? `[${errItem.code}] ` : '';
+          const code = errItem.code ? `<b>[${errItem.code}]</b><br/>` : '';
           const desc = errItem.description || 'Unknown error occurred.';
-          toastr.error(`${code}${desc}`, 'Error');
+          toastr.error(`${code}${desc}`, 'Error', { enableHtml: true });
         });
       } else if (error.error && error.error.title) {
         // Fallback for standard ProblemDetails without 'errors' array

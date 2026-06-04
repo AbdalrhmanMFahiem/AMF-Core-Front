@@ -64,6 +64,9 @@
         },
         "serve": {
           "builder": "@angular/build:dev-server",
+          "options": {
+            "port": 54110
+          },
           "configurations": {
             "production": {
               "buildTarget": "ng-tailadmin:build:production"

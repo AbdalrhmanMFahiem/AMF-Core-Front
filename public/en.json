@@ -9,7 +9,9 @@
     "passwordError": "Password must contain at least 4 characters.",
     "signIn": "Sign In to System",
     "authenticating": "Authenticating Account...",
-    "activeDatabases": "Active Databases"
+    "activeDatabases": "Active Databases",
+    "description": "A comprehensive system for Sales, Purchases, Customers, Suppliers, and Inventory Management, integrated with Reports and Accounting.",
+    "comingSoon": "Coming soon: Treasury and Journal Entries."
   },
   "serverUnavailable": {
     "title": "Server Connection Lost",
