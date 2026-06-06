@@ -56,3 +56,10 @@ export interface LedgerFilters {
   to?: string;
   entryType?: number;
 }
+
+export enum LedgerEntryType {
+  Invoice = 1,
+  Return = 2,
+  Payment = 3,
+  Adjustment = 4
+}

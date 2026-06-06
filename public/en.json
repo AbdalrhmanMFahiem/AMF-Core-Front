@@ -1,5 +1,6 @@
 {
   "Common": {
+    "All": "All",
     "ErrorTitle": "Please fix the following errors:",
     "refresh": "Refresh",
     "view": "View",
@@ -8,6 +9,10 @@
     "savedSuccessfully": "Saved Successfully",
     "edit": "Edit",
     "activate": "Activate",
+    "date": "Date",
+    "from": "From",
+    "to": "To",
+    "selectDate": "Select Date",
     "inactive": "Inactive",
     "deactivate": "Deactivate",
     "save": "Save Record",

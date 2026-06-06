@@ -1,6 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { SearchableSelectComponent, SearchableOption } from '../../../../shared/components/form/searchable-select/searchable-select.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ComponentCardComponent } from '../../../../shared/components/common/component-card/component-card.component';
@@ -8,12 +9,13 @@ import { PageBreadcrumbComponent } from '../../../../shared/components/common/pa
 import { SuccessRedirectBannerComponent } from '../../../../shared/components/common/success-redirect-banner/success-redirect-banner.component';
 import { ErrorBannerComponent } from '../../../../shared/components/common/error-banner/error-banner.component';
 import { BusinessPartnerService } from '../../../../core/services/business-partner.service';
-import { BusinessPartnerRequest } from '../../../../core/models/business-partner.model';
+import { BusinessPartnerRequest, LedgerEntryType } from '../../../../core/models/business-partner.model';
+import { DatePickerComponent } from '../../../../shared/components/form/date-picker/date-picker.component';
 
 @Component({
   selector: 'app-business-partner-form',
   standalone: true,
-  imports: [CommonModule, FormsModule, TranslateModule, ComponentCardComponent, PageBreadcrumbComponent, SuccessRedirectBannerComponent, ErrorBannerComponent],
+  imports: [CommonModule, FormsModule, TranslateModule, ComponentCardComponent, PageBreadcrumbComponent, SuccessRedirectBannerComponent, ErrorBannerComponent, DatePickerComponent, SearchableSelectComponent],
   templateUrl: './business-partner-form.component.html',
 })
 export class BusinessPartnerFormComponent implements OnInit {
@@ -21,6 +23,8 @@ export class BusinessPartnerFormComponent implements OnInit {
   private translate = inject(TranslateService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
+
+
 
   id: number | null = null;
   mode: 'add' | 'edit' | 'view' = 'add';
@@ -49,10 +53,17 @@ export class BusinessPartnerFormComponent implements OnInit {
   totalLedgerRecords = 0;
   ledgerFilters: any = {
     pageNumber: 1,
-    pageSize: 10
+    pageSize: 10,
+    from: undefined,
+    to: undefined,
+    entryType: undefined
   };
+  ledgerEntryType = LedgerEntryType;
+  public ledgerFiltersEntryType: SearchableOption[] = [];
 
   ngOnInit(): void {
+    this.initializeLedgerFiltersEntryType();
+
     this.route.url.subscribe(url => {
       const path = url[url.length - (this.route.snapshot.paramMap.has('id') ? 2 : 1)]?.path;
       if (path === 'edit') this.mode = 'edit';
@@ -105,6 +116,22 @@ export class BusinessPartnerFormComponent implements OnInit {
 
   onLedgerPageChange(pageNumber: number): void {
     this.ledgerFilters.pageNumber = pageNumber;
+    this.loadLedger();
+  }
+
+  applyLedgerFilter(): void {
+    this.ledgerFilters.pageNumber = 1;
+    this.loadLedger();
+  }
+
+  clearLedgerFilter(): void {
+    this.ledgerFilters = {
+      pageNumber: 1,
+      pageSize: 10,
+      from: undefined,
+      to: undefined,
+      entryType: undefined
+    };
     this.loadLedger();
   }
 
@@ -171,4 +198,15 @@ export class BusinessPartnerFormComponent implements OnInit {
   onCancel(): void {
     this.router.navigate(['/master-data/business-partners']);
   }
+
+  private initializeLedgerFiltersEntryType(): void {
+    this.ledgerFiltersEntryType = [
+      // { value: 'All', label: this.translate.instant('Common.All') },
+      { value: LedgerEntryType.Payment, label: this.translate.instant('ledger.typeEnum.Payment') },
+      { value: LedgerEntryType.Adjustment, label: this.translate.instant('ledger.typeEnum.Adjustment') },
+      { value: LedgerEntryType.Invoice, label: this.translate.instant('ledger.typeEnum.Invoice') },
+      { value: LedgerEntryType.Return, label: this.translate.instant('ledger.typeEnum.Return') },
+    ];
+  }
+
 }

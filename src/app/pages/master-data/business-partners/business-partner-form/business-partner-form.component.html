@@ -1,13 +1,13 @@
 <app-page-breadcrumb
-  [pageTitle]="(mode === 'edit' ? 'businessPartners.edit' : mode === 'view' ? 'common.view' : 'businessPartners.addNew')" />
+  [pageTitle]="(mode === 'edit' ? 'businessPartners.edit' : mode === 'view' ? 'Common.view' : 'businessPartners.addNew')" />
 
 <div class="space-y-6">
-  <app-success-redirect-banner [isVisible]="saveSuccess" [message]="'common.savedSuccessfully'"
+  <app-success-redirect-banner [isVisible]="saveSuccess" [message]="'Common.savedSuccessfully'"
     [redirectUrl]="'/master-data/business-partners'" [countdownSeconds]="5">
   </app-success-redirect-banner>
 
   <app-component-card
-    [title]="(mode === 'edit' ? 'businessPartners.edit' : mode === 'view' ? 'common.view' : 'businessPartners.addNew') | translate"
+    [title]="(mode === 'edit' ? 'businessPartners.edit' : mode === 'view' ? 'Common.view' : 'businessPartners.addNew') | translate"
     [className]="'p-6'">
 
     <div *ngIf="loading" class="flex justify-center p-8">
@@ -119,6 +119,44 @@
 
       <!-- Ledger Tab Content -->
       <div *ngIf="activeTab === 'ledger'">
+        <div class="mb-4 grid grid-cols-1 sm:grid-cols-4 gap-4 p-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
+          <!-- From Date -->
+          <div>
+            <app-date-picker id="filterFrom" name="filterFrom" [(ngModel)]="ledgerFilters.from"
+              [placeholder]="'Common.selectDate' | translate"
+              [label]="'reports.businessPartnerStatement.from' | translate" [enableTime]="false" mode="single">
+            </app-date-picker>
+          </div>
+          <!-- To Date -->
+          <div>
+            <app-date-picker id="filterTo" name="filterTo" [(ngModel)]="ledgerFilters.to"
+              [placeholder]="'Common.selectDate' | translate"
+              [label]="'reports.businessPartnerStatement.to' | translate" [enableTime]="false" mode="single">
+            </app-date-picker>
+          </div>
+          <!-- Entry Type -->
+          <div>
+            <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+              {{ 'ledger.entryType' | translate }}
+            </label>
+            <app-searchable-select [(ngModel)]="ledgerFilters.entryType" name="filterEntryType"
+              [options]="ledgerFiltersEntryType" [disabled]="mode === 'view'" placeholder="Common.Select">
+            </app-searchable-select>
+          </div>
+
+          <!-- Actions -->
+          <div class="flex items-end gap-2">
+            <button type="button" (click)="applyLedgerFilter()"
+              class="flex-1 rounded-lg bg-brand-500 px-4 py-2 text-sm font-medium text-white hover:bg-brand-600 transition">
+              {{ 'Common.filter' | translate }}
+            </button>
+            <button type="button" (click)="clearLedgerFilter()"
+              class="flex-1 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700">
+              {{ 'Common.reset' | translate }}
+            </button>
+          </div>
+        </div>
+
         <div *ngIf="loadingLedger" class="flex justify-center p-8">
           <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-500"></div>
         </div>
@@ -234,7 +272,7 @@
       <div class="flex items-center justify-end gap-3 border-t border-gray-200 pt-6 dark:border-gray-800 mt-8">
         <button type="button" (click)="onCancel()"
           class="rounded-lg border border-gray-300 bg-white px-5 py-2.5 text-sm font-medium text-gray-700 shadow-sm transition-colors hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700">
-          {{ (mode === 'view' ? 'common.back' : 'common.cancel') | translate }}
+          {{ (mode === 'view' ? 'Common.back' : 'Common.cancel') | translate }}
         </button>
         <button *ngIf="mode !== 'view'" type="submit" [disabled]="saving || !form.valid"
           class="flex items-center gap-2 rounded-lg bg-brand-500 px-5 py-2.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-brand-600 disabled:opacity-50">
@@ -245,7 +283,7 @@
               d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
             </path>
           </svg>
-          <span>{{ (saving ? 'common.saving' : 'common.save') | translate }}</span>
+          <span>{{ (saving ? 'Common.saving' : 'Common.save') | translate }}</span>
         </button>
       </div>
     </form>
