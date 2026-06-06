@@ -21,7 +21,15 @@
     "Home": "Home",
     "Add": "Add",
     "Cancel": "Cancel",
-    "Save": "Save"
+    "Save": "Save",
+    "IncludeDisabled": "Include Disabled",
+    "ID": "ID",
+    "ArabicName": "Arabic Name",
+    "EnglishName": "English Name",
+    "Back": "Back",
+    "Saving": "Saving...",
+    "CopyCode": "Copy Code",
+    "CopyId": "Copy Id"
   },
   "Pages": {
     "ItemProperties": {

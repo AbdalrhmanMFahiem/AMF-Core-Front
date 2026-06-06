@@ -21,7 +21,15 @@
     "Home": "الرئيسية",
     "Add": "إضافة",
     "Cancel": "إلغاء",
-    "Save": "حفظ"
+    "Save": "حفظ",
+    "IncludeDisabled": "عرض غير نشط",
+    "ID": "الرقم التعريفي",
+    "ArabicName": "الاسم العربي",
+    "EnglishName": "الاسم الإنجليزي",
+    "Back": "رجوع",
+    "Saving": "جاري الحفظ...",
+    "CopyCode": "نسخ الكود",
+    "CopyId": "نسخ المُعرف"
   },
   "Pages": {
     "ItemProperties": {

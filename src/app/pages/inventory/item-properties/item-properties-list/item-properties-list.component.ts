@@ -25,6 +25,7 @@ export class ItemPropertiesListComponent implements OnInit {
   private readonly toastr = inject(ToastrService);
 
   data: PaginatedList<ItemPropertyResponse> | null = null;
+  includeDisabled: boolean = false;
   
   filters: RequestFilters = {
     pageNumber: 1,
@@ -35,7 +36,7 @@ export class ItemPropertiesListComponent implements OnInit {
   };
 
   columns: CrudColumn[] = [
-    { field: 'code', header: 'Common.Code', type: 'text' },
+    { field: 'code', header: 'Common.Code', type: 'code' },
     { field: 'name', header: 'Common.Name', type: 'text' },
     { field: 'isActive', header: 'Common.Status', type: 'badge' }
   ];
@@ -45,7 +46,7 @@ export class ItemPropertiesListComponent implements OnInit {
   }
 
   loadData(): void {
-    this.itemPropertyService.getAll(this.filters).subscribe({
+    this.itemPropertyService.getAll(this.filters, this.includeDisabled).subscribe({
       next: (res) => {
         this.data = res;
       },

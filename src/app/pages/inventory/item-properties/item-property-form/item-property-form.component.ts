@@ -2,6 +2,7 @@ import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 import { ComponentCardComponent } from '../../../../shared/components/common/component-card/component-card.component';
 import { PageBreadcrumbComponent } from '../../../../shared/components/common/page-breadcrumb/page-breadcrumb.component';
 import { ItemPropertyService } from '../../../../core/services/item-property.service';
@@ -11,7 +12,7 @@ import { ItemPropertyRequest } from '../../../../core/models/item-property.model
 @Component({
   selector: 'app-item-property-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, ComponentCardComponent, PageBreadcrumbComponent],
+  imports: [CommonModule, ReactiveFormsModule, ComponentCardComponent, PageBreadcrumbComponent, TranslateModule],
   templateUrl: './item-property-form.component.html',
   styles: ``
 })
@@ -54,9 +55,9 @@ export class ItemPropertyFormComponent implements OnInit {
   }
 
   private checkMode(): void {
-    const path = this.route.snapshot.url[0]?.path;
-    this.isView = path === 'view';
-    this.isEditMode = path === 'edit';
+    const url = this.router.url;
+    this.isView = url.includes('/view/');
+    this.isEditMode = url.includes('/edit/');
     
     if (this.isEditMode || this.isView) {
       this.id = Number(this.route.snapshot.paramMap.get('id'));
