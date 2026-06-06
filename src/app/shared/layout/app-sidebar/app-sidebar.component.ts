@@ -68,6 +68,7 @@ export class AppSidebarComponent {
       translationKey: "pages.inventory",
       icon: `<svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M4 6V19C4 20.1046 4.89543 21 6 21H18C19.1046 21 20 20.1046 20 19V6H4ZM2 6C2 4.89543 2.89543 4 4 4H20C21.1046 4 22 4.89543 22 6V19C22 21.2091 20.2091 23 18 23H6C3.79086 23 2 21.2091 2 19V6ZM7 9C7 8.44772 7.44772 8 8 8H16C16.5523 8 17 8.44772 17 9C17 9.55228 16.5523 10 16 10H8C7.44772 10 7 9.55228 7 9ZM7 13C7 12.4477 7.44772 12 8 12H12C12.5523 12 13 12.4477 13 13C13 13.5523 12.5523 14 12 14H8C7.44772 14 7 13.5523 7 13Z" fill="currentColor"></path></svg>`,
       subItems: [
+        { name: "Items", translationKey: "pages.items", path: "/dashboard/inventory/items" },
         { name: "Item Groups", translationKey: "pages.itemGroups", path: "/dashboard/inventory/item-groups" },
         { name: "Item Properties", translationKey: "pages.itemProperties", path: "/dashboard/inventory/item-properties" },
       ],
@@ -171,7 +172,10 @@ export class AppSidebarComponent {
   }
 
   isActive(path: string): boolean {
-    return this.router.url === path;
+    if (path === '/' || path === '/dashboard') {
+      return this.router.url === path;
+    }
+    return this.router.url === path || this.router.url.startsWith(path + '/');
   }
 
   toggleSubmenu(section: string, index: number) {
@@ -211,7 +215,7 @@ export class AppSidebarComponent {
       group.items.forEach((nav, i) => {
         if (nav.subItems) {
           nav.subItems.forEach(subItem => {
-            if (currentUrl === subItem.path) {
+            if (currentUrl === subItem.path || (subItem.path !== '/' && subItem.path !== '/dashboard' && currentUrl.startsWith(subItem.path + '/'))) {
               const key = `${group.prefix}-${i}`;
               this.openSubmenu = key;
 

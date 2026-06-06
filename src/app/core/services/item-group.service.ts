@@ -3,7 +3,8 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { RequestFilters, PaginatedList } from '../models/pagination.model';
-import { ItemGroupResponse, ItemGroupRequest, NextCodeResponse } from '../models/item-group.model';
+import { ItemGroupResponse, ItemGroupRequest } from '../models/item-group.model';
+import { NextCodeResponse } from '../models/lookup.model';
 
 @Injectable({
   providedIn: 'root'

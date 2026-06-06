@@ -1,0 +1,19 @@
+<app-page-breadcrumb [pageTitle]="'items.title'" />
+<div class="space-y-6">
+  <app-crud-list
+    [pageTitle]="translate.instant('items.title')"
+  [searchPlaceholder]="translate.instant('crud.tableSearchPlaceholder')"
+  [addBtnText]="translate.instant('items.addNew')"
+  [data]="data"
+  [columns]="columns"
+  [filters]="filters"
+  [includeDisabled]="includeDisabled"
+  (search)="onSearch()"
+  (includeDisabledChange)="onIncludeDisabledChanged($event)"
+  (pageChange)="onPageChange($event)"
+  (add)="onAdd()"
+  (edit)="onEdit($event)"
+  (view)="onView($event)"
+  (toggleStatus)="onToggleStatus($event)">
+  </app-crud-list>
+</div>

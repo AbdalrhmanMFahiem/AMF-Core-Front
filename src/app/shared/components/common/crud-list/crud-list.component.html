@@ -140,7 +140,21 @@
       <span>{{ 'Common.Entries' | translate }}</span>
     </div>
     
-    <div class="flex items-center gap-2">
+    <div class="flex items-center gap-4">
+      <div class="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+        <span>{{ 'Common.Select' | translate }}</span>
+        <div class="w-32">
+          <app-searchable-select
+            [options]="pageSizeOptions"
+            placeholder="Common.Select"
+            [allowClear]="false"
+            [(ngModel)]="filters.pageSize"
+            (selectionChange)="onPageSizeChange($event)">
+          </app-searchable-select>
+        </div>
+      </div>
+      
+      <div class="flex items-center gap-2">
       <button [disabled]="!data?.hasPreviousPage" (click)="onPreviousPage()"
         class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-gray-200 bg-white text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-brand-500 disabled:opacity-50 disabled:cursor-not-allowed dark:border-gray-800 dark:bg-gray-900 dark:text-gray-400 dark:hover:bg-white/3 dark:hover:text-brand-400 transition-all">
         <svg class="w-4 h-4 rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -163,6 +177,7 @@
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
         </svg>
       </button>
+      </div>
     </div>
   </div>
 </app-component-card>

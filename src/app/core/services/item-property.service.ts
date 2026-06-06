@@ -3,7 +3,8 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { RequestFilters, PaginatedList } from '../models/pagination.model';
-import { ItemPropertyResponse, ItemPropertyRequest, NextCodeResponse } from '../models/item-property.model';
+import { ItemPropertyResponse, ItemPropertyRequest } from '../models/item-property.model';
+import { NextCodeResponse } from '../models/lookup.model';
 
 @Injectable({
   providedIn: 'root'

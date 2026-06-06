@@ -1,5 +1,6 @@
 {
   "Common": {
+    "ErrorTitle": "الرجاء إصلاح الأخطاء التالية",
     "Code": "الكود",
     "Name": "الاسم",
     "Notes": "ملاحظات",
@@ -35,7 +36,45 @@
     "RedirectingIn": "سيتم الرجوع للقائمة الرئيسية خلال {{seconds}} ثواني...",
     "Success": "تم بنجاح",
     "SavedSuccessfully": "تم الحفظ بنجاح",
-    "UpdatedSuccessfully": "تم التحديث بنجاح"
+    "UpdatedSuccessfully": "تم التحديث بنجاح",
+    "Select": "إختر",
+    "refresh": "تحديث",
+    "view": "عرض",
+    "type": "النوع",
+    "loading": "جاري التحميل...",
+    "savedSuccessfully": "تم الحفظ بنجاح",
+    "edit": "تعديل",
+    "active": "نشط",
+    "activate": "تفعيل",
+    "inactive": "غير نشط",
+    "deactivate": "تعطيل",
+    "save": "حفظ السجل",
+    "cancel": "إلغاء",
+    "search": "البحث عن طريق الاسم أو الكود...",
+    "status": "حالة التشغيل",
+    "success": "نجاح",
+    "error": "خطأ",
+    "addNew": "إضافة سجل جديد",
+    "confirm": "تأكيد",
+    "options": "خيارات",
+    "copyId": "نسخ المُعرف",
+    "noResults": "لا توجد نتائج",
+    "searchPlaceholder": "بحث...",
+    "clearSelection": "إلغاء الاختيار",
+    "filter": "تصفية",
+    "apply": "تطبيق",
+    "reset": "إعادة تعيين",
+    "all": "الكل"
+  },
+  "validation": {
+    "required": "هذا الحقل مطلوب",
+    "min": "القيمة يجب أن تكون أكبر من أو تساوي {{min}}",
+    "max": "القيمة يجب أن تكون أقل من أو تساوي {{max}}",
+    "invalid": "القيمة غير صالحة"
+  },
+  "errors": {
+    "generic": "حدث خطأ غير متوقع، يرجى المحاولة مرة أخرى",
+    "conflict": "البيانات المدخلة تتعارض مع سجلات موجودة"
   },
   "Pages": {
     "ItemProperties": {
@@ -215,7 +254,7 @@
     "saveDraft": "حفظ كمسودة",
     "saveConfirm": "حفظ وتأكيد",
     "back": "رجوع",
-    "select": "اختر",
+    "Select": "اختر",
     "code": "الكود",
     "name": "الاسم",
     "arabicName": "الاسم (عربي)",
@@ -311,45 +350,6 @@
     "updateSuccess": "تم تحديث الصنف بنجاح",
     "confirmToggle": "هل أنت متأكد من تغيير حالة هذا الصنف؟",
     "recordsCount": "عدد السجلات"
-  },
-  "common": {
-    "refresh": "تحديث",
-    "view": "عرض",
-    "type": "النوع",
-    "loading": "جاري التحميل...",
-    "savedSuccessfully": "تم الحفظ بنجاح",
-    "edit": "تعديل",
-    "active": "نشط",
-    "activate": "تفعيل",
-    "inactive": "غير نشط",
-    "deactivate": "تعطيل",
-    "save": "حفظ السجل",
-    "cancel": "إلغاء",
-    "search": "البحث عن طريق الاسم أو الكود...",
-    "status": "حالة التشغيل",
-    "success": "نجاح",
-    "error": "خطأ",
-    "addNew": "إضافة سجل جديد",
-    "confirm": "تأكيد",
-    "options": "خيارات",
-    "copyId": "نسخ المُعرف",
-    "noResults": "لا توجد نتائج",
-    "searchPlaceholder": "بحث...",
-    "clearSelection": "إلغاء الاختيار",
-    "filter": "تصفية",
-    "apply": "تطبيق",
-    "reset": "إعادة تعيين",
-    "all": "الكل"
-  },
-  "validation": {
-    "required": "هذا الحقل مطلوب",
-    "min": "القيمة يجب أن تكون أكبر من أو تساوي {{min}}",
-    "max": "القيمة يجب أن تكون أقل من أو تساوي {{max}}",
-    "invalid": "القيمة غير صالحة"
-  },
-  "errors": {
-    "generic": "حدث خطأ غير متوقع، يرجى المحاولة مرة أخرى",
-    "conflict": "البيانات المدخلة تتعارض مع سجلات موجودة"
   },
   "invoices": {
     "paymentMethod": "طريقة الدفع",
@@ -455,7 +455,7 @@
     "itemSelection": "اختيار الصنف",
     "searchItems": "ابحث عن صنف بالاسم أو الكود...",
     "stock": "الرصيد",
-    "select": "اختيار",
+    "Select": "اختيار",
     "noItemsFound": "لم يتم العثور على أصناف تطابق بحثك."
   },
   "overview": {
