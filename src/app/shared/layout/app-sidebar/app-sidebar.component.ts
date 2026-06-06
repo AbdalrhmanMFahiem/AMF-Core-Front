@@ -69,6 +69,18 @@ export class AppSidebarComponent {
       ],
     },
     {
+      name: "Sales",
+      translationKey: "pages.sales",
+      icon: `<svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M2 2C1.44772 2 1 2.44772 1 3V21C1 22.1046 1.89543 23 3 23H21C22.1046 23 23 22.1046 23 21V3C23 2.44772 22.5523 2 22 2C21.4477 2 21 2.44772 21 3V21H3V3C3 2.44772 2.55228 2 2 2ZM5 5C4.44772 5 4 5.44772 4 6V14C4 15.1046 4.89543 16 6 16H18C19.1046 16 20 15.1046 20 14V6C20 5.44772 19.5523 5 19 5C18.4477 5 18 5.44772 18 6V14H6V6C6 5.44772 5.55228 5 5 5Z" fill="currentColor"></path></svg>`,
+      subItems: [],
+    },
+    {
+      name: "Purchases",
+      translationKey: "pages.purchases",
+      icon: `<svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M5.5 2C5.08579 2 4.75 2.33579 4.75 2.75C4.75 3.16421 5.08579 3.5 5.5 3.5H6.25L7.75 14.75H19.25C19.6642 14.75 20 14.4142 20 14C20 13.5858 19.6642 13.25 19.25 13.25H8.25L7 4H5.5C5.08579 4 4.75 4.33579 4.75 4.75C4.75 5.16421 5.08579 5.5 5.5 5.5H6.75L8.25 16.75C8.75 20.5 11.75 23.5 15.5 23.5C19.25 23.5 22.25 20.5 22.75 16.75H20.75C20.25 19.5 17.75 21.5 15.5 21.5C13.25 21.5 11 19.5 10.75 16.75H8.25L9.75 22.25C10 23 10.75 23.5 11.5 23.5H19.5C20.25 23.5 21 23 21.25 22.25L22.75 16.75C23.25 12.75 20.25 9.5 16.5 9.5H13.75L12.25 1.75C12 1 11.25 0.5 10.5 0.5H2.5C1.75 0.5 1 1 0.75 1.75L2.5 16.75C3 20.5 6 23.5 9.75 23.5C13.5 23.5 16.5 20.5 17 16.75H15C14.5 19.5 12 21.5 9.75 21.5C7.5 21.5 5.25 19.5 5 16.75L3.5 2.75C3.5 2.75 3.5 2.75 3.5 2.75Z" fill="currentColor"></path></svg>`,
+      subItems: [],
+    },
+    {
       name: "Reports",
       translationKey: "pages.reports",
       icon: `<svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M19 3H5C3.89543 3 3 3.89543 3 5V19C3 20.1046 3.89543 21 5 21H19C20.1046 21 21 20.1046 21 19V5C21 3.89543 20.1046 3 19 3ZM5 5V19H19V5H5ZM7 11H9V17H7V11ZM11 7H13V17H11V7ZM15 13H17V17H15V13Z" fill="currentColor"></path></svg>`,
