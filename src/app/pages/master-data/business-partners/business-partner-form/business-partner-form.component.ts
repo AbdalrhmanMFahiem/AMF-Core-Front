@@ -43,6 +43,15 @@ export class BusinessPartnerFormComponent implements OnInit {
     address: ''
   };
 
+  activeTab: 'basic' | 'ledger' = 'basic';
+  ledgerData: any[] = []; // BusinessPartnerLedgerResponse
+  loadingLedger = false;
+  totalLedgerRecords = 0;
+  ledgerFilters: any = {
+    pageNumber: 1,
+    pageSize: 10
+  };
+
   ngOnInit(): void {
     this.route.url.subscribe(url => {
       const path = url[url.length - (this.route.snapshot.paramMap.has('id') ? 2 : 1)]?.path;
@@ -73,9 +82,34 @@ export class BusinessPartnerFormComponent implements OnInit {
           address: res.address || ''
         };
         this.loading = false;
+        this.loadLedger();
       },
       error: () => this.loading = false
     });
+  }
+
+  loadLedger(): void {
+    if (!this.id) return;
+    this.loadingLedger = true;
+    this.businessPartnerService.getLedger(this.id, this.ledgerFilters).subscribe({
+      next: (res) => {
+        this.ledgerData = res.items;
+        this.totalLedgerRecords = res.totalRecords;
+        this.loadingLedger = false;
+      },
+      error: () => {
+        this.loadingLedger = false;
+      }
+    });
+  }
+
+  onLedgerPageChange(pageNumber: number): void {
+    this.ledgerFilters.pageNumber = pageNumber;
+    this.loadLedger();
+  }
+
+  setTab(tab: 'basic' | 'ledger'): void {
+    this.activeTab = tab;
   }
 
   getNextCode(): void {

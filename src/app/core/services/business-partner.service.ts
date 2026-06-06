@@ -5,6 +5,7 @@ import { BusinessPartnerResponse, BusinessPartnerBasicResponse, BusinessPartnerR
 import { BusinessPartnerStatementResponse, StatementFilter } from '../models/report.model';
 import { PaginatedList, RequestFilters } from '../models/pagination.model';
 import { NextCodeResponse } from '../models/lookup.model';
+import { BusinessPartnerLedgerResponse, LedgerFilters } from '../models/business-partner.model';
 import { environment } from '../../../environments/environment';
 
 @Injectable({
@@ -67,5 +68,23 @@ export class BusinessPartnerService {
     }
 
     return this.http.get<BusinessPartnerStatementResponse>(`${this.apiUrl}/statement`, { params });
+  }
+
+  getLedger(id: number, filters: LedgerFilters): Observable<PaginatedList<BusinessPartnerLedgerResponse>> {
+    let params = new HttpParams()
+      .set('pageNumber', filters.pageNumber.toString())
+      .set('pageSize', filters.pageSize.toString());
+
+    if (filters.from) {
+      params = params.set('from', filters.from);
+    }
+    if (filters.to) {
+      params = params.set('to', filters.to);
+    }
+    if (filters.entryType !== undefined && filters.entryType !== null) {
+      params = params.set('entryType', filters.entryType.toString());
+    }
+
+    return this.http.get<PaginatedList<BusinessPartnerLedgerResponse>>(`${this.apiUrl}/${id}/ledger`, { params });
   }
 }

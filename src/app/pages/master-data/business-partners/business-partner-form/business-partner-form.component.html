@@ -14,9 +14,22 @@
       <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-500"></div>
     </div>
 
+    <div *ngIf="!loading && mode !== 'add'" class="mb-6 flex border-b border-gray-200 dark:border-gray-800">
+      <button type="button" (click)="setTab('basic')"
+        [ngClass]="activeTab === 'basic' ? 'border-brand-500 text-brand-600 dark:text-brand-500' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'"
+        class="whitespace-nowrap border-b-2 text-sm font-medium mx-4 first:ml-0">
+        {{ 'businessPartners.tabs.basicInfo' | translate }}
+      </button>
+      <button type="button" (click)="setTab('ledger')"
+        [ngClass]="activeTab === 'ledger' ? 'border-brand-500 text-brand-600 dark:text-brand-500' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'"
+        class="whitespace-nowrap border-b-2 px-1 py-4 text-sm font-medium mx-4">
+        {{ 'businessPartners.tabs.ledger' | translate }}
+      </button>
+    </div>
+
     <form *ngIf="!loading" (ngSubmit)="onSubmit()" #form="ngForm" class="space-y-6">
 
-      <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+      <div *ngIf="activeTab === 'basic'" class="grid grid-cols-1 gap-6 sm:grid-cols-2">
         <!-- Code -->
         <div>
           <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
@@ -32,15 +45,19 @@
             {{ 'businessPartners.fields.type' | translate }}
           </label>
           <div class="flex items-center gap-6 mt-3">
-            <label class="flex items-center gap-2" [ngClass]="{'cursor-pointer': mode !== 'view', 'opacity-60': mode === 'view'}">
+            <label class="flex items-center gap-2"
+              [ngClass]="{'cursor-pointer': mode !== 'view', 'opacity-60': mode === 'view'}">
               <input type="checkbox" [(ngModel)]="model.isCustomer" name="isCustomer" [disabled]="mode === 'view'"
                 class="h-4 w-4 rounded text-brand-500 border-gray-300 focus:ring-brand-500 dark:border-gray-700 dark:bg-gray-900" />
-              <span class="text-sm font-medium text-gray-700 dark:text-gray-300">{{ 'businessPartners.types.customer' | translate }}</span>
+              <span class="text-sm font-medium text-gray-700 dark:text-gray-300">{{ 'businessPartners.types.customer' |
+                translate }}</span>
             </label>
-            <label class="flex items-center gap-2" [ngClass]="{'cursor-pointer': mode !== 'view', 'opacity-60': mode === 'view'}">
+            <label class="flex items-center gap-2"
+              [ngClass]="{'cursor-pointer': mode !== 'view', 'opacity-60': mode === 'view'}">
               <input type="checkbox" [(ngModel)]="model.isVendor" name="isVendor" [disabled]="mode === 'view'"
                 class="h-4 w-4 rounded text-brand-500 border-gray-300 focus:ring-brand-500 dark:border-gray-700 dark:bg-gray-900" />
-              <span class="text-sm font-medium text-gray-700 dark:text-gray-300">{{ 'businessPartners.types.vendor' | translate }}</span>
+              <span class="text-sm font-medium text-gray-700 dark:text-gray-300">{{ 'businessPartners.types.vendor' |
+                translate }}</span>
             </label>
           </div>
         </div>
@@ -97,6 +114,119 @@
           </label>
           <textarea [(ngModel)]="model.notes" name="notes" rows="3" [disabled]="mode === 'view'"
             class="w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm outline-none focus:border-brand-500 dark:border-gray-800 dark:focus:border-brand-500"></textarea>
+        </div>
+      </div>
+
+      <!-- Ledger Tab Content -->
+      <div *ngIf="activeTab === 'ledger'">
+        <div *ngIf="loadingLedger" class="flex justify-center p-8">
+          <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-500"></div>
+        </div>
+        <div *ngIf="!loadingLedger" class="overflow-x-auto">
+          <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-800">
+            <thead class="bg-gray-50 dark:bg-gray-800/50">
+              <tr>
+                <th scope="col"
+                  class="px-6 py-3  text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-400">
+                  {{ 'ledger.entryDate' | translate }}</th>
+                <th scope="col"
+                  class="px-6 py-3  text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-400">
+                  {{ 'ledger.invoiceCode' | translate }}</th>
+                <th scope="col"
+                  class="px-6 py-3  text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-400">
+                  {{ 'ledger.entryType' | translate }}</th>
+                <th scope="col"
+                  class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-400">
+                  {{ 'ledger.amount' | translate }}</th>
+                <th scope="col"
+                  class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-400">
+                  {{ 'ledger.runningBalance' | translate }}</th>
+                <th scope="col"
+                  class="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-400">
+                  {{ 'ledger.notes' | translate }}</th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200 dark:bg-gray-900 dark:divide-gray-800">
+              <tr *ngFor="let item of ledgerData" class="hover:bg-gray-50 dark:hover:bg-gray-800/50">
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300">
+                  <span dir="ltr" class="inline-block">{{ item.entryDate | date:'yyyy-MM-dd hh:mm a' }}</span>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300">{{ item.invoiceCode ||
+                  '-' }}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300">{{ 'ledger.typeEnum.' +
+                  item.entryType | translate }}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-right font-medium" dir="ltr"
+                  [ngClass]="item.amount > 0 ? 'text-success-600' : (item.amount < 0 ? 'text-error-600' : 'text-gray-900 dark:text-gray-300')">
+                  {{ item.amount < 0 ? '(' + (item.amount * -1 | number:'1.2-2') + ')' : (item.amount | number:'1.2-2')
+                    }} </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-right font-medium" dir="ltr"
+                  [ngClass]="item.runningBalance < 0 ? 'text-error-600' : 'text-gray-900 dark:text-gray-300'">
+                  {{ item.runningBalance < 0 ? '(' + (item.runningBalance * -1 | number:'1.2-2') + ')' :
+                    (item.runningBalance | number:'1.2-2') }} </td>
+                <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">{{ item.notes || '-' }}</td>
+              </tr>
+              <tr *ngIf="ledgerData.length === 0">
+                <td colspan="6" class="px-6 py-8 text-center text-sm text-gray-500 dark:text-gray-400">{{
+                  'ledger.noEntries' | translate }}</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <!-- Pagination -->
+          <div *ngIf="totalLedgerRecords > 0"
+            class="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6 dark:border-gray-800 dark:bg-gray-900 mt-4">
+            <div class="flex flex-1 justify-between sm:hidden">
+              <button type="button" (click)="onLedgerPageChange(ledgerFilters.pageNumber - 1)"
+                [disabled]="ledgerFilters.pageNumber === 1"
+                class="relative inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300">
+                {{ 'Common.Previous' | translate }}
+              </button>
+              <button type="button" (click)="onLedgerPageChange(ledgerFilters.pageNumber + 1)"
+                [disabled]="ledgerFilters.pageNumber * ledgerFilters.pageSize >= totalLedgerRecords"
+                class="relative ml-3 inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300">
+                {{ 'Common.Next' | translate }}
+              </button>
+            </div>
+            <div class="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
+              <div>
+                <p class="text-sm text-gray-700 dark:text-gray-300">
+                  {{ 'Common.Showing' | translate }}
+                  <span class="font-medium">{{ (ledgerFilters.pageNumber - 1) * ledgerFilters.pageSize + 1 }}</span>
+                  -
+                  <span class="font-medium">{{ (ledgerFilters.pageNumber * ledgerFilters.pageSize) > totalLedgerRecords
+                    ? totalLedgerRecords : (ledgerFilters.pageNumber * ledgerFilters.pageSize) }}</span>
+                  {{ 'Common.Of' | translate }}
+                  <span class="font-medium">{{ totalLedgerRecords }}</span>
+                  {{ 'Common.Entries' | translate }}
+                </p>
+              </div>
+              <div>
+                <nav class="isolate inline-flex -space-x-px rtl:space-x-reverse rounded-md shadow-sm"
+                  aria-label="Pagination">
+                  <button type="button" (click)="onLedgerPageChange(ledgerFilters.pageNumber - 1)"
+                    [disabled]="ledgerFilters.pageNumber === 1"
+                    class="relative inline-flex items-center rounded-l-md rtl:rounded-l-none rtl:rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 disabled:opacity-50 dark:ring-gray-700 dark:hover:bg-gray-800">
+                    <span class="sr-only">{{ 'Common.Previous' | translate }}</span>
+                    <svg class="h-5 w-5 rtl:rotate-180" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                      <path fill-rule="evenodd"
+                        d="M12.79 5.23a.75.75 0 01-.02 1.06L8.832 10l3.938 3.71a.75.75 0 11-1.04 1.08l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 011.06.02z"
+                        clip-rule="evenodd" />
+                    </svg>
+                  </button>
+                  <button type="button" (click)="onLedgerPageChange(ledgerFilters.pageNumber + 1)"
+                    [disabled]="ledgerFilters.pageNumber * ledgerFilters.pageSize >= totalLedgerRecords"
+                    class="relative inline-flex items-center rounded-r-md rtl:rounded-r-none rtl:rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 disabled:opacity-50 dark:ring-gray-700 dark:hover:bg-gray-800">
+                    <span class="sr-only">{{ 'Common.Next' | translate }}</span>
+                    <svg class="h-5 w-5 rtl:rotate-180" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                      <path fill-rule="evenodd"
+                        d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z"
+                        clip-rule="evenodd" />
+                    </svg>
+                  </button>
+                </nav>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 

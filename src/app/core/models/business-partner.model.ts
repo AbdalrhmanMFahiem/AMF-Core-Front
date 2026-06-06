@@ -37,3 +37,22 @@ export interface BusinessPartnerRequest {
   email?: string;
   address?: string;
 }
+
+export interface BusinessPartnerLedgerResponse {
+  id: number;
+  entryDate: string;
+  invoiceId?: number;
+  invoiceCode?: string;
+  entryType: number;
+  amount: number;
+  runningBalance: number;
+  notes?: string;
+}
+
+export interface LedgerFilters {
+  pageNumber: number;
+  pageSize: number;
+  from?: string;
+  to?: string;
+  entryType?: number;
+}

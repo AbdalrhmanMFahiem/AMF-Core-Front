@@ -222,6 +222,10 @@
       "customer": "Customer",
       "vendor": "Vendor",
       "both": "Customer & Vendor"
+    },
+    "tabs": {
+      "basicInfo": "Basic Information",
+      "ledger": "Ledger"
     }
   },
   "account": {
