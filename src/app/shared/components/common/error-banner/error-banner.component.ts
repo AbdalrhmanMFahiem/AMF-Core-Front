@@ -7,7 +7,15 @@ import { TranslateModule } from '@ngx-translate/core';
   standalone: true,
   imports: [CommonModule, TranslateModule],
   templateUrl: './error-banner.component.html',
-  styles: []
+  styles: [`
+    @keyframes progress {
+      0% { width: 100%; }
+      100% { width: 0%; }
+    }
+    .animate-progress {
+      animation: progress linear forwards;
+    }
+  `]
 })
 export class ErrorBannerComponent implements OnChanges, OnDestroy {
   @Input() isVisible: boolean = false;

@@ -1,0 +1,126 @@
+<app-page-breadcrumb
+  [pageTitle]="(mode === 'edit' ? 'businessPartners.edit' : mode === 'view' ? 'common.view' : 'businessPartners.addNew')" />
+
+<div class="space-y-6">
+  <app-success-redirect-banner [isVisible]="saveSuccess" [message]="'common.savedSuccessfully'"
+    [redirectUrl]="'/master-data/business-partners'" [countdownSeconds]="5">
+  </app-success-redirect-banner>
+
+  <app-component-card
+    [title]="(mode === 'edit' ? 'businessPartners.edit' : mode === 'view' ? 'common.view' : 'businessPartners.addNew') | translate"
+    [className]="'p-6'">
+
+    <div *ngIf="loading" class="flex justify-center p-8">
+      <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-500"></div>
+    </div>
+
+    <form *ngIf="!loading" (ngSubmit)="onSubmit()" #form="ngForm" class="space-y-6">
+
+      <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+        <!-- Code -->
+        <div>
+          <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+            {{ 'businessPartners.fields.code' | translate }} <span class="text-error-500">*</span>
+          </label>
+          <input type="text" [(ngModel)]="model.code" name="code" required [disabled]="mode === 'view'"
+            class="w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm outline-none focus:border-brand-500 dark:border-gray-800 dark:focus:border-brand-500" />
+        </div>
+
+        <!-- Type -->
+        <div>
+          <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+            {{ 'businessPartners.fields.type' | translate }}
+          </label>
+          <div class="flex items-center gap-6 mt-3">
+            <label class="flex items-center gap-2" [ngClass]="{'cursor-pointer': mode !== 'view', 'opacity-60': mode === 'view'}">
+              <input type="checkbox" [(ngModel)]="model.isCustomer" name="isCustomer" [disabled]="mode === 'view'"
+                class="h-4 w-4 rounded text-brand-500 border-gray-300 focus:ring-brand-500 dark:border-gray-700 dark:bg-gray-900" />
+              <span class="text-sm font-medium text-gray-700 dark:text-gray-300">{{ 'businessPartners.types.customer' | translate }}</span>
+            </label>
+            <label class="flex items-center gap-2" [ngClass]="{'cursor-pointer': mode !== 'view', 'opacity-60': mode === 'view'}">
+              <input type="checkbox" [(ngModel)]="model.isVendor" name="isVendor" [disabled]="mode === 'view'"
+                class="h-4 w-4 rounded text-brand-500 border-gray-300 focus:ring-brand-500 dark:border-gray-700 dark:bg-gray-900" />
+              <span class="text-sm font-medium text-gray-700 dark:text-gray-300">{{ 'businessPartners.types.vendor' | translate }}</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- AName -->
+        <div>
+          <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+            {{ 'businessPartners.fields.aName' | translate }} <span class="text-error-500">*</span>
+          </label>
+          <input type="text" [(ngModel)]="model.aName" name="aName" required [disabled]="mode === 'view'"
+            class="w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm outline-none focus:border-brand-500 dark:border-gray-800 dark:focus:border-brand-500" />
+        </div>
+
+        <!-- EName -->
+        <div>
+          <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+            {{ 'businessPartners.fields.eName' | translate }}
+          </label>
+          <input type="text" [(ngModel)]="model.eName" name="eName" [disabled]="mode === 'view'"
+            class="w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm outline-none focus:border-brand-500 dark:border-gray-800 dark:focus:border-brand-500" />
+        </div>
+
+        <!-- Phone -->
+        <div>
+          <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+            {{ 'businessPartners.fields.phone' | translate }}
+          </label>
+          <input type="text" [(ngModel)]="model.phone" name="phone" [disabled]="mode === 'view'"
+            class="w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm outline-none focus:border-brand-500 dark:border-gray-800 dark:focus:border-brand-500" />
+        </div>
+
+        <!-- Email -->
+        <div>
+          <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+            {{ 'businessPartners.fields.email' | translate }}
+          </label>
+          <input type="email" [(ngModel)]="model.email" name="email" [disabled]="mode === 'view'"
+            class="w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm outline-none focus:border-brand-500 dark:border-gray-800 dark:focus:border-brand-500" />
+        </div>
+
+        <!-- Address -->
+        <div class="sm:col-span-2">
+          <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+            {{ 'businessPartners.fields.address' | translate }}
+          </label>
+          <input type="text" [(ngModel)]="model.address" name="address" [disabled]="mode === 'view'"
+            class="w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm outline-none focus:border-brand-500 dark:border-gray-800 dark:focus:border-brand-500" />
+        </div>
+
+        <!-- Notes -->
+        <div class="sm:col-span-2">
+          <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+            {{ 'businessPartners.fields.notes' | translate }}
+          </label>
+          <textarea [(ngModel)]="model.notes" name="notes" rows="3" [disabled]="mode === 'view'"
+            class="w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm outline-none focus:border-brand-500 dark:border-gray-800 dark:focus:border-brand-500"></textarea>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="flex items-center justify-end gap-3 border-t border-gray-200 pt-6 dark:border-gray-800 mt-8">
+        <button type="button" (click)="onCancel()"
+          class="rounded-lg border border-gray-300 bg-white px-5 py-2.5 text-sm font-medium text-gray-700 shadow-sm transition-colors hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700">
+          {{ (mode === 'view' ? 'common.back' : 'common.cancel') | translate }}
+        </button>
+        <button *ngIf="mode !== 'view'" type="submit" [disabled]="saving || !form.valid"
+          class="flex items-center gap-2 rounded-lg bg-brand-500 px-5 py-2.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-brand-600 disabled:opacity-50">
+          <svg *ngIf="saving" class="h-4 w-4 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none"
+            viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor"
+              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+            </path>
+          </svg>
+          <span>{{ (saving ? 'common.saving' : 'common.save') | translate }}</span>
+        </button>
+      </div>
+    </form>
+  </app-component-card>
+</div>
+
+<app-error-banner [isVisible]="validationErrors.length > 0" [errors]="validationErrors"
+  (close)="validationErrors = []"></app-error-banner>

@@ -1,3 +1,4 @@
+import { ToastrService } from 'ngx-toastr';
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
@@ -16,6 +17,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
   styles: ``
 })
 export class ItemsListComponent implements OnInit {
+  private toastr = inject(ToastrService);
   private itemService = inject(ItemService);
   private router = inject(Router);
   public translate = inject(TranslateService);
@@ -73,21 +75,29 @@ export class ItemsListComponent implements OnInit {
   }
 
   onAdd(): void {
-    this.router.navigate(['/dashboard/inventory/items/add']);
+    this.router.navigate(['/inventory/items/add']);
   }
 
   onEdit(id: number): void {
-    this.router.navigate(['/dashboard/inventory/items/edit', id]);
+    this.router.navigate(['/inventory/items/edit', id]);
   }
 
   onView(id: number): void {
-    this.router.navigate(['/dashboard/inventory/items/view', id]);
+    this.router.navigate(['/inventory/items/view', id]);
   }
 
-  onToggleStatus(id: number): void {
-    this.itemService.toggleStatus(id).subscribe(() => {
-      if (this.data) {
+  onToggleStatus(item: any): void {
+    this.itemService.toggleStatus(item.id).subscribe({
+      next: () => {
+        const msg = item.isActive ? 
+          this.translate.instant('common.statusChangedToInactive') : 
+          this.translate.instant('common.statusChangedToActive');
+        this.toastr.success(msg);
         this.loadData();
+      },
+      error: (err) => {
+        this.toastr.error('Failed to update status', 'Error');
+        console.error(err);
       }
     });
   }

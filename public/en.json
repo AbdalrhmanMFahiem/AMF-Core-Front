@@ -188,7 +188,40 @@
         "payment": "Payment",
         "return": "Return",
         "adjustment": "Adjustment"
-      }
+      },
+      "results": "Report Results",
+      "openingBalance": "Opening Balance",
+      "closingBalance": "Closing Balance",
+      "date": "Date",
+      "transactionType": "Transaction Type",
+      "reference": "Reference",
+      "debit": "Debit",
+      "credit": "Credit",
+      "balanceText": "Balance"
+    }
+  },
+  "businessPartners": {
+    "list": {
+      "title": "Business Partners"
+    },
+    "addNew": "Add New Business Partner",
+    "edit": "Edit Business Partner",
+    "fields": {
+      "code": "Code",
+      "name": "Name",
+      "aName": "Arabic Name",
+      "eName": "English Name",
+      "type": "Partner Type",
+      "phone": "Phone Number",
+      "email": "Email Address",
+      "address": "Address",
+      "notes": "Notes",
+      "status": "Status"
+    },
+    "types": {
+      "customer": "Customer",
+      "vendor": "Vendor",
+      "both": "Customer & Vendor"
     }
   },
   "account": {
@@ -533,5 +566,20 @@
       "Return": "Return",
       "Adjustment": "Adjustment"
     }
+  },
+  "HomePage": {
+    "Title": "Home Page",
+    "Subtitle": "Welcome to your dashboard",
+    "NextPrayer": "Next Prayer",
+    "NextPrayerDesc": "It is now time for the next prayer according to local time",
+    "PrayerTimes": "Prayer Times",
+    "LoadingPrayers": "Loading prayer times..."
+  },
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "confirmStatusChange": "Are you sure you want to change the status?",
+    "statusChangedToInactive": "Status changed from Active to Inactive successfully.",
+    "statusChangedToActive": "Status changed from Inactive to Active successfully."
   }
 }

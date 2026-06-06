@@ -1,3 +1,4 @@
+import { TranslateService } from '@ngx-translate/core';
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
@@ -20,12 +21,14 @@ import { ToastrService } from 'ngx-toastr';
   styles: ``
 })
 export class ItemPropertiesListComponent implements OnInit {
+  public translate = inject(TranslateService);
   private readonly itemPropertyService = inject(ItemPropertyService);
   private readonly router = inject(Router);
   private readonly toastr = inject(ToastrService);
 
   data: PaginatedList<ItemPropertyResponse> | null = null;
   includeDisabled: boolean = false;
+  loading: boolean = false;
   
   filters: RequestFilters = {
     pageNumber: 1,
@@ -46,33 +49,39 @@ export class ItemPropertiesListComponent implements OnInit {
   }
 
   loadData(): void {
+    this.loading = true;
     this.itemPropertyService.getAll(this.filters, this.includeDisabled).subscribe({
       next: (res) => {
         this.data = res;
+        this.loading = false;
       },
       error: (err) => {
         this.toastr.error('Failed to load properties', 'Error');
         console.error(err);
+        this.loading = false;
       }
     });
   }
 
   onAdd(): void {
-    this.router.navigate(['/dashboard/inventory/item-properties/add']);
+    this.router.navigate(['/inventory/item-properties/add']);
   }
 
   onView(id: number): void {
-    this.router.navigate(['/dashboard/inventory/item-properties/view', id]);
+    this.router.navigate(['/inventory/item-properties/view', id]);
   }
 
   onEdit(id: number): void {
-    this.router.navigate(['/dashboard/inventory/item-properties/edit', id]);
+    this.router.navigate(['/inventory/item-properties/edit', id]);
   }
 
-  onToggleStatus(id: number): void {
-    this.itemPropertyService.toggleStatus(id).subscribe({
+  onToggleStatus(item: any): void {
+    this.itemPropertyService.toggleStatus(item.id).subscribe({
       next: () => {
-        this.toastr.success('Status updated successfully', 'Success');
+        const msg = item.isActive ? 
+          this.translate.instant('common.statusChangedToInactive') : 
+          this.translate.instant('common.statusChangedToActive');
+        this.toastr.success(msg);
         this.loadData();
       },
       error: (err) => {

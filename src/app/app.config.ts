@@ -24,7 +24,7 @@ export const appConfig: ApplicationConfig = {
       preventDuplicates: true,
     }),
     provideTranslateService({
-      defaultLanguage: 'en',
+      fallbackLang: 'en',
       missingTranslationHandler: {
         provide: MissingTranslationHandler,
         useClass: CustomMissingTranslationHandler

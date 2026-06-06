@@ -93,7 +93,7 @@ export class ItemPropertyFormComponent implements OnInit {
       },
       error: (err) => {
         this.toastr.error('Failed to load property details', 'Error');
-        this.router.navigate(['/dashboard/inventory/item-properties']);
+        this.router.navigate(['/inventory/item-properties']);
       }
     });
   }
@@ -119,7 +119,7 @@ export class ItemPropertyFormComponent implements OnInit {
       this.itemPropertyService.add(request).subscribe({
         next: () => {
           this.toastr.success('Property added successfully', 'Success');
-          this.router.navigate(['/dashboard/inventory/item-properties']);
+          this.router.navigate(['/inventory/item-properties']);
         },
         error: (err) => {
           this.toastr.error('Failed to add property', 'Error');
@@ -130,6 +130,6 @@ export class ItemPropertyFormComponent implements OnInit {
   }
 
   onCancel(): void {
-    this.router.navigate(['/dashboard/inventory/item-properties']);
+    this.router.navigate(['/inventory/item-properties']);
   }
 }

@@ -204,7 +204,11 @@ export class ItemFormComponent implements OnInit {
         if (err?.error?.message) {
           this.validationErrors = [err.error.message];
         } else if (err?.error?.errors) {
-          this.validationErrors = Object.values(err.error.errors).flat() as string[];
+          if (Array.isArray(err.error.errors)) {
+            this.validationErrors = err.error.errors.map((e: any) => e.description || e.errorMessage || (typeof e === 'string' ? e : JSON.stringify(e)));
+          } else {
+            this.validationErrors = Object.values(err.error.errors).flat() as string[];
+          }
         } else {
           this.validationErrors = [this.translate.instant('errors.generic')];
         }
@@ -219,6 +223,6 @@ export class ItemFormComponent implements OnInit {
   }
 
   onCancel(): void {
-    this.router.navigate(['/dashboard/inventory/items']);
+    this.router.navigate(['/inventory/items']);
   }
 }

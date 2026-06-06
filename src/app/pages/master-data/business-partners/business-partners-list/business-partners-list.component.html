@@ -1,0 +1,7 @@
+<app-page-breadcrumb [pageTitle]="'businessPartners.list.title' | translate"></app-page-breadcrumb>
+
+<app-crud-list [pageTitle]="'businessPartners.list.title' | translate" [addBtnText]="translate.instant('items.addNew')"
+  [columns]="columns" [data]="data" [filters]="filters" [isLoading]="loading" [includeDisabled]="includeDisabled"
+  (search)="onSearch()" (pageChange)="onPageChange($event)" (includeDisabledChange)="onIncludeDisabledChanged($event)"
+  (add)="onAdd()" (edit)="onEdit($event)" (view)="onView($event)" (toggleStatus)="onToggleStatus($event)">
+</app-crud-list>

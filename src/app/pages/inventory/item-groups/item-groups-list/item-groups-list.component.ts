@@ -1,3 +1,4 @@
+import { TranslateService } from '@ngx-translate/core';
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
@@ -20,12 +21,14 @@ import { ToastrService } from 'ngx-toastr';
   styles: ``
 })
 export class ItemGroupsListComponent implements OnInit {
+  public translate = inject(TranslateService);
   private readonly itemGroupService = inject(ItemGroupService);
   private readonly router = inject(Router);
   private readonly toastr = inject(ToastrService);
 
   data: PaginatedList<ItemGroupResponse> | null = null;
   includeDisabled: boolean = false;
+  loading: boolean = false;
   
   filters: RequestFilters = {
     pageNumber: 1,
@@ -46,33 +49,39 @@ export class ItemGroupsListComponent implements OnInit {
   }
 
   loadData(): void {
+    this.loading = true;
     this.itemGroupService.getAll(this.filters, this.includeDisabled).subscribe({
       next: (res) => {
         this.data = res;
+        this.loading = false;
       },
       error: (err) => {
         this.toastr.error('Failed to load item groups', 'Error');
         console.error(err);
+        this.loading = false;
       }
     });
   }
 
   onAdd(): void {
-    this.router.navigate(['/dashboard/inventory/item-groups/add']);
+    this.router.navigate(['/inventory/item-groups/add']);
   }
 
   onView(id: number): void {
-    this.router.navigate(['/dashboard/inventory/item-groups/view', id]);
+    this.router.navigate(['/inventory/item-groups/view', id]);
   }
 
   onEdit(id: number): void {
-    this.router.navigate(['/dashboard/inventory/item-groups/edit', id]);
+    this.router.navigate(['/inventory/item-groups/edit', id]);
   }
 
-  onToggleStatus(id: number): void {
-    this.itemGroupService.toggleStatus(id).subscribe({
+  onToggleStatus(item: any): void {
+    this.itemGroupService.toggleStatus(item.id).subscribe({
       next: () => {
-        this.toastr.success('Status updated successfully', 'Success');
+        const msg = item.isActive ? 
+          this.translate.instant('common.statusChangedToInactive') : 
+          this.translate.instant('common.statusChangedToActive');
+        this.toastr.success(msg);
         this.loadData();
       },
       error: (err) => {

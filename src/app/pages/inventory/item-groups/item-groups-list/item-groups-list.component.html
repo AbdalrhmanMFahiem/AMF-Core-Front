@@ -8,6 +8,7 @@
     [data]="data" 
     [filters]="filters"
     [(includeDisabled)]="includeDisabled"
+    [isLoading]="loading"
     (search)="loadData()"
     (add)="onAdd()"
     (view)="onView($event)"

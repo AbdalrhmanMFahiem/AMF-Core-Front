@@ -93,7 +93,7 @@ export class ItemGroupFormComponent implements OnInit {
       },
       error: (err) => {
         this.toastr.error('Failed to load item group details', 'Error');
-        this.router.navigate(['/dashboard/inventory/item-groups']);
+        this.router.navigate(['/inventory/item-groups']);
       }
     });
   }
@@ -119,7 +119,7 @@ export class ItemGroupFormComponent implements OnInit {
       this.itemGroupService.add(request).subscribe({
         next: () => {
           this.toastr.success('Item group added successfully', 'Success');
-          this.router.navigate(['/dashboard/inventory/item-groups']);
+          this.router.navigate(['/inventory/item-groups']);
         },
         error: (err) => {
           this.toastr.error('Failed to add item group', 'Error');
@@ -130,6 +130,6 @@ export class ItemGroupFormComponent implements OnInit {
   }
 
   onCancel(): void {
-    this.router.navigate(['/dashboard/inventory/item-groups']);
+    this.router.navigate(['/inventory/item-groups']);
   }
 }

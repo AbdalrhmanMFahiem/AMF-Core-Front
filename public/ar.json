@@ -199,7 +199,40 @@
         "payment": "سداد",
         "return": "مردود",
         "adjustment": "تسوية"
-      }
+      },
+      "results": "نتائج التقرير",
+      "openingBalance": "الرصيد الافتتاحي",
+      "closingBalance": "الرصيد الختامي",
+      "date": "التاريخ",
+      "transactionType": "نوع الحركة",
+      "reference": "المرجع",
+      "debit": "مدين",
+      "credit": "دائن",
+      "balanceText": "الرصيد"
+    }
+  },
+  "businessPartners": {
+    "list": {
+      "title": "شركاء العمل"
+    },
+    "addNew": "إضافة شريك عمل جديد",
+    "edit": "تعديل بيانات الشريك",
+    "fields": {
+      "code": "الكود",
+      "name": "الاسم",
+      "aName": "الاسم (عربي)",
+      "eName": "الاسم (إنجليزي)",
+      "type": "نوع الشريك",
+      "phone": "رقم الهاتف",
+      "email": "البريد الإلكتروني",
+      "address": "العنوان",
+      "notes": "الملاحظات",
+      "status": "الحالة"
+    },
+    "types": {
+      "customer": "عميل",
+      "vendor": "مورد",
+      "both": "عميل ومورد"
     }
   },
   "account": {
@@ -532,5 +565,20 @@
       "Return": "مردود",
       "Adjustment": "تسوية"
     }
+  },
+  "HomePage": {
+    "Title": "الرئيسية",
+    "Subtitle": "مرحباً بك في لوحة التحكم",
+    "NextPrayer": "الصلاة القادمة",
+    "NextPrayerDesc": "حان الآن موعد الصلاة القادمة حسب التوقيت المحلي",
+    "PrayerTimes": "مواقيت الصلاة",
+    "LoadingPrayers": "جاري تحميل مواقيت الصلاة..."
+  },
+  "common": {
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "confirmStatusChange": "هل أنت متأكد من تغيير الحالة؟",
+    "statusChangedToInactive": "تم تغيير الحالة من نشط إلى غير نشط بنجاح.",
+    "statusChangedToActive": "تم تغيير الحالة من غير نشط إلى نشط بنجاح."
   }
 }

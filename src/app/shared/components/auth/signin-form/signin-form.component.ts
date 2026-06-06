@@ -48,7 +48,7 @@ export class SigninFormComponent {
       next: (res) => {
         if (res && res.token) {
           this.authService.setAuthResponse(res);
-          this.router.navigate(['/dashboard']);
+          this.router.navigate(['/']);
         }
       },
       error: (err) => {

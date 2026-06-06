@@ -11,6 +11,7 @@ import { LookupService } from '../../../../core/services/lookup.service';
 import { SearchableSelectComponent, SearchableOption } from '../../form/searchable-select/searchable-select.component';
 import { inject } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
+import Swal from 'sweetalert2';
 
 export interface CrudColumn {
   field: string;
@@ -37,13 +38,14 @@ export class CrudListComponent implements OnInit, OnDestroy {
   @Input() filters!: RequestFilters;
   @Input() includeDisabled: boolean = false;
   @Input() showIncludeDisabledToggle: boolean = true;
+  @Input() isLoading: boolean = false;
 
   @Output() search = new EventEmitter<void>();
   @Output() includeDisabledChange = new EventEmitter<boolean>();
   @Output() add = new EventEmitter<void>();
   @Output() view = new EventEmitter<number>();
   @Output() edit = new EventEmitter<number>();
-  @Output() toggleStatus = new EventEmitter<number>();
+  @Output() toggleStatus = new EventEmitter<any>();
   @Output() pageChange = new EventEmitter<number>();
 
   openCodePopupId: number | string | null = null;
@@ -140,11 +142,13 @@ export class CrudListComponent implements OnInit, OnDestroy {
       this.openActionPopupId = id;
       const target = event.currentTarget as HTMLElement;
       const rect = target.getBoundingClientRect();
+      const isRtl = document.documentElement.dir === 'rtl' || this.translate.currentLang === 'ar';
+      
       this.actionPopupStyles = {
         position: 'fixed',
         top: `${rect.bottom + 8}px`,
-        left: `${rect.right}px`,
-        transform: 'translate(-100%, 0)', // align right edge
+        left: isRtl ? `${rect.left}px` : `${rect.right}px`,
+        transform: isRtl ? 'translate(0, 0)' : 'translate(-100%, 0)',
         zIndex: 9999
       };
     }
@@ -172,6 +176,10 @@ export class CrudListComponent implements OnInit, OnDestroy {
     this.search.emit();
   }
 
+  onRefresh(): void {
+    this.search.emit();
+  }
+
   onIncludeDisabledChange(value: boolean): void {
     this.filters.pageNumber = 1;
     this.includeDisabledChange.emit(value);
@@ -196,5 +204,26 @@ export class CrudListComponent implements OnInit, OnDestroy {
       this.filters.pageNumber = 1;
       this.search.emit();
     }
+  }
+
+  onToggleStatusClick(item: any): void {
+    const confirmMsg = this.translate.instant('common.confirmStatusChange');
+    const isRtl = this.translate.currentLang === 'ar';
+    Swal.fire({
+      title: confirmMsg,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: this.translate.instant('common.save'),
+      cancelButtonText: this.translate.instant('common.cancel'),
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      customClass: {
+        popup: isRtl ? 'swal-rtl' : ''
+      }
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.toggleStatus.emit(item);
+      }
+    });
   }
 }
