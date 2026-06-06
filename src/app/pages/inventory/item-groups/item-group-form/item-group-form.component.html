@@ -4,7 +4,7 @@
 
   <app-success-redirect-banner 
     [isVisible]="showSuccessBanner"
-    [redirectUrl]="'/dashboard/inventory/item-properties'"
+    [redirectUrl]="'/dashboard/inventory/item-groups'"
     (stay)="showSuccessBanner = false"
   ></app-success-redirect-banner>
 
@@ -13,12 +13,6 @@
 
       <!-- ID & Code -->
       <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
-        <!-- <div *ngIf="isEdit || isView">
-          <label class="mb-2.5 block text-sm font-medium text-gray-800 dark:text-white/90">{{ 'Common.ID' | translate }}</label>
-          <input type="text" formControlName="id" readonly
-            class="dark:bg-dark-900 h-11 w-full rounded-lg border border-gray-200 bg-gray-50 py-2.5 px-4 text-sm text-gray-500 cursor-not-allowed dark:border-gray-800 dark:bg-white/5 dark:text-gray-400" />
-        </div>
-         -->
         <div>
           <label class="mb-2.5 block text-sm font-medium text-gray-800 dark:text-white/90">
             {{ 'Common.Code' | translate }} <span class="text-error-500">*</span>

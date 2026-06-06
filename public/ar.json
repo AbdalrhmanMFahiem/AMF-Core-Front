@@ -29,7 +29,13 @@
     "Back": "رجوع",
     "Saving": "جاري الحفظ...",
     "CopyCode": "نسخ الكود",
-    "CopyId": "نسخ المُعرف"
+    "CopyId": "نسخ المُعرف",
+    "StayHere": "البقاء هنا",
+    "BackToList": "الرجوع للقائمة",
+    "RedirectingIn": "سيتم الرجوع للقائمة الرئيسية خلال {{seconds}} ثواني...",
+    "Success": "تم بنجاح",
+    "SavedSuccessfully": "تم الحفظ بنجاح",
+    "UpdatedSuccessfully": "تم التحديث بنجاح"
   },
   "Pages": {
     "ItemProperties": {
@@ -38,6 +44,14 @@
       "EditTitle": "تعديل خاصية صنف",
       "ViewTitle": "عرض خاصية صنف",
       "Add": "إضافة خاصية جديدة",
+      "SearchPlaceholder": "ابحث بالكود أو الاسم..."
+    },
+    "ItemGroups": {
+      "Title": "مجموعات الأصناف",
+      "AddTitle": "إضافة مجموعة أصناف",
+      "EditTitle": "تعديل مجموعة أصناف",
+      "ViewTitle": "عرض مجموعة أصناف",
+      "Add": "إضافة مجموعة جديدة",
       "SearchPlaceholder": "ابحث بالكود أو الاسم..."
     }
   },

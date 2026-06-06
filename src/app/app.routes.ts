@@ -128,6 +128,26 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/inventory/item-properties/item-property-form/item-property-form.component').then(c => c.ItemPropertyFormComponent),
         title: 'View Item Property | AMF Core'
       },
+      {
+        path: 'inventory/item-groups',
+        loadComponent: () => import('./pages/inventory/item-groups/item-groups-list/item-groups-list.component').then(c => c.ItemGroupsListComponent),
+        title: 'Item Groups | AMF Core'
+      },
+      {
+        path: 'inventory/item-groups/add',
+        loadComponent: () => import('./pages/inventory/item-groups/item-group-form/item-group-form.component').then(c => c.ItemGroupFormComponent),
+        title: 'Add Item Group | AMF Core'
+      },
+      {
+        path: 'inventory/item-groups/edit/:id',
+        loadComponent: () => import('./pages/inventory/item-groups/item-group-form/item-group-form.component').then(c => c.ItemGroupFormComponent),
+        title: 'Edit Item Group | AMF Core'
+      },
+      {
+        path: 'inventory/item-groups/view/:id',
+        loadComponent: () => import('./pages/inventory/item-groups/item-group-form/item-group-form.component').then(c => c.ItemGroupFormComponent),
+        title: 'View Item Group | AMF Core'
+      },
     ]
   },
   // auth pages

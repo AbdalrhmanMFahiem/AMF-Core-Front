@@ -1,7 +1,9 @@
-import { Component, EventEmitter, Input, Output, HostListener } from '@angular/core';
+import { Component, EventEmitter, Input, Output, HostListener, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
+import { Subject, Subscription } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { ComponentCardComponent } from '../component-card/component-card.component';
 import { BadgeComponent } from '../../ui/badge/badge.component';
 import { PaginatedList, RequestFilters } from '../../../../core/models/pagination.model';
@@ -19,7 +21,7 @@ export interface CrudColumn {
   templateUrl: './crud-list.component.html',
   styles: ``
 })
-export class CrudListComponent {
+export class CrudListComponent implements OnInit, OnDestroy {
   @Input() pageTitle!: string;
   @Input() searchPlaceholder: string = 'Search...';
   @Input() addBtnText: string = 'Add New';
@@ -44,6 +46,29 @@ export class CrudListComponent {
   popupStyles: any = {};
   actionPopupStyles: any = {};
   private copyTimeout: any;
+
+  private searchSubject = new Subject<string>();
+  private searchSubscription!: Subscription;
+
+  ngOnInit(): void {
+    this.searchSubscription = this.searchSubject.pipe(
+      debounceTime(400),
+      distinctUntilChanged()
+    ).subscribe(searchValue => {
+      this.filters.searchValue = searchValue;
+      this.filters.pageNumber = 1;
+      this.search.emit();
+    });
+  }
+
+  ngOnDestroy(): void {
+    if (this.searchSubscription) {
+      this.searchSubscription.unsubscribe();
+    }
+    if (this.copyTimeout) {
+      clearTimeout(this.copyTimeout);
+    }
+  }
 
   @HostListener('document:click')
   closePopup(): void {
@@ -108,11 +133,17 @@ export class CrudListComponent {
     }, 5000);
   }
 
+  onSearchInput(value: string): void {
+    this.searchSubject.next(value);
+  }
+
   onSearch(): void {
+    this.filters.pageNumber = 1;
     this.search.emit();
   }
 
   onIncludeDisabledChange(value: boolean): void {
+    this.filters.pageNumber = 1;
     this.includeDisabledChange.emit(value);
     this.search.emit();
   }

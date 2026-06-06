@@ -29,7 +29,13 @@
     "Back": "Back",
     "Saving": "Saving...",
     "CopyCode": "Copy Code",
-    "CopyId": "Copy Id"
+    "CopyId": "Copy Id",
+    "StayHere": "Stay Here",
+    "BackToList": "Back to List",
+    "RedirectingIn": "Redirecting to list in {{seconds}} seconds...",
+    "Success": "Success",
+    "SavedSuccessfully": "Saved successfully",
+    "UpdatedSuccessfully": "Updated successfully"
   },
   "Pages": {
     "ItemProperties": {
@@ -38,6 +44,14 @@
       "EditTitle": "Edit Item Property",
       "ViewTitle": "View Item Property",
       "Add": "Add New Property",
+      "SearchPlaceholder": "Search code or name..."
+    },
+    "ItemGroups": {
+      "Title": "Item Groups",
+      "AddTitle": "Add Item Group",
+      "EditTitle": "Edit Item Group",
+      "ViewTitle": "View Item Group",
+      "Add": "Add New Group",
       "SearchPlaceholder": "Search code or name..."
     }
   },

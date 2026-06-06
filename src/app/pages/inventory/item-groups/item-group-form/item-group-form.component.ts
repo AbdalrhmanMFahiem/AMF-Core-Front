@@ -6,22 +6,22 @@ import { TranslateModule } from '@ngx-translate/core';
 import { ComponentCardComponent } from '../../../../shared/components/common/component-card/component-card.component';
 import { PageBreadcrumbComponent } from '../../../../shared/components/common/page-breadcrumb/page-breadcrumb.component';
 import { SuccessRedirectBannerComponent } from '../../../../shared/components/common/success-redirect-banner/success-redirect-banner.component';
-import { ItemPropertyService } from '../../../../core/services/item-property.service';
+import { ItemGroupService } from '../../../../core/services/item-group.service';
 import { ToastrService } from 'ngx-toastr';
-import { ItemPropertyRequest } from '../../../../core/models/item-property.model';
+import { ItemGroupRequest } from '../../../../core/models/item-group.model';
 
 @Component({
-  selector: 'app-item-property-form',
+  selector: 'app-item-group-form',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, ComponentCardComponent, PageBreadcrumbComponent, TranslateModule, SuccessRedirectBannerComponent],
-  templateUrl: './item-property-form.component.html',
+  templateUrl: './item-group-form.component.html',
   styles: ``
 })
-export class ItemPropertyFormComponent implements OnInit {
+export class ItemGroupFormComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
-  private readonly itemPropertyService = inject(ItemPropertyService);
+  private readonly itemGroupService = inject(ItemGroupService);
   private readonly toastr = inject(ToastrService);
 
   form!: FormGroup;
@@ -36,9 +36,9 @@ export class ItemPropertyFormComponent implements OnInit {
   }
 
   get pageTitle(): string {
-    if (this.isView) return 'Pages.ItemProperties.ViewTitle';
-    if (this.isEdit) return 'Pages.ItemProperties.EditTitle';
-    return 'Pages.ItemProperties.AddTitle';
+    if (this.isView) return 'Pages.ItemGroups.ViewTitle';
+    if (this.isEdit) return 'Pages.ItemGroups.EditTitle';
+    return 'Pages.ItemGroups.AddTitle';
   }
 
   ngOnInit(): void {
@@ -72,7 +72,7 @@ export class ItemPropertyFormComponent implements OnInit {
   }
 
   private loadNextCode(): void {
-    this.itemPropertyService.getNextCode().subscribe({
+    this.itemGroupService.getNextCode().subscribe({
       next: (res) => {
         this.form.patchValue({ code: res.nextCode });
       },
@@ -81,7 +81,7 @@ export class ItemPropertyFormComponent implements OnInit {
   }
 
   private loadData(): void {
-    this.itemPropertyService.get(this.id).subscribe({
+    this.itemGroupService.get(this.id).subscribe({
       next: (res) => {
         this.form.patchValue({
           id: res.id,
@@ -92,8 +92,8 @@ export class ItemPropertyFormComponent implements OnInit {
         });
       },
       error: (err) => {
-        this.toastr.error('Failed to load property details', 'Error');
-        this.router.navigate(['/dashboard/inventory/item-properties']);
+        this.toastr.error('Failed to load item group details', 'Error');
+        this.router.navigate(['/dashboard/inventory/item-groups']);
       }
     });
   }
@@ -102,27 +102,27 @@ export class ItemPropertyFormComponent implements OnInit {
     if (this.form.invalid || this.isView) return;
 
     this.isSaving = true;
-    const request: ItemPropertyRequest = this.form.getRawValue();
+    const request: ItemGroupRequest = this.form.getRawValue();
 
     if (this.isEditMode) {
-      this.itemPropertyService.update(this.id, request).subscribe({
+      this.itemGroupService.update(this.id, request).subscribe({
         next: () => {
           this.isSaving = false;
           this.showSuccessBanner = true;
         },
         error: (err) => {
-          this.toastr.error('Failed to update property', 'Error');
+          this.toastr.error('Failed to update item group', 'Error');
           this.isSaving = false;
         }
       });
     } else {
-      this.itemPropertyService.add(request).subscribe({
+      this.itemGroupService.add(request).subscribe({
         next: () => {
-          this.toastr.success('Property added successfully', 'Success');
-          this.router.navigate(['/dashboard/inventory/item-properties']);
+          this.toastr.success('Item group added successfully', 'Success');
+          this.router.navigate(['/dashboard/inventory/item-groups']);
         },
         error: (err) => {
-          this.toastr.error('Failed to add property', 'Error');
+          this.toastr.error('Failed to add item group', 'Error');
           this.isSaving = false;
         }
       });
@@ -130,6 +130,6 @@ export class ItemPropertyFormComponent implements OnInit {
   }
 
   onCancel(): void {
-    this.router.navigate(['/dashboard/inventory/item-properties']);
+    this.router.navigate(['/dashboard/inventory/item-groups']);
   }
 }
