@@ -70,7 +70,8 @@
     "filter": "تصفية",
     "apply": "تطبيق",
     "reset": "إعادة تعيين",
-    "all": "الكل"
+    "all": "الكل",
+    "unsavedChangesMessage": "لديك تغييرات غير محفوظة. هل أنت متأكد أنك تريد المغادرة دون الحفظ؟"
   },
   "validation": {
     "required": "هذا الحقل مطلوب",
@@ -461,6 +462,7 @@
     "netAmount": "الصافي",
     "noItemsAdded": "لم يتم إضافة بنود. انقر على '+ إضافة بند' للبدء.",
     "additionalCosts": "التكاليف الإضافية",
+    "additionalAmount": "مبلغ إضافي",
     "addCost": "إضافة تكلفة",
     "costElement": "عنصر التكلفة",
     "amount": "المبلغ",
@@ -475,6 +477,8 @@
     "operationType": "النوع",
     "addition": "إضافة",
     "discount": "خصم",
+    "discountAmount": "مبلغ الخصم",
+    "taxAmount": "مبلغ الضريبة",
     "selectCustomer": "اختر العميل",
     "selectItem": "اختر الصنف",
     "selectCost": "اختر التكلفة",
@@ -496,11 +500,16 @@
   },
   "lookups": {
     "itemSelection": "اختيار صنف",
-    "searchItems": "ابحث عن الأصناف بالرمز أو الاسم...",
+    "searchItems": "ابحث عن الأصناف بالكود أو الاسم...",
     "stock": "المخزون",
     "Select": "اختيار",
     "noItemsFound": "لم يتم العثور على أصناف تطابق بحثك.",
-    "selectItem": "اختيار صنف"
+    "selectItem": "اختيار صنف",
+    "confirmSelection": "هل أنت متأكد من رغبتك في اختيار هذا الصنف؟",
+    "searchElements": "ابحث عن عناصر التكاليف بالكود أو الاسم...",
+    "noElementsFound": "لم يتم العثور على عناصر تطابق بحثك.",
+    "selectElement": "اختر عنصر التكلفة",
+    "confirmSelectionOfCostElement": "هل أنت متأكد من رغبتك في اختيار عنصر التكلفة هذا؟"
   },
   "salesInvoices": {
     "title": "فواتير المبيعات",
@@ -548,7 +557,11 @@
     },
     "errors": {
       "atLeastOneItem": "يجب إضافة صنف واحد على الأقل في الفاتورة.",
-      "invalidAmount": "قيمة الدفعة غير صحيحة."
+      "invalidAmount": "قيمة الدفعة غير صحيحة.",
+      "invalidQuantity": "يجب أن تكون الكمية أكبر من صفر.",
+      "invalidPrice": "يجب أن يكون السعر أكبر من صفر.",
+      "duplicateItem": "هذا الصنف مضاف مسبقاً للفاتورة.",
+      "duplicateCostElement": "عنصر التكلفة هذا مضاف مسبقاً للفاتورة."
     }
   },
   "overview": {

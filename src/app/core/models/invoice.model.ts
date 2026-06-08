@@ -128,6 +128,11 @@ export interface InvoiceLineRequest {
   _itemName?: string;
   _itemCode?: string;
   _netAmount?: number;
+  _discountAmount?: number;
+  _taxAmount?: number;
+  _discountFixedMode?: 'percentage' | 'amount';
+  _taxFixedMode?: 'percentage' | 'amount';
+  [key: string]: any;
 }
 
 export interface InvoiceCostLineRequest {
@@ -138,6 +143,8 @@ export interface InvoiceCostLineRequest {
   // UI properties
   _name?: string;
   _operationType?: string;
+  _fixedMode?: 'percentage' | 'amount';
+  [key: string]: any;
 }
 
 export interface InvoiceRequest {

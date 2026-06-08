@@ -12,6 +12,7 @@ import { environment } from '../../../environments/environment';
 export class LookupService {
   private http = inject(HttpClient);
   private apiUrl = `${environment.apiUrl}/api/lookups`;
+  private invCostElementsApiUrl = `${environment.apiUrl}/api/md/invoice-cost-elements`;
 
   private getOptions(filters?: LookupsFilters) {
     let params = new HttpParams();
@@ -35,6 +36,11 @@ export class LookupService {
     return this.http.get<IntIdCodeNameResponse[]>(`${this.apiUrl}/business-partner-vendors`, this.getOptions(filters));
   }
 
+  getCustomers(filters?: LookupsFilters): Observable<IntIdCodeNameResponse[]> {
+    return this.http.get<IntIdCodeNameResponse[]>(`${this.apiUrl}/business-partner-customers`, this.getOptions(filters));
+  }
+
+
   getItemGroups(filters?: LookupsFilters): Observable<IdNameResponse[]> {
     return this.http.get<IdNameResponse[]>(`${this.apiUrl}/item-groups`, this.getOptions(filters));
   }
@@ -55,11 +61,11 @@ export class LookupService {
   }
 
   getInvoiceCostElementsSalesDropdown(filters?: LookupsFilters): Observable<InvoiceCostElementDropdown[]> {
-    return this.http.get<InvoiceCostElementDropdown[]>(`${this.apiUrl}/invoice-cost-elements-sales`, this.getOptions(filters));
+    return this.http.get<InvoiceCostElementDropdown[]>(`${this.invCostElementsApiUrl}/sales-dropdown`, this.getOptions(filters));
   }
 
   getInvoiceCostElementsPurchaseDropdown(filters?: LookupsFilters): Observable<InvoiceCostElementDropdown[]> {
-    return this.http.get<InvoiceCostElementDropdown[]>(`${this.apiUrl}/invoice-cost-elements-purchase`, this.getOptions(filters));
+    return this.http.get<InvoiceCostElementDropdown[]>(`${this.invCostElementsApiUrl}/purchase-dropdown`, this.getOptions(filters));
   }
 
   getSalesInvoicesLookup(filters?: LookupsFilters): Observable<IdNameResponse[]> {

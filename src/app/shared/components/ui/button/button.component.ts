@@ -23,6 +23,7 @@ export class ButtonComponent {
   @Input() type: 'button' | 'submit' | 'reset' = 'button';
   @Input() startIcon?: string; // SVG or icon class, or use ng-content for more flexibility
   @Input() endIcon?: string;
+  @Input() isLoading = false;
 
   @Output() btnClick = new EventEmitter<Event>();
 
@@ -39,11 +40,11 @@ export class ButtonComponent {
   }
 
   get disabledClasses(): string {
-    return this.disabled ? 'cursor-not-allowed opacity-50' : '';
+    return (this.disabled || this.isLoading) ? 'cursor-not-allowed opacity-50' : '';
   }
 
   onClick(event: Event) {
-    if (!this.disabled) {
+    if (!this.disabled && !this.isLoading) {
       this.btnClick.emit(event);
     }
   }

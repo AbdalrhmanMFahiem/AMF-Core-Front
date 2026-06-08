@@ -11,8 +11,12 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
 
   return next(req).pipe(
     catchError((error: HttpErrorResponse) => {
-      // Check if we have the custom problem details structure with an 'errors' array
-      if (error.error && Array.isArray(error.error.errors)) {
+      if (error.status === 401) {
+        toastr.error('Your session has expired. Please log in again.', 'Unauthorized');
+        localStorage.removeItem('token');
+        localStorage.removeItem('authResponse');
+        router.navigate(['/Auth']);
+      } else if (error.error && Array.isArray(error.error.errors)) {
         const errors = error.error.errors;
         errors.forEach((errItem: any) => {
           const code = errItem.code ? `<b>[${errItem.code}]</b><br/>` : '';
@@ -22,11 +26,6 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
       } else if (error.error && error.error.title) {
         // Fallback for standard ProblemDetails without 'errors' array
         toastr.error(error.error.title, `Error ${error.status}`);
-      } else if (error.status === 401) {
-        toastr.error('Your session has expired. Please log in again.', 'Unauthorized');
-        localStorage.removeItem('token');
-        localStorage.removeItem('authResponse');
-        router.navigate(['/']);
       } else if (error.status === 0) {
           toastr.error('Unable to connect to the server. Please check your connection.', 'Network Error');
       } else {

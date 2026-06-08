@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { HomePageComponent } from './pages/home-page/home-page.component';
+import { unsavedChangesGuard } from './core/guards/unsaved-changes.guard';
 import { authGuard } from './core/guards/auth.guard';
 import { EcommerceComponent } from './pages/dashboard/ecommerce/ecommerce.component';
 import { ProfileComponent } from './pages/profile/profile.component';
@@ -195,11 +196,13 @@ export const routes: Routes = [
       {
         path: 'sales/invoices/add',
         loadComponent: () => import('./pages/sales/invoices/sales-invoice-form/sales-invoice-form.component').then(c => c.SalesInvoiceFormComponent),
+        canDeactivate: [unsavedChangesGuard],
         title: 'Add Sales Invoice | AMF Core'
       },
       {
         path: 'sales/invoices/view/:id',
         loadComponent: () => import('./pages/sales/invoices/sales-invoice-form/sales-invoice-form.component').then(c => c.SalesInvoiceFormComponent),
+        canDeactivate: [unsavedChangesGuard],
         title: 'View Sales Invoice | AMF Core'
       },
       // Reports

@@ -27,6 +27,7 @@ export class SigninFormComponent {
 
   showPassword = false;
   isChecked = false;
+  isLoading = false;
 
   email = '';
   password = '';
@@ -44,14 +45,17 @@ export class SigninFormComponent {
       return;
     }
 
+    this.isLoading = true;
     this.authService.login({ email: this.email, password: this.password }).subscribe({
       next: (res) => {
+        this.isLoading = false;
         if (res && res.token) {
           this.authService.setAuthResponse(res);
           this.router.navigate(['/']);
         }
       },
       error: (err) => {
+        this.isLoading = false;
         console.error('Login error', err);
         // Toastr will handle the error display via the error.interceptor
       }

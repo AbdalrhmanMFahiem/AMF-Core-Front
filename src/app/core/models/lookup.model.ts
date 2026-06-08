@@ -47,6 +47,7 @@ export interface ItemLookupResponse {
   code: string;
   name: string;
   stock?: number;
+  salesPrice?: number;
 }
 
 export interface NextCodeResponse {

@@ -1,64 +1,192 @@
-<app-modal [isOpen]="isOpen" (close)="onClose()" [className]="'max-w-3xl'">
-  <div class="px-6 py-4 border-b border-gray-100 dark:border-white/5 flex justify-between items-center bg-white dark:bg-gray-900 rounded-t-2xl">
-    <h3 class="text-lg font-medium text-gray-800 dark:text-white/90">
-      {{ 'items.selectItem' | translate }}
-    </h3>
-    <button (click)="onClose()" class="text-gray-400 hover:text-gray-500 focus:outline-none">
-      <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-      </svg>
-    </button>
+<app-modal [isOpen]="isOpen" (close)="onClose()" [className]="'max-w-4xl'">
+  <!-- Header -->
+  <div
+    class="px-6 py-5 border-b border-gray-100 dark:border-white/5 flex justify-between items-center bg-white dark:bg-gray-900 rounded-t-2xl">
+    <div class="flex items-center gap-4">
+      <div
+        class="w-12 h-12 rounded-full bg-brand-50 dark:bg-brand-500/10 flex items-center justify-center text-brand-600 dark:text-brand-400 shadow-inner">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+            d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+        </svg>
+      </div>
+      <div>
+        <h3 class="text-xl font-bold text-gray-900 dark:text-white">
+          {{ 'lookups.selectItem' | translate }}
+        </h3>
+        <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
+          {{ 'lookups.searchItems' | translate }}
+        </p>
+      </div>
+    </div>
   </div>
-  <div class="p-6 bg-white dark:bg-gray-900 rounded-b-2xl">
-    <!-- Search -->
-    <div class="mb-4">
-      <input type="text" [(ngModel)]="searchTerm" (keyup.enter)="onSearch()" [placeholder]="'Common.SearchPlaceholder' | translate"
-        class="dark:bg-dark-900 h-11 w-full rounded-lg border border-gray-200 bg-transparent py-2.5 px-4 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-800 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800" />
+
+  <div class="p-6 bg-gray-50/30 dark:bg-gray-900/50 rounded-b-2xl">
+    <!-- Search Bar -->
+    <div class="mb-5 relative group">
+      <div
+        class="absolute inset-y-0 inset-s-0 ps-4 flex items-center pointer-events-none text-gray-400 group-focus-within:text-brand-500 transition-colors z-10">
+        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
+      </div>
+      <input type="text" [ngModel]="searchTerm" (ngModelChange)="onSearchTermChange($event)" (keyup.enter)="onSearch()"
+        [placeholder]="'lookups.searchItems' | translate"
+        class="ps-12 pe-10 h-12 w-full rounded-xl border border-gray-200 bg-white dark:bg-gray-800 py-2.5 text-sm text-gray-800 shadow-sm placeholder:text-gray-400 focus:border-brand-500 focus:outline-none focus:ring-4 focus:ring-brand-500/10 dark:border-gray-700 dark:text-white/90 dark:placeholder:text-gray-500 transition-all" />
+      <button *ngIf="searchTerm" (click)="searchTerm=''; onSearch()"
+        class="absolute inset-y-0 inset-e-0 pe-4 flex items-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 focus:outline-none z-10">
+        <svg class="h-5 w-5 bg-gray-100 dark:bg-gray-700 rounded-full p-0.5" fill="none" viewBox="0 0 24 24"
+          stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
     </div>
 
     <!-- Table -->
-    <div class="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/5 dark:bg-white/3">
-      <div class="max-h-96 overflow-y-auto">
-        <table class="min-w-full">
-          <thead class="border-b border-gray-100 dark:border-white/5 sticky top-0 bg-gray-50 dark:bg-gray-800 z-10">
+    <div
+      class="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/5 dark:bg-gray-800 shadow-sm">
+      <div class="max-h-[450px] overflow-y-auto custom-scrollbar">
+        <table class="min-w-full text-start border-collapse">
+          <thead
+            class="sticky top-0 bg-gray-50/95 dark:bg-gray-800/95 backdrop-blur-sm z-10 border-b border-gray-200 dark:border-gray-700">
             <tr>
-              <th class="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400 uppercase">
+              <th
+                class="px-6 py-4 font-semibold text-gray-600 dark:text-gray-300 text-xs uppercase tracking-wider text-start w-1/4">
                 {{ 'items.fields.code' | translate }}
               </th>
-              <th class="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400 uppercase">
+              <th
+                class="px-6 py-4 font-semibold text-gray-600 dark:text-gray-300 text-xs uppercase tracking-wider text-start w-1/2">
                 {{ 'items.fields.name' | translate }}
               </th>
-              <th class="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400 uppercase">
-                {{ 'items.fields.stock' | translate }}
-              </th>
-              <th class="px-5 py-3 font-medium text-gray-500 text-center text-theme-xs dark:text-gray-400 uppercase">
-                {{ 'Common.Actions' | translate }}
+              <th
+                class="px-6 py-4 font-semibold text-gray-600 dark:text-gray-300 text-xs uppercase tracking-wider text-center w-1/4">
+                {{ 'lookups.stock' | translate }}
               </th>
             </tr>
           </thead>
-          <tbody class="divide-y divide-gray-100 dark:divide-white/5">
+          <tbody class="divide-y divide-gray-100 dark:divide-gray-700/50">
             <tr *ngIf="loading">
-              <td colspan="4" class="px-5 py-8 text-center text-gray-500 dark:text-gray-400">
-                <div class="flex justify-center"><div class="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-500"></div></div>
+              <td colspan="3" class="px-6 py-16 text-center bg-white dark:bg-gray-800">
+                <div class="flex flex-col items-center justify-center space-y-4">
+                  <div class="animate-spin rounded-full h-10 w-10 border-2 border-gray-200 border-t-brand-500"></div>
+                  <span class="text-sm font-medium text-gray-500 dark:text-gray-400">{{ 'Common.loading' | translate
+                    }}</span>
+                </div>
               </td>
             </tr>
             <tr *ngIf="!loading && items.length === 0">
-              <td colspan="4" class="px-5 py-8 text-center text-gray-500 dark:text-gray-400">
-                {{ 'Common.NoRecordsFound' | translate }}
+              <td colspan="3" class="px-6 py-16 text-center bg-white dark:bg-gray-800">
+                <div class="flex flex-col items-center justify-center space-y-4 text-gray-400 dark:text-gray-500">
+                  <div class="w-16 h-16 rounded-full bg-gray-50 dark:bg-gray-800/50 flex items-center justify-center">
+                    <svg class="h-8 w-8 text-gray-400 dark:text-gray-500" fill="none" viewBox="0 0 24 24"
+                      stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                        d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+                    </svg>
+                  </div>
+                  <p class="text-base font-medium text-gray-600 dark:text-gray-300">{{ 'lookups.noItemsFound' |
+                    translate }}</p>
+                </div>
               </td>
             </tr>
-            <tr *ngFor="let item of items" class="hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">
-              <td class="px-5 py-3 text-sm text-gray-800 dark:text-white/90 font-mono">{{ item.code }}</td>
-              <td class="px-5 py-3 text-sm text-gray-800 dark:text-white/90">{{ item.name }}</td>
-              <td class="px-5 py-3 text-sm text-gray-800 dark:text-white/90">{{ item.stock || 0 }}</td>
-              <td class="px-5 py-3 text-center">
-                <button (click)="onSelect(item)" class="px-3 py-1.5 text-xs font-medium text-brand-600 bg-brand-50 hover:bg-brand-100 rounded-md dark:text-brand-400 dark:bg-brand-500/10 dark:hover:bg-brand-500/20 transition-colors">
-                  {{ 'Common.Select' | translate }}
-                </button>
+            <tr *ngFor="let item of items"
+              class="group cursor-pointer hover:bg-brand-50/50 dark:hover:bg-brand-500/10 transition-all duration-200"
+              (click)="onSelect(item)">
+              <td class="px-6 py-4 text-sm font-mono text-gray-600 dark:text-gray-300">
+                <div class="flex items-center gap-3">
+                  <div
+                    class="w-8 h-8 rounded-lg bg-gray-100 dark:bg-gray-700 flex items-center justify-center text-gray-500 dark:text-gray-400 group-hover:bg-brand-100 group-hover:text-brand-600 dark:group-hover:bg-brand-500/20 dark:group-hover:text-brand-400 transition-colors">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                    </svg>
+                  </div>
+                  <span
+                    class="group-hover:text-brand-600 dark:group-hover:text-brand-400 font-medium transition-colors">{{
+                    item.code }}</span>
+                </div>
+              </td>
+              <td class="px-6 py-4 text-sm font-medium text-gray-800 dark:text-white/90 text-start">
+                <span class="group-hover:text-brand-700 dark:group-hover:text-brand-300 transition-colors">{{ item.name
+                  }}</span>
+              </td>
+              <td class="px-6 py-4 text-center">
+                <span
+                  class="inline-flex items-center justify-center min-w-12 px-2.5 py-1 rounded-full text-xs font-bold"
+                  [ngClass]="item.stock && item.stock > 0 ? 'bg-success-50 text-success-700 border border-success-200 dark:border-success-500/30 dark:bg-success-500/10 dark:text-success-400 group-hover:bg-success-100 dark:group-hover:bg-success-500/20' : 'bg-gray-100 text-gray-600 border border-gray-200 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 group-hover:bg-gray-200 dark:group-hover:bg-gray-700'">
+                  {{ item.stock || 0 }}
+                </span>
               </td>
             </tr>
           </tbody>
         </table>
+      </div>
+
+      <!-- Pagination Footer -->
+      <div
+        class="px-6 py-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/80 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <p class="text-sm text-gray-600 dark:text-gray-400">
+          {{ 'Common.Showing' | translate }}
+          <span class="font-semibold text-gray-800 dark:text-white/90">{{ items.length > 0 ? ((pageNumber - 1) *
+            pageSize) + 1 : 0 }}</span>
+          -
+          <span class="font-semibold text-gray-800 dark:text-white/90">{{ items.length > 0 ? ((pageNumber - 1) *
+            pageSize) + items.length : 0 }}</span>
+          {{ 'Common.Of' | translate | lowercase }}
+          <span class="font-semibold text-gray-800 dark:text-white/90">{{ totalRecords }}</span>
+          {{ 'Common.Entries' | translate | lowercase }}
+        </p>
+        <div class="flex items-center gap-2">
+          <button (click)="goToPage(pageNumber - 1)" [disabled]="!hasPreviousPage"
+            class="px-3 py-1.5 border border-gray-200 dark:border-gray-600 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-50 disabled:hover:bg-transparent disabled:cursor-not-allowed transition-colors focus:outline-none">
+            {{ 'Common.Previous' | translate }}
+          </button>
+          <div class="flex items-center gap-1 px-2">
+            <span class="text-sm font-medium text-gray-700 dark:text-gray-300">
+              {{ 'Common.Page' | translate }} {{ pageNumber }} {{ 'Common.Of' | translate | lowercase }} {{ totalPages
+              }}
+            </span>
+          </div>
+          <button (click)="goToPage(pageNumber + 1)" [disabled]="!hasNextPage"
+            class="px-3 py-1.5 border border-gray-200 dark:border-gray-600 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-50 disabled:hover:bg-transparent disabled:cursor-not-allowed transition-colors focus:outline-none">
+            {{ 'Common.Next' | translate }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Confirmation Overlay -->
+    <div *ngIf="selectedItemToConfirm"
+      class="absolute inset-0 z-50 bg-white/60 dark:bg-gray-900/80 backdrop-blur-sm flex items-center justify-center p-6 rounded-2xl animate-fade-in">
+      <div
+        class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl border border-gray-100 dark:border-gray-700 w-full max-w-sm overflow-hidden transform transition-all animate-scale-up">
+        <div class="p-8 text-center">
+          <div
+            class="w-20 h-20 bg-brand-50 dark:bg-brand-500/10 rounded-full flex items-center justify-center mx-auto mb-6 text-brand-600 dark:text-brand-400">
+            <svg class="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+            </svg>
+          </div>
+          <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">{{ 'Common.confirm' | translate }}</h3>
+          <p class="text-gray-500 dark:text-gray-400 mb-8 text-sm leading-relaxed">
+            {{ 'lookups.confirmSelection' | translate }} <br>
+            <span
+              class="font-bold text-gray-800 dark:text-white mt-4 block text-lg bg-gray-50 dark:bg-gray-700/50 p-3 rounded-xl border border-gray-100 dark:border-gray-600 shadow-inner">
+              {{ selectedItemToConfirm.code }} - {{ selectedItemToConfirm.name }}
+            </span>
+          </p>
+          <div class="flex gap-3">
+            <button (click)="cancelSelection()"
+              class="flex-1 px-4 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-300 rounded-xl font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-500">
+              {{ 'Common.Cancel' | translate }}
+            </button>
+            <button (click)="confirmSelection()"
+              class="flex-1 px-4 py-3 bg-brand-600 hover:bg-brand-700 text-white rounded-xl font-semibold shadow-theme-sm transition-all hover:shadow-theme-md focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800">
+              {{ 'Common.confirm' | translate }}
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   </div>

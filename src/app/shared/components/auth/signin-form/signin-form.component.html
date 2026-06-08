@@ -53,7 +53,7 @@
         </a> -->
       </div>
 
-      <app-button className="w-full" size="sm" type="submit">
+      <app-button className="w-full" size="sm" type="submit" [isLoading]="isLoading">
         {{ 'login.signIn' | translate }}
       </app-button>
     </form>

@@ -70,7 +70,8 @@
     "Success": "Success",
     "SavedSuccessfully": "Saved successfully",
     "UpdatedSuccessfully": "Updated successfully",
-    "Select": "Select"
+    "Select": "Select",
+    "unsavedChangesMessage": "You have unsaved changes. Are you sure you want to leave without saving?"
   },
   "Pages": {
     "ItemProperties": {
@@ -493,6 +494,9 @@
     "newPurchaseInvoice": "New Purchase Invoice",
     "editPurchaseInvoice": "Edit Purchase Invoice",
     "newPurchaseReturn": "New Purchase Return",
+    "additionalAmount": "Additional amount",
+    "discountAmount": "Discount amount",
+    "taxAmount": "Tax amount",
     "editPurchaseReturn": "Edit Purchase Return"
   },
   "lookups": {
@@ -501,7 +505,12 @@
     "stock": "Stock",
     "Select": "Select",
     "noItemsFound": "No items found matching your search.",
-    "selectItem": "Select Item"
+    "selectItem": "Select Item",
+    "confirmSelection": "Are you sure you want to select this item?",
+    "searchElements": "Search elements by code or name...",
+    "noElementsFound": "No elements found matching your search.",
+    "selectElement": "Select Element",
+    "confirmSelectionOfCostElement": "Are you sure you want to select this cost element?"
   },
   "salesInvoices": {
     "title": "Sales Invoices",
@@ -522,7 +531,6 @@
       "remainingAmount": "Remaining Amount",
       "status": "Status",
       "subTotal": "Subtotal",
-      "discountAmount": "Discount",
       "taxAmount": "Tax",
       "invoice": "Invoice",
       "amount": "Amount",
@@ -549,7 +557,11 @@
     },
     "errors": {
       "atLeastOneItem": "At least one item is required in the invoice.",
-      "invalidAmount": "Invalid payment amount."
+      "invalidAmount": "Invalid payment amount.",
+      "invalidQuantity": "Quantity must be greater than zero.",
+      "invalidPrice": "Price must be greater than zero.",
+      "duplicateItem": "This item is already added to the invoice.",
+      "duplicateCostElement": "This cost element is already added to the invoice."
     }
   },
   "overview": {
