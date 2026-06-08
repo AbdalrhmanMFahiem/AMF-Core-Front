@@ -75,11 +75,18 @@
             <tr *ngFor="let item of data?.items">
               <td *ngFor="let col of columns"
                 class="px-5 py-4 text-start text-theme-sm text-gray-800 dark:text-white/90 font-medium">
-                <ng-container *ngIf="col.type === 'badge'; else codeCell">
+                <ng-container *ngIf="col.type === 'badge'; else dynamicBadgeCell">
                   <app-badge size="sm" [color]="item[col.field] ? 'success' : 'error'">
                     {{ (item[col.field] ? 'Common.Active' : 'Common.Inactive') | translate }}
                   </app-badge>
                 </ng-container>
+                <ng-template #dynamicBadgeCell>
+                  <ng-container *ngIf="col.type === 'dynamic-badge'; else codeCell">
+                    <app-badge size="sm" [color]="item[col.field + 'Color'] || 'primary'">
+                      {{ item[col.field] }}
+                    </app-badge>
+                  </ng-container>
+                </ng-template>
                 <ng-template #codeCell>
                   <ng-container *ngIf="col.type === 'code'; else textCell">
                     <div>
@@ -136,7 +143,12 @@
                   </ng-container>
                 </ng-template>
                 <ng-template #textCell>
-                  <span class="text-gray-500 dark:text-gray-400">{{ item[col.field] }}</span>
+                  <ng-container *ngIf="col.type === 'date'; else plainTextCell">
+                    <span class="text-gray-500 dark:text-gray-400">{{ item[col.field] | date }}</span>
+                  </ng-container>
+                  <ng-template #plainTextCell>
+                    <span class="text-gray-500 dark:text-gray-400">{{ item[col.field] }}</span>
+                  </ng-template>
                 </ng-template>
               </td>
               <td class="px-4 py-3 text-gray-500 text-center text-theme-sm dark:text-gray-400">
@@ -156,7 +168,7 @@
                     class="flex flex-col p-1.5 bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 shadow-xl w-44 transition-all animate-in fade-in zoom-in-95 duration-200">
 
                     <!-- View -->
-                    <button (click)="view.emit(item.id); openActionPopupId = null"
+                    <button *ngIf="!isViewHidden(item)" (click)="view.emit(item.id); openActionPopupId = null"
                       class="flex items-center gap-2.5 px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/5 rounded-lg transition-colors text-start w-full group">
                       <svg class="w-4 h-4 text-gray-400 group-hover:text-brand-500 transition-colors" fill="none"
                         stroke="currentColor" viewBox="0 0 24 24">
@@ -170,7 +182,7 @@
                     </button>
 
                     <!-- Edit -->
-                    <button (click)="edit.emit(item.id); openActionPopupId = null"
+                    <button *ngIf="!isEditHidden(item)" (click)="edit.emit(item.id); openActionPopupId = null"
                       class="flex items-center gap-2.5 px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/5 rounded-lg transition-colors text-start w-full group">
                       <svg class="w-4 h-4 text-gray-400 group-hover:text-brand-500 transition-colors" fill="none"
                         stroke="currentColor" viewBox="0 0 24 24">
@@ -184,7 +196,7 @@
                     <div class="w-full h-px bg-gray-100 dark:bg-gray-700 my-1"></div>
 
                     <!-- Toggle Status -->
-                    <button (click)="onToggleStatusClick(item); openActionPopupId = null"
+                    <button *ngIf="!isToggleStatusHidden(item)" (click)="onToggleStatusClick(item); openActionPopupId = null"
                       class="flex items-center gap-2.5 px-3 py-2 text-sm font-medium text-orange-600 dark:text-orange-400 hover:bg-orange-50 dark:hover:bg-orange-500/10 rounded-lg transition-colors text-start w-full group">
                       <svg class="w-4 h-4 text-orange-400 group-hover:text-orange-500 transition-colors" fill="none"
                         stroke="currentColor" viewBox="0 0 24 24">
@@ -193,6 +205,21 @@
                       </svg>
                       {{ 'Common.ToggleStatus' | translate }}
                     </button>
+
+                    <ng-container *ngIf="customActions.length">
+                      <div class="w-full h-px bg-gray-100 dark:bg-gray-700 my-1"></div>
+                      <ng-container *ngFor="let action of customActions">
+                        <button *ngIf="isCustomActionVisible(action, item)"
+                          (click)="onCustomActionClick(action.id, item); openActionPopupId = null"
+                          class="flex items-center gap-2.5 px-3 py-2 text-sm font-medium hover:bg-gray-50 dark:hover:bg-white/5 rounded-lg transition-colors text-start w-full group"
+                          [ngClass]="action.colorClass || 'text-gray-700 dark:text-gray-200'">
+                          <span class="w-4 h-4 transition-colors"
+                            [ngClass]="action.colorClass ? '' : 'text-gray-400 group-hover:text-brand-500'"
+                            [innerHTML]="action.icon | safeHtml"></span>
+                          {{ action.label | translate }}
+                        </button>
+                      </ng-container>
+                    </ng-container>
 
                   </div>
                 </div>

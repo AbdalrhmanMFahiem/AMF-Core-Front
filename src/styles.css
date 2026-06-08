@@ -294,6 +294,10 @@
   background-color: #344054;
 }
 
+.dark .text-primary {
+  color: #ffffff !important;
+}
+
 @layer utilities {
   /* For Remove Date Icon */
   input[type="date"]::-webkit-inner-spin-button,

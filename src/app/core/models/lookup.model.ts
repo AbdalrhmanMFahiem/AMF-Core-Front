@@ -42,6 +42,22 @@ export interface SimpleCrudResponse {
   isActive: boolean;
 }
 
+export interface ItemLookupResponse {
+  id: number;
+  code: string;
+  name: string;
+  stock?: number;
+}
+
 export interface NextCodeResponse {
   nextCode: string;
+}
+
+export interface InvoiceCostElementDropdown {
+  id: number;
+  code: string;
+  name: string;
+  type: string;
+  operationType: string;
+  defaultPercentage?: number;
 }

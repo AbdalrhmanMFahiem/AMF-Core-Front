@@ -23,6 +23,7 @@ export class HomePageComponent implements OnInit, OnDestroy {
   settings: AthanSettingsDto | null = null;
   prayers: AthanDto[] = [];
   nextPrayer: AthanDto | null = null;
+  isAthanError: boolean = false;
 
   private clockSubscription?: Subscription;
 
@@ -81,7 +82,8 @@ export class HomePageComponent implements OnInit, OnDestroy {
     }).format(now);
   }
 
-  private loadAthanData(): void {
+  loadAthanData(): void {
+    this.isAthanError = false;
     this.athanService.getDefaultSettings().subscribe({
       next: (settings) => {
         this.settings = settings;
@@ -89,11 +91,18 @@ export class HomePageComponent implements OnInit, OnDestroy {
           next: (prayers) => {
             this.prayers = prayers;
             this.updateNextPrayer();
+            this.isAthanError = false;
           },
-          error: (err) => console.error('Failed to load prayer times', err)
+          error: (err) => {
+            console.error('Failed to load prayer times', err);
+            this.isAthanError = true;
+          }
         });
       },
-      error: (err) => console.error('Failed to load athan settings', err)
+      error: (err) => {
+        console.error('Failed to load athan settings', err);
+        this.isAthanError = true;
+      }
     });
   }
 

@@ -4,6 +4,7 @@
     "ErrorTitle": "Please fix the following errors:",
     "refresh": "Refresh",
     "view": "View",
+    "back": "Back",
     "type": "Type",
     "loading": "Loading...",
     "savedSuccessfully": "Saved Successfully",
@@ -499,7 +500,57 @@
     "searchItems": "Search items by code or name...",
     "stock": "Stock",
     "Select": "Select",
-    "noItemsFound": "No items found matching your search."
+    "noItemsFound": "No items found matching your search.",
+    "selectItem": "Select Item"
+  },
+  "salesInvoices": {
+    "title": "Sales Invoices",
+    "list": "Sales Invoices List",
+    "add": "Add Sales Invoice",
+    "addNew": "Add New Invoice",
+    "view": "View Invoice",
+    "addPayment": "Add Payment",
+    "addItems": "Add Items",
+    "addCostElement": "Add Cost Element",
+    "fields": {
+      "code": "Invoice Code",
+      "businessPartner": "Customer",
+      "invoiceDate": "Invoice Date",
+      "dueDate": "Due Date",
+      "warehouse": "Warehouse",
+      "totalAmount": "Total Amount",
+      "remainingAmount": "Remaining Amount",
+      "status": "Status",
+      "subTotal": "Subtotal",
+      "discountAmount": "Discount",
+      "taxAmount": "Tax",
+      "invoice": "Invoice",
+      "amount": "Amount",
+      "paymentDate": "Payment Date",
+      "paymentMethod": "Payment Method",
+      "reference": "Reference"
+    },
+    "tabs": {
+      "items": "Items",
+      "costElements": "Cost Elements"
+    },
+    "status": {
+      "Draft": "Draft",
+      "Confirmed": "Confirmed",
+      "PartiallyPaid": "Partially Paid",
+      "FullyPaid": "Fully Paid",
+      "Cancelled": "Cancelled"
+    },
+    "paymentMethods": {
+      "Cash": "Cash",
+      "BankTransfer": "Bank Transfer",
+      "Cheque": "Cheque",
+      "CreditCard": "Credit Card"
+    },
+    "errors": {
+      "atLeastOneItem": "At least one item is required in the invoice.",
+      "invalidAmount": "Invalid payment amount."
+    }
   },
   "overview": {
     "hours": "Hours",
@@ -519,11 +570,25 @@
     "addNew": "Add New Cost Element",
     "edit": "Edit Cost Element",
     "view": "View Cost Element",
+    "selectCostElement": "Select Cost Element",
     "fields": {
+      "code": "Code",
+      "name": "Name",
+      "aName": "Arabic Name",
+      "eName": "English Name",
       "type": "Type",
-      "operationType": "Cost Type",
+      "operationType": "Operation Type",
       "defaultPercentage": "Default Percentage (%)",
       "status": "Status"
+    },
+    "type": {
+      "Sales": "Sales",
+      "Purchases": "Purchases",
+      "Both": "Sales & Purchases"
+    },
+    "operationType": {
+      "Addition": "Addition",
+      "Discount": "Discount"
     },
     "operations": {
       "addition": "Addition",
@@ -582,7 +647,12 @@
     "NextPrayer": "Next Prayer",
     "NextPrayerDesc": "It is now time for the next prayer according to local time",
     "PrayerTimes": "Prayer Times",
-    "LoadingPrayers": "Loading prayer times..."
+    "LoadingPrayers": "Loading prayer times...",
+    "ConnectionFailed": "Connection Failed",
+    "CheckInternet": "Please check your internet connection",
+    "Retry": "Retry",
+    "ServerConnectionFailed": "Server Connection Failed",
+    "ServerConnectionFailedDesc": "Connection failed, please check your internet connection or try again later"
   },
   "common": {
     "save": "Save",

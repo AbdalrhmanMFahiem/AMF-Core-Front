@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output, HostListener, OnInit, OnDestroy } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Subject, Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { ComponentCardComponent } from '../component-card/component-card.component';
@@ -10,19 +10,19 @@ import { PaginatedList, RequestFilters } from '../../../../core/models/paginatio
 import { LookupService } from '../../../../core/services/lookup.service';
 import { SearchableSelectComponent, SearchableOption } from '../../form/searchable-select/searchable-select.component';
 import { inject } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
+import { SafeHtmlPipe } from '../../../pipe/safe-html.pipe';
 import Swal from 'sweetalert2';
 
 export interface CrudColumn {
   field: string;
   header: string;
-  type?: 'text' | 'badge' | 'code';
+  type?: 'text' | 'badge' | 'code' | 'dynamic-badge' | 'date';
 }
 
 @Component({
   selector: 'app-crud-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, TranslateModule, ComponentCardComponent, BadgeComponent, SearchableSelectComponent],
+  imports: [CommonModule, FormsModule, TranslateModule, ComponentCardComponent, BadgeComponent, SearchableSelectComponent, DatePipe, SafeHtmlPipe],
   templateUrl: './crud-list.component.html',
   styles: ``
 })
@@ -39,6 +39,10 @@ export class CrudListComponent implements OnInit, OnDestroy {
   @Input() includeDisabled: boolean = false;
   @Input() showIncludeDisabledToggle: boolean = true;
   @Input() isLoading: boolean = false;
+  @Input() hideEdit: boolean | ((item: any) => boolean) = false;
+  @Input() hideView: boolean | ((item: any) => boolean) = false;
+  @Input() hideToggleStatus: boolean | ((item: any) => boolean) = false;
+  @Input() customActions: { id: string, label: string, icon: string, colorClass?: string, visible?: (item: any) => boolean }[] = [];
 
   @Output() search = new EventEmitter<void>();
   @Output() includeDisabledChange = new EventEmitter<boolean>();
@@ -47,6 +51,7 @@ export class CrudListComponent implements OnInit, OnDestroy {
   @Output() edit = new EventEmitter<number>();
   @Output() toggleStatus = new EventEmitter<any>();
   @Output() pageChange = new EventEmitter<number>();
+  @Output() customAction = new EventEmitter<{ actionId: string, item: any }>();
 
   openCodePopupId: number | string | null = null;
   openActionPopupId: number | string | null = null;
@@ -198,12 +203,16 @@ export class CrudListComponent implements OnInit, OnDestroy {
     }
   }
 
-  onPageSizeChange(value: number): void {
-    if (value) {
-      this.filters.pageSize = Number(value);
+  onPageSizeChange(newSize: number | undefined) {
+    if (newSize) {
+      this.filters.pageSize = Number(newSize);
       this.filters.pageNumber = 1;
       this.search.emit();
     }
+  }
+
+  onCustomActionClick(actionId: string, item: any) {
+    this.customAction.emit({ actionId, item });
   }
 
   onToggleStatusClick(item: any): void {
@@ -225,5 +234,33 @@ export class CrudListComponent implements OnInit, OnDestroy {
         this.toggleStatus.emit(item);
       }
     });
+  }
+
+  isEditHidden(item: any): boolean {
+    if (typeof this.hideEdit === 'function') {
+      return this.hideEdit(item);
+    }
+    return this.hideEdit;
+  }
+
+  isViewHidden(item: any): boolean {
+    if (typeof this.hideView === 'function') {
+      return this.hideView(item);
+    }
+    return this.hideView;
+  }
+
+  isToggleStatusHidden(item: any): boolean {
+    if (typeof this.hideToggleStatus === 'function') {
+      return this.hideToggleStatus(item);
+    }
+    return this.hideToggleStatus;
+  }
+
+  isCustomActionVisible(action: any, item: any): boolean {
+    if (typeof action.visible === 'function') {
+      return action.visible(item);
+    }
+    return true;
   }
 }

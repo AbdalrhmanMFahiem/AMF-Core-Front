@@ -45,6 +45,7 @@
     "Select": "إختر",
     "refresh": "تحديث",
     "view": "عرض",
+    "back": "رجوع",
     "type": "النوع",
     "loading": "جاري التحميل...",
     "savedSuccessfully": "تم الحفظ بنجاح",
@@ -494,11 +495,61 @@
     "editPurchaseReturn": "تعديل مردود مشتريات"
   },
   "lookups": {
-    "itemSelection": "اختيار الصنف",
-    "searchItems": "ابحث عن صنف بالاسم أو الكود...",
-    "stock": "الرصيد",
+    "itemSelection": "اختيار صنف",
+    "searchItems": "ابحث عن الأصناف بالرمز أو الاسم...",
+    "stock": "المخزون",
     "Select": "اختيار",
-    "noItemsFound": "لم يتم العثور على أصناف تطابق بحثك."
+    "noItemsFound": "لم يتم العثور على أصناف تطابق بحثك.",
+    "selectItem": "اختيار صنف"
+  },
+  "salesInvoices": {
+    "title": "فواتير المبيعات",
+    "list": "قائمة فواتير المبيعات",
+    "add": "إضافة فاتورة مبيعات",
+    "addNew": "إضافة فاتورة جديدة",
+    "view": "عرض الفاتورة",
+    "addPayment": "إضافة دفعة",
+    "addItems": "إضافة أصناف",
+    "addCostElement": "إضافة عنصر تكلفة",
+    "fields": {
+      "code": "كود الفاتورة",
+      "businessPartner": "العميل",
+      "invoiceDate": "تاريخ الفاتورة",
+      "dueDate": "تاريخ الاستحقاق",
+      "warehouse": "المستودع",
+      "totalAmount": "إجمالي المبلغ",
+      "remainingAmount": "المبلغ المتبقي",
+      "status": "الحالة",
+      "subTotal": "الإجمالي الفرعي",
+      "discountAmount": "الخصم",
+      "taxAmount": "الضريبة",
+      "invoice": "الفاتورة",
+      "amount": "المبلغ",
+      "paymentDate": "تاريخ الدفع",
+      "paymentMethod": "طريقة الدفع",
+      "reference": "المرجع"
+    },
+    "tabs": {
+      "items": "الأصناف",
+      "costElements": "عناصر التكلفة"
+    },
+    "status": {
+      "Draft": "مسودة",
+      "Confirmed": "مؤكدة",
+      "PartiallyPaid": "مدفوعة جزئياً",
+      "FullyPaid": "مدفوعة بالكامل",
+      "Cancelled": "ملغاة"
+    },
+    "paymentMethods": {
+      "Cash": "نقدي",
+      "BankTransfer": "تحويل بنكي",
+      "Cheque": "شيك",
+      "CreditCard": "بطاقة ائتمان"
+    },
+    "errors": {
+      "atLeastOneItem": "يجب إضافة صنف واحد على الأقل في الفاتورة.",
+      "invalidAmount": "قيمة الدفعة غير صحيحة."
+    }
   },
   "overview": {
     "hours": "ساعة",
@@ -518,11 +569,25 @@
     "addNew": "إضافة عنصر تكلفة",
     "edit": "تعديل عنصر التكلفة",
     "view": "عرض عنصر التكلفة",
+    "selectCostElement": "اختيار عنصر تكلفة",
     "fields": {
+      "code": "الكود",
+      "name": "الاسم",
+      "aName": "الاسم بالعربية",
+      "eName": "الاسم بالإنجليزية",
       "type": "النوع",
       "operationType": "نوع العملية",
       "defaultPercentage": "النسبة الافتراضية (%)",
       "status": "الحالة"
+    },
+    "type": {
+      "Sales": "مبيعات",
+      "Purchases": "مشتريات",
+      "Both": "مبيعات & مشتريات"
+    },
+    "operationType": {
+      "Addition": "إضافة",
+      "Discount": "خصم"
     },
     "operations": {
       "addition": "إضافة",
@@ -581,7 +646,12 @@
     "NextPrayer": "الصلاة القادمة",
     "NextPrayerDesc": "حان الآن موعد الصلاة القادمة حسب التوقيت المحلي",
     "PrayerTimes": "مواقيت الصلاة",
-    "LoadingPrayers": "جاري تحميل مواقيت الصلاة..."
+    "LoadingPrayers": "جاري تحميل مواقيت الصلاة...",
+    "ConnectionFailed": "فشل الإتصال",
+    "CheckInternet": "من فضلك تحقق من الإتصال بالإنترنت",
+    "Retry": "إعادة المحاولة",
+    "ServerConnectionFailed": "فشل الإتصال بالخادم",
+    "ServerConnectionFailedDesc": "فشل الإتصال من فضلك تحقق من الإتصال بالإنترنت أو حاول مرة أخرى لاحقاً"
   },
   "common": {
     "save": "حفظ",

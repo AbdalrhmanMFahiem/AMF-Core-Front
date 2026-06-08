@@ -2,7 +2,8 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { tap } from 'rxjs/operators';
-import { LookupsFilters, IdNameResponse, IntIdCodeNameResponse } from '../models/lookup.model';
+import { LookupsFilters, IdNameResponse, IntIdCodeNameResponse, InvoiceCostElementDropdown, ItemLookupResponse } from '../models/lookup.model';
+import { PaginatedList } from '../models/pagination.model';
 import { environment } from '../../../environments/environment';
 
 @Injectable({
@@ -51,5 +52,22 @@ export class LookupService {
     return this.http.get<number[]>(`${this.apiUrl}/page-sizes`).pipe(
       tap(sizes => this.cachedPageSizes = sizes)
     );
+  }
+
+  getInvoiceCostElementsSalesDropdown(filters?: LookupsFilters): Observable<InvoiceCostElementDropdown[]> {
+    return this.http.get<InvoiceCostElementDropdown[]>(`${this.apiUrl}/invoice-cost-elements-sales`, this.getOptions(filters));
+  }
+
+  getInvoiceCostElementsPurchaseDropdown(filters?: LookupsFilters): Observable<InvoiceCostElementDropdown[]> {
+    return this.http.get<InvoiceCostElementDropdown[]>(`${this.apiUrl}/invoice-cost-elements-purchase`, this.getOptions(filters));
+  }
+
+  getSalesInvoicesLookup(filters?: LookupsFilters): Observable<IdNameResponse[]> {
+    // Note: The controller defines this under api/sales/invoices/lookup
+    return this.http.get<IdNameResponse[]>(`${environment.apiUrl}/api/sales/invoices/lookup`, this.getOptions(filters));
+  }
+
+  getSalesItemsLookup(filters?: LookupsFilters): Observable<PaginatedList<ItemLookupResponse>> {
+    return this.http.get<PaginatedList<ItemLookupResponse>>(`${environment.apiUrl}/api/inventory/lookups/sales-items`, this.getOptions(filters));
   }
 }

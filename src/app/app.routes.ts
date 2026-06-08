@@ -166,6 +166,42 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/inventory/items/item-form/item-form.component').then(c => c.ItemFormComponent),
         title: 'View Item | AMF Core'
       },
+      {
+        path: 'inventory/invoice-cost-elements',
+        loadComponent: () => import('./pages/master-data/invoice-cost-elements/invoice-cost-elements-list.component').then(c => c.InvoiceCostElementsListComponent),
+        title: 'Invoice Cost Elements | AMF Core'
+      },
+      {
+        path: 'inventory/invoice-cost-elements/add',
+        loadComponent: () => import('./pages/master-data/invoice-cost-elements/invoice-cost-element-form/invoice-cost-element-form.component').then(c => c.InvoiceCostElementFormComponent),
+        title: 'Add Invoice Cost Element | AMF Core'
+      },
+      {
+        path: 'inventory/invoice-cost-elements/edit/:id',
+        loadComponent: () => import('./pages/master-data/invoice-cost-elements/invoice-cost-element-form/invoice-cost-element-form.component').then(c => c.InvoiceCostElementFormComponent),
+        title: 'Edit Invoice Cost Element | AMF Core'
+      },
+      {
+        path: 'inventory/invoice-cost-elements/view/:id',
+        loadComponent: () => import('./pages/master-data/invoice-cost-elements/invoice-cost-element-form/invoice-cost-element-form.component').then(c => c.InvoiceCostElementFormComponent),
+        title: 'View Invoice Cost Element | AMF Core'
+      },
+      // Sales
+      {
+        path: 'sales/invoices',
+        loadComponent: () => import('./pages/sales/invoices/sales-invoices-list/sales-invoices-list.component').then(c => c.SalesInvoicesListComponent),
+        title: 'Sales Invoices | AMF Core'
+      },
+      {
+        path: 'sales/invoices/add',
+        loadComponent: () => import('./pages/sales/invoices/sales-invoice-form/sales-invoice-form.component').then(c => c.SalesInvoiceFormComponent),
+        title: 'Add Sales Invoice | AMF Core'
+      },
+      {
+        path: 'sales/invoices/view/:id',
+        loadComponent: () => import('./pages/sales/invoices/sales-invoice-form/sales-invoice-form.component').then(c => c.SalesInvoiceFormComponent),
+        title: 'View Sales Invoice | AMF Core'
+      },
       // Reports
       {
         path: 'reports/business-partner-statement',
