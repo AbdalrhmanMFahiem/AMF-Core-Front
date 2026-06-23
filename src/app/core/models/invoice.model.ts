@@ -15,11 +15,20 @@ export enum InvoiceStatus {
   Cancelled = 'Cancelled'
 }
 
+export enum PaymentStatus {
+  Pending = 'Pending',
+  Completed = 'Completed',
+  Cancelled = 'Cancelled',
+  Bounced = 'Bounced'
+}
+
 export enum PaymentMethod {
   Cash = 'Cash',
   BankTransfer = 'BankTransfer',
   Cheque = 'Cheque',
-  CreditCard = 'CreditCard'
+  CreditCard = 'CreditCard',
+  PostDatedCheque = 'PostDatedCheque',
+  Other = 'Other'
 }
 
 export enum InvoiceCostOperation {
@@ -80,6 +89,9 @@ export interface InvoicePaymentResponse {
   bankBranchName?: string;
   amount: number;
   paymentDate: string;
+  status: PaymentStatus;
+  dueDate?: string;
+  chequeNumber?: string;
   reference?: string;
   notes?: string;
 }
@@ -165,6 +177,20 @@ export interface InvoiceReturnRequest extends InvoiceRequest {
   originalInvoiceId?: number;
 }
 
+export interface ReturnableItemResponse {
+  itemId: number;
+  itemCode: string;
+  itemName: string;
+  originalQuantity: number;
+  alreadyReturnedQuantity: number;
+  availableToReturn: number;
+  unitPrice: number;
+  uomId?: number;
+  uomName?: string;
+  warehouseId?: number;
+  warehouseName?: string;
+}
+
 export interface InvoicePaymentRequest {
   method: PaymentMethod;
   bankId?: number;
@@ -172,6 +198,8 @@ export interface InvoicePaymentRequest {
   amount: number;
   paymentDate: string;
   reference?: string;
+  dueDate?: string;
+  chequeNumber?: string;
   notes?: string;
 }
 

@@ -1,0 +1,115 @@
+<app-page-breadcrumb [pageTitle]="'InvoiceSettings.Title' | translate" />
+
+<div class="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/3 lg:p-6">
+  <div class="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
+    <div class="w-full">
+      <h4 class="text-lg font-semibold text-gray-800 dark:text-white/90 lg:mb-6">
+        {{ 'InvoiceSettings.Title' | translate }}
+      </h4>
+      
+      <div *ngIf="isLoading" class="flex justify-center p-4">
+        <div class="h-6 w-6 animate-spin rounded-full border-4 border-solid border-brand-500 border-t-transparent"></div>
+      </div>
+
+      <div *ngIf="!isLoading" class="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-7 2xl:gap-x-32">
+        <div>
+          <p class="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
+            {{ 'InvoiceSettings.AllowSaveInvoiceWithoutPayment' | translate }}
+          </p>
+          <p class="text-sm font-medium text-gray-800 dark:text-white/90">
+            {{ settings.allowSaveInvoiceWithoutPayment ? ('InvoiceSettings.Yes' | translate) : ('InvoiceSettings.No' | translate) }}
+          </p>
+        </div>
+        <div>
+          <p class="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
+            {{ 'InvoiceSettings.RequireCostElementPercentage' | translate }}
+          </p>
+          <p class="text-sm font-medium text-gray-800 dark:text-white/90">
+            {{ settings.requireCostElementPercentage ? ('InvoiceSettings.Yes' | translate) : ('InvoiceSettings.No' | translate) }}
+          </p>
+        </div>
+        <div class="lg:col-span-2">
+          <p class="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
+            {{ 'InvoiceSettings.Notes' | translate }}
+          </p>
+          <p class="text-sm font-medium text-gray-800 dark:text-white/90">
+            {{ settings.notes || 'N/A' }}
+          </p>
+        </div>
+      </div>
+    </div>
+    
+    <button
+      (click)="openModal()"
+      class="flex w-full items-center justify-center gap-2 rounded-full border border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/3 dark:hover:text-gray-200 lg:inline-flex lg:w-auto"
+    >
+      <svg
+        class="fill-current"
+        width="18"
+        height="18"
+        viewBox="0 0 18 18"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          fill-rule="evenodd"
+          clip-rule="evenodd"
+          d="M15.0911 2.78206C14.2125 1.90338 12.7878 1.90338 11.9092 2.78206L4.57524 10.116C4.26682 10.4244 4.0547 10.8158 3.96468 11.2426L3.31231 14.3352C3.25997 14.5833 3.33653 14.841 3.51583 15.0203C3.69512 15.1996 3.95286 15.2761 4.20096 15.2238L7.29355 14.5714C7.72031 14.4814 8.11172 14.2693 8.42013 13.9609L15.7541 6.62695C16.6327 5.74827 16.6327 4.32365 15.7541 3.44497L15.0911 2.78206ZM12.9698 3.84272C13.2627 3.54982 13.7376 3.54982 14.0305 3.84272L14.6934 4.50563C14.9863 4.79852 14.9863 5.2734 14.6934 5.56629L14.044 6.21573L12.3204 4.49215L12.9698 3.84272ZM11.2597 5.55281L5.6359 11.1766C5.53309 11.2794 5.46238 11.4099 5.43238 11.5522L5.01758 13.5185L6.98394 13.1037C7.1262 13.0737 7.25666 13.003 7.35947 12.9002L12.9833 7.27639L11.2597 5.55281Z"
+          fill=""
+        />
+      </svg>
+      {{ 'Common.Edit' | translate }}
+    </button>
+  </div>
+
+  <!-- Modal -->
+  <app-modal
+    [isOpen]="isOpen"
+    (close)="closeModal()"
+    className="max-w-[700px] m-4"
+  >
+    <div class="no-scrollbar relative w-full max-w-[700px] overflow-y-auto rounded-3xl bg-white p-4 dark:bg-gray-900 lg:p-11">
+      <div class="px-2 pr-14">
+        <h4 class="mb-2 text-2xl font-semibold text-gray-800 dark:text-white/90">
+          {{ 'InvoiceSettings.EditTitle' | translate }}
+        </h4>
+        <p class="mb-6 text-sm text-gray-500 dark:text-gray-400 lg:mb-7">
+          {{ 'InvoiceSettings.EditSubtitle' | translate }}
+        </p>
+      </div>
+      
+      <form class="flex flex-col" [formGroup]="form" (ngSubmit)="onSubmit()">
+        <div class="custom-scrollbar overflow-y-auto px-2 pb-3">
+          
+          <div *ngIf="successMessage" class="mb-4 rounded-lg bg-success-50 p-4 text-sm text-success-500 dark:bg-success-500/10 dark:text-success-400">
+            {{ successMessage }}
+          </div>
+
+          <div class="grid grid-cols-1 gap-x-6 gap-y-5">
+            <div class="flex items-center gap-3 mt-2">
+              <input type="checkbox" formControlName="allowSaveInvoiceWithoutPayment" id="allowSaveInvoiceWithoutPayment" class="h-5 w-5 rounded border-gray-300 text-brand-500 focus:ring-brand-500 dark:border-gray-700 dark:bg-gray-900">
+              <label for="allowSaveInvoiceWithoutPayment" class="text-sm font-medium text-gray-800 dark:text-white/90 cursor-pointer">{{ 'InvoiceSettings.AllowSaveInvoiceWithoutPayment' | translate }}</label>
+            </div>
+
+            <div class="flex items-center gap-3">
+              <input type="checkbox" formControlName="requireCostElementPercentage" id="requireCostElementPercentage" class="h-5 w-5 rounded border-gray-300 text-brand-500 focus:ring-brand-500 dark:border-gray-700 dark:bg-gray-900">
+              <label for="requireCostElementPercentage" class="text-sm font-medium text-gray-800 dark:text-white/90 cursor-pointer">{{ 'InvoiceSettings.RequireCostElementPercentage' | translate }}</label>
+            </div>
+
+            <div class="mt-4">
+              <app-label>{{ 'InvoiceSettings.Notes' | translate }}</app-label>
+              <textarea formControlName="notes" rows="4" class="h-auto w-full rounded-lg border appearance-none px-4 py-2.5 text-sm shadow-theme-xs placeholder:text-gray-400 focus:outline-hidden focus:ring-3 bg-transparent text-gray-800 border-gray-300 focus:border-brand-300 focus:ring-brand-500/20 dark:border-gray-700 dark:text-white/90 dark:focus:border-brand-800 dark:bg-gray-900 dark:placeholder:text-white/30"></textarea>
+            </div>
+          </div>
+        </div>
+        
+        <div class="flex items-center gap-3 px-2 mt-6 lg:justify-end">
+          <app-button size="sm" variant="outline" (btnClick)="closeModal()" type="button">{{ 'Common.cancel' | translate }}</app-button>
+          <app-button size="sm" [disabled]="isSaving" type="submit">
+            {{ isSaving ? ('Common.Saving' | translate) : ('Common.save' | translate) }}
+          </app-button>
+        </div>
+      </form>
+    </div>
+  </app-modal>
+</div>

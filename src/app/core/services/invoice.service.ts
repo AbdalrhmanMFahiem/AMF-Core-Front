@@ -9,7 +9,10 @@ import {
   InvoiceStatsResponse,
   InvoiceResponse,
   InvoiceRequest,
-  InvoicePaymentRequest
+  InvoicePaymentRequest,
+  PaymentStatus,
+  ReturnableItemResponse,
+  InvoiceReturnRequest
 } from '../models/invoice.model';
 import { NextCodeResponse } from '../models/lookup.model';
 
@@ -18,7 +21,9 @@ import { NextCodeResponse } from '../models/lookup.model';
 })
 export class InvoiceService {
   private http = inject(HttpClient);
-  private apiUrl = `${environment.apiUrl}/api/sales/invoices`;
+  private getApiUrl(type: 'sales' | 'purchases'): string {
+    return `${environment.apiUrl}/api/${type}/invoices`;
+  }
 
   private getOptions(filters?: InvoiceFilters) {
     let params = new HttpParams();
@@ -36,39 +41,85 @@ export class InvoiceService {
     return { params };
   }
 
-  getAll(filters: InvoiceFilters): Observable<PaginatedList<InvoiceBasicResponse>> {
-    return this.http.get<PaginatedList<InvoiceBasicResponse>>(this.apiUrl, this.getOptions(filters));
+  getAll(filters: InvoiceFilters, type: 'sales' | 'purchases' = 'sales'): Observable<PaginatedList<InvoiceBasicResponse>> {
+    return this.http.get<PaginatedList<InvoiceBasicResponse>>(this.getApiUrl(type), this.getOptions(filters));
   }
 
-  getStats(filters: InvoiceFilters): Observable<InvoiceStatsResponse> {
-    return this.http.get<InvoiceStatsResponse>(`${this.apiUrl}/stats`, this.getOptions(filters));
+  getStats(filters: InvoiceFilters, type: 'sales' | 'purchases' = 'sales'): Observable<InvoiceStatsResponse> {
+    return this.http.get<InvoiceStatsResponse>(`${this.getApiUrl(type)}/stats`, this.getOptions(filters));
   }
 
-  get(id: number): Observable<InvoiceResponse> {
-    return this.http.get<InvoiceResponse>(`${this.apiUrl}/${id}`);
+  get(id: number, type: 'sales' | 'purchases' = 'sales'): Observable<InvoiceResponse> {
+    return this.http.get<InvoiceResponse>(`${this.getApiUrl(type)}/${id}`);
   }
 
-  getNextCode(): Observable<NextCodeResponse> {
-    return this.http.get<NextCodeResponse>(`${this.apiUrl}/next-code`);
+  getNextCode(type: 'sales' | 'purchases' = 'sales'): Observable<NextCodeResponse> {
+    return this.http.get<NextCodeResponse>(`${this.getApiUrl(type)}/next-code`);
   }
 
-  add(request: InvoiceRequest): Observable<InvoiceResponse> {
-    return this.http.post<InvoiceResponse>(this.apiUrl, request);
+  add(request: InvoiceRequest, type: 'sales' | 'purchases' = 'sales'): Observable<InvoiceResponse> {
+    return this.http.post<InvoiceResponse>(this.getApiUrl(type), request);
   }
 
-  update(id: number, request: InvoiceRequest): Observable<void> {
-    return this.http.put<void>(`${this.apiUrl}/${id}`, request);
+  update(id: number, request: InvoiceRequest, type: 'sales' | 'purchases' = 'sales'): Observable<void> {
+    return this.http.put<void>(`${this.getApiUrl(type)}/${id}`, request);
   }
 
-  confirm(id: number): Observable<void> {
-    return this.http.put<void>(`${this.apiUrl}/${id}/confirm`, {});
+  confirm(id: number, type: 'sales' | 'purchases' = 'sales'): Observable<void> {
+    return this.http.put<void>(`${this.getApiUrl(type)}/${id}/confirm`, {});
   }
 
-  cancel(id: number): Observable<void> {
-    return this.http.put<void>(`${this.apiUrl}/${id}/cancel`, {});
+  cancel(id: number, type: 'sales' | 'purchases' = 'sales'): Observable<void> {
+    return this.http.put<void>(`${this.getApiUrl(type)}/${id}/cancel`, {});
   }
 
-  addPayment(id: number, request: InvoicePaymentRequest): Observable<void> {
-    return this.http.post<void>(`${this.apiUrl}/${id}/payments`, request);
+  addPayment(id: number, request: InvoicePaymentRequest, type: 'sales' | 'purchases' = 'sales'): Observable<void> {
+    return this.http.post<void>(`${this.getApiUrl(type)}/${id}/payments`, request);
+  }
+
+  deletePayment(id: number, paymentId: number, type: 'sales' | 'purchases' = 'sales'): Observable<void> {
+    return this.http.delete<void>(`${this.getApiUrl(type)}/${id}/payments/${paymentId}`);
+  }
+
+  updatePaymentStatus(id: number, paymentId: number, status: PaymentStatus, type: 'sales' | 'purchases' = 'sales'): Observable<void> {
+    return this.http.put<void>(`${this.getApiUrl(type)}/${id}/payments/${paymentId}/status`, status);
+  }
+
+  // --- Returns ---
+  getReturns(filters: InvoiceFilters, type: 'sales' | 'purchases' = 'sales'): Observable<PaginatedList<InvoiceBasicResponse>> {
+    return this.http.get<PaginatedList<InvoiceBasicResponse>>(`${this.getApiUrl(type)}/returns`, this.getOptions(filters));
+  }
+
+  getReturnStats(filters: InvoiceFilters, type: 'sales' | 'purchases' = 'sales'): Observable<InvoiceStatsResponse> {
+    return this.http.get<InvoiceStatsResponse>(`${this.getApiUrl(type)}/returns/stats`, this.getOptions(filters));
+  }
+
+  getReturnNextCode(type: 'sales' | 'purchases' = 'sales'): Observable<NextCodeResponse> {
+    return this.http.get<NextCodeResponse>(`${this.getApiUrl(type)}/returns/next-code`);
+  }
+
+  addReturn(request: InvoiceReturnRequest, type: 'sales' | 'purchases' = 'sales'): Observable<InvoiceResponse> {
+    return this.http.post<InvoiceResponse>(`${this.getApiUrl(type)}/returns`, request);
+  }
+
+  confirmReturn(id: number, type: 'sales' | 'purchases' = 'sales'): Observable<void> {
+    return this.http.put<void>(`${this.getApiUrl(type)}/returns/${id}/confirm`, {});
+  }
+
+  cancelReturn(id: number, type: 'sales' | 'purchases' = 'sales'): Observable<void> {
+    return this.http.put<void>(`${this.getApiUrl(type)}/returns/${id}/cancel`, {});
+  }
+
+  getReturnableItems(id: number, type: 'sales' | 'purchases' = 'sales'): Observable<ReturnableItemResponse[]> {
+    return this.http.get<ReturnableItemResponse[]>(`${this.getApiUrl(type)}/${id}/returnable-items`);
+  }
+
+  // --- Lookups ---
+  getSalesInvoicesLookup(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.getApiUrl('sales')}/lookup`);
+  }
+
+  getPurchaseInvoicesLookup(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.getApiUrl('purchases')}/lookup`);
   }
 }

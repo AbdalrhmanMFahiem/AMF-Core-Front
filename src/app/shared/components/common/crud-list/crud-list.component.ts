@@ -39,6 +39,9 @@ export class CrudListComponent implements OnInit, OnDestroy {
   @Input() includeDisabled: boolean = false;
   @Input() showIncludeDisabledToggle: boolean = true;
   @Input() isLoading: boolean = false;
+  @Input() hideBuiltInSearch: boolean = false;
+  @Input() hasAdvancedFilters: boolean = false;
+  @Input() hasActiveAdvancedFilters: boolean = false;
   @Input() hideEdit: boolean | ((item: any) => boolean) = false;
   @Input() hideView: boolean | ((item: any) => boolean) = false;
   @Input() hideToggleStatus: boolean | ((item: any) => boolean) = false;
@@ -55,6 +58,7 @@ export class CrudListComponent implements OnInit, OnDestroy {
 
   openCodePopupId: number | string | null = null;
   openActionPopupId: number | string | null = null;
+  showAdvancedFilters: boolean = false;
   copiedState: { id: number | string, type: 'code' | 'id' } | null = null;
   popupStyles: any = {};
   actionPopupStyles: any = {};
@@ -188,7 +192,6 @@ export class CrudListComponent implements OnInit, OnDestroy {
   onIncludeDisabledChange(value: boolean): void {
     this.filters.pageNumber = 1;
     this.includeDisabledChange.emit(value);
-    this.search.emit();
   }
 
   onPreviousPage(): void {

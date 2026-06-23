@@ -63,3 +63,11 @@ export enum LedgerEntryType {
   Payment = 3,
   Adjustment = 4
 }
+
+export interface BalanceSummaryResponse {
+  currentBalance: number;
+  totalInvoiced: number;
+  totalPaid: number;
+  totalOverdue: number;
+}
+

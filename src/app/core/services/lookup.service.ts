@@ -69,8 +69,8 @@ export class LookupService {
   }
 
   getSalesInvoicesLookup(filters?: LookupsFilters): Observable<IdNameResponse[]> {
-    // Note: The controller defines this under api/sales/invoices/lookup
-    return this.http.get<IdNameResponse[]>(`${environment.apiUrl}/api/sales/invoices/lookup`, this.getOptions(filters));
+    // Note: The controller defines this under api/invoices/sales/lookup
+    return this.http.get<IdNameResponse[]>(`${environment.apiUrl}/api/invoices/sales/lookup`, this.getOptions(filters));
   }
 
   getSalesItemsLookup(filters?: LookupsFilters): Observable<PaginatedList<ItemLookupResponse>> {

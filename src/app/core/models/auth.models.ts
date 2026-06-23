@@ -13,4 +13,10 @@ export interface AuthResponse {
   expiresIn: number;
   refreshToken: string;
   refreshTokenExpiration: string;
+  requiresSetup?: boolean;
+}
+
+export interface SetupCompanyRequest {
+  companyName: string;
+  mainBranchName: string;
 }

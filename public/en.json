@@ -13,12 +13,18 @@
     "date": "Date",
     "from": "From",
     "to": "To",
+    "invoiceDateFrom": "Invoice Date From",
+    "invoiceDateTo": "Invoice Date To",
+    "dueDateFrom": "Due Date From",
+    "dueDateTo": "Due Date To",
     "selectDate": "Select Date",
+    "customer": "Customer",
+    "vendor": "Vendor",
     "inactive": "Inactive",
     "deactivate": "Deactivate",
     "save": "Save Record",
     "cancel": "Cancel",
-    "search": "Search by name or code...",
+    "search": "Search",
     "status": "Status",
     "active": "Active",
     "success": "Success",
@@ -113,13 +119,15 @@
   },
   "pages": {
     "invoiceCostElements": "Invoice Cost Elements",
+    "configuration": "System Configuration",
+    "inventorySettings": "Inventory Settings",
+    "invoiceSettings": "Invoice Settings",
     "homepage": "Home Page",
-    "overview": "Overview",
+    "overview": "Dashboard",
     "logout": "Sign Out",
     "searchPlaceholder": "Search pages, menus...",
     "noMenuResults": "No matching pages found.",
     "systemSettings": "System Settings",
-    "configuration": "Configuration",
     "companySettings": "Company Settings",
     "usersManagement": "Users Management",
     "users": "Users",
@@ -130,6 +138,9 @@
     "apiOffline": "API Server Offline",
     "enterpriseGateway": "Enterprise Gateway",
     "activeLang": "Active Language",
+    "stockTransfers": "Stock Transfers",
+    "stockAdjustments": "Stock Adjustments",
+    "stockTransactions": "Stock Transactions",
     "welcomePortal": "Welcome to",
     "heroText": "Your client-side runtime styling has been injected and configured automatically. This portal is integrated with .NET 10 System Configuration APIs.",
     "primaryColor": "Primary Color",
@@ -156,7 +167,29 @@
     "quotations": "Quotations",
     "reports": "Reports",
     "salesReports": "Reports",
-    "businessPartnerStatement": "Partner Statement"
+    "businessPartnerStatement": "Partner Statement",
+    "ecommerce": "Ecommerce",
+    "userProfile": "User Profile",
+    "pages": "Pages",
+    "blankPage": "Blank Page",
+    "error404": "404 Error",
+    "charts": "Charts",
+    "lineChart": "Line Chart",
+    "barChart": "Bar Chart",
+    "uiElements": "UI Elements",
+    "alerts": "Alerts",
+    "avatar": "Avatar",
+    "badge": "Badge",
+    "buttons": "Buttons",
+    "images": "Images",
+    "videos": "Videos",
+    "authentication": "Authentication",
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "salesReport": "Sales Report",
+    "purchasesReport": "Purchases Report",
+    "inventoryValuation": "Inventory Valuation",
+    "dashboard": "Dashboard"
   },
   "reports": {
     "businessPartnerStatement": {
@@ -204,7 +237,13 @@
       "reference": "Reference",
       "debit": "Debit",
       "credit": "Credit",
-      "balanceText": "Balance"
+      "balanceText": "Balance",
+      "currentBalance": "Current Balance",
+      "totalSales": "Total Sales / Invoiced",
+      "paidAmount": "Paid Amount",
+      "overdueAmount": "Overdue Amount",
+      "ledger": "Account Ledger",
+      "filters": "Filters"
     }
   },
   "businessPartners": {
@@ -256,21 +295,34 @@
   "companySettings": {
     "title": "Company Configuration",
     "subtitle": "Global Company Identity & Registration",
+    "companyCode": "Company Code",
+    "companyCodePlaceholder": "Enter unique company code",
     "companyAName": "Company Name (Arabic)",
+    "companyANamePlaceholder": "Enter Arabic name",
     "companyEName": "Company Name (English)",
+    "companyENamePlaceholder": "Enter English name",
     "registrationNumber": "Registration Number",
+    "registrationNumberPlaceholder": "Enter registration number",
     "taxNumber": "Tax Number",
+    "taxNumberPlaceholder": "Enter tax number",
     "address": "Address / Head Office",
+    "addressPlaceholder": "Enter physical address",
     "country": "Country",
+    "countryPlaceholder": "Enter country",
     "phoneNumber": "Contact Phone Number",
+    "phoneNumberPlaceholder": "Enter phone number",
     "email": "Official Business Email",
+    "emailPlaceholder": "Enter email address",
     "website": "Corporate Website URL",
+    "websitePlaceholder": "Enter website url",
     "logoUpload": "Company Brand Logo",
     "iconUpload": "System Navigation Icon",
     "logoHint": "Upload business logo used in headers & invoices",
     "iconHint": "Upload brand shortcut icon used in tab browsers",
     "dragDropHint": "Drag & drop file here or click to browse",
     "save": "Save Settings",
+    "logo": "Company Logo",
+    "icon": "Company Icon",
     "saving": "Saving Configuration...",
     "success": "Company configuration saved successfully!"
   },
@@ -536,7 +588,8 @@
       "amount": "Amount",
       "paymentDate": "Payment Date",
       "paymentMethod": "Payment Method",
-      "reference": "Reference"
+      "reference": "Reference",
+      "chequeNumber": "Cheque Number"
     },
     "tabs": {
       "items": "Items",
@@ -553,7 +606,64 @@
       "Cash": "Cash",
       "BankTransfer": "Bank Transfer",
       "Cheque": "Cheque",
-      "CreditCard": "Credit Card"
+      "CreditCard": "Credit Card",
+      "PostDatedCheque": "Post-Dated Cheque",
+      "Other": "Other"
+    },
+    "errors": {
+      "atLeastOneItem": "At least one item is required in the invoice.",
+      "invalidAmount": "Invalid payment amount.",
+      "invalidQuantity": "Quantity must be greater than zero.",
+      "invalidPrice": "Price must be greater than zero.",
+      "duplicateItem": "This item is already added to the invoice.",
+      "duplicateCostElement": "This cost element is already added to the invoice."
+    }
+  },
+  "purchaseInvoices": {
+    "title": "Purchase Invoices",
+    "list": "Purchase Invoices List",
+    "add": "Add Purchase Invoice",
+    "addNew": "Add New Invoice",
+    "view": "View Invoice",
+    "addPayment": "Add Payment",
+    "addItems": "Add Items",
+    "addCostElement": "Add Cost Element",
+    "fields": {
+      "code": "Invoice Code",
+      "businessPartner": "Vendor",
+      "invoiceDate": "Invoice Date",
+      "dueDate": "Due Date",
+      "warehouse": "Warehouse",
+      "totalAmount": "Total Amount",
+      "remainingAmount": "Remaining Amount",
+      "status": "Status",
+      "subTotal": "Subtotal",
+      "taxAmount": "Tax",
+      "invoice": "Invoice",
+      "amount": "Amount",
+      "paymentDate": "Payment Date",
+      "paymentMethod": "Payment Method",
+      "reference": "Reference",
+      "chequeNumber": "Cheque Number"
+    },
+    "tabs": {
+      "items": "Items",
+      "costElements": "Cost Elements"
+    },
+    "status": {
+      "Draft": "Draft",
+      "Confirmed": "Confirmed",
+      "PartiallyPaid": "Partially Paid",
+      "FullyPaid": "Fully Paid",
+      "Cancelled": "Cancelled"
+    },
+    "paymentMethods": {
+      "Cash": "Cash",
+      "BankTransfer": "Bank Transfer",
+      "Cheque": "Cheque",
+      "CreditCard": "Credit Card",
+      "PostDatedCheque": "Post-Dated Cheque",
+      "Other": "Other"
     },
     "errors": {
       "atLeastOneItem": "At least one item is required in the invoice.",
@@ -671,6 +781,182 @@
     "cancel": "Cancel",
     "confirmStatusChange": "Are you sure you want to change the status?",
     "statusChangedToInactive": "Status changed from Active to Inactive successfully.",
-    "statusChangedToActive": "Status changed from Inactive to Active successfully."
+    "statusChangedToActive": "Status changed from Inactive to Active successfully.",
+    "errorSavingData": "An error occurred while saving data.",
+    "errorLoadingData": "An error occurred while loading data.",
+    "savedSuccessfully": "Data saved successfully."
+  },
+  "salesReturns": {
+    "title": "Sales Returns",
+    "list": "Sales Returns List",
+    "add": "Add Sales Return",
+    "addNew": "Add New Return",
+    "view": "View Return",
+    "addPayment": "Add Payment",
+    "addItems": "Add Items",
+    "addCostElement": "Add Cost Element",
+    "linkedReturn": "Linked Return",
+    "available": "Available",
+    "fields": {
+      "code": "Return Code",
+      "originalInvoice": "Original Invoice",
+      "businessPartner": "Customer",
+      "invoiceDate": "Return Date",
+      "dueDate": "Due Date",
+      "warehouse": "Warehouse",
+      "totalAmount": "Total Amount",
+      "remainingAmount": "Remaining Amount",
+      "status": "Status",
+      "subTotal": "Subtotal",
+      "taxAmount": "Tax",
+      "invoice": "Invoice",
+      "amount": "Amount",
+      "paymentDate": "Payment Date",
+      "paymentMethod": "Payment Method",
+      "reference": "Reference",
+      "chequeNumber": "Cheque Number"
+    },
+    "tabs": {
+      "items": "Items",
+      "costElements": "Cost Elements"
+    },
+    "errors": {
+      "atLeastOneItem": "At least one item is required in the return."
+    },
+    "status": {
+      "Draft": "Draft",
+      "Confirmed": "Confirmed",
+      "PartiallyPaid": "Partially Paid",
+      "FullyPaid": "Fully Paid",
+      "Cancelled": "Cancelled"
+    }
+  },
+  "purchaseReturns": {
+    "title": "Purchase Returns",
+    "list": "Purchase Returns List",
+    "add": "Add Purchase Return",
+    "addNew": "Add New Return",
+    "view": "View Return",
+    "addPayment": "Add Payment",
+    "addItems": "Add Items",
+    "addCostElement": "Add Cost Element",
+    "linkedReturn": "Linked Return",
+    "available": "Available",
+    "status": {
+      "Draft": "Draft",
+      "Confirmed": "Confirmed",
+      "PartiallyPaid": "Partially Paid",
+      "FullyPaid": "Fully Paid",
+      "Cancelled": "Cancelled"
+    },
+    "fields": {
+      "code": "Return Code",
+      "originalInvoice": "Original Invoice",
+      "businessPartner": "Vendor",
+      "invoiceDate": "Return Date",
+      "dueDate": "Due Date",
+      "warehouse": "Warehouse",
+      "totalAmount": "Total Amount",
+      "remainingAmount": "Remaining Amount",
+      "status": "Status",
+      "subTotal": "Subtotal",
+      "taxAmount": "Tax",
+      "invoice": "Invoice",
+      "amount": "Amount",
+      "paymentDate": "Payment Date",
+      "paymentMethod": "Payment Method",
+      "reference": "Reference",
+      "chequeNumber": "Cheque Number"
+    },
+    "tabs": {
+      "items": "Items",
+      "costElements": "Cost Elements"
+    },
+    "errors": {
+      "atLeastOneItem": "At least one item is required in the return."
+    }
+  },
+  "stockTransfers": {
+    "title": "Stock Transfers",
+    "add": "Add Transfer",
+    "view": "View Transfer",
+    "saveSuccess": "Stock transfer saved successfully.",
+    "mainInfo": "Main Information",
+    "fromWarehouse": "From Warehouse",
+    "toWarehouse": "To Warehouse",
+    "items": "Items",
+    "addItems": "Add Items",
+    "quantity": "Quantity",
+    "confirm": "Confirm",
+    "cancelTransfer": "Cancel Transfer",
+    "status": {
+      "0": "Draft",
+      "1": "Confirmed",
+      "2": "Cancelled"
+    },
+    "errors": {
+      "atLeastOneItem": "At least one item is required.",
+      "invalidQuantity": "Quantity must be greater than zero.",
+      "duplicateItem": "Item already exists in the transfer.",
+      "sameWarehouse": "Source and destination warehouses cannot be the same."
+    }
+  },
+  "stockAdjustments": {
+    "title": "Stock Adjustments",
+    "add": "Add Adjustment",
+    "view": "View Adjustment",
+    "saveSuccess": "Stock adjustment saved successfully.",
+    "mainInfo": "Main Information",
+    "warehouse": "Warehouse",
+    "type": "Adjustment Type",
+    "reason": "Reason",
+    "items": "Items",
+    "addItems": "Add Items",
+    "systemQuantity": "System Qty",
+    "countedQuantity": "Counted Qty",
+    "difference": "Difference",
+    "confirm": "Confirm",
+    "status": {
+      "0": "Draft",
+      "1": "Confirmed",
+      "2": "Cancelled"
+    },
+    "types": {
+      "inventory": "Inventory Count",
+      "adjustment": "Manual Adjustment"
+    },
+    "errors": {
+      "atLeastOneItem": "At least one item is required.",
+      "duplicateItem": "Item already exists in the adjustment."
+    }
+  },
+  "stockTransactions": {
+    "title": "Stock Transactions",
+    "type": "Type",
+    "item": "Item",
+    "warehouse": "Warehouse",
+    "quantity": "Quantity",
+    "runningBalance": "Running Balance"
+  },
+  "الكل": "All",
+  "InventorySettings": {
+    "Title": "Inventory Configuration",
+    "AllowNegativeStock": "Allow Negative Stock",
+    "RequireStockBeforeConfirm": "Require Stock Before Confirming Transactions",
+    "Notes": "Notes",
+    "EditTitle": "Edit Inventory Settings",
+    "EditSubtitle": "Update the global configuration for the inventory module.",
+    "Yes": "Yes",
+    "No": "No"
+  },
+  "InvoiceSettings": {
+    "Title": "Invoice Configuration",
+    "AllowSaveInvoiceWithoutPayment": "Allow Saving Invoice Without Payment",
+    "RequireCostElementPercentage": "Require Cost Element Percentage",
+    "Notes": "Notes",
+    "EditTitle": "Edit Invoice Settings",
+    "EditSubtitle": "Update the global configuration for the invoice module.",
+    "Yes": "Yes",
+    "No": "No"
   }
 }

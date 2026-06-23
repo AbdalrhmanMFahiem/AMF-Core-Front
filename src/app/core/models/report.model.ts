@@ -1,23 +1,25 @@
-export interface StatementFilter {
-  businessPartnerId?: number;
-  fromDate?: string;
-  toDate?: string;
+import { RequestFilters } from './pagination.model';
+
+export interface LedgerFilters extends RequestFilters {
+  from?: string;
+  to?: string;
+  entryType?: number;
 }
 
-export interface StatementTransaction {
-  date: string;
-  transactionType: string;
-  reference: string;
-  debit: number;
-  credit: number;
-  balance: number;
-  description?: string;
+export interface BusinessPartnerLedgerResponse {
+  id: number;
+  entryDate: string;
+  invoiceId?: number;
+  invoiceCode?: string;
+  entryType: number;
+  amount: number;
+  runningBalance: number;
+  notes?: string;
 }
 
-export interface BusinessPartnerStatementResponse {
-  partnerId: number;
-  partnerName: string;
-  openingBalance: number;
-  closingBalance: number;
-  transactions: StatementTransaction[];
+export interface BalanceSummaryResponse {
+  currentBalance: number;
+  totalInvoiced: number;
+  totalPaid: number;
+  totalOverdue: number;
 }

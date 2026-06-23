@@ -1,43 +1,72 @@
 <app-component-card [title]="pageTitle | translate">
-  <div class="mb-4 flex flex-col sm:flex-row gap-4 justify-between items-center">
-    <div class="w-full sm:w-1/2 flex flex-col sm:flex-row items-start sm:items-center gap-4">
-      <div class="w-full sm:w-2/3">
-        <input type="text" [(ngModel)]="filters.searchValue" (ngModelChange)="onSearchInput($event)"
-          (keyup.enter)="onSearch()" [placeholder]="searchPlaceholder | translate" [disabled]="isLoading"
-          class="dark:bg-dark-900 h-11 w-full rounded-lg border border-gray-200 bg-transparent py-2.5 px-4 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-800 dark:bg-white/3 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800 disabled:opacity-50 disabled:cursor-not-allowed" />
-      </div>
-      <label *ngIf="showIncludeDisabledToggle" class="flex items-center cursor-pointer gap-2"
-        [ngClass]="{'opacity-50 cursor-not-allowed': isLoading}">
-        <div class="relative">
-          <input type="checkbox" class="sr-only" [(ngModel)]="includeDisabled"
-            (ngModelChange)="onIncludeDisabledChange($event)" [disabled]="isLoading" />
-          <div
-            class="block h-6 w-10 rounded-full bg-gray-200 dark:bg-gray-700 transition-colors duration-200 ease-in-out"
-            [ngClass]="{'bg-brand-500!': includeDisabled}"></div>
-          <div class="absolute left-1 top-1 h-4 w-4 rounded-full bg-white transition-transform duration-200 ease-in-out"
-            [ngClass]="{'translate-x-4': includeDisabled}"></div>
+  <div class="mb-4 flex flex-col gap-4">
+    <div class="flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center">
+      <div class="w-full flex-1 flex flex-col sm:flex-row items-start sm:items-center gap-4">
+        <div class="w-full sm:max-w-xs" *ngIf="!hideBuiltInSearch">
+          <input type="text" [(ngModel)]="filters.searchValue" (ngModelChange)="onSearchInput($event)"
+            (keyup.enter)="onSearch()" [placeholder]="searchPlaceholder | translate" [disabled]="isLoading"
+            class="dark:bg-dark-900 h-11 w-full rounded-lg border border-gray-200 bg-transparent py-2.5 px-4 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-800 dark:bg-white/3 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800 disabled:opacity-50 disabled:cursor-not-allowed" />
         </div>
-        <span class="text-sm font-medium text-gray-700 dark:text-gray-300">{{ 'Common.IncludeDisabled' | translate
-          }}</span>
-      </label>
+
+        <ng-content select="[custom-filters]"></ng-content>
+
+        <label *ngIf="showIncludeDisabledToggle" class="flex items-center cursor-pointer gap-2"
+          [ngClass]="{'opacity-50 cursor-not-allowed': isLoading}">
+          <div class="relative">
+            <input type="checkbox" class="sr-only" [(ngModel)]="includeDisabled"
+              (ngModelChange)="onIncludeDisabledChange($event)" [disabled]="isLoading" />
+            <div
+              class="block h-6 w-10 rounded-full bg-gray-200 dark:bg-gray-700 transition-colors duration-200 ease-in-out"
+              [ngClass]="{'bg-brand-500!': includeDisabled}"></div>
+            <div
+              class="absolute left-1 top-1 h-4 w-4 rounded-full bg-white transition-transform duration-200 ease-in-out"
+              [ngClass]="{'translate-x-4': includeDisabled}"></div>
+          </div>
+          <span class="text-sm font-medium text-gray-700 dark:text-gray-300">{{ 'Common.IncludeDisabled' | translate
+            }}</span>
+        </label>
+      </div>
+
+      <div class="flex items-center gap-3 self-end sm:self-auto">
+        <button *ngIf="hasAdvancedFilters" (click)="showAdvancedFilters = !showAdvancedFilters" [disabled]="isLoading"
+          class="relative p-2.5 bg-white text-gray-700 border border-gray-200 rounded-lg hover:bg-gray-50 hover:text-brand-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed dark:bg-gray-900 dark:border-gray-800 dark:text-gray-300 dark:hover:bg-white/5 dark:hover:text-brand-400 shadow-theme-xs focus:outline-hidden"
+          [ngClass]="{'bg-brand-50 text-brand-600 border-brand-200 dark:bg-brand-500/10 dark:text-brand-400 dark:border-brand-500/20': showAdvancedFilters || hasActiveAdvancedFilters}">
+
+          <span *ngIf="hasActiveAdvancedFilters" class="absolute -top-1 -right-1 flex h-3 w-3">
+            <span
+              class="relative inline-flex rounded-full h-3 w-3 bg-brand-500 border-2 border-white dark:border-gray-900"></span>
+          </span>
+
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+              d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z">
+            </path>
+          </svg>
+        </button>
+
+        <button (click)="onRefresh()" [disabled]="isLoading"
+          class="p-2.5 bg-white text-gray-700 border border-gray-200 rounded-lg hover:bg-gray-50 hover:text-brand-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed dark:bg-gray-900 dark:border-gray-800 dark:text-gray-300 dark:hover:bg-white/5 dark:hover:text-brand-400 shadow-theme-xs focus:outline-hidden"
+          [title]="'Common.refresh' | translate">
+          <svg class="w-5 h-5" [ngClass]="{'animate-spin text-brand-500': isLoading}" fill="none" stroke="currentColor"
+            viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+          </svg>
+        </button>
+        <button (click)="add.emit()" [disabled]="isLoading"
+          class="px-4 py-2.5 bg-brand-500 text-white rounded-lg hover:bg-brand-600 transition-colors font-medium shadow-theme-xs disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
+          <svg class="w-5 h-5 hidden sm:block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+          </svg>
+          {{ addBtnText | translate }}
+        </button>
+      </div>
     </div>
-    <div class="flex items-center gap-3">
-      <button (click)="onRefresh()" [disabled]="isLoading"
-        class="p-2.5 bg-white text-gray-700 border border-gray-200 rounded-lg hover:bg-gray-50 hover:text-brand-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed dark:bg-gray-900 dark:border-gray-800 dark:text-gray-300 dark:hover:bg-white/5 dark:hover:text-brand-400 shadow-theme-xs focus:outline-hidden"
-        [title]="'Common.refresh' | translate">
-        <svg class="w-5 h-5" [ngClass]="{'animate-spin text-brand-500': isLoading}" fill="none" stroke="currentColor"
-          viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-        </svg>
-      </button>
-      <button (click)="add.emit()" [disabled]="isLoading"
-        class="px-4 py-2.5 bg-brand-500 text-white rounded-lg hover:bg-brand-600 transition-colors font-medium shadow-theme-xs disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
-        <svg class="w-5 h-5 hidden sm:block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-        </svg>
-        {{ addBtnText | translate }}
-      </button>
+
+    <!-- Advanced Filters -->
+    <div *ngIf="showAdvancedFilters"
+      class="p-5 rounded-xl border border-gray-200 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-900/50 animate-fade-in">
+      <ng-content select="[advanced-filters]"></ng-content>
     </div>
   </div>
 
@@ -196,7 +225,8 @@
                     <div class="w-full h-px bg-gray-100 dark:bg-gray-700 my-1"></div>
 
                     <!-- Toggle Status -->
-                    <button *ngIf="!isToggleStatusHidden(item)" (click)="onToggleStatusClick(item); openActionPopupId = null"
+                    <button *ngIf="!isToggleStatusHidden(item)"
+                      (click)="onToggleStatusClick(item); openActionPopupId = null"
                       class="flex items-center gap-2.5 px-3 py-2 text-sm font-medium text-orange-600 dark:text-orange-400 hover:bg-orange-50 dark:hover:bg-orange-500/10 rounded-lg transition-colors text-start w-full group">
                       <svg class="w-4 h-4 text-orange-400 group-hover:text-orange-500 transition-colors" fill="none"
                         stroke="currentColor" viewBox="0 0 24 24">

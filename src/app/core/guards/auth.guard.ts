@@ -7,6 +7,11 @@ export const authGuard: CanActivateFn = (route, state) => {
   const router = inject(Router);
 
   if (authService.getToken()) {
+    const authData = authService.getAuthResponse();
+    if (authData?.requiresSetup) {
+      router.navigate(['/setup-company']);
+      return false;
+    }
     return true;
   }
 

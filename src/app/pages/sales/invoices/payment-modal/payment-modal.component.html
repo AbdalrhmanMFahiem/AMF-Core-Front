@@ -1,10 +1,22 @@
 <app-modal [isOpen]="isOpen" (close)="onClose()" [className]="'max-w-xl'">
-  <div class="px-6 py-4 border-b border-gray-100 dark:border-white/5 flex justify-between items-center bg-white dark:bg-gray-900 rounded-t-2xl">
-    <h3 class="text-lg font-medium text-gray-800 dark:text-white/90">
-      {{ 'salesInvoices.addPayment' | translate }}
-    </h3>
-    <button (click)="onClose()" class="text-gray-400 hover:text-gray-500 focus:outline-none">
-      <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+  <div class="px-6 py-5 border-b border-gray-100 dark:border-white/5 flex justify-between items-center bg-white dark:bg-gray-900 rounded-t-2xl">
+    <div class="flex items-center gap-4">
+      <div class="w-12 h-12 rounded-full bg-brand-50 dark:bg-brand-500/10 flex items-center justify-center text-brand-600 dark:text-brand-400 shadow-inner">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+      </div>
+      <div>
+        <h3 class="text-xl font-bold text-gray-900 dark:text-white">
+          {{ 'salesInvoices.addPayment' | translate }}
+        </h3>
+        <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
+          {{ 'salesInvoices.fields.paymentMethod' | translate }}
+        </p>
+      </div>
+    </div>
+    <button (click)="onClose()" class="text-gray-400 hover:text-gray-500 focus:outline-none bg-gray-50 dark:bg-gray-800 p-2 rounded-full transition-colors hover:bg-gray-100 dark:hover:bg-gray-700">
+      <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
       </svg>
     </button>
@@ -40,8 +52,9 @@
           <label class="mb-2 block text-sm font-medium text-gray-800 dark:text-white/90">
             {{ 'salesInvoices.fields.paymentDate' | translate }} <span class="text-error-500">*</span>
           </label>
-          <input type="date" [(ngModel)]="model.paymentDate" name="paymentDate" required
-            class="dark:bg-dark-900 h-11 w-full rounded-lg border border-gray-200 bg-transparent py-2.5 px-4 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-800 dark:text-white/90" />
+          <app-date-picker id="paymentDate" name="paymentDate" [(ngModel)]="model.paymentDate" required
+            [placeholder]="'Common.selectDate' | translate">
+          </app-date-picker>
         </div>
       </div>
 
@@ -54,13 +67,28 @@
         </app-searchable-select>
       </div>
 
-      <div *ngIf="model.method === 'BankTransfer' || model.method === 'Cheque'" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div *ngIf="model.method === 'BankTransfer' || model.method === 'Cheque' || model.method === 'PostDatedCheque'" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div class="sm:col-span-2">
           <label class="mb-2 block text-sm font-medium text-gray-800 dark:text-white/90">
             {{ 'salesInvoices.fields.reference' | translate }}
           </label>
           <input type="text" [(ngModel)]="model.reference" name="reference"
             class="dark:bg-dark-900 h-11 w-full rounded-lg border border-gray-200 bg-transparent py-2.5 px-4 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-800 dark:text-white/90" />
+        </div>
+        <div class="sm:col-span-1" *ngIf="model.method === 'Cheque' || model.method === 'PostDatedCheque'">
+          <label class="mb-2 block text-sm font-medium text-gray-800 dark:text-white/90">
+            {{ 'salesInvoices.fields.chequeNumber' | translate }}
+          </label>
+          <input type="text" [(ngModel)]="model.chequeNumber" name="chequeNumber"
+            class="dark:bg-dark-900 h-11 w-full rounded-lg border border-gray-200 bg-transparent py-2.5 px-4 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-800 dark:text-white/90" />
+        </div>
+        <div class="sm:col-span-1" *ngIf="model.method === 'PostDatedCheque'">
+          <label class="mb-2 block text-sm font-medium text-gray-800 dark:text-white/90">
+            {{ 'salesInvoices.fields.dueDate' | translate }}
+          </label>
+          <app-date-picker id="paymentDueDate" name="paymentDueDate" [(ngModel)]="model.dueDate"
+            [placeholder]="'Common.selectDate' | translate">
+          </app-date-picker>
         </div>
         <!-- Note: We could add BankId and BankBranchId here if they were available via lookups -->
       </div>
@@ -90,5 +118,46 @@
         </button>
       </div>
     </form>
+
+    <!-- Confirmation Overlay -->
+    <div *ngIf="showConfirmation"
+      class="absolute inset-0 z-50 bg-white/60 dark:bg-gray-900/80 backdrop-blur-sm flex items-center justify-center p-6 rounded-2xl animate-fade-in">
+      <div
+        class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl border border-gray-100 dark:border-gray-700 w-full max-w-sm overflow-hidden transform transition-all animate-scale-up">
+        <div class="p-8 text-center">
+          <div
+            class="w-20 h-20 bg-brand-50 dark:bg-brand-500/10 rounded-full flex items-center justify-center mx-auto mb-6 text-brand-600 dark:text-brand-400">
+            <svg class="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">{{ 'Common.confirm' | translate }}</h3>
+          <p class="text-gray-500 dark:text-gray-400 mb-8 text-sm leading-relaxed">
+            {{ 'Common.confirm' | translate }} <br>
+            <span
+              class="font-bold text-gray-800 dark:text-white mt-4 block text-lg bg-gray-50 dark:bg-gray-700/50 p-3 rounded-xl border border-gray-100 dark:border-gray-600 shadow-inner">
+              <span class="block text-sm text-gray-500 dark:text-gray-400 font-normal mb-1">{{ invoice?.code }}</span>
+              <span class="block">{{ model.amount | number:'1.2-2' }} - {{ ('salesInvoices.paymentMethods.' + model.method) | translate }}</span>
+            </span>
+          </p>
+          <div class="flex gap-3">
+            <button (click)="showConfirmation = false"
+              class="flex-1 px-4 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-300 rounded-xl font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-500">
+              {{ 'Common.Cancel' | translate }}
+            </button>
+            <button (click)="confirmSave()"
+              class="flex-1 px-4 py-3 bg-brand-600 hover:bg-brand-700 text-white rounded-xl font-semibold shadow-theme-sm transition-all hover:shadow-theme-md focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800">
+              <svg *ngIf="loading" class="inline-block h-4 w-4 animate-spin me-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                </path>
+              </svg>
+              {{ 'Common.confirm' | translate }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </app-modal>

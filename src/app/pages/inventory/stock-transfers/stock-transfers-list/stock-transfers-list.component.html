@@ -1,0 +1,16 @@
+<app-page-breadcrumb [pageTitle]="'stockTransfers.title'" />
+<div class="space-y-6">
+  <app-crud-list 
+    [pageTitle]="'stockTransfers.title'" 
+    [searchPlaceholder]="'common.search'"
+    [addBtnText]="'stockTransfers.add'"
+    [columns]="columns" 
+    [data]="data" 
+    [filters]="{ pageNumber: pageNumber, pageSize: pageSize, searchValue: searchValue }"
+    [isLoading]="loading"
+    (search)="loadData()"
+    (add)="onAdd()"
+    (view)="onView($event)"
+    (pageChange)="onPageChange($event)">
+  </app-crud-list>
+</div>

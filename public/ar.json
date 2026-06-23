@@ -14,7 +14,14 @@
     "date": "التاريخ",
     "from": "من",
     "to": "إلى",
+    "invoiceDateFrom": "من تاريخ الفاتورة",
+    "invoiceDateTo": "إلى تاريخ الفاتورة",
+    "dueDateFrom": "من تاريخ الاستحقاق",
+    "dueDateTo": "إلى تاريخ الاستحقاق",
     "selectDate": "اختر التاريخ",
+    "Search": "بحث",
+    "customer": "العميل",
+    "vendor": "المورد",
     "Entries": "سجل",
     "Previous": "السابق",
     "Next": "التالي",
@@ -56,7 +63,7 @@
     "deactivate": "تعطيل",
     "save": "حفظ السجل",
     "cancel": "إلغاء",
-    "search": "البحث عن طريق الاسم أو الكود...",
+    "search": "البحث",
     "status": "حالة التشغيل",
     "success": "نجاح",
     "error": "خطأ",
@@ -122,14 +129,16 @@
     "verifying": "جاري التحقق من صحة السيرفر..."
   },
   "pages": {
-    "invoiceCostElements": "عناصر تكلفة الفواتير",
+    "invoiceCostElements": "عناصر تكلفة الفاتورة",
+    "configuration": "إعدادات النظام",
+    "inventorySettings": "إعدادات المخازن",
+    "invoiceSettings": "إعدادات الفواتير",
     "homepage": "الصفحة الرئيسية",
-    "overview": "نظرة عامة",
+    "overview": "لوحة القيادة",
     "logout": "تسجيل الخروج",
     "searchPlaceholder": "البحث عن الصفحات والقوائم...",
     "noMenuResults": "لم يتم العثور على صفحات مطابقة.",
     "systemSettings": "إعدادات النظام",
-    "configuration": "التهيئات",
     "companySettings": "إعدادات الشركة",
     "usersManagement": "إدارة المستخدمين",
     "users": "المستخدمين",
@@ -139,6 +148,9 @@
     "apiOnline": "خادم API متصل",
     "apiOffline": "خادم API غير متصل",
     "enterpriseGateway": "بوابة المؤسسة",
+    "stockTransfers": "نقل المخزون",
+    "stockAdjustments": "تسويات المخزون",
+    "stockTransactions": "حركات المخزون",
     "activeLang": "اللغة النشطة",
     "welcomePortal": "مرحباً بك في",
     "heroText": "تم حقن وتكوين تنسيقات التشغيل تلقائياً. هذه البوابة متكاملة تماماً مع واجهات برمجة تطبيقات تهيئة النظام لـ .NET 10.",
@@ -167,7 +179,29 @@
     "reports": "التقارير",
     "salesReports": "التقارير",
     "partnerLedger": "كشف حساب الشركاء",
-    "businessPartnerStatement": "كشف حساب الشركاء"
+    "businessPartnerStatement": "كشف حساب الشركاء",
+    "ecommerce": "التجارة الإلكترونية",
+    "userProfile": "الملف الشخصي",
+    "pages": "الصفحات",
+    "blankPage": "صفحة فارغة",
+    "error404": "خطأ 404",
+    "charts": "رسوم بيانية",
+    "lineChart": "رسم خطي",
+    "barChart": "رسم شريطي",
+    "uiElements": "عناصر الواجهة",
+    "alerts": "تنبيهات",
+    "avatar": "صورة شخصية",
+    "badge": "شارة",
+    "buttons": "أزرار",
+    "images": "صور",
+    "videos": "فيديوهات",
+    "authentication": "المصادقة",
+    "signIn": "تسجيل الدخول",
+    "signUp": "حساب جديد",
+    "salesReport": "تقرير المبيعات",
+    "purchasesReport": "تقرير المشتريات",
+    "inventoryValuation": "تقييم المخزون",
+    "dashboard": "لوحة التحكم"
   },
   "reports": {
     "businessPartnerStatement": {
@@ -215,7 +249,13 @@
       "reference": "المرجع",
       "debit": "مدين",
       "credit": "دائن",
-      "balanceText": "الرصيد"
+      "balanceText": "الرصيد",
+      "currentBalance": "الرصيد الحالي",
+      "totalSales": "إجمالي المبيعات / المفوتر",
+      "paidAmount": "المبلغ المدفوع",
+      "overdueAmount": "المبلغ المتأخر",
+      "ledger": "حركة الحساب",
+      "filters": "فلاتر البحث"
     }
   },
   "businessPartners": {
@@ -267,15 +307,26 @@
   "companySettings": {
     "title": "تهيئة الشركة",
     "subtitle": "إعدادات الهوية والبيانات الرسمية للمؤسسة",
+    "companyCode": "كود الشركة",
+    "companyCodePlaceholder": "أدخل كود الشركة",
     "companyAName": "اسم الشركة (بالعربية)",
+    "companyANamePlaceholder": "أدخل الاسم بالعربية",
     "companyEName": "اسم الشركة (بالإنجليزية)",
+    "companyENamePlaceholder": "أدخل الاسم بالإنجليزية",
     "registrationNumber": "رقم السجل التجاري",
+    "registrationNumberPlaceholder": "أدخل رقم السجل",
     "taxNumber": "الرقم الضريبي",
+    "taxNumberPlaceholder": "أدخل الرقم الضريبي",
     "address": "العنوان الرئيسي / المقر الإداري",
+    "addressPlaceholder": "أدخل العنوان",
     "country": "الدولة / البلد",
+    "countryPlaceholder": "أدخل اسم الدولة",
     "phoneNumber": "رقم هاتف التواصل",
+    "phoneNumberPlaceholder": "أدخل رقم الهاتف",
     "email": "البريد الإلكتروني الرسمي",
+    "emailPlaceholder": "أدخل البريد الإلكتروني",
     "website": "رابط الموقع الإلكتروني",
+    "websitePlaceholder": "أدخل رابط الموقع",
     "logoUpload": "شعار الشركة التجاري",
     "iconUpload": "أيقونة متصفح النظام",
     "logoHint": "رفع الشعار التجاري المستخدم في الهيدر والتقارير",
@@ -283,7 +334,9 @@
     "dragDropHint": "اسحب الملف وأفلته هنا أو انقر للتصفح",
     "save": "حفظ الإعدادات",
     "saving": "جاري حفظ التهيئة...",
-    "success": "تم حفظ تهيئة الشركة بنجاح!"
+    "success": "تم حفظ تهيئة الشركة بنجاح!",
+    "logo": "شعار الشركة",
+    "icon": "أيقونة الشركة"
   },
   "crud": {
     "editBtn": "تعديل",
@@ -536,7 +589,8 @@
       "amount": "المبلغ",
       "paymentDate": "تاريخ الدفع",
       "paymentMethod": "طريقة الدفع",
-      "reference": "المرجع"
+      "reference": "المرجع",
+      "chequeNumber": "رقم الشيك"
     },
     "tabs": {
       "items": "الأصناف",
@@ -553,7 +607,65 @@
       "Cash": "نقدي",
       "BankTransfer": "تحويل بنكي",
       "Cheque": "شيك",
-      "CreditCard": "بطاقة ائتمان"
+      "CreditCard": "بطاقة ائتمان",
+      "PostDatedCheque": "شيك آجل",
+      "Other": "أخرى"
+    },
+    "errors": {
+      "atLeastOneItem": "يجب إضافة صنف واحد على الأقل في الفاتورة.",
+      "invalidAmount": "قيمة الدفعة غير صحيحة.",
+      "invalidQuantity": "يجب أن تكون الكمية أكبر من صفر.",
+      "invalidPrice": "يجب أن يكون السعر أكبر من صفر.",
+      "duplicateItem": "هذا الصنف مضاف مسبقاً للفاتورة.",
+      "duplicateCostElement": "عنصر التكلفة هذا مضاف مسبقاً للفاتورة."
+    }
+  },
+  "purchaseInvoices": {
+    "title": "فواتير المشتريات",
+    "list": "قائمة فواتير المشتريات",
+    "add": "إضافة فاتورة مشتريات",
+    "addNew": "إضافة فاتورة جديدة",
+    "view": "عرض الفاتورة",
+    "addPayment": "إضافة دفعة",
+    "addItems": "إضافة أصناف",
+    "addCostElement": "إضافة عنصر تكلفة",
+    "fields": {
+      "code": "كود الفاتورة",
+      "businessPartner": "المورد",
+      "invoiceDate": "تاريخ الفاتورة",
+      "dueDate": "تاريخ الاستحقاق",
+      "warehouse": "المستودع",
+      "totalAmount": "إجمالي المبلغ",
+      "remainingAmount": "المبلغ المتبقي",
+      "status": "الحالة",
+      "subTotal": "الإجمالي الفرعي",
+      "discountAmount": "الخصم",
+      "taxAmount": "الضريبة",
+      "invoice": "الفاتورة",
+      "amount": "المبلغ",
+      "paymentDate": "تاريخ الدفع",
+      "paymentMethod": "طريقة الدفع",
+      "reference": "المرجع",
+      "chequeNumber": "رقم الشيك"
+    },
+    "tabs": {
+      "items": "الأصناف",
+      "costElements": "عناصر التكلفة"
+    },
+    "status": {
+      "Draft": "مسودة",
+      "Confirmed": "مؤكدة",
+      "PartiallyPaid": "مدفوعة جزئياً",
+      "FullyPaid": "مدفوعة بالكامل",
+      "Cancelled": "ملغاة"
+    },
+    "paymentMethods": {
+      "Cash": "نقدي",
+      "BankTransfer": "تحويل بنكي",
+      "Cheque": "شيك",
+      "CreditCard": "بطاقة ائتمان",
+      "PostDatedCheque": "شيك آجل",
+      "Other": "أخرى"
     },
     "errors": {
       "atLeastOneItem": "يجب إضافة صنف واحد على الأقل في الفاتورة.",
@@ -654,7 +766,7 @@
     }
   },
   "HomePage": {
-    "Title": "الرئيسية",
+    "Title": "الصفحة الرئيسية",
     "Subtitle": "مرحباً بك في لوحة التحكم",
     "NextPrayer": "الصلاة القادمة",
     "NextPrayerDesc": "حان الآن موعد الصلاة القادمة حسب التوقيت المحلي",
@@ -671,6 +783,182 @@
     "cancel": "إلغاء",
     "confirmStatusChange": "هل أنت متأكد من تغيير الحالة؟",
     "statusChangedToInactive": "تم تغيير الحالة من نشط إلى غير نشط بنجاح.",
-    "statusChangedToActive": "تم تغيير الحالة من غير نشط إلى نشط بنجاح."
+    "statusChangedToActive": "تم تغيير الحالة من غير نشط إلى نشط بنجاح.",
+    "errorSavingData": "حدث خطأ أثناء حفظ البيانات.",
+    "errorLoadingData": "حدث خطأ أثناء تحميل البيانات.",
+    "savedSuccessfully": "تم حفظ البيانات بنجاح."
+  },
+  "salesReturns": {
+    "title": "مردودات المبيعات",
+    "list": "قائمة مردودات المبيعات",
+    "add": "إضافة مردود مبيعات",
+    "addNew": "إضافة مردود جديد",
+    "view": "عرض المردود",
+    "addPayment": "إضافة دفعة",
+    "addItems": "إضافة أصناف",
+    "addCostElement": "إضافة عنصر تكلفة",
+    "linkedReturn": "مردود مرتبط بفاتورة",
+    "available": "المتاح",
+    "fields": {
+      "code": "كود المردود",
+      "originalInvoice": "الفاتورة الأصلية",
+      "businessPartner": "العميل",
+      "invoiceDate": "تاريخ المردود",
+      "dueDate": "تاريخ الاستحقاق",
+      "warehouse": "المخزن",
+      "totalAmount": "إجمالي المبلغ",
+      "remainingAmount": "المبلغ المتبقي",
+      "status": "الحالة",
+      "subTotal": "الإجمالي الفرعي",
+      "taxAmount": "الضريبة",
+      "invoice": "الفاتورة",
+      "amount": "المبلغ",
+      "paymentDate": "تاريخ الدفع",
+      "paymentMethod": "طريقة الدفع",
+      "reference": "المرجع",
+      "chequeNumber": "رقم الشيك"
+    },
+    "tabs": {
+      "items": "الأصناف",
+      "costElements": "عناصر التكلفة"
+    },
+    "errors": {
+      "atLeastOneItem": "يجب إضافة صنف واحد على الأقل في المردود."
+    },
+    "status": {
+      "Draft": "مسودة",
+      "Confirmed": "مؤكد",
+      "PartiallyPaid": "مدفوع جزئياً",
+      "FullyPaid": "مدفوع بالكامل",
+      "Cancelled": "ملغي"
+    }
+  },
+  "purchaseReturns": {
+    "title": "مردودات المشتريات",
+    "list": "قائمة مردودات المشتريات",
+    "add": "إضافة مردود مشتريات",
+    "addNew": "إضافة مردود جديد",
+    "view": "عرض المردود",
+    "addPayment": "إضافة دفعة",
+    "addItems": "إضافة أصناف",
+    "addCostElement": "إضافة عنصر تكلفة",
+    "linkedReturn": "مردود مرتبط بفاتورة",
+    "available": "المتاح",
+    "status": {
+      "Draft": "مسودة",
+      "Confirmed": "مؤكد",
+      "PartiallyPaid": "مدفوع جزئياً",
+      "FullyPaid": "مدفوع بالكامل",
+      "Cancelled": "ملغي"
+    },
+    "fields": {
+      "code": "كود المردود",
+      "originalInvoice": "الفاتورة الأصلية",
+      "businessPartner": "المورد",
+      "invoiceDate": "تاريخ المردود",
+      "dueDate": "تاريخ الاستحقاق",
+      "warehouse": "المخزن",
+      "totalAmount": "إجمالي المبلغ",
+      "remainingAmount": "المبلغ المتبقي",
+      "status": "الحالة",
+      "subTotal": "الإجمالي الفرعي",
+      "taxAmount": "الضريبة",
+      "invoice": "الفاتورة",
+      "amount": "المبلغ",
+      "paymentDate": "تاريخ الدفع",
+      "paymentMethod": "طريقة الدفع",
+      "reference": "المرجع",
+      "chequeNumber": "رقم الشيك"
+    },
+    "tabs": {
+      "items": "الأصناف",
+      "costElements": "عناصر التكلفة"
+    },
+    "errors": {
+      "atLeastOneItem": "يجب إضافة صنف واحد على الأقل في المردود."
+    }
+  },
+  "stockTransfers": {
+    "title": "تحويلات المخزون",
+    "add": "إضافة تحويل",
+    "view": "عرض التحويل",
+    "saveSuccess": "تم حفظ تحويل المخزون بنجاح.",
+    "mainInfo": "المعلومات الأساسية",
+    "fromWarehouse": "من مخزن",
+    "toWarehouse": "إلى مخزن",
+    "items": "الأصناف",
+    "addItems": "إضافة أصناف",
+    "quantity": "الكمية",
+    "confirm": "تأكيد",
+    "cancelTransfer": "إلغاء التحويل",
+    "status": {
+      "0": "مسودة",
+      "1": "مؤكد",
+      "2": "ملغي"
+    },
+    "errors": {
+      "atLeastOneItem": "يجب إضافة صنف واحد على الأقل.",
+      "invalidQuantity": "يجب أن تكون الكمية أكبر من صفر.",
+      "duplicateItem": "الصنف موجود مسبقاً في التحويل.",
+      "sameWarehouse": "لا يمكن أن يكون المخزن المحول منه وإليه نفس المخزن."
+    }
+  },
+  "stockAdjustments": {
+    "title": "تسويات المخزون",
+    "add": "إضافة تسوية",
+    "view": "عرض التسوية",
+    "saveSuccess": "تم حفظ تسوية المخزون بنجاح.",
+    "mainInfo": "المعلومات الأساسية",
+    "warehouse": "المخزن",
+    "type": "نوع التسوية",
+    "reason": "السبب",
+    "items": "الأصناف",
+    "addItems": "إضافة أصناف",
+    "systemQuantity": "كمية النظام",
+    "countedQuantity": "الكمية الفعلية",
+    "difference": "الفرق",
+    "confirm": "تأكيد",
+    "status": {
+      "0": "مسودة",
+      "1": "مؤكد",
+      "2": "ملغي"
+    },
+    "types": {
+      "inventory": "جرد المخزون",
+      "adjustment": "تسوية يدوية"
+    },
+    "errors": {
+      "atLeastOneItem": "يجب إضافة صنف واحد على الأقل.",
+      "duplicateItem": "الصنف موجود مسبقاً في التسوية."
+    }
+  },
+  "stockTransactions": {
+    "title": "حركات المخزون",
+    "type": "النوع",
+    "item": "الصنف",
+    "warehouse": "المخزن",
+    "quantity": "الكمية",
+    "runningBalance": "الرصيد التراكمي"
+  },
+  "الكل": "الكل",
+  "InventorySettings": {
+    "Title": "إعدادات المخزون",
+    "AllowNegativeStock": "السماح بالسحب على المكشوف",
+    "RequireStockBeforeConfirm": "اشتراط توفر رصيد قبل تأكيد الحركات",
+    "Notes": "الملاحظات",
+    "EditTitle": "تعديل إعدادات المخزون",
+    "EditSubtitle": "تحديث الإعدادات العامة لنظام المخزون.",
+    "Yes": "نعم",
+    "No": "لا"
+  },
+  "InvoiceSettings": {
+    "Title": "إعدادات الفواتير",
+    "AllowSaveInvoiceWithoutPayment": "السماح بحفظ الفاتورة بدون دفع",
+    "RequireCostElementPercentage": "اشتراط وجود نسبة لعناصر التكلفة",
+    "Notes": "الملاحظات",
+    "EditTitle": "تعديل إعدادات الفواتير",
+    "EditSubtitle": "تحديث الإعدادات العامة لنظام الفواتير.",
+    "Yes": "نعم",
+    "No": "لا"
   }
 }

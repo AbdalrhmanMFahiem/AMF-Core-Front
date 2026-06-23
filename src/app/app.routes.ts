@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { HomePageComponent } from './pages/home-page/home-page.component';
 import { unsavedChangesGuard } from './core/guards/unsaved-changes.guard';
 import { authGuard } from './core/guards/auth.guard';
+import { setupGuard } from './core/guards/setup.guard';
 import { EcommerceComponent } from './pages/dashboard/ecommerce/ecommerce.component';
 import { ProfileComponent } from './pages/profile/profile.component';
 import { FormElementsComponent } from './pages/forms/form-elements/form-elements.component';
@@ -64,6 +65,58 @@ export const routes: Routes = [
         path: 'master-data/business-partners/view/:id',
         loadComponent: () => import('./pages/master-data/business-partners/business-partner-form/business-partner-form.component').then(c => c.BusinessPartnerFormComponent),
         title: 'View Business Partner | AMF Core'
+      },
+      // Configuration
+      {
+        path: 'configuration/company-settings',
+        loadComponent: () => import('./pages/configuration/company-settings/company-settings.component').then(c => c.CompanySettingsComponent),
+        title: 'Company Settings | AMF Core'
+      },
+      {
+        path: 'configuration/inventory-settings',
+        loadComponent: () => import('./pages/configuration/inventory-settings/inventory-settings.component').then(c => c.InventorySettingsComponent),
+        title: 'Inventory Settings | AMF Core'
+      },
+      {
+        path: 'configuration/invoice-settings',
+        loadComponent: () => import('./pages/configuration/invoice-settings/invoice-settings.component').then(c => c.InvoiceSettingsComponent),
+        title: 'Invoice Settings | AMF Core'
+      },
+      // Inventory
+      {
+        path: 'inventory/stock-transfers',
+        loadComponent: () => import('./pages/inventory/stock-transfers/stock-transfers-list/stock-transfers-list.component').then(c => c.StockTransfersListComponent),
+        title: 'Stock Transfers | AMF Core'
+      },
+      {
+        path: 'inventory/stock-transfers/add',
+        loadComponent: () => import('./pages/inventory/stock-transfers/stock-transfer-form/stock-transfer-form.component').then(c => c.StockTransferFormComponent),
+        title: 'Add Stock Transfer | AMF Core'
+      },
+      {
+        path: 'inventory/stock-transfers/view/:id',
+        loadComponent: () => import('./pages/inventory/stock-transfers/stock-transfer-form/stock-transfer-form.component').then(c => c.StockTransferFormComponent),
+        title: 'View Stock Transfer | AMF Core'
+      },
+      {
+        path: 'inventory/stock-adjustments',
+        loadComponent: () => import('./pages/inventory/stock-adjustments/stock-adjustments-list/stock-adjustments-list.component').then(c => c.StockAdjustmentsListComponent),
+        title: 'Stock Adjustments | AMF Core'
+      },
+      {
+        path: 'inventory/stock-adjustments/add',
+        loadComponent: () => import('./pages/inventory/stock-adjustments/stock-adjustment-form/stock-adjustment-form.component').then(c => c.StockAdjustmentFormComponent),
+        title: 'Add Stock Adjustment | AMF Core'
+      },
+      {
+        path: 'inventory/stock-adjustments/view/:id',
+        loadComponent: () => import('./pages/inventory/stock-adjustments/stock-adjustment-form/stock-adjustment-form.component').then(c => c.StockAdjustmentFormComponent),
+        title: 'View Stock Adjustment | AMF Core'
+      },
+      {
+        path: 'inventory/stock-transactions',
+        loadComponent: () => import('./pages/inventory/stock-transactions/stock-transactions-list/stock-transactions-list.component').then(c => c.StockTransactionsListComponent),
+        title: 'Stock Transactions | AMF Core'
       },
       // support tickets
       {
@@ -205,13 +258,86 @@ export const routes: Routes = [
         canDeactivate: [unsavedChangesGuard],
         title: 'View Sales Invoice | AMF Core'
       },
+      {
+        path: 'sales/returns',
+        loadComponent: () => import('./pages/sales/returns/sales-returns-list/sales-returns-list.component').then(c => c.SalesReturnsListComponent),
+        title: 'Sales Returns | AMF Core'
+      },
+      {
+        path: 'sales/returns/add',
+        loadComponent: () => import('./pages/sales/returns/sales-return-form/sales-return-form.component').then(c => c.SalesReturnFormComponent),
+        canDeactivate: [unsavedChangesGuard],
+        title: 'Add Sales Return | AMF Core'
+      },
+      {
+        path: 'sales/returns/view/:id',
+        loadComponent: () => import('./pages/sales/returns/sales-return-form/sales-return-form.component').then(c => c.SalesReturnFormComponent),
+        canDeactivate: [unsavedChangesGuard],
+        title: 'View Sales Return | AMF Core'
+      },
+      // Purchases
+      {
+        path: 'purchases/invoices',
+        loadComponent: () => import('./pages/purchases/invoices/purchase-invoices-list/purchase-invoices-list.component').then(c => c.PurchaseInvoicesListComponent),
+        title: 'Purchase Invoices | AMF Core'
+      },
+      {
+        path: 'purchases/invoices/add',
+        loadComponent: () => import('./pages/purchases/invoices/purchase-invoice-form/purchase-invoice-form.component').then(c => c.PurchaseInvoiceFormComponent),
+        canDeactivate: [unsavedChangesGuard],
+        title: 'Add Purchase Invoice | AMF Core'
+      },
+      {
+        path: 'purchases/invoices/view/:id',
+        loadComponent: () => import('./pages/purchases/invoices/purchase-invoice-form/purchase-invoice-form.component').then(c => c.PurchaseInvoiceFormComponent),
+        canDeactivate: [unsavedChangesGuard],
+        title: 'View Purchase Invoice | AMF Core'
+      },
+      {
+        path: 'purchases/returns',
+        loadComponent: () => import('./pages/purchases/returns/purchase-returns-list/purchase-returns-list.component').then(c => c.PurchaseReturnsListComponent),
+        title: 'Purchase Returns | AMF Core'
+      },
+      {
+        path: 'purchases/returns/add',
+        loadComponent: () => import('./pages/purchases/returns/purchase-return-form/purchase-return-form.component').then(c => c.PurchaseReturnFormComponent),
+        canDeactivate: [unsavedChangesGuard],
+        title: 'Add Purchase Return | AMF Core'
+      },
+      {
+        path: 'purchases/returns/view/:id',
+        loadComponent: () => import('./pages/purchases/returns/purchase-return-form/purchase-return-form.component').then(c => c.PurchaseReturnFormComponent),
+        canDeactivate: [unsavedChangesGuard],
+        title: 'View Purchase Return | AMF Core'
+      },
       // Reports
       {
         path: 'reports/business-partner-statement',
         loadComponent: () => import('./pages/reports/business-partner-statement/business-partner-statement.component').then(c => c.BusinessPartnerStatementComponent),
         title: 'Business Partner Statement | AMF Core'
       },
+      {
+        path: 'reports/sales',
+        loadComponent: () => import('./pages/reports/sales-report/sales-report.component').then(c => c.SalesReportComponent),
+        title: 'Sales Report | AMF Core'
+      },
+      {
+        path: 'reports/purchases',
+        loadComponent: () => import('./pages/reports/purchases-report/purchases-report.component').then(c => c.PurchasesReportComponent),
+        title: 'Purchases Report | AMF Core'
+      },
+      {
+        path: 'reports/inventory-valuation',
+        loadComponent: () => import('./pages/reports/inventory-valuation/inventory-valuation.component').then(c => c.InventoryValuationComponent),
+        title: 'Inventory Valuation | AMF Core'
+      },
     ]
+  },
+  {
+    path: 'setup-company',
+    loadComponent: () => import('./pages/setup-company/setup-company.component').then(c => c.SetupCompanyComponent),
+    canActivate: [setupGuard],
+    title: 'Setup Company | AMF Core'
   },
   // auth pages
   {

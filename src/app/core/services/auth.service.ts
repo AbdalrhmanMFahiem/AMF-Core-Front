@@ -15,6 +15,10 @@ export class AuthService {
     return this.http.post<AuthResponse>(this.apiUrl, request);
   }
 
+  setupCompany(request: import('../models/auth.models').SetupCompanyRequest): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${this.apiUrl}/setup-company`, request);
+  }
+
   setToken(token: string) {
     localStorage.setItem('token', token);
   }

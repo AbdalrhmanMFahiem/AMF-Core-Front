@@ -2,10 +2,9 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { BusinessPartnerResponse, BusinessPartnerBasicResponse, BusinessPartnerRequest } from '../models/business-partner.model';
-import { BusinessPartnerStatementResponse, StatementFilter } from '../models/report.model';
 import { PaginatedList, RequestFilters } from '../models/pagination.model';
 import { NextCodeResponse } from '../models/lookup.model';
-import { BusinessPartnerLedgerResponse, LedgerFilters } from '../models/business-partner.model';
+import { BusinessPartnerLedgerResponse, LedgerFilters, BalanceSummaryResponse } from '../models/business-partner.model';
 import { environment } from '../../../environments/environment';
 
 @Injectable({
@@ -55,19 +54,8 @@ export class BusinessPartnerService {
     return this.http.put<void>(`${this.apiUrl}/${id}/toggleStatus`, {});
   }
 
-  getStatement(filters: StatementFilter): Observable<BusinessPartnerStatementResponse> {
-    let params = new HttpParams();
-    if (filters.businessPartnerId) {
-      params = params.set('businessPartnerId', filters.businessPartnerId.toString());
-    }
-    if (filters.fromDate) {
-      params = params.set('fromDate', filters.fromDate);
-    }
-    if (filters.toDate) {
-      params = params.set('toDate', filters.toDate);
-    }
-
-    return this.http.get<BusinessPartnerStatementResponse>(`${this.apiUrl}/statement`, { params });
+  getBalanceSummary(id: number): Observable<BalanceSummaryResponse> {
+    return this.http.get<BalanceSummaryResponse>(`${this.apiUrl}/${id}/balance-summary`);
   }
 
   getLedger(id: number, filters: LedgerFilters): Observable<PaginatedList<BusinessPartnerLedgerResponse>> {

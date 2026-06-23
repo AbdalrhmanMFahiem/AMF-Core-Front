@@ -1,0 +1,16 @@
+<app-page-breadcrumb [pageTitle]="'stockTransactions.title'" />
+<div class="space-y-6">
+  <app-crud-list 
+    [pageTitle]="'stockTransactions.title'" 
+    [searchPlaceholder]="'common.search'"
+    [columns]="columns" 
+    [data]="data" 
+    [filters]="filters"
+    [isLoading]="loading"
+    [hideEdit]="true"
+    [hideView]="true"
+    [hideBuiltInSearch]="false"
+    (search)="loadData()"
+    (pageChange)="onPageChange($event)">
+  </app-crud-list>
+</div>

@@ -1,35 +1,35 @@
-<app-page-breadcrumb [pageTitle]="'reports.businessPartnerStatement' | translate" />
+<app-page-breadcrumb [pageTitle]="'reports.businessPartnerStatement.title' | translate" />
 
 <div class="space-y-6">
   <!-- Filters Section -->
-  <app-component-card [title]="'common.filters' | translate" [className]="'p-6'">
+  <app-component-card [title]="'reports.businessPartnerStatement.filters' | translate" [className]="'p-6'">
     <div class="grid grid-cols-1 gap-6 sm:grid-cols-3">
       <!-- Business Partner -->
       <div>
         <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
           {{ 'businessPartners.fields.name' | translate }} <span class="text-error-500">*</span>
         </label>
-        <app-searchable-select [(ngModel)]="filters.businessPartnerId" name="businessPartnerId"
+        <app-searchable-select [(ngModel)]="businessPartnerId" name="businessPartnerId"
           [options]="businessPartnersOptions" placeholder="Common.Select">
         </app-searchable-select>
       </div>
 
       <!-- From Date -->
-      <div>
+      <div class="relative z-20">
         <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-          {{ 'common.fromDate' | translate }}
+          {{ 'Common.from' | translate }}
         </label>
-        <input type="date" [(ngModel)]="filters.fromDate" name="fromDate"
-          class="w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm outline-none focus:border-brand-500 dark:border-gray-800 dark:focus:border-brand-500" />
+        <app-date-picker id="fromDate" name="fromDate" [(ngModel)]="filters.from">
+        </app-date-picker>
       </div>
 
       <!-- To Date -->
-      <div>
+      <div class="relative z-10">
         <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-          {{ 'common.toDate' | translate }}
+          {{ 'Common.to' | translate }}
         </label>
-        <input type="date" [(ngModel)]="filters.toDate" name="toDate"
-          class="w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm outline-none focus:border-brand-500 dark:border-gray-800 dark:focus:border-brand-500" />
+        <app-date-picker id="toDate" name="toDate" [(ngModel)]="filters.to">
+        </app-date-picker>
       </div>
     </div>
 
@@ -37,107 +37,69 @@
     <div class="mt-6 flex justify-end gap-3">
       <button type="button" (click)="onReset()"
         class="rounded-lg border border-gray-300 bg-white px-5 py-2.5 text-sm font-medium text-gray-700 shadow-sm transition-colors hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700">
-        {{ 'common.reset' | translate }}
+        {{ 'Common.reset' | translate }}
       </button>
-      <button type="button" (click)="onSearch()" [disabled]="!filters.businessPartnerId || loading"
+      <button type="button" (click)="onSearch()" [disabled]="!businessPartnerId || loading || summaryLoading"
         class="flex items-center gap-2 rounded-lg bg-brand-500 px-5 py-2.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-brand-600 disabled:opacity-50">
-        <svg *ngIf="loading" class="h-4 w-4 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none"
+        <svg *ngIf="loading || summaryLoading" class="h-4 w-4 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none"
           viewBox="0 0 24 24">
           <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
           <path class="opacity-75" fill="currentColor"
             d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
           </path>
         </svg>
-        <span>{{ 'common.search' | translate }}</span>
+        <span>{{ 'Common.search' | translate }}</span>
       </button>
     </div>
   </app-component-card>
 
   <!-- Report Details -->
-  <app-component-card *ngIf="data" [title]="'reports.results' | translate" [className]="'p-0'">
-    <div class="p-6 border-b border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-800/50">
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div>
-          <p class="text-sm text-gray-500 dark:text-gray-400">{{ 'businessPartners.fields.name' | translate }}</p>
-          <p class="font-medium text-gray-900 dark:text-white">{{ data.partnerName }}</p>
-        </div>
-        <div>
-          <p class="text-sm text-gray-500 dark:text-gray-400">{{ 'reports.openingBalance' | translate }}</p>
-          <p class="font-medium text-gray-900 dark:text-white"
-            [ngClass]="{'text-success-600': data.openingBalance > 0, 'text-error-600': data.openingBalance < 0}">
-            {{ data.openingBalance | number:'1.2-2' }}
-          </p>
-        </div>
-        <div>
-          <p class="text-sm text-gray-500 dark:text-gray-400">{{ 'reports.closingBalance' | translate }}</p>
-          <p class="font-medium text-gray-900 dark:text-white"
-            [ngClass]="{'text-success-600': data.closingBalance > 0, 'text-error-600': data.closingBalance < 0}">
-            {{ data.closingBalance | number:'1.2-2' }}
-          </p>
+  <ng-container *ngIf="summary || ledgerData.items.length > 0">
+    <app-component-card *ngIf="summary" [title]="'reports.businessPartnerStatement.results' | translate" [className]="'p-0 mb-6'">
+      <div class="p-6 border-b border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-800/50">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div>
+            <p class="text-sm text-gray-500 dark:text-gray-400">{{ 'reports.businessPartnerStatement.currentBalance' | translate }}</p>
+            <p class="font-medium text-gray-900 dark:text-white"
+              [ngClass]="{'text-success-600': summary.currentBalance > 0, 'text-error-600': summary.currentBalance < 0}">
+              {{ summary.currentBalance | number:'1.2-2' }}
+            </p>
+          </div>
+          <div>
+            <p class="text-sm text-gray-500 dark:text-gray-400">{{ 'reports.businessPartnerStatement.totalSales' | translate }}</p>
+            <p class="font-medium text-gray-900 dark:text-white">
+              {{ summary.totalInvoiced | number:'1.2-2' }}
+            </p>
+          </div>
+          <div>
+            <p class="text-sm text-gray-500 dark:text-gray-400">{{ 'reports.businessPartnerStatement.paidAmount' | translate }}</p>
+            <p class="font-medium text-gray-900 dark:text-white">
+              {{ summary.totalPaid | number:'1.2-2' }}
+            </p>
+          </div>
+          <div>
+            <p class="text-sm text-gray-500 dark:text-gray-400">{{ 'reports.businessPartnerStatement.overdueAmount' | translate }}</p>
+            <p class="font-medium text-gray-900 dark:text-white"
+              [ngClass]="{'text-error-600': summary.totalOverdue > 0}">
+              {{ summary.totalOverdue | number:'1.2-2' }}
+            </p>
+          </div>
         </div>
       </div>
-    </div>
+    </app-component-card>
 
-    <!-- Transactions Table -->
-    <div class="overflow-x-auto">
-      <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-800">
-        <thead class="bg-gray-50 dark:bg-gray-800">
-          <tr>
-            <th scope="col"
-              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-400">
-              {{ 'reports.date' | translate }}
-            </th>
-            <th scope="col"
-              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-400">
-              {{ 'reports.transactionType' | translate }}
-            </th>
-            <th scope="col"
-              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-400">
-              {{ 'reports.reference' | translate }}
-            </th>
-            <th scope="col"
-              class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-400">
-              {{ 'reports.debit' | translate }}
-            </th>
-            <th scope="col"
-              class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-400">
-              {{ 'reports.credit' | translate }}
-            </th>
-            <th scope="col"
-              class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-400">
-              {{ 'reports.balance' | translate }}
-            </th>
-          </tr>
-        </thead>
-        <tbody class="bg-white divide-y divide-gray-200 dark:bg-gray-900 dark:divide-gray-800">
-          <tr *ngFor="let tx of data.transactions" class="hover:bg-gray-50 dark:hover:bg-gray-800/50">
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300">
-              {{ tx.date | date:'shortDate' }}
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300">
-              {{ tx.transactionType }}
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300">
-              {{ tx.reference }}
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-gray-900 dark:text-gray-300">
-              {{ tx.debit > 0 ? (tx.debit | number:'1.2-2') : '-' }}
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-gray-900 dark:text-gray-300">
-              {{ tx.credit > 0 ? (tx.credit | number:'1.2-2') : '-' }}
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-right font-medium"
-              [ngClass]="{'text-success-600': tx.balance > 0, 'text-error-600': tx.balance < 0, 'text-gray-900 dark:text-gray-300': tx.balance === 0}">
-              {{ tx.balance | number:'1.2-2' }}
-            </td>
-          </tr>
-          <tr *ngIf="data.transactions.length === 0">
-            <td colspan="6" class="px-6 py-8 text-center text-sm text-gray-500 dark:text-gray-400">
-              {{ 'common.noData' | translate }}
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </app-component-card>
+    <!-- Transactions Crud List -->
+    <app-crud-list 
+      [pageTitle]="'reports.businessPartnerStatement.ledger' | translate" 
+      [searchPlaceholder]="'Common.SearchPlaceholder' | translate"
+      [columns]="columns" 
+      [data]="ledgerData" 
+      [filters]="filters"
+      [isLoading]="loading"
+      [hideEdit]="true"
+      [hideView]="true"
+      [hideBuiltInSearch]="true"
+      (pageChange)="onPageChange($event)">
+    </app-crud-list>
+  </ng-container>
 </div>

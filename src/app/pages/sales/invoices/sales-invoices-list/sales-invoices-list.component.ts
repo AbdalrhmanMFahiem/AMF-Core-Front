@@ -7,11 +7,15 @@ import { InvoiceBasicResponse, InvoiceFilters, InvoiceStatus, InvoiceStatsRespon
 import { CrudListComponent, CrudColumn } from '../../../../shared/components/common/crud-list/crud-list.component';
 import { PageBreadcrumbComponent } from '../../../../shared/components/common/page-breadcrumb/page-breadcrumb.component';
 import { PaymentModalComponent } from '../payment-modal/payment-modal.component';
+import { SearchableSelectComponent, SearchableOption } from '../../../../shared/components/form/searchable-select/searchable-select.component';
+import { DatePickerComponent } from '../../../../shared/components/form/date-picker/date-picker.component';
+import { LookupService } from '../../../../core/services/lookup.service';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-sales-invoices-list',
   standalone: true,
-  imports: [CommonModule, TranslateModule, CrudListComponent, PageBreadcrumbComponent, PaymentModalComponent],
+  imports: [CommonModule, FormsModule, TranslateModule, CrudListComponent, PageBreadcrumbComponent, PaymentModalComponent, SearchableSelectComponent, DatePickerComponent],
   template: `
     <app-page-breadcrumb [pageTitle]="'salesInvoices.title'" />
     <div class="space-y-6">
@@ -96,6 +100,9 @@ import { PaymentModalComponent } from '../payment-modal/payment-modal.component'
         addBtnText="salesInvoices.add"
         [filters]="filters"
         [showIncludeDisabledToggle]="false"
+        [hideBuiltInSearch]="true"
+        [hasAdvancedFilters]="true"
+        [hasActiveAdvancedFilters]="hasActiveAdvancedFilters"
         [hideEdit]="true"
         [hideToggleStatus]="isActionHidden"
         [customActions]="customActions"
@@ -105,7 +112,47 @@ import { PaymentModalComponent } from '../payment-modal/payment-modal.component'
         (view)="onView($event)"
         (toggleStatus)="onToggleStatus($event)"
         (customAction)="onCustomAction($event)"
-        (refresh)="loadData()">
+        (refresh)="resetFilters()">
+
+        <div custom-filters class="flex-1 w-full flex items-center gap-2">
+          <input type="text" [(ngModel)]="filters.searchValue" (keyup.enter)="loadData()" [placeholder]="'Common.SearchPlaceholder' | translate" [disabled]="loading"
+            class="dark:bg-dark-900 h-11 w-full sm:max-w-xs rounded-lg border border-gray-200 bg-transparent py-2.5 px-4 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-800 dark:bg-white/3 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800 disabled:opacity-50 disabled:cursor-not-allowed" />
+        </div>
+
+        <div advanced-filters class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          <div>
+            <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1.5">{{ 'Common.customer' | translate }}</label>
+            <app-searchable-select [options]="customersOptions" placeholder="Common.all"
+              [(ngModel)]="filters.businessPartnerId" (selectionChange)="loadData()"></app-searchable-select>
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1.5">{{ 'salesInvoices.fields.status' | translate }}</label>
+            <app-searchable-select [options]="statusOptions" placeholder="Common.all"
+              [(ngModel)]="filters.status" (selectionChange)="loadData()"></app-searchable-select>
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1.5">{{ 'Common.invoiceDateFrom' | translate }}</label>
+            <app-date-picker id="invoiceDateFrom" name="invoiceDateFrom" [(ngModel)]="filters.invoiceDateFrom" (ngModelChange)="loadData()" [placeholder]="'Common.selectDate' | translate"></app-date-picker>
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1.5">{{ 'Common.invoiceDateTo' | translate }}</label>
+            <app-date-picker id="invoiceDateTo" name="invoiceDateTo" [(ngModel)]="filters.invoiceDateTo" (ngModelChange)="loadData()" [placeholder]="'Common.selectDate' | translate"></app-date-picker>
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1.5">{{ 'Common.dueDateFrom' | translate }}</label>
+            <app-date-picker id="dueDateFrom" name="dueDateFrom" [(ngModel)]="filters.dueDateFrom" (ngModelChange)="loadData()" [placeholder]="'Common.selectDate' | translate"></app-date-picker>
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1.5">{{ 'Common.dueDateTo' | translate }}</label>
+            <app-date-picker id="dueDateTo" name="dueDateTo" [(ngModel)]="filters.dueDateTo" (ngModelChange)="loadData()" [placeholder]="'Common.selectDate' | translate"></app-date-picker>
+          </div>
+          <div class="flex items-end">
+            <button (click)="resetFilters()" class="w-full px-4 py-2 text-sm text-error-600 bg-error-50 hover:bg-error-100 rounded-lg transition-colors font-medium dark:bg-error-500/10 dark:text-error-400 dark:hover:bg-error-500/20">
+              {{ 'Common.reset' | translate }}
+            </button>
+          </div>
+        </div>
+
       </app-crud-list>
     </div>
     
@@ -119,8 +166,12 @@ import { PaymentModalComponent } from '../payment-modal/payment-modal.component'
 })
 export class SalesInvoicesListComponent implements OnInit {
   private invoiceService = inject(InvoiceService);
+  private lookupService = inject(LookupService);
   private router = inject(Router);
   private translate = inject(TranslateService);
+
+  customersOptions: SearchableOption[] = [];
+  statusOptions: SearchableOption[] = [];
 
   loading = false;
   loadingStats = false;
@@ -129,6 +180,17 @@ export class SalesInvoicesListComponent implements OnInit {
 
   isPaymentModalOpen = false;
   selectedInvoiceForPayment: InvoiceBasicResponse | null = null;
+
+  get hasActiveAdvancedFilters(): boolean {
+    return !!(
+      this.filters.businessPartnerId ||
+      this.filters.status ||
+      this.filters.invoiceDateFrom ||
+      this.filters.invoiceDateTo ||
+      this.filters.dueDateFrom ||
+      this.filters.dueDateTo
+    );
+  }
 
   customActions = [
     {
@@ -158,6 +220,41 @@ export class SalesInvoicesListComponent implements OnInit {
   ];
 
   ngOnInit(): void {
+    this.initOptions();
+    this.loadData();
+  }
+
+  initOptions(): void {
+    this.lookupService.getCustomers().subscribe(res => {
+      this.customersOptions = (res || []).map(c => ({ value: c.id, label: c.name }));
+    });
+
+    this.translate.onLangChange.subscribe(() => this.updateStatusOptions());
+    this.updateStatusOptions();
+  }
+
+  updateStatusOptions(): void {
+    this.statusOptions = [
+      { value: 'Draft', label: this.translate.instant('salesInvoices.status.Draft') },
+      { value: 'Confirmed', label: this.translate.instant('salesInvoices.status.Confirmed') },
+      { value: 'PartiallyPaid', label: this.translate.instant('salesInvoices.status.PartiallyPaid') },
+      { value: 'FullyPaid', label: this.translate.instant('salesInvoices.status.FullyPaid') },
+      { value: 'Cancelled', label: this.translate.instant('salesInvoices.status.Cancelled') }
+    ];
+  }
+
+  resetFilters(): void {
+    this.filters = {
+      pageNumber: 1,
+      pageSize: 10,
+      searchValue: '',
+      businessPartnerId: undefined,
+      status: undefined,
+      invoiceDateFrom: undefined,
+      invoiceDateTo: undefined,
+      dueDateFrom: undefined,
+      dueDateTo: undefined
+    };
     this.loadData();
   }
 
