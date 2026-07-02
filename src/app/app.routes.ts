@@ -242,18 +242,18 @@ export const routes: Routes = [
       },
       // Sales
       {
-        path: 'sales/invoices',
+        path: 'invoices/sales',
         loadComponent: () => import('./pages/sales/invoices/sales-invoices-list/sales-invoices-list.component').then(c => c.SalesInvoicesListComponent),
         title: 'Sales Invoices | AMF Core'
       },
       {
-        path: 'sales/invoices/add',
+        path: 'invoices/sales/add',
         loadComponent: () => import('./pages/sales/invoices/sales-invoice-form/sales-invoice-form.component').then(c => c.SalesInvoiceFormComponent),
         canDeactivate: [unsavedChangesGuard],
         title: 'Add Sales Invoice | AMF Core'
       },
       {
-        path: 'sales/invoices/view/:id',
+        path: 'invoices/sales/view/:id',
         loadComponent: () => import('./pages/sales/invoices/sales-invoice-form/sales-invoice-form.component').then(c => c.SalesInvoiceFormComponent),
         canDeactivate: [unsavedChangesGuard],
         title: 'View Sales Invoice | AMF Core'

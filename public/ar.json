@@ -120,7 +120,21 @@
     "authenticating": "جاري التحقق من الحساب...",
     "activeDatabases": "قواعد البيانات النشطة",
     "description": "نظام متكامل لإدارة المبيعات والمشتريات، العملاء والموردين، وإدارة المخازن، مرتبط بالتقارير والحسابات.",
-    "comingSoon": "قريباً: الخزينة والقيود المحاسبية."
+    "comingSoon": "قريباً: الخزينة والقيود المحاسبية.",
+    "workspaceSetup": "إعداد بيئة العمل",
+    "selectCompanyAndBranch": "اختر شركتك وفرعك للمتابعة",
+    "company": "الشركة",
+    "branch": "الفرع",
+    "chooseCompany": "اختر الشركة...",
+    "chooseBranch": "اختر الفرع...",
+    "registerNewCompany": "تسجيل شركة جديدة",
+    "registerCompanyDesc": "قم بإنشاء بيئة عمل جديدة للشركة وإعداد الفرع الرئيسي لها.",
+    "companyName": "اسم الشركة",
+    "mainBranchName": "اسم الفرع الرئيسي",
+    "egMainBranch": "مثال: الفرع الرئيسي",
+    "registerBtn": "تسجيل الشركة",
+    "cancel": "إلغاء",
+    "back": "رجوع"
   },
   "serverUnavailable": {
     "title": "انقطع الاتصال بالسيرفر",

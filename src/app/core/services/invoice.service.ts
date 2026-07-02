@@ -22,7 +22,7 @@ import { NextCodeResponse } from '../models/lookup.model';
 export class InvoiceService {
   private http = inject(HttpClient);
   private getApiUrl(type: 'sales' | 'purchases'): string {
-    return `${environment.apiUrl}/api/${type}/invoices`;
+    return `${environment.apiUrl}/api/invoices/${type}`;
   }
 
   private getOptions(filters?: InvoiceFilters) {

@@ -15,7 +15,8 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
         toastr.error('Your session has expired. Please log in again.', 'Unauthorized');
         localStorage.removeItem('token');
         localStorage.removeItem('authResponse');
-        router.navigate(['/Auth']);
+        const returnUrl = router.url;
+        router.navigate(['/Auth'], { queryParams: { returnUrl } });
       } else if (error.error && Array.isArray(error.error.errors)) {
         const errors = error.error.errors;
         errors.forEach((errItem: any) => {

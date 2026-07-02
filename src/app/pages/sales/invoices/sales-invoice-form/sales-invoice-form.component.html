@@ -1,9 +1,9 @@
 <app-page-breadcrumb [pageTitle]="(mode === 'view' ? 'Common.View' : 'salesInvoices.addNew')"
-  parentPageTitle="salesInvoices.title" parentPageUrl="/sales/invoices" />
+  parentPageTitle="salesInvoices.title" parentPageUrl="/invoices/sales" />
 
 <div class="space-y-6">
   <app-success-redirect-banner [isVisible]="saveSuccess" [message]="'Common.savedSuccessfully'"
-    [redirectUrl]="'/sales/invoices'" [countdownSeconds]="5" (stay)="saveSuccess = false">
+    [redirectUrl]="'/invoices/sales'" [countdownSeconds]="5" (stay)="saveSuccess = false">
   </app-success-redirect-banner>
 
   <app-component-card [title]="(mode === 'view' ? 'Common.View' : 'salesInvoices.addNew') | translate"

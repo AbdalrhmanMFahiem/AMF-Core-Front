@@ -86,7 +86,7 @@ export class AppSidebarComponent {
       translationKey: "pages.sales",
       icon: `<svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M2 2C1.44772 2 1 2.44772 1 3V21C1 22.1046 1.89543 23 3 23H21C22.1046 23 23 22.1046 23 21V3C23 2.44772 22.5523 2 22 2C21.4477 2 21 2.44772 21 3V21H3V3C3 2.44772 2.55228 2 2 2ZM5 5C4.44772 5 4 5.44772 4 6V14C4 15.1046 4.89543 16 6 16H18C19.1046 16 20 15.1046 20 14V6C20 5.44772 19.5523 5 19 5C18.4477 5 18 5.44772 18 6V14H6V6C6 5.44772 5.55228 5 5 5Z" fill="currentColor"></path></svg>`,
       subItems: [
-        { name: "Sales Invoices", translationKey: "salesInvoices.title", path: "/sales/invoices" },
+        { name: "Sales Invoices", translationKey: "salesInvoices.title", path: "/invoices/sales" },
         { name: "Sales Returns", translationKey: "salesReturns.title", path: "/sales/returns" }
       ],
     },

@@ -274,7 +274,8 @@ export class SalesInvoicesListComponent implements OnInit {
         };
 
         // Map status enum to translated string
-        const mappedItems = res.items.map((item: InvoiceBasicResponse) => ({
+        const itemsList = res.items || (res as any).Items || [];
+        const mappedItems = itemsList.map((item: InvoiceBasicResponse) => ({
           ...item,
           statusDisplay: this.translate.instant('salesInvoices.status.' + item.status),
           statusDisplayColor: getStatusColor(item.status),
@@ -305,11 +306,11 @@ export class SalesInvoicesListComponent implements OnInit {
   }
 
   onAdd(): void {
-    this.router.navigate(['/sales/invoices/add']);
+    this.router.navigate(['/invoices/sales/add']);
   }
 
   onView(id: number): void {
-    this.router.navigate(['/sales/invoices/view', id]);
+    this.router.navigate(['/invoices/sales/view', id]);
   }
 
   onToggleStatus(item: InvoiceBasicResponse): void {

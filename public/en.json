@@ -109,7 +109,21 @@
     "authenticating": "Authenticating Account...",
     "activeDatabases": "Active Databases",
     "description": "A comprehensive system for Sales, Purchases, Customers, Suppliers, and Inventory Management, integrated with Reports and Accounting.",
-    "comingSoon": "Coming soon: Treasury and Journal Entries."
+    "comingSoon": "Coming soon: Treasury and Journal Entries.",
+    "workspaceSetup": "Workspace Setup",
+    "selectCompanyAndBranch": "Select your company and branch to continue",
+    "company": "Company",
+    "branch": "Branch",
+    "chooseCompany": "Choose a company...",
+    "chooseBranch": "Choose a branch...",
+    "registerNewCompany": "Register New Company",
+    "registerCompanyDesc": "Create a new tenant for a company and setup its main branch.",
+    "companyName": "Company Name",
+    "mainBranchName": "Main Branch Name",
+    "egMainBranch": "e.g. Main Branch",
+    "registerBtn": "Register Company",
+    "cancel": "Cancel",
+    "back": "Back"
   },
   "serverUnavailable": {
     "title": "Server Connection Lost",
@@ -778,6 +792,7 @@
   },
   "common": {
     "save": "Save",
+    "saving": "Saving...",
     "cancel": "Cancel",
     "confirmStatusChange": "Are you sure you want to change the status?",
     "statusChangedToInactive": "Status changed from Active to Inactive successfully.",

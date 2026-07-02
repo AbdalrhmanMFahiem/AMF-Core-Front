@@ -274,7 +274,8 @@ export class PurchaseInvoicesListComponent implements OnInit {
         };
 
         // Map status enum to translated string
-        const mappedItems = res.items.map((item: InvoiceBasicResponse) => ({
+        const itemsList = res.items || (res as any).Items || [];
+        const mappedItems = itemsList.map((item: InvoiceBasicResponse) => ({
           ...item,
           statusDisplay: this.translate.instant('purchaseInvoices.status.' + item.status),
           statusDisplayColor: getStatusColor(item.status),

@@ -446,7 +446,7 @@ export class SalesInvoiceFormComponent implements OnInit, HasUnsavedChanges {
   }
 
   onCancel(): void {
-    this.router.navigate(['/sales/invoices']);
+    this.router.navigate(['/invoices/sales']);
   }
 
   hasUnsavedChanges(): boolean {

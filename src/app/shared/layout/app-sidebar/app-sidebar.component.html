@@ -12,16 +12,14 @@
     'ltr:-translate-x-full rtl:translate-x-full': !(isMobileOpen$ | async),
     'xl:translate-x-0!': true
   }" (mouseenter)="onSidebarMouseEnter()" (mouseleave)="sidebarService.setHovered(false)">
-  <div class="py-8 flex" [ngClass]="{
-      'xl:justify-center': !((isExpanded$ | async) || (isHovered$ | async)),
-      'justify-start': (isExpanded$ | async) || (isHovered$ | async)
-    }">
+  <div class="py-1 flex justify-center">
     <a routerLink="/">
       @if ((isExpanded$ | async) || (isHovered$ | async) || (isMobileOpen$ | async)) {
-      <img class="dark:hidden" src="/images/logo/logo.svg" alt="Logo" width="150" height="40" />
-      <img class="hidden dark:block" src="/images/logo/logo-dark.svg" alt="Logo" width="150" height="40" />
+      <img class="dark:hidden" src="/images/logo/AMF-Core-Icon.png" alt="Logo" width="100" height="30" />
+      <img class="hidden dark:block" src="/images/logo/AMF-Core-Icon-dark.png" alt="Logo" width="100" height="30" />
       } @else {
-      <img src="/images/logo/logo-icon.svg" alt="Logo" width="32" height="32" />
+      <img class="dark:hidden" src="/images/logo/AMF-Core-Icon.png" alt="Logo" width="40" height="40" />
+      <img class="hidden dark:block" src="/images/logo/AMF-Core-Icon-dark.png" alt="Logo" width="40" height="40" />
       }
     </a>
   </div>
