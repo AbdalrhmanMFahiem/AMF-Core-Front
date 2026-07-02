@@ -78,7 +78,12 @@
     "apply": "تطبيق",
     "reset": "إعادة تعيين",
     "all": "الكل",
-    "unsavedChangesMessage": "لديك تغييرات غير محفوظة. هل أنت متأكد أنك تريد المغادرة دون الحفظ؟"
+    "unsavedChangesMessage": "لديك تغييرات غير محفوظة. هل أنت متأكد أنك تريد المغادرة دون الحفظ؟",
+    "fieldRequired": "حقل {{field}} مطلوب",
+    "invalidEmail": "حقل {{field}} يحتوي على بريد إلكتروني غير صالح",
+    "invalidField": "حقل {{field}} غير صالح",
+    "pleaseFillRequiredFields": "الرجاء ملء الحقول المطلوبة",
+    "errorSavingData": "حدث خطأ أثناء حفظ البيانات"
   },
   "validation": {
     "required": "هذا الحقل مطلوب",
@@ -974,5 +979,79 @@
     "EditSubtitle": "تحديث الإعدادات العامة لنظام الفواتير.",
     "Yes": "نعم",
     "No": "لا"
+  },
+  "users": {
+    "title": "المستخدمين",
+    "list": "قائمة المستخدمين",
+    "add": "إضافة مستخدم",
+    "addNew": "إضافة مستخدم جديد",
+    "edit": "تعديل المستخدم",
+    "view": "عرض المستخدم",
+    "fields": {
+      "code": "الكود",
+      "firstPrimaryName": "الاسم الأول (أساسي)",
+      "lastPrimaryName": "الاسم الأخير (أساسي)",
+      "firstForeignName": "الاسم الأول (أجنبي)",
+      "lastForeignName": "الاسم الأخير (أجنبي)",
+      "email": "البريد الإلكتروني",
+      "password": "كلمة المرور",
+      "isActive": "نشط",
+      "changePassword": "تغيير كلمة المرور",
+      "lockAccess": "قفل الوصول",
+      "roles": "الصلاحيات",
+      "photo": "الصورة الشخصية"
+    },
+    "tabs": {
+      "basicInfo": "المعلومات الأساسية",
+      "employmentInfo": "بيانات التوظيف"
+    },
+    "employment": {
+      "manager": "المدير",
+      "jobTitle": "المسمى الوظيفي",
+      "hardAnnualLeave": "الرصيد السنوي",
+      "balanceDueDate": "تاريخ استحقاق الرصيد",
+      "haveBalance": "له رصيد",
+      "birthDate": "تاريخ الميلاد",
+      "gender": "الجنس",
+      "nationality": "الجنسية",
+      "nationalId": "الرقم القومي",
+      "passportNumber": "رقم الجواز",
+      "address": "العنوان",
+      "addressLine1": "العنوان 1",
+      "addressLine2": "العنوان 2",
+      "city": "المدينة",
+      "governorate": "المحافظة",
+      "postalCode": "الرمز البريدي",
+      "country": "البلد",
+      "bank": "البنك",
+      "bankAccount": "رقم الحساب",
+      "socialInsurance": "التأمينات الاجتماعية",
+      "medicalInsurance": "التأمين الطبي",
+      "sector": "القطاع",
+      "department": "الإدارة",
+      "section": "القسم",
+      "location": "الموقع",
+      "isDeployed": "مُعين",
+      "additionalInfo": "معلومات إضافية",
+      "male": "ذكر",
+      "female": "أنثى"
+    }
+  },
+  "roles": {
+    "title": "الصلاحيات",
+    "list": "قائمة الصلاحيات",
+    "add": "إضافة صلاحية",
+    "addNew": "إضافة صلاحية جديدة",
+    "edit": "تعديل الصلاحية",
+    "view": "عرض الصلاحية",
+    "permissions": "الأذونات والصلاحيات",
+    "expandAll": "توسيع الكل",
+    "collapseAll": "طي الكل",
+    "fields": {
+      "name": "الاسم",
+      "aName": "الاسم العربي",
+      "eName": "الاسم الإنجليزي",
+      "notes": "الملاحظات"
+    }
   }
 }

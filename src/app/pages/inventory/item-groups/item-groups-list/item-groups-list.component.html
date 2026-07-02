@@ -7,13 +7,14 @@
     [columns]="columns" 
     [data]="data" 
     [filters]="filters"
-    [(includeDisabled)]="includeDisabled"
+    [includeDisabled]="includeDisabled"
     [isLoading]="loading"
     (search)="loadData()"
     (add)="onAdd()"
     (view)="onView($event)"
     (edit)="onEdit($event)"
     (toggleStatus)="onToggleStatus($event)"
-    (pageChange)="onPageChange($event)">
+    (pageChange)="onPageChange($event)"
+    (includeDisabledChange)="onIncludeDisabledChanged($event)">
   </app-crud-list>
 </div>

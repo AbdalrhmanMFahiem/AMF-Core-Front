@@ -10,10 +10,10 @@ import { combineLatest, Subscription } from 'rxjs';
 type NavItem = {
   name: string;
   translationKey?: string;
-  icon: string;
+  icon?: string;
   path?: string;
   new?: boolean;
-  subItems?: { name: string; translationKey?: string; path: string; pro?: boolean; new?: boolean }[];
+  subItems?: { name: string; translationKey?: string; path?: string; pro?: boolean; new?: boolean; icon?: string; subItems?: any[] }[];
 };
 
 @Component({
@@ -50,22 +50,35 @@ export class AppSidebarComponent {
       path: "/profile",
     },
     {
-      name: "Configuration",
-      translationKey: "pages.configuration",
-      icon: `<svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M11 2a2 2 0 0 0-2 2v2.268A7.988 7.988 0 0 0 6.643 7.82L4.68 6.685a2 2 0 0 0-2.732.732l-2 3.464a2 2 0 0 0 .732 2.732L2.643 14.8A7.988 7.988 0 0 0 3 16.206v1.18c0 .285-.015.568-.043.847l-1.92 1.109a2 2 0 0 0-.732 2.732l2 3.464a2 2 0 0 0 2.732.732l1.963-1.134A7.988 7.988 0 0 0 9 26.268V28a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2v-2.268a7.988 7.988 0 0 0 2.357-1.55l1.963 1.134a2 2 0 0 0 2.732-.732l2-3.464a2 2 0 0 0-.732-2.732l-1.963-1.134A7.988 7.988 0 0 0 21 16.206v-1.18a7.988 7.988 0 0 0-.043-.847l1.92-1.109a2 2 0 0 0 .732-2.732l-2-3.464a2 2 0 0 0-2.732-.732l-1.963 1.134A7.988 7.988 0 0 0 15 6.268V4a2 2 0 0 0-2-2h-4ZM12 11a4 4 0 1 0 0 8 4 4 0 0 0 0-8Z" fill="currentColor" transform="scale(0.8) translate(3,3)"/></svg>`,
+      name: "Administration",
+      translationKey: "pages.administration",
+      icon: `<svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M16 7C16 9.20914 14.2091 11 12 11C9.79086 11 8 9.20914 8 7C8 4.79086 9.79086 3 12 3C14.2091 3 16 4.79086 16 7ZM14 7C14 8.10457 13.1046 9 12 9C10.8954 9 10 8.10457 10 7C10 5.89543 10.8954 5 12 5C13.1046 5 14 5.89543 14 7Z" fill="currentColor"></path><path fill-rule="evenodd" clip-rule="evenodd" d="M16 15C16 14.4477 15.5523 14 15 14H9C8.44772 14 8 14.4477 8 15V16C8 17.6569 9.34315 19 11 19H13C14.6569 19 16 17.6569 16 16V15ZM6 15C6 13.3431 7.34315 12 9 12H15C16.6569 12 18 13.3431 18 15V16C18 18.7614 15.7614 21 13 21H11C8.23858 21 6 18.7614 6 16V15Z" fill="currentColor"></path></svg>`,
       subItems: [
-        { name: "Company Settings", translationKey: "pages.companySettings", path: "/configuration/company-settings" },
-        { name: "Inventory Settings", translationKey: "pages.inventorySettings", path: "/configuration/inventory-settings" },
-        { name: "Invoice Settings", translationKey: "pages.invoiceSettings", path: "/configuration/invoice-settings" }
-      ],
-    },
-    {
-      name: "Master Data",
-      translationKey: "pages.masterData",
-      icon: `<svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2ZM4.5 12C4.5 7.85786 7.85786 4.5 12 4.5C16.1421 4.5 19.5 7.85786 19.5 12C19.5 16.1421 16.1421 19.5 12 19.5C7.85786 19.5 4.5 16.1421 4.5 12ZM12 8C10.8954 8 10 8.89543 10 10C10 11.1046 10.8954 12 12 12C13.1046 12 14 11.1046 14 10C14 8.89543 13.1046 8 12 8ZM12 13.5C9.33333 13.5 7 15 7 17.5H17C17 15 14.6667 13.5 12 13.5Z" fill="currentColor"></path></svg>`,
-      subItems: [
-        { name: "Business Partners", translationKey: "pages.businessPartners", path: "/master-data/business-partners" },
-        { name: "Invoice Cost Elements", translationKey: "pages.invoiceCostElements", path: "/inventory/invoice-cost-elements" }
+        { 
+          name: "Users Management", translationKey: "pages.usersManagement", 
+          icon: `<svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>`,
+          subItems: [
+            { name: "Users", translationKey: "pages.users", path: "/administration/users" },
+            { name: "Roles", translationKey: "pages.roles", path: "/administration/roles" }
+          ]
+        },
+        { 
+          name: "Configuration", translationKey: "pages.configuration", 
+          icon: `<svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path><circle cx="12" cy="12" r="3"></circle></svg>`,
+          subItems: [
+            { name: "Company Settings", translationKey: "pages.companySettings", path: "/configuration/company-settings" },
+            { name: "Inventory Settings", translationKey: "pages.inventorySettings", path: "/configuration/inventory-settings" },
+            { name: "Invoice Settings", translationKey: "pages.invoiceSettings", path: "/configuration/invoice-settings" }
+          ]
+        },
+        { 
+          name: "Master Data", translationKey: "pages.masterData", 
+          icon: `<svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M3 5V19A9 3 0 0 0 21 19V5"></path><path d="M3 12A9 3 0 0 0 21 12"></path></svg>`,
+          subItems: [
+            { name: "Business Partners", translationKey: "pages.businessPartners", path: "/master-data/business-partners" },
+            { name: "Invoice Cost Elements", translationKey: "pages.invoiceCostElements", path: "/inventory/invoice-cost-elements" }
+          ]
+        }
       ],
     },
     {
@@ -155,7 +168,8 @@ export class AppSidebarComponent {
     },
   ];
 
-  openSubmenu: string | null | number = null;
+  openSubmenu: string | null = null;
+  openNestedSubmenu: string | null = null;
   subMenuHeights: { [key: string]: number } = {};
   @ViewChildren('subMenu') subMenuRefs!: QueryList<ElementRef>;
 
@@ -176,6 +190,11 @@ export class AppSidebarComponent {
   }
 
   ngOnInit() {
+    // Initial active menu setup
+    setTimeout(() => {
+      this.setActiveMenuFromRoute(this.router.url);
+    }, 100);
+
     // Subscribe to router events
     this.subscription.add(
       this.router.events.subscribe(event => {
@@ -224,6 +243,7 @@ export class AppSidebarComponent {
 
     if (this.openSubmenu === key) {
       this.openSubmenu = null;
+      this.openNestedSubmenu = null; // Close nested when main closes
       this.subMenuHeights[key] = 0;
     } else {
       this.openSubmenu = key;
@@ -233,6 +253,50 @@ export class AppSidebarComponent {
         if (el) {
           this.subMenuHeights[key] = el.scrollHeight;
           this.cdr.detectChanges(); // Ensure UI updates
+        }
+      });
+    }
+  }
+
+  toggleNestedSubmenu(section: string, index: number, nestedIndex: number) {
+    const key = `${section}-${index}-${nestedIndex}`;
+    const parentKey = `${section}-${index}`;
+    
+    if (this.openNestedSubmenu === key) {
+      const el = document.getElementById(key);
+      const childHeight = el ? el.scrollHeight : 0;
+      
+      this.openNestedSubmenu = null;
+      this.subMenuHeights[key] = 0;
+      
+      const parentEl = document.getElementById(parentKey);
+      if (parentEl) {
+         this.subMenuHeights[parentKey] = Math.max(0, parentEl.scrollHeight - childHeight);
+      }
+    } else {
+      let prevChildHeight = 0;
+      if (this.openNestedSubmenu && this.openNestedSubmenu.startsWith(`${section}-${index}-`)) {
+         const prevEl = document.getElementById(this.openNestedSubmenu);
+         if (prevEl) prevChildHeight = prevEl.scrollHeight;
+         this.subMenuHeights[this.openNestedSubmenu] = 0;
+      } else if (this.openNestedSubmenu) {
+         this.subMenuHeights[this.openNestedSubmenu] = 0;
+      }
+
+      this.openNestedSubmenu = key;
+
+      setTimeout(() => {
+        const el = document.getElementById(key);
+        if (el) {
+          const childHeight = el.scrollHeight;
+          this.subMenuHeights[key] = childHeight;
+          
+          const parentEl = document.getElementById(parentKey);
+          if (parentEl) {
+             const baseHeight = parentEl.scrollHeight - prevChildHeight;
+             this.subMenuHeights[parentKey] = baseHeight + childHeight;
+          }
+          this.cdr.detectChanges();
         }
       });
     }
@@ -255,18 +319,44 @@ export class AppSidebarComponent {
     menuGroups.forEach(group => {
       group.items.forEach((nav, i) => {
         if (nav.subItems) {
-          nav.subItems.forEach(subItem => {
-            if (currentUrl === subItem.path || (subItem.path !== '/' && subItem.path !== '/' && currentUrl.startsWith(subItem.path + '/'))) {
-              const key = `${group.prefix}-${i}`;
-              this.openSubmenu = key;
+          nav.subItems.forEach((subItem, j) => {
+            // Check for nested subItems
+            if (subItem.subItems) {
+               subItem.subItems.forEach((nestedItem: any) => {
+                 if (currentUrl === nestedItem.path || (nestedItem.path !== '/' && currentUrl.startsWith(nestedItem.path + '/'))) {
+                    const parentKey = `${group.prefix}-${i}`;
+                    const nestedKey = `${group.prefix}-${i}-${j}`;
+                    this.openSubmenu = parentKey;
+                    this.openNestedSubmenu = nestedKey;
+                    
+                    setTimeout(() => {
+                      const nestedEl = document.getElementById(nestedKey);
+                      let nestedHeight = 0;
+                      if (nestedEl) {
+                        nestedHeight = nestedEl.scrollHeight;
+                        this.subMenuHeights[nestedKey] = nestedHeight;
+                      }
+                      const parentEl = document.getElementById(parentKey);
+                      if (parentEl) {
+                        this.subMenuHeights[parentKey] = parentEl.scrollHeight + nestedHeight;
+                      }
+                      this.cdr.detectChanges();
+                    });
+                 }
+               });
+            } else {
+              if (currentUrl === subItem.path || (subItem.path !== '/' && currentUrl.startsWith(subItem.path! + '/'))) {
+                const key = `${group.prefix}-${i}`;
+                this.openSubmenu = key;
 
-              setTimeout(() => {
-                const el = document.getElementById(key);
-                if (el) {
-                  this.subMenuHeights[key] = el.scrollHeight;
-                  this.cdr.detectChanges(); // Ensure UI updates
-                }
-              });
+                setTimeout(() => {
+                  const el = document.getElementById(key);
+                  if (el) {
+                    this.subMenuHeights[key] = el.scrollHeight;
+                    this.cdr.detectChanges(); // Ensure UI updates
+                  }
+                });
+              }
             }
           });
         }

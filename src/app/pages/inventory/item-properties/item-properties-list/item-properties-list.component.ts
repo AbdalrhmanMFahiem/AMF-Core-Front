@@ -95,4 +95,9 @@ export class ItemPropertiesListComponent implements OnInit {
     this.filters.pageNumber = pageIndex;
     this.loadData();
   }
+
+  onIncludeDisabledChanged(include: boolean): void {
+    this.includeDisabled = include;
+    this.loadData();
+  }
 }

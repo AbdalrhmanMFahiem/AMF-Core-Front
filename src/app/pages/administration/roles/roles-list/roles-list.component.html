@@ -1,0 +1,18 @@
+<app-page-breadcrumb [pageTitle]="'roles.list' | translate"></app-page-breadcrumb>
+
+<app-crud-list
+  [data]="data"
+  [columns]="columns"
+  [isLoading]="loading"
+  [filters]="filters"
+  [includeDisabled]="includeDisabled"
+  [title]="'roles.list' | translate"
+  [hideToggleStatus]="false"
+  (search)="onSearch()"
+  (pageChange)="onPageChange($event)"
+  (includeDisabledChange)="onIncludeDisabledChanged($event)"
+  (add)="onAdd()"
+  (edit)="onEdit($event)"
+  (view)="onView($event)"
+  (toggleStatus)="onToggleStatus($event)"
+></app-crud-list>

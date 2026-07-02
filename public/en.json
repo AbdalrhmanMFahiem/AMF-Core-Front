@@ -77,7 +77,12 @@
     "SavedSuccessfully": "Saved successfully",
     "UpdatedSuccessfully": "Updated successfully",
     "Select": "Select",
-    "unsavedChangesMessage": "You have unsaved changes. Are you sure you want to leave without saving?"
+    "unsavedChangesMessage": "You have unsaved changes. Are you sure you want to leave without saving?",
+    "fieldRequired": "The {{field}} field is required",
+    "invalidEmail": "The {{field}} field has an invalid email format",
+    "invalidField": "The {{field}} field is invalid",
+    "pleaseFillRequiredFields": "Please fill required fields",
+    "errorSavingData": "Error saving data"
   },
   "Pages": {
     "ItemProperties": {
@@ -973,5 +978,79 @@
     "EditSubtitle": "Update the global configuration for the invoice module.",
     "Yes": "Yes",
     "No": "No"
+  },
+  "users": {
+    "title": "Users",
+    "list": "Users List",
+    "add": "Add User",
+    "addNew": "Add New User",
+    "edit": "Edit User",
+    "view": "View User",
+    "fields": {
+      "code": "Code",
+      "firstPrimaryName": "First Primary Name",
+      "lastPrimaryName": "Last Primary Name",
+      "firstForeignName": "First Foreign Name",
+      "lastForeignName": "Last Foreign Name",
+      "email": "Email",
+      "password": "Password",
+      "isActive": "Active",
+      "changePassword": "Change Password",
+      "lockAccess": "Lock Access",
+      "roles": "Roles",
+      "photo": "Profile Photo"
+    },
+    "tabs": {
+      "basicInfo": "Basic Information",
+      "employmentInfo": "Employment Info"
+    },
+    "employment": {
+      "manager": "Manager",
+      "jobTitle": "Job Title",
+      "hardAnnualLeave": "Annual Leave",
+      "balanceDueDate": "Balance Due Date",
+      "haveBalance": "Have Balance",
+      "birthDate": "Birth Date",
+      "gender": "Gender",
+      "nationality": "Nationality",
+      "nationalId": "National ID",
+      "passportNumber": "Passport Number",
+      "address": "Address",
+      "addressLine1": "Address Line 1",
+      "addressLine2": "Address Line 2",
+      "city": "City",
+      "governorate": "Governorate",
+      "postalCode": "Postal Code",
+      "country": "Country",
+      "bank": "Bank",
+      "bankAccount": "Bank Account",
+      "socialInsurance": "Social Insurance",
+      "medicalInsurance": "Medical Insurance",
+      "sector": "Sector",
+      "department": "Department",
+      "section": "Section",
+      "location": "Location",
+      "isDeployed": "Deployed",
+      "additionalInfo": "Additional Info",
+      "male": "Male",
+      "female": "Female"
+    }
+  },
+  "roles": {
+    "title": "Roles",
+    "list": "Roles List",
+    "add": "Add Role",
+    "addNew": "Add New Role",
+    "edit": "Edit Role",
+    "view": "View Role",
+    "permissions": "Permissions",
+    "expandAll": "Expand All",
+    "collapseAll": "Collapse All",
+    "fields": {
+      "name": "Name",
+      "aName": "Arabic Name",
+      "eName": "English Name",
+      "notes": "Notes"
+    }
   }
 }

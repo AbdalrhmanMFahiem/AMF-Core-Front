@@ -29,6 +29,7 @@ export class ItemPropertyFormComponent implements OnInit {
   isEditMode: boolean = false;
   isView: boolean = false;
   isSaving: boolean = false;
+  loading: boolean = false;
   showSuccessBanner: boolean = false;
 
   get isEdit(): boolean {
@@ -64,6 +65,7 @@ export class ItemPropertyFormComponent implements OnInit {
     if (this.isEditMode || this.isView) {
       this.id = Number(this.route.snapshot.paramMap.get('id'));
       if (this.id) {
+        this.loading = true;
         this.loadData();
       }
     } else {
@@ -90,9 +92,11 @@ export class ItemPropertyFormComponent implements OnInit {
           eName: res.eName,
           notes: res.notes
         });
+        this.loading = false;
       },
       error: (err) => {
         this.toastr.error('Failed to load property details', 'Error');
+        this.loading = false;
         this.router.navigate(['/inventory/item-properties']);
       }
     });

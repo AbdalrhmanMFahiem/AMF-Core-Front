@@ -5,16 +5,29 @@
       <div class="flex items-center justify-center z-1">
         <!-- ===== Common Grid Shape Start ===== -->
         <app-grid-shape />
-        <div class="flex flex-col items-center max-w-xs">
-          <a routerLink="/" class="block mb-4">
-            <img width="231" height="48" src="/images/logo/auth-logo.svg" alt="Logo" />
+        <div class="flex flex-col items-center max-w-md relative z-10 px-8">
+          <!-- Subtle background glow behind the logo -->
+          <div
+            class="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 bg-brand-500/30 rounded-full blur-[80px] pointer-events-none">
+          </div>
+
+          <a routerLink="/" class="block mb-8 relative transition-transform hover:scale-105 duration-300">
+            <img class="h-60 w-auto object-contain drop-shadow-[0_10px_20px_rgba(0,0,0,0.5)]"
+              src="/images/logo/AMF-Core-Icon-tans.png" alt="AMF Core Logo" />
           </a>
-          <p class="text-center text-gray-400 dark:text-white/60 mb-2">
+
+          <p class="text-center text-lg text-white/90 mb-8 leading-relaxed font-medium drop-shadow-sm">
             {{ 'login.description' | translate }}
           </p>
-          <p class="text-center text-sm font-medium text-brand-500 dark:text-brand-400">
-            {{ 'login.comingSoon' | translate }}
-          </p>
+
+          <div
+            class="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-brand-500/10 border border-brand-500/20 backdrop-blur-sm text-sm font-bold text-brand-300 shadow-[0_0_20px_rgba(0,0,0,0.2)]">
+            <svg class="w-4 h-4 text-brand-400 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z">
+              </path>
+            </svg>
+            <span>{{ 'login.comingSoon' | translate }}</span>
+          </div>
         </div>
       </div>
     </div>

@@ -45,6 +45,53 @@ export const routes: Routes = [
         component: ProfileComponent,
         title: 'Angular Profile Dashboard | TailAdmin - Angular Admin Dashboard Template'
       },
+      // Administration
+      {
+        path: 'administration/users',
+        loadComponent: () => import('./pages/administration/users/users-list/users-list.component').then(c => c.UsersListComponent),
+        title: 'Users | AMF Core'
+      },
+      {
+        path: 'administration/users/add',
+        loadComponent: () => import('./pages/administration/users/users-form/users-form.component').then(c => c.UsersFormComponent),
+        canDeactivate: [unsavedChangesGuard],
+        title: 'Add User | AMF Core'
+      },
+      {
+        path: 'administration/users/edit/:id',
+        loadComponent: () => import('./pages/administration/users/users-form/users-form.component').then(c => c.UsersFormComponent),
+        canDeactivate: [unsavedChangesGuard],
+        title: 'Edit User | AMF Core'
+      },
+      {
+        path: 'administration/users/view/:id',
+        loadComponent: () => import('./pages/administration/users/users-form/users-form.component').then(c => c.UsersFormComponent),
+        canDeactivate: [unsavedChangesGuard],
+        title: 'View User | AMF Core'
+      },
+      {
+        path: 'administration/roles',
+        loadComponent: () => import('./pages/administration/roles/roles-list/roles-list.component').then(c => c.RolesListComponent),
+        title: 'Roles | AMF Core'
+      },
+      {
+        path: 'administration/roles/add',
+        loadComponent: () => import('./pages/administration/roles/roles-form/roles-form.component').then(c => c.RolesFormComponent),
+        canDeactivate: [unsavedChangesGuard],
+        title: 'Add Role | AMF Core'
+      },
+      {
+        path: 'administration/roles/edit/:id',
+        loadComponent: () => import('./pages/administration/roles/roles-form/roles-form.component').then(c => c.RolesFormComponent),
+        canDeactivate: [unsavedChangesGuard],
+        title: 'Edit Role | AMF Core'
+      },
+      {
+        path: 'administration/roles/view/:id',
+        loadComponent: () => import('./pages/administration/roles/roles-form/roles-form.component').then(c => c.RolesFormComponent),
+        canDeactivate: [unsavedChangesGuard],
+        title: 'View Role | AMF Core'
+      },
       // Master Data
       {
         path: 'master-data/business-partners',
