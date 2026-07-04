@@ -43,6 +43,7 @@
     "Code": "Code",
     "Name": "Name",
     "Notes": "Notes",
+    "NotesPlaceholder": "Enter notes here...",
     "Status": "Status",
     "Actions": "Actions",
     "Active": "Active",
@@ -100,6 +101,62 @@
       "ViewTitle": "View Item Group",
       "Add": "Add New Group",
       "SearchPlaceholder": "Search code or name..."
+    }
+  },
+  "warehouses": {
+    "title": "Warehouses",
+    "subTitle": "Manage your warehouses and storage areas.",
+    "addNew": "Add New Warehouse",
+    "addTitle": "Add Warehouse",
+    "form": {
+      "create": "Create Warehouse",
+      "edit": "Edit Warehouse",
+      "view": "View Warehouse"
+    },
+    "addSuccess": "Warehouse added successfully.",
+    "updateSuccess": "Warehouse updated successfully.",
+    "list": {
+      "title": "Warehouses List"
+    },
+    "sections": {
+      "capacity": "Capacity Details"
+    },
+    "fields": {
+      "code": "Code",
+      "name": "Name",
+      "aName": "Arabic Name",
+      "aNamePlaceholder": "Enter arabic name",
+      "eName": "English Name",
+      "eNamePlaceholder": "Enter english name",
+      "maxVolumeCapacity": "Volume Capacity (m³)",
+      "maxWeightCapacity": "Weight Capacity (kg)",
+      "maxPalletsCount": "Pallets Capacity"
+    }
+  },
+  "locations": {
+    "title": "Locations",
+    "subTitle": "Manage bin locations and storage areas.",
+    "addNew": "Add New Location",
+    "addTitle": "Add Location",
+    "form": {
+      "create": "Create Location",
+      "edit": "Edit Location",
+      "view": "View Location"
+    },
+    "addSuccess": "Location added successfully.",
+    "updateSuccess": "Location updated successfully.",
+    "list": {
+      "title": "Locations List"
+    },
+    "fields": {
+      "code": "Code",
+      "name": "Name",
+      "aName": "Arabic Name",
+      "aNamePlaceholder": "Enter arabic name",
+      "eName": "English Name",
+      "eNamePlaceholder": "Enter english name",
+      "parentLocation": "Parent Location",
+      "parentLocationPlaceholder": "Select parent location"
     }
   },
   "login": {

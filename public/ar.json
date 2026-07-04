@@ -5,6 +5,7 @@
     "Code": "الكود",
     "Name": "الاسم",
     "Notes": "ملاحظات",
+    "NotesPlaceholder": "أدخل الملاحظات هنا...",
     "Status": "الحالة",
     "Actions": "الإجراءات",
     "Active": "نشط",
@@ -110,7 +111,63 @@
       "EditTitle": "تعديل مجموعة أصناف",
       "ViewTitle": "عرض مجموعة أصناف",
       "Add": "إضافة مجموعة جديدة",
-      "SearchPlaceholder": "ابحث بالكود أو الاسم..."
+      "SearchPlaceholder": "البحث بالرمز أو الاسم..."
+    }
+  },
+  "warehouses": {
+    "title": "المستودعات",
+    "subTitle": "إدارة المستودعات ومناطق التخزين الخاصة بك.",
+    "addNew": "إضافة مستودع جديد",
+    "addTitle": "إضافة مستودع",
+    "form": {
+      "create": "إضافة مستودع",
+      "edit": "تعديل مستودع",
+      "view": "عرض مستودع"
+    },
+    "addSuccess": "تمت إضافة المستودع بنجاح.",
+    "updateSuccess": "تم تحديث المستودع بنجاح.",
+    "list": {
+      "title": "قائمة المستودعات"
+    },
+    "sections": {
+      "capacity": "تفاصيل السعة والتخزين"
+    },
+    "fields": {
+      "code": "الرمز",
+      "name": "الاسم",
+      "aName": "الاسم العربي",
+      "aNamePlaceholder": "أدخل الاسم العربي",
+      "eName": "الاسم الإنجليزي",
+      "eNamePlaceholder": "أدخل الاسم الإنجليزي",
+      "maxVolumeCapacity": "السعة الحجمية (متر مكعب)",
+      "maxWeightCapacity": "السعة بالوزن (كجم)",
+      "maxPalletsCount": "سعة الطبالي"
+    }
+  },
+  "locations": {
+    "title": "المواقع التخزينية",
+    "subTitle": "إدارة المواقع ومساحات التخزين الداخلية.",
+    "addNew": "إضافة موقع جديد",
+    "addTitle": "إضافة موقع",
+    "form": {
+      "create": "إضافة موقع",
+      "edit": "تعديل موقع",
+      "view": "عرض موقع"
+    },
+    "addSuccess": "تمت إضافة الموقع بنجاح.",
+    "updateSuccess": "تم تحديث الموقع بنجاح.",
+    "list": {
+      "title": "قائمة المواقع التخزينية"
+    },
+    "fields": {
+      "code": "الرمز",
+      "name": "الاسم",
+      "aName": "الاسم العربي",
+      "aNamePlaceholder": "أدخل الاسم العربي",
+      "eName": "الاسم الإنجليزي",
+      "eNamePlaceholder": "أدخل الاسم الإنجليزي",
+      "parentLocation": "الموقع الرئيسي",
+      "parentLocationPlaceholder": "اختر الموقع الرئيسي"
     }
   },
   "login": {

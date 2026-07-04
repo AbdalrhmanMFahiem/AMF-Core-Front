@@ -25,6 +25,8 @@
 - [16. Unsaved Changes Guard](#16-unsaved-changes-guard)
 - [17. Confirmation Dialogs & Toasts](#17-confirmation-dialogs--toasts)
 - [18. Styling Conventions](#18-styling-conventions)
+- [19. Performance Optimization](#19-performance-optimization)
+- [20. Clean Architecture — Frontend Alignment](#20-clean-architecture--frontend-alignment)
 
 ---
 
@@ -495,6 +497,8 @@ export class MyEntityListComponent implements OnInit {
     { field: 'name', header: 'myEntity.fields.name', type: 'text' },
     { field: 'isActive', header: 'myEntity.fields.status', type: 'badge' }
   ];
+
+> **📝 Note on Status Column:** Using `type: 'badge'` automatically renders the standardized active/inactive visual states (e.g., green 🟢 for active, red 🔴 for inactive) exactly as seen in the `items-list.component.ts` screen.
 
   ngOnInit(): void { this.loadData(); }
 
@@ -1393,6 +1397,178 @@ class="text-error-500 hover:text-error-600 transition-colors"
 
 ---
 
+## 19. Performance Optimization
+
+### ⚠️ CRITICAL: Subscription Management
+
+> **EVERY new `.subscribe()` MUST have a cleanup mechanism. Any subscription without cleanup will be rejected in code review.**
+
+**Three approaches ordered by preference (Angular 21+):**
+
+| Priority | Approach | When to use | Benefits |
+|----------|---------|-------------|---------|
+| 1️⃣ | **`toSignal()` or `AsyncPipe`** | Displaying data in Templates | No manual subscription/cleanup needed |
+| 2️⃣ | **`takeUntilDestroyed()`** | Processing data in TypeScript | One-liner, no `ngOnDestroy` needed |
+| 3️⃣ | **Manual `ngOnDestroy`** ⛔ | Legacy code ONLY | **FORBIDDEN in new code** |
+
+#### Approach 1: `toSignal()` (Preferred in Angular 21+)
+```typescript
+import { toSignal } from '@angular/core/rxjs-interop';
+
+// In constructor or field declaration:
+private data = toSignal(this.myService.getData(), { initialValue: [] });
+
+// In Template:
+// {{ data() }}
+```
+
+#### Approach 2: `takeUntilDestroyed()` (For TS Processing)
+```typescript
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { DestroyRef, inject } from '@angular/core';
+
+// ✅ Inside Injection Context (constructor or field):
+this.route.params.pipe(takeUntilDestroyed()).subscribe(params => { /* ... */ });
+
+// ✅ Outside Injection Context (in a method like ngOnInit):
+private destroyRef = inject(DestroyRef);
+
+ngOnInit() {
+  this.myService.getData().pipe(
+    takeUntilDestroyed(this.destroyRef)
+  ).subscribe(data => { this.processData(data); });
+}
+```
+
+#### Approach 3: `AsyncPipe` (For Simple Templates)
+```html
+<div *ngIf="data$ | async as data">
+  {{ data.name }}
+</div>
+```
+
+> **🔄 Gradual Update Rule:** When modifying a legacy file that uses manual `ngOnDestroy` + `Subscription`, you **MUST** refactor it to use `takeUntilDestroyed()` in the same PR.
+
+### Change Detection Strategy
+
+> **EVERY NEW Shared Component MUST use `ChangeDetectionStrategy.OnPush`.**
+> **Components in `pages/` SHOULD use it where possible, but it is not mandatory.**
+
+```typescript
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+
+@Component({
+  selector: 'app-my-shared',
+  standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush, // ← MANDATORY
+  // ...
+})
+export class MySharedComponent { }
+```
+
+**OnPush Requirements:**
+- Use `@Input()` with immutable data (or `input()` signal)
+- Use `AsyncPipe` or `toSignal()` instead of manual `.subscribe()`
+- When manual update is needed: `inject(ChangeDetectorRef).markForCheck()`
+
+### Angular 21+ Signals APIs (Preferred)
+
+Recommend using Signal-based APIs in new code:
+
+| Legacy API | Modern API (Preferred) | Example |
+|-----------|---------------------|------|
+| `@Input()` | `input()` / `input.required()` | `name = input<string>('')` |
+| `@Output()` | `output()` | `clicked = output<void>()` |
+| `[(ngModel)]` | `model()` | `value = model<string>('')` |
+| `@ViewChild()` | `viewChild()` | `myEl = viewChild<ElementRef>('myEl')` |
+| `.subscribe()` in template | `toSignal()` | `data = toSignal(obs$)` |
+| `computed` properties | `computed()` | `total = computed(() => ...)` |
+
+> [!NOTE]
+> These recommendations are **preferred** but not strictly mandatory yet. Traditional `@Input()` / `@Output()` can still be used.
+
+### `trackBy` in Lists
+
+> **EVERY `*ngFor` MUST include a `trackBy` function.**
+
+```html
+<!-- ✅ Correct -->
+<tr *ngFor="let item of items; trackBy: trackById">
+
+<!-- Or in Angular 21+ with @for: -->
+@for (item of items; track item.id) {
+  <tr>...</tr>
+}
+```
+
+```typescript
+trackById(index: number, item: any): number {
+  return item.id;
+}
+```
+
+---
+
+## 20. Clean Architecture — Frontend Alignment
+
+### ⚠️ CRITICAL RULE: No Cross-Module Imports
+
+**Import Boundary Rules:**
+
+```
+┌─────────────────────────────────────────────────┐
+│                    core/                        │
+│  (models, services, guards, interceptors)       │
+│  ⛔ CANNOT import from shared/ or pages/        │
+└──────────────────────┬──────────────────────────┘
+                       │ ✅
+┌──────────────────────▼──────────────────────────┐
+│                   shared/                       │
+│  (components, pipes, directives, layout)        │
+│  ✅ CAN import from core/                       │
+│  ⛔ CANNOT import from pages/                   │
+└──────────────────────┬──────────────────────────┘
+                       │ ✅
+┌──────────────────────▼──────────────────────────┐
+│                   pages/                        │
+│  ✅ CAN import from core/ and shared/           │
+│  ⛔ CANNOT import from another pages/ module    │
+│                                                 │
+│  pages/sales ──✅──→ core/*                     │
+│  pages/sales ──✅──→ shared/*                   │
+│  pages/sales ──⛔──→ pages/inventory            │
+│  pages/inventory ⛔→ pages/sales                │
+└─────────────────────────────────────────────────┘
+```
+
+### When to Move to Core or Shared
+
+| Scenario | Destination | Example |
+|--------|--------|------|
+| **Model** needed by >1 module | `core/models/` | `partner.model.ts` (Sales & Purchases) |
+| **Service** needed by >1 module | `core/services/` | `LookupService` |
+| **Component** needed by >1 module | `shared/components/` | `SearchableSelectComponent` |
+| **Pipe/Directive** shared | `shared/pipe/` or `shared/directives/` | `SafeHtmlPipe` |
+
+### Red Flags 🚩 (FORBIDDEN Patterns)
+
+```typescript
+// ❌ FORBIDDEN: Importing model from another module
+import { SalesInvoice } from '../../sales/models/sales-invoice.model';
+
+// ❌ FORBIDDEN: Importing service from another module
+import { SalesService } from '../../sales/services/sales.service';
+
+// ❌ FORBIDDEN: Importing component from another module
+import { SalesWidgetComponent } from '../../sales/components/sales-widget.component';
+
+// ✅ CORRECT: Move shared code to core/ or shared/
+import { InvoiceModel } from '../../../../core/models/invoice.model';
+import { SharedWidgetComponent } from '../../../../shared/components/shared-widget.component';
+```
+
+---
+
 ## ✅ Quick Reference Checklist
 
 Before creating any screen, verify:
@@ -1415,3 +1591,8 @@ Before creating any screen, verify:
 - [ ] Existing `LookupService` methods reused for dropdown data
 - [ ] Existing `Common.*` / `crud.*` / `common.*` translation keys reused
 - [ ] `unsavedChangesGuard` added to form routes (if needed)
+- [ ] Subscriptions use `takeUntilDestroyed()` or `toSignal()` (NO manual `ngOnDestroy`)
+- [ ] Shared components use `ChangeDetectionStrategy.OnPush`
+- [ ] `*ngFor` loops include `trackBy` (or use `@for` with `track`)
+- [ ] No cross-module imports between `pages/` directories
+- [ ] Shared models/services live in `core/` not inside a specific `pages/` module

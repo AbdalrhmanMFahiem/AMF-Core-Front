@@ -88,6 +88,8 @@ export class AppSidebarComponent {
       subItems: [
         { name: "Item Properties", translationKey: "pages.itemProperties", path: "/inventory/item-properties" },
         { name: "Item Groups", translationKey: "pages.itemGroups", path: "/inventory/item-groups" },
+        { name: "Warehouses", translationKey: "warehouses.title", path: "/inventory/warehouses" },
+        { name: "Locations", translationKey: "locations.title", path: "/inventory/locations" },
         { name: "Items", translationKey: "pages.items", path: "/inventory/items" },
         { name: "Stock Transfers", translationKey: "pages.stockTransfers", path: "/inventory/stock-transfers" },
         { name: "Stock Adjustments", translationKey: "pages.stockAdjustments", path: "/inventory/stock-adjustments" },

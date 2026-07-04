@@ -248,6 +248,46 @@ export const routes: Routes = [
         title: 'View Item Group | AMF Core'
       },
       {
+        path: 'inventory/warehouses',
+        loadComponent: () => import('./pages/inventory/warehouses/warehouses-list/warehouses-list.component').then(c => c.WarehousesListComponent),
+        title: 'Warehouses | AMF Core'
+      },
+      {
+        path: 'inventory/warehouses/add',
+        loadComponent: () => import('./pages/inventory/warehouses/warehouse-form/warehouse-form.component').then(c => c.WarehouseFormComponent),
+        title: 'Add Warehouse | AMF Core'
+      },
+      {
+        path: 'inventory/warehouses/edit/:id',
+        loadComponent: () => import('./pages/inventory/warehouses/warehouse-form/warehouse-form.component').then(c => c.WarehouseFormComponent),
+        title: 'Edit Warehouse | AMF Core'
+      },
+      {
+        path: 'inventory/warehouses/view/:id',
+        loadComponent: () => import('./pages/inventory/warehouses/warehouse-form/warehouse-form.component').then(c => c.WarehouseFormComponent),
+        title: 'View Warehouse | AMF Core'
+      },
+      {
+        path: 'inventory/locations',
+        loadComponent: () => import('./pages/inventory/locations/locations-list/locations-list.component').then(c => c.LocationsListComponent),
+        title: 'Locations | AMF Core'
+      },
+      {
+        path: 'inventory/locations/add',
+        loadComponent: () => import('./pages/inventory/locations/location-form/location-form.component').then(c => c.LocationFormComponent),
+        title: 'Add Location | AMF Core'
+      },
+      {
+        path: 'inventory/locations/edit/:id',
+        loadComponent: () => import('./pages/inventory/locations/location-form/location-form.component').then(c => c.LocationFormComponent),
+        title: 'Edit Location | AMF Core'
+      },
+      {
+        path: 'inventory/locations/view/:id',
+        loadComponent: () => import('./pages/inventory/locations/location-form/location-form.component').then(c => c.LocationFormComponent),
+        title: 'View Location | AMF Core'
+      },
+      {
         path: 'inventory/items',
         loadComponent: () => import('./pages/inventory/items/items-list/items-list.component').then(c => c.ItemsListComponent),
         title: 'Items | AMF Core'
