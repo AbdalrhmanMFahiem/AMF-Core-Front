@@ -1015,17 +1015,22 @@
     "quantity": "Quantity",
     "runningBalance": "Running Balance"
   },
-  "الكل": "All",
   "InventorySettings": {
-    "Title": "Inventory Configuration",
-    "AllowNegativeStock": "Allow Negative Stock",
-    "RequireStockBeforeConfirm": "Require Stock Before Confirming Transactions",
-    "Notes": "Notes",
+    "Title": "Inventory Settings",
     "EditTitle": "Edit Inventory Settings",
-    "EditSubtitle": "Update the global configuration for the inventory module.",
+    "EditSubtitle": "Configure your inventory behavior and accounting methods.",
+    "AllowNegativeStock": "Allow Negative Stock",
+    "RequireStockBeforeConfirm": "Require Stock Before Confirm",
+    "ValuationMethod": "Inventory Valuation Method",
+    "WeightedAverage": "Weighted Average",
+    "FIFO": "First In First Out (FIFO)",
+    "AutoPostInventoryOnSave": "Auto-Post Inventory on Save",
+    "InvoicesDirectlyAffectInventory": "Invoices Directly Affect Inventory",
     "Yes": "Yes",
-    "No": "No"
+    "No": "No",
+    "Notes": "Notes"
   },
+  "الكل": "All",
   "InvoiceSettings": {
     "Title": "Invoice Configuration",
     "AllowSaveInvoiceWithoutPayment": "Allow Saving Invoice Without Payment",

@@ -28,6 +28,30 @@
             {{ settings.requireStockBeforeConfirm ? ('InventorySettings.Yes' | translate) : ('InventorySettings.No' | translate) }}
           </p>
         </div>
+        <div>
+          <p class="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
+            {{ 'InventorySettings.ValuationMethod' | translate }}
+          </p>
+          <p class="text-sm font-medium text-gray-800 dark:text-white/90">
+            {{ settings.valuationMethod === 1 ? ('InventorySettings.WeightedAverage' | translate) : ('InventorySettings.FIFO' | translate) }}
+          </p>
+        </div>
+        <div>
+          <p class="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
+            {{ 'InventorySettings.AutoPostInventoryOnSave' | translate }}
+          </p>
+          <p class="text-sm font-medium text-gray-800 dark:text-white/90">
+            {{ settings.autoPostInventoryOnSave ? ('InventorySettings.Yes' | translate) : ('InventorySettings.No' | translate) }}
+          </p>
+        </div>
+        <div>
+          <p class="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
+            {{ 'InventorySettings.InvoicesDirectlyAffectInventory' | translate }}
+          </p>
+          <p class="text-sm font-medium text-gray-800 dark:text-white/90">
+            {{ settings.invoicesDirectlyAffectInventory ? ('InventorySettings.Yes' | translate) : ('InventorySettings.No' | translate) }}
+          </p>
+        </div>
         <div class="lg:col-span-2">
           <p class="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
             {{ 'InventorySettings.Notes' | translate }}
@@ -94,6 +118,24 @@
             <div class="flex items-center gap-3">
               <input type="checkbox" formControlName="requireStockBeforeConfirm" id="requireStockBeforeConfirm" class="h-5 w-5 rounded border-gray-300 text-brand-500 focus:ring-brand-500 dark:border-gray-700 dark:bg-gray-900">
               <label for="requireStockBeforeConfirm" class="text-sm font-medium text-gray-800 dark:text-white/90 cursor-pointer">{{ 'InventorySettings.RequireStockBeforeConfirm' | translate }}</label>
+            </div>
+
+            <div class="mt-2">
+              <app-label>{{ 'InventorySettings.ValuationMethod' | translate }}</app-label>
+              <select formControlName="valuationMethod" class="h-11 w-full rounded-lg border appearance-none px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 bg-white text-gray-800 border-gray-300 focus:border-brand-300 focus:ring-brand-500/20 dark:border-gray-700 dark:text-white/90 dark:focus:border-brand-800 dark:bg-gray-900">
+                <option [ngValue]="1">{{ 'InventorySettings.WeightedAverage' | translate }}</option>
+                <option [ngValue]="2">{{ 'InventorySettings.FIFO' | translate }}</option>
+              </select>
+            </div>
+
+            <div class="flex items-center gap-3 mt-2">
+              <input type="checkbox" formControlName="autoPostInventoryOnSave" id="autoPostInventoryOnSave" class="h-5 w-5 rounded border-gray-300 text-brand-500 focus:ring-brand-500 dark:border-gray-700 dark:bg-gray-900">
+              <label for="autoPostInventoryOnSave" class="text-sm font-medium text-gray-800 dark:text-white/90 cursor-pointer">{{ 'InventorySettings.AutoPostInventoryOnSave' | translate }}</label>
+            </div>
+
+            <div class="flex items-center gap-3">
+              <input type="checkbox" formControlName="invoicesDirectlyAffectInventory" id="invoicesDirectlyAffectInventory" class="h-5 w-5 rounded border-gray-300 text-brand-500 focus:ring-brand-500 dark:border-gray-700 dark:bg-gray-900">
+              <label for="invoicesDirectlyAffectInventory" class="text-sm font-medium text-gray-800 dark:text-white/90 cursor-pointer">{{ 'InventorySettings.InvoicesDirectlyAffectInventory' | translate }}</label>
             </div>
 
             <div class="mt-4">

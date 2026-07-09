@@ -42,6 +42,7 @@ export class CrudListComponent implements OnInit, OnDestroy {
   @Input() hideBuiltInSearch: boolean = false;
   @Input() hasAdvancedFilters: boolean = false;
   @Input() hasActiveAdvancedFilters: boolean = false;
+  @Input() hideAdd: boolean = false;
   @Input() hideEdit: boolean | ((item: any) => boolean) = false;
   @Input() hideView: boolean | ((item: any) => boolean) = false;
   @Input() hideToggleStatus: boolean | ((item: any) => boolean) = false;

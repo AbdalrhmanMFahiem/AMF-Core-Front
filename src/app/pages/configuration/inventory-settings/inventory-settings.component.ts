@@ -37,6 +37,9 @@ export class InventorySettingsComponent implements OnInit {
   settings = {
     allowNegativeStock: false,
     requireStockBeforeConfirm: true,
+    valuationMethod: 1, // 1 = Weighted Average, 2 = FIFO
+    autoPostInventoryOnSave: false,
+    invoicesDirectlyAffectInventory: false,
     notes: ''
   };
 
@@ -44,6 +47,9 @@ export class InventorySettingsComponent implements OnInit {
     this.form = this.fb.group({
       allowNegativeStock: [false],
       requireStockBeforeConfirm: [true],
+      valuationMethod: [1],
+      autoPostInventoryOnSave: [false],
+      invoicesDirectlyAffectInventory: [false],
       notes: ['']
     });
   }
@@ -70,6 +76,9 @@ export class InventorySettingsComponent implements OnInit {
           this.settings = {
             allowNegativeStock: res.allowNegativeStock,
             requireStockBeforeConfirm: res.requireStockBeforeConfirm,
+            valuationMethod: res.valuationMethod ?? 1,
+            autoPostInventoryOnSave: res.autoPostInventoryOnSave ?? false,
+            invoicesDirectlyAffectInventory: res.invoicesDirectlyAffectInventory ?? false,
             notes: res.notes || ''
           };
           this.form.patchValue(res);

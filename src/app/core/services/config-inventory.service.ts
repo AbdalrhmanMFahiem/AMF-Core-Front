@@ -7,12 +7,18 @@ export interface ConfigInventoryResponse {
   allowNegativeStock: boolean;
   requireStockBeforeConfirm: boolean;
   retroactiveStockMigrationCompleted: boolean;
+  valuationMethod: number;
+  autoPostInventoryOnSave: boolean;
+  invoicesDirectlyAffectInventory: boolean;
   notes?: string;
 }
 
 export interface ConfigInventoryRequest {
   allowNegativeStock: boolean;
   requireStockBeforeConfirm: boolean;
+  valuationMethod: number;
+  autoPostInventoryOnSave: boolean;
+  invoicesDirectlyAffectInventory: boolean;
   notes?: string;
 }
 

@@ -1019,13 +1019,18 @@
   "الكل": "الكل",
   "InventorySettings": {
     "Title": "إعدادات المخزون",
+    "EditTitle": "تعديل إعدادات المخزون",
+    "EditSubtitle": "قم بإعداد سلوك المخزون وطرق التقييم المحاسبية.",
     "AllowNegativeStock": "السماح بالسحب على المكشوف",
     "RequireStockBeforeConfirm": "اشتراط توفر رصيد قبل تأكيد الحركات",
-    "Notes": "الملاحظات",
-    "EditTitle": "تعديل إعدادات المخزون",
-    "EditSubtitle": "تحديث الإعدادات العامة لنظام المخزون.",
+    "ValuationMethod": "طريقة تقييم المخزون",
+    "WeightedAverage": "المتوسط المرجح (Weighted Average)",
+    "FIFO": "الوارد أولاً يصرف أولاً (FIFO)",
+    "AutoPostInventoryOnSave": "الترحيل التلقائي للمخزون عند الحفظ",
+    "InvoicesDirectlyAffectInventory": "الفواتير تؤثر مباشرة على المخزون",
     "Yes": "نعم",
-    "No": "لا"
+    "No": "لا",
+    "Notes": "الملاحظات"
   },
   "InvoiceSettings": {
     "Title": "إعدادات الفواتير",
