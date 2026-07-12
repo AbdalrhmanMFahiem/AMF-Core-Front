@@ -1,25 +1,12 @@
 import { RequestFilters } from './pagination.model';
+import { DocumentStatus, ApprovalStatus, PaymentStatus } from './document-status.model';
+export { DocumentStatus, ApprovalStatus, PaymentStatus };
 
 export enum InvoiceType {
   Sales = 'Sales',
   Purchase = 'Purchase',
   SalesReturn = 'SalesReturn',
   PurchaseReturn = 'PurchaseReturn',
-}
-
-export enum InvoiceStatus {
-  Draft = 'Draft',
-  Confirmed = 'Confirmed',
-  PartiallyPaid = 'PartiallyPaid',
-  FullyPaid = 'FullyPaid',
-  Cancelled = 'Cancelled'
-}
-
-export enum PaymentStatus {
-  Pending = 'Pending',
-  Completed = 'Completed',
-  Cancelled = 'Cancelled',
-  Bounced = 'Bounced'
 }
 
 export enum PaymentMethod {
@@ -40,7 +27,9 @@ export interface InvoiceBasicResponse {
   id: number;
   code: string;
   invoiceType: InvoiceType;
-  status: InvoiceStatus;
+  status: DocumentStatus;
+  approvalStatus?: ApprovalStatus;
+  paymentStatus?: PaymentStatus;
   businessPartnerName: string;
   invoiceDate: string;
   dueDate?: string;
@@ -100,7 +89,9 @@ export interface InvoiceResponse {
   id: number;
   code: string;
   invoiceType: InvoiceType;
-  status: InvoiceStatus;
+  status: DocumentStatus;
+  approvalStatus?: ApprovalStatus;
+  paymentStatus?: PaymentStatus;
   businessPartnerId: number;
   businessPartnerName: string;
   currencyId?: number;
@@ -204,7 +195,7 @@ export interface InvoicePaymentRequest {
 }
 
 export interface InvoiceFilters extends RequestFilters {
-  status?: InvoiceStatus;
+  status?: DocumentStatus;
   businessPartnerId?: number;
   invoiceDateFrom?: string;
   invoiceDateTo?: string;

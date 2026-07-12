@@ -81,13 +81,44 @@
     "noData": "لا توجد بيانات",
     "delete": "حذف",
     "documentStatus": {
+      "D": "مسودة",
+      "F": "مؤكد",
+      "P": "تم الاستلام جزئياً",
+      "R": "تم الاستلام",
+      "C": "مغلق",
+      "L": "ملغي",
+      "A": "مدفوع جزئياً",
+      "U": "مدفوع بالكامل",
+      "O": "مفتوح",
       "0": "مسودة",
       "1": "مؤكد",
       "2": "ملغي",
       "Draft": "مسودة",
       "Confirmed": "مؤكد",
-      "Cancelled": "ملغي"
-    }
+      "Cancelled": "ملغي",
+      "Open": "مفتوح",
+      "Approved": "معتمد",
+      "WaitingForApproval": "في انتظار الموافقة",
+      "Rejected": "مرفوض",
+      "PartiallyReceived": "تم الاستلام جزئياً",
+      "Received": "تم الاستلام",
+      "Closed": "مغلق"
+    },
+    "approvalStatusEnum": {
+      "Pending": "قيد الانتظار",
+      "Approved": "موافق عليه",
+      "Rejected": "مرفوض",
+      "NotRequired": "غير مطلوب"
+    },
+    "paidStatusEnum": {
+      "Unpaid": "غير مدفوع",
+      "PartiallyPaid": "مدفوع جزئياً",
+      "Paid": "مدفوع بالكامل",
+      "FullyPaid": "مدفوع بالكامل",
+      "Bounced": "مرتجع"
+    },
+    "approvalStatus": "حالة الموافقة",
+    "paymentStatus": "حالة الدفع"
   },
   "pages": {
     "invoiceCostElements": "عناصر تكلفة الفاتورة",

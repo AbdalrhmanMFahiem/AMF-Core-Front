@@ -38,7 +38,8 @@ export class StockAdjustmentsListComponent implements OnInit {
     { field: 'warehouseName', header: 'stockAdjustments.warehouse', type: 'text' },
     { field: 'adjustmentType', header: 'stockAdjustments.type', type: 'adjustment-type' },
     { field: 'adjustmentDate', header: 'common.date', type: 'date' },
-    { field: 'status', header: 'common.status', type: 'document-status' }
+    { field: 'status', header: 'common.status', type: 'document-status' },
+    { field: 'approvalStatusDisplay', header: 'common.approvalStatus', type: 'dynamic-badge' }
   ];
 
   ngOnInit(): void {
@@ -49,7 +50,22 @@ export class StockAdjustmentsListComponent implements OnInit {
     this.loading = true;
     this.stockAdjustmentService.getAll(this.pageNumber, this.pageSize, this.searchValue).subscribe({
       next: (res) => {
-        this.data = res;
+        const getApprovalStatusColor = (status?: string) => {
+          switch (status) {
+            case 'Pending': return 'warning';
+            case 'Approved': return 'success';
+            case 'Rejected': return 'error';
+            default: return 'light';
+          }
+        };
+
+        const mappedItems = (res.items || []).map((item: StockAdjustmentResponse) => ({
+          ...item,
+          approvalStatusDisplay: item.approvalStatus ? this.translate.instant('common.approvalStatusEnum.' + item.approvalStatus) : '-',
+          approvalStatusDisplayColor: getApprovalStatusColor(item.approvalStatus)
+        }));
+
+        this.data = { ...res, items: mappedItems };
         this.loading = false;
       },
       error: (err) => {

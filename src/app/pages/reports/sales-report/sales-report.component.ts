@@ -114,14 +114,14 @@ export class SalesReportComponent implements OnInit {
   }
 
   getStatusTranslation(status: string): string {
-    const statuses: Record<string, string> = {
-      'Draft': 'invoice.status.draft',
-      'Confirmed': 'invoice.status.confirmed',
-      'PartiallyPaid': 'invoice.status.partiallyPaid',
-      'Paid': 'invoice.status.paid',
-      'Cancelled': 'invoice.status.cancelled'
+    const statusMap: { [key: string]: string } = {
+      'Draft': 'common.documentStatus.Draft',
+      'Confirmed': 'common.documentStatus.Confirmed',
+      'PartiallyPaid': 'common.documentStatus.PartiallyPaid',
+      'FullyPaid': 'common.documentStatus.FullyPaid',
+      'Cancelled': 'common.documentStatus.Cancelled'
     };
-    return statuses[status] || status;
+    return statusMap[status] || status;
   }
 
   getBadgeColor(status: string): 'success' | 'warning' | 'error' | 'info' {

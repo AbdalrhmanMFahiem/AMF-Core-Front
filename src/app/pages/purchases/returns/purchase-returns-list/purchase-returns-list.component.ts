@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { InvoiceService } from '../../../../core/services/invoice.service';
-import { InvoiceBasicResponse, InvoiceFilters, InvoiceStatus, InvoiceStatsResponse } from '../../../../core/models/invoice.model';
+import { InvoiceBasicResponse, InvoiceFilters, DocumentStatus, InvoiceStatsResponse } from '../../../../core/models/invoice.model';
 import { CrudListComponent, CrudColumn } from '../../../../shared/components/common/crud-list/crud-list.component';
 import { PageBreadcrumbComponent } from '../../../../shared/components/common/page-breadcrumb/page-breadcrumb.component';
 import { PaymentModalComponent } from '../../invoices/payment-modal/payment-modal.component';
@@ -235,11 +235,9 @@ export class PurchaseReturnsListComponent implements OnInit {
 
   updateStatusOptions(): void {
     this.statusOptions = [
-      { value: 'Draft', label: this.translate.instant('purchaseReturns.status.Draft') },
-      { value: 'Confirmed', label: this.translate.instant('purchaseReturns.status.Confirmed') },
-      { value: 'PartiallyPaid', label: this.translate.instant('purchaseReturns.status.PartiallyPaid') },
-      { value: 'FullyPaid', label: this.translate.instant('purchaseReturns.status.FullyPaid') },
-      { value: 'Cancelled', label: this.translate.instant('purchaseReturns.status.Cancelled') }
+      { value: 'Draft', label: this.translate.instant('common.documentStatus.Draft') },
+      { value: 'Confirmed', label: this.translate.instant('common.documentStatus.Confirmed') },
+      { value: 'Cancelled', label: this.translate.instant('common.documentStatus.Cancelled') }
     ];
   }
 
@@ -276,7 +274,7 @@ export class PurchaseReturnsListComponent implements OnInit {
         // Map status enum to translated string
         const mappedItems = res.items.map((item: InvoiceBasicResponse) => ({
           ...item,
-          statusDisplay: this.translate.instant('purchaseReturns.status.' + item.status),
+          statusDisplay: this.translate.instant('common.documentStatus.' + item.status),
           statusDisplayColor: getStatusColor(item.status),
           totalAmountDisplay: item.totalAmount ? item.totalAmount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '0.00',
           remainingAmountDisplay: item.remainingAmount ? item.remainingAmount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '0.00'

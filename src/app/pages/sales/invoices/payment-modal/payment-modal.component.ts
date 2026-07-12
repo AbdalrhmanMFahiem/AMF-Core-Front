@@ -44,12 +44,12 @@ export class PaymentModalComponent implements OnChanges {
   errors: string[] = [];
 
   paymentMethodOptions: SearchableOption[] = [
-    { value: PaymentMethod.Cash, label: this.translate.instant('salesInvoices.paymentMethods.Cash') },
-    { value: PaymentMethod.BankTransfer, label: this.translate.instant('salesInvoices.paymentMethods.BankTransfer') },
-    { value: PaymentMethod.Cheque, label: this.translate.instant('salesInvoices.paymentMethods.Cheque') },
-    { value: PaymentMethod.CreditCard, label: this.translate.instant('salesInvoices.paymentMethods.CreditCard') },
-    { value: PaymentMethod.PostDatedCheque, label: this.translate.instant('salesInvoices.paymentMethods.PostDatedCheque') },
-    { value: PaymentMethod.Other, label: this.translate.instant('salesInvoices.paymentMethods.Other') }
+    { value: PaymentMethod.Cash, label: this.translate.instant('salesInvoices.paymentMethods.cash') },
+    { value: PaymentMethod.BankTransfer, label: this.translate.instant('salesInvoices.paymentMethods.bankTransfer') },
+    { value: PaymentMethod.Cheque, label: this.translate.instant('salesInvoices.paymentMethods.cheque') },
+    { value: PaymentMethod.CreditCard, label: this.translate.instant('salesInvoices.paymentMethods.creditCard') },
+    { value: PaymentMethod.PostDatedCheque, label: this.translate.instant('salesInvoices.paymentMethods.postDatedCheque') },
+    { value: PaymentMethod.Other, label: this.translate.instant('salesInvoices.paymentMethods.other') }
   ];
 
   showConfirmation = false;

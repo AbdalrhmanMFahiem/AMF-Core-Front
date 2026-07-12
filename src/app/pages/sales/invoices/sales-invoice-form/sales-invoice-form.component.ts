@@ -15,12 +15,14 @@ import { DatePickerComponent } from '../../../../shared/components/form/date-pic
 import { ItemLookupModalComponent } from '../../../../shared/components/lookups/item-lookup-modal/item-lookup-modal.component';
 import { CostElementLookupModalComponent } from '../../../../shared/components/lookups/cost-element-lookup-modal/cost-element-lookup-modal.component';
 import { PaymentModalComponent } from '../payment-modal/payment-modal.component';
+import { DocumentStatusBadgeComponent } from '../../../../shared/components/common/document-status-badge/document-status-badge.component';
+import { StatusBadgeComponent } from '../../../../shared/components/ui/status-badge/status-badge.component';
 import { HasUnsavedChanges } from '../../../../core/guards/unsaved-changes.guard';
 import {
   InvoiceRequest,
   InvoiceResponse,
   InvoiceType,
-  InvoiceStatus,
+  DocumentStatus,
   InvoiceLineRequest,
   InvoiceCostLineRequest,
   InvoiceCostOperation,
@@ -43,7 +45,9 @@ import { ItemLookupResponse, InvoiceCostElementDropdown } from '../../../../core
     DatePickerComponent,
     ItemLookupModalComponent,
     CostElementLookupModalComponent,
-    PaymentModalComponent
+    PaymentModalComponent,
+    DocumentStatusBadgeComponent,
+    StatusBadgeComponent
   ],
   templateUrl: './sales-invoice-form.component.html',
 })
@@ -443,6 +447,54 @@ export class SalesInvoiceFormComponent implements OnInit, HasUnsavedChanges {
     if (this.id) {
       this.loadRecord(this.id);
     }
+  }
+
+  onConfirm(): void {
+    if (!this.id) return;
+    import('sweetalert2').then(Swal => {
+      Swal.default.fire({
+        title: this.translate.instant('common.confirmTitle'),
+        text: this.translate.instant('common.confirmWarning'),
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#10b981',
+        cancelButtonColor: '#ef4444',
+        confirmButtonText: this.translate.instant('stockAdjustments.confirm'),
+        cancelButtonText: this.translate.instant('login.cancel')
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.invoiceService.confirm(this.id!).subscribe({
+            next: () => {
+              this.loadRecord(this.id!);
+            }
+          });
+        }
+      });
+    });
+  }
+
+  onCancelDocument(): void {
+    if (!this.id) return;
+    import('sweetalert2').then(Swal => {
+      Swal.default.fire({
+        title: this.translate.instant('common.cancelWarningTitle'),
+        text: this.translate.instant('common.cancelWarningText'),
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#ef4444',
+        cancelButtonColor: '#6b7280',
+        confirmButtonText: this.translate.instant('common.delete'),
+        cancelButtonText: this.translate.instant('login.cancel')
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.invoiceService.cancel(this.id!).subscribe({
+            next: () => {
+              this.loadRecord(this.id!);
+            }
+          });
+        }
+      });
+    });
   }
 
   onCancel(): void {

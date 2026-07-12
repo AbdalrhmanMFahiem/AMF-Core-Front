@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { InvoiceService } from '../../../../core/services/invoice.service';
-import { InvoiceBasicResponse, InvoiceFilters, InvoiceStatus, InvoiceStatsResponse } from '../../../../core/models/invoice.model';
+import { InvoiceBasicResponse, InvoiceFilters, DocumentStatus, InvoiceStatsResponse } from '../../../../core/models/invoice.model';
 import { CrudListComponent, CrudColumn } from '../../../../shared/components/common/crud-list/crud-list.component';
 import { PageBreadcrumbComponent } from '../../../../shared/components/common/page-breadcrumb/page-breadcrumb.component';
 import { PaymentModalComponent } from '../payment-modal/payment-modal.component';
@@ -194,15 +194,29 @@ export class SalesInvoicesListComponent implements OnInit {
 
   customActions = [
     {
+      id: 'confirm',
+      label: 'stockAdjustments.confirm',
+      icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>',
+      colorClass: 'text-success-600 dark:text-success-400 hover:bg-success-50 dark:hover:bg-success-500/10',
+      visible: (item: any) => item.status === 'Draft'
+    },
+    {
+      id: 'cancel',
+      label: 'stockAdjustments.cancelDocument',
+      icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>',
+      colorClass: 'text-error-600 dark:text-error-400 hover:bg-error-50 dark:hover:bg-error-500/10',
+      visible: (item: any) => item.status !== 'Cancelled' && item.status !== 'FullyPaid'
+    },
+    {
       id: 'pay',
       label: 'salesInvoices.addPayment',
-      icon: `<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>`,
+      icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>',
       colorClass: 'text-success-600 dark:text-success-400 hover:bg-success-50 dark:hover:bg-success-500/10',
-      visible: (item: any) => item.status !== 'FullyPaid'
+      visible: (item: any) => item.status !== 'FullyPaid' && item.status !== 'Cancelled' && item.status !== 'Draft'
     }
   ];
 
-  isActionHidden = (item: any) => item.status === 'FullyPaid';
+  isActionHidden = (item: any) => true;
 
   filters: InvoiceFilters = {
     pageNumber: 1,
@@ -216,7 +230,9 @@ export class SalesInvoicesListComponent implements OnInit {
     { field: 'invoiceDate', header: 'salesInvoices.fields.invoiceDate', type: 'date' },
     { field: 'totalAmountDisplay', header: 'salesInvoices.fields.totalAmount', type: 'text' },
     { field: 'remainingAmountDisplay', header: 'salesInvoices.fields.remainingAmount', type: 'text' },
-    { field: 'statusDisplay', header: 'common.status', type: 'dynamic-badge' }
+    { field: 'statusDisplay', header: 'common.status', type: 'dynamic-badge' },
+    { field: 'approvalStatusDisplay', header: 'common.approvalStatus', type: 'dynamic-badge' },
+    { field: 'paymentStatusDisplay', header: 'common.paymentStatus', type: 'dynamic-badge' }
   ];
 
   ngOnInit(): void {
@@ -235,11 +251,9 @@ export class SalesInvoicesListComponent implements OnInit {
 
   updateStatusOptions(): void {
     this.statusOptions = [
-      { value: 'Draft', label: this.translate.instant('salesInvoices.status.Draft') },
-      { value: 'Confirmed', label: this.translate.instant('salesInvoices.status.Confirmed') },
-      { value: 'PartiallyPaid', label: this.translate.instant('salesInvoices.status.PartiallyPaid') },
-      { value: 'FullyPaid', label: this.translate.instant('salesInvoices.status.FullyPaid') },
-      { value: 'Cancelled', label: this.translate.instant('salesInvoices.status.Cancelled') }
+      { value: 'Draft', label: this.translate.instant('common.documentStatus.Draft') },
+      { value: 'Confirmed', label: this.translate.instant('common.documentStatus.Confirmed') },
+      { value: 'Cancelled', label: this.translate.instant('common.documentStatus.Cancelled') }
     ];
   }
 
@@ -264,12 +278,30 @@ export class SalesInvoicesListComponent implements OnInit {
       next: (res) => {
         const getStatusColor = (status: string) => {
           switch (status) {
-            case 'Draft': return 'light';
-            case 'Confirmed': return 'info';
-            case 'PartiallyPaid': return 'warning';
-            case 'FullyPaid': return 'success';
+            case 'Draft': return 'warning';
+            case 'Open': return 'success';
+            case 'Closed': return 'error';
             case 'Cancelled': return 'error';
             default: return 'primary';
+          }
+        };
+
+        const getApprovalStatusColor = (status?: string) => {
+          switch (status) {
+            case 'Pending': return 'warning';
+            case 'Approved': return 'success';
+            case 'Rejected': return 'error';
+            default: return 'light';
+          }
+        };
+
+        const getPaymentStatusColor = (status?: string) => {
+          switch (status) {
+            case 'Pending': return 'warning';
+            case 'Completed': return 'success';
+            case 'Cancelled': return 'error';
+            case 'Bounced': return 'error';
+            default: return 'light';
           }
         };
 
@@ -277,8 +309,12 @@ export class SalesInvoicesListComponent implements OnInit {
         const itemsList = res.items || (res as any).Items || [];
         const mappedItems = itemsList.map((item: InvoiceBasicResponse) => ({
           ...item,
-          statusDisplay: this.translate.instant('salesInvoices.status.' + item.status),
+          statusDisplay: this.translate.instant('common.documentStatus.' + item.status),
           statusDisplayColor: getStatusColor(item.status),
+          approvalStatusDisplay: item.approvalStatus ? this.translate.instant('common.approvalStatusEnum.' + item.approvalStatus) : '-',
+          approvalStatusDisplayColor: getApprovalStatusColor(item.approvalStatus),
+          paymentStatusDisplay: item.paymentStatus ? this.translate.instant('common.paidStatusEnum.' + item.paymentStatus) : '-',
+          paymentStatusDisplayColor: getPaymentStatusColor(item.paymentStatus),
           totalAmountDisplay: item.totalAmount ? item.totalAmount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '0.00',
           remainingAmountDisplay: item.remainingAmount ? item.remainingAmount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '0.00'
         }));
@@ -322,6 +358,48 @@ export class SalesInvoicesListComponent implements OnInit {
     if (event.actionId === 'pay') {
       this.selectedInvoiceForPayment = event.item;
       this.isPaymentModalOpen = true;
+    } else if (event.actionId === 'confirm') {
+      import('sweetalert2').then(Swal => {
+        Swal.default.fire({
+          title: this.translate.instant('common.confirmTitle'),
+          text: this.translate.instant('common.confirmWarning'),
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#10b981',
+          cancelButtonColor: '#ef4444',
+          confirmButtonText: this.translate.instant('stockAdjustments.confirm'),
+          cancelButtonText: this.translate.instant('login.cancel')
+        }).then((result) => {
+          if (result.isConfirmed) {
+            this.invoiceService.confirm(event.item.id).subscribe({
+              next: () => {
+                this.loadData();
+              }
+            });
+          }
+        });
+      });
+    } else if (event.actionId === 'cancel') {
+      import('sweetalert2').then(Swal => {
+        Swal.default.fire({
+          title: this.translate.instant('common.cancelWarningTitle'),
+          text: this.translate.instant('common.cancelWarningText'),
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#ef4444',
+          cancelButtonColor: '#6b7280',
+          confirmButtonText: this.translate.instant('common.delete'),
+          cancelButtonText: this.translate.instant('login.cancel')
+        }).then((result) => {
+          if (result.isConfirmed) {
+            this.invoiceService.cancel(event.item.id).subscribe({
+              next: () => {
+                this.loadData();
+              }
+            });
+          }
+        });
+      });
     }
   }
 

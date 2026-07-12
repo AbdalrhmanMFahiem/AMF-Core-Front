@@ -1,4 +1,5 @@
 import { DocumentStatusBadgeComponent } from '../../../../shared/components/common/document-status-badge/document-status-badge.component';
+import { StatusBadgeComponent } from '../../../../shared/components/ui/status-badge/status-badge.component';
 import { Component, inject, OnInit, ViewChild, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
@@ -31,7 +32,9 @@ import { ItemLookupResponse } from '../../../../core/models/lookup.model';
     ErrorBannerComponent,
     SearchableSelectComponent,
     DatePickerComponent,
-    ItemLookupModalComponent],
+    ItemLookupModalComponent,
+    DocumentStatusBadgeComponent,
+    StatusBadgeComponent],
   templateUrl: './stock-adjustment-form.component.html',
 })
 export class StockAdjustmentFormComponent implements OnInit, HasUnsavedChanges {

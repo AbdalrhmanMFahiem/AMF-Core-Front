@@ -81,13 +81,44 @@
     "noData": "No Data",
     "delete": "Delete",
     "documentStatus": {
+      "D": "Draft",
+      "F": "Confirmed",
+      "P": "Partially Received",
+      "R": "Received",
+      "C": "Closed",
+      "L": "Cancelled",
+      "A": "Partially Paid",
+      "U": "Fully Paid",
+      "O": "Open",
       "0": "Draft",
       "1": "Confirmed",
       "2": "Cancelled",
       "Draft": "Draft",
+      "Open": "Open",
+      "Approved": "Approved",
+      "WaitingForApproval": "Waiting For Approval",
+      "Rejected": "Rejected",
+      "PartiallyReceived": "Partially Received",
+      "Received": "Received",
+      "Closed": "Closed",
       "Confirmed": "Confirmed",
       "Cancelled": "Cancelled"
-    }
+    },
+    "approvalStatusEnum": {
+      "Pending": "Pending",
+      "Approved": "Approved",
+      "Rejected": "Rejected",
+      "NotRequired": "Not Required"
+    },
+    "paidStatusEnum": {
+      "Unpaid": "Unpaid",
+      "PartiallyPaid": "Partially Paid",
+      "Paid": "Paid",
+      "FullyPaid": "Fully Paid",
+      "Bounced": "Bounced"
+    },
+    "approvalStatus": "Approval Status",
+    "paymentStatus": "Payment Status"
   },
   "pages": {
     "invoiceCostElements": "Invoice Cost Elements",

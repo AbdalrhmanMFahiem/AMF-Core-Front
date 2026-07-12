@@ -1,4 +1,6 @@
 import { RequestFilters } from './pagination.model';
+import { DocumentStatus, ApprovalStatus } from './document-status.model';
+export { DocumentStatus, ApprovalStatus };
 
 export enum StockTransferStatus {
   Draft = 0,
@@ -11,11 +13,7 @@ export enum StockAdjustmentType {
   Adjustment = 2
 }
 
-export enum StockAdjustmentStatus {
-  Draft = 0,
-  Confirmed = 1,
-  Cancelled = 2
-}
+// DocumentStatus replaces DocumentStatus
 
 export enum StockTransactionType {
   SalesOut = 1,
@@ -98,7 +96,8 @@ export interface StockAdjustmentResponse {
   id: number;
   code: string;
   adjustmentType: StockAdjustmentType;
-  status: StockAdjustmentStatus;
+  status: DocumentStatus;
+  approvalStatus?: ApprovalStatus;
   warehouseId: number;
   warehouseName: string;
   adjustmentDate: string;

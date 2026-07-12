@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, ViewChild, HostListener } from '@angular/core';
+﻿import { Component, inject, OnInit, ViewChild, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -20,7 +20,7 @@ import {
   InvoiceRequest,
   InvoiceResponse,
   InvoiceType,
-  InvoiceStatus,
+  DocumentStatus,
   InvoiceLineRequest,
   InvoiceCostLineRequest,
   InvoiceCostOperation,

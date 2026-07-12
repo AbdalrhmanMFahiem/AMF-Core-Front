@@ -1,0 +1,5 @@
+@if (status) {
+  <app-badge [color]="color" [variant]="variant">
+    {{ (translationPrefix ? translationPrefix + '.' + status : status) | translate }}
+  </app-badge>
+}

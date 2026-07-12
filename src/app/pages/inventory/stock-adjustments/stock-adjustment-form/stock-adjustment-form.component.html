@@ -17,12 +17,13 @@
     <div class="flex items-center gap-3">
       <span class="text-sm font-medium text-gray-500 dark:text-gray-400">{{ 'common.status' | translate }}:</span>
       <app-document-status-badge [status]="viewResponse.status"></app-document-status-badge>
+      <app-status-badge *ngIf="viewResponse.approvalStatus" [status]="viewResponse.approvalStatus" [translationPrefix]="'common.approvalStatusEnum'"></app-status-badge>
       <span class="text-sm font-medium text-gray-500 dark:text-gray-400 ml-4 rtl:ml-0 rtl:mr-4">{{ 'common.code' | translate }}:</span>
       <span class="text-sm font-bold text-gray-900 dark:text-gray-100">{{ viewResponse.code }}</span>
     </div>
     
     <div class="flex items-center gap-2">
-      <button *ngIf="viewResponse.status === 0" 
+      <button *ngIf="$any(viewResponse.status) === 'D'" 
               type="button" 
               (click)="onConfirm()"
               [disabled]="saving"
@@ -30,7 +31,7 @@
         {{ 'stockAdjustments.confirm' | translate }}
       </button>
 
-      <button *ngIf="viewResponse.status !== 2" 
+      <button *ngIf="$any(viewResponse.status) !== 'L'" 
               type="button" 
               (click)="onCancelDocument()"
               [disabled]="saving"
@@ -207,3 +208,5 @@
     </div>
   </div>
 </div>
+
+
