@@ -37,9 +37,9 @@ export class ItemGroupFormComponent implements OnInit {
   }
 
   get pageTitle(): string {
-    if (this.isView) return 'Pages.ItemGroups.ViewTitle';
-    if (this.isEdit) return 'Pages.ItemGroups.EditTitle';
-    return 'Pages.ItemGroups.AddTitle';
+    if (this.isView) return 'pages.ItemGroups.ViewTitle';
+    if (this.isEdit) return 'pages.ItemGroups.EditTitle';
+    return 'pages.ItemGroups.AddTitle';
   }
 
   ngOnInit(): void {

@@ -41,10 +41,10 @@ export class LocationsListComponent implements OnInit {
 
   setupColumns(): void {
     this.columns = [
-      { field: 'code', header: 'locations.fields.code' },
-      { field: 'name', header: 'locations.fields.name' },
-      { field: 'notes', header: 'Common.Notes' },
-      { field: 'isActive', header: 'Common.Status', type: 'badge' }
+      { field: 'code', header: 'common.code' },
+      { field: 'name', header: 'common.name' },
+      { field: 'notes', header: 'common.notes' },
+      { field: 'isActive', header: 'common.status', type: 'badge' }
     ];
   }
 

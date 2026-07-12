@@ -1,3 +1,4 @@
+import { DocumentStatusBadgeComponent } from '../../../../shared/components/common/document-status-badge/document-status-badge.component';
 import { Component, inject, OnInit, ViewChild, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
@@ -31,7 +32,7 @@ import { ItemLookupResponse } from '../../../../core/models/lookup.model';
     SearchableSelectComponent,
     DatePickerComponent,
     ItemLookupModalComponent
-  ],
+  , DocumentStatusBadgeComponent],
   templateUrl: './stock-transfer-form.component.html',
 })
 export class StockTransferFormComponent implements OnInit, HasUnsavedChanges {
@@ -259,7 +260,7 @@ export class StockTransferFormComponent implements OnInit, HasUnsavedChanges {
   }
 
   getUnsavedChangesMessage(): string {
-    return this.translate.instant('Common.unsavedChangesMessage');
+    return this.translate.instant('common.unsavedChangesMessage');
   }
 
   confirmDeactivation(): Promise<boolean> {

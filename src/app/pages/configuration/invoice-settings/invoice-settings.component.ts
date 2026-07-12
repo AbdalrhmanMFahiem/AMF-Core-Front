@@ -93,7 +93,7 @@ export class InvoiceSettingsComponent implements OnInit {
       next: () => {
         this.settings = { ...this.settings, ...this.form.value, notes: this.form.value.notes || '' };
         this.isSaving = false;
-        this.successMessage = this.translate.instant('Common.SavedSuccessfully');
+        this.successMessage = this.translate.instant('common.savedSuccessfully');
         setTimeout(() => {
           this.successMessage = '';
           this.closeModal();

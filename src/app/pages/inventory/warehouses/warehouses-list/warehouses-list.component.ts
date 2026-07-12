@@ -42,13 +42,13 @@ export class WarehousesListComponent implements OnInit {
 
   setupColumns(): void {
     this.columns = [
-      { field: 'code', header: 'warehouses.fields.code', type: 'code' },
-      { field: 'name', header: 'warehouses.fields.name', type: 'text' },
+      { field: 'code', header: 'common.code', type: 'code' },
+      { field: 'name', header: 'common.name', type: 'text' },
       { field: 'maxVolumeCapacity', header: 'warehouses.fields.maxVolumeCapacity', type: 'text' },
       { field: 'maxWeightCapacity', header: 'warehouses.fields.maxWeightCapacity', type: 'text' },
       { field: 'maxPalletsCount', header: 'warehouses.fields.maxPalletsCount', type: 'text' },
-      { field: 'notes', header: 'Common.Notes', type: 'text' },
-      { field: 'isActive', header: 'Common.Status', type: 'badge' }
+      { field: 'notes', header: 'common.notes', type: 'text' },
+      { field: 'isActive', header: 'common.status', type: 'badge' }
     ];
   }
 

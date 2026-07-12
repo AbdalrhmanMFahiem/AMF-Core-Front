@@ -35,11 +35,11 @@ export class ItemsListComponent implements OnInit {
   };
 
   columns: CrudColumn[] = [
-    { field: 'code', header: 'items.fields.code', type: 'code' },
-    { field: 'name', header: 'items.fields.name', type: 'text' },
+    { field: 'code', header: 'common.code', type: 'code' },
+    { field: 'name', header: 'common.name', type: 'text' },
     { field: 'itemGroupName', header: 'items.fields.itemGroup', type: 'text' },
     { field: 'warehouseName', header: 'items.fields.dfltWarehouse', type: 'text' },
-    { field: 'isActive', header: 'items.fields.status', type: 'badge' }
+    { field: 'isActive', header: 'common.status', type: 'badge' }
   ];
 
   ngOnInit(): void {

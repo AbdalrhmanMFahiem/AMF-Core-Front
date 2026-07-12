@@ -34,10 +34,10 @@ export class BusinessPartnersListComponent implements OnInit {
   };
 
   columns: CrudColumn[] = [
-    { field: 'code', header: 'businessPartners.fields.code', type: 'code' },
-    { field: 'name', header: 'businessPartners.fields.name', type: 'text' },
-    { field: 'bpType', header: 'businessPartners.fields.type', type: 'text' },
-    { field: 'isActive', header: 'businessPartners.fields.status', type: 'badge' }
+    { field: 'code', header: 'common.code', type: 'code' },
+    { field: 'name', header: 'common.name', type: 'text' },
+    { field: 'bpType', header: 'common.type', type: 'text' },
+    { field: 'isActive', header: 'common.status', type: 'badge' }
   ];
 
   ngOnInit(): void {

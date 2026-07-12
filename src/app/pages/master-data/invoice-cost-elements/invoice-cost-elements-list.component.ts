@@ -34,12 +34,12 @@ export class InvoiceCostElementsListComponent implements OnInit {
   };
 
   columns: CrudColumn[] = [
-    { field: 'code', header: 'Common.Code', type: 'code' },
-    { field: 'name', header: 'Common.Name', type: 'text' },
-    { field: 'typeDisplay', header: 'invoiceCostElements.fields.type', type: 'text' },
+    { field: 'code', header: 'common.code', type: 'code' },
+    { field: 'name', header: 'common.name', type: 'text' },
+    { field: 'typeDisplay', header: 'common.type', type: 'text' },
     { field: 'operationTypeDisplay', header: 'invoiceCostElements.fields.operationType', type: 'text' },
     { field: 'defaultPercentage', header: 'invoiceCostElements.fields.defaultPercentage', type: 'text' },
-    { field: 'isActive', header: 'Common.Status', type: 'badge' }
+    { field: 'isActive', header: 'common.status', type: 'badge' }
   ];
 
   ngOnInit(): void {

@@ -1,3 +1,5 @@
+import { DocumentStatusBadgeComponent } from '../document-status-badge/document-status-badge.component';
+import { AdjustmentTypeBadgeComponent } from '../adjustment-type-badge/adjustment-type-badge.component';
 import { Component, EventEmitter, Input, Output, HostListener, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -16,13 +18,13 @@ import Swal from 'sweetalert2';
 export interface CrudColumn {
   field: string;
   header: string;
-  type?: 'text' | 'badge' | 'code' | 'dynamic-badge' | 'date';
+  type?: 'text' | 'badge' | 'code' | 'dynamic-badge' | 'date' | 'document-status' | 'adjustment-type';
 }
 
 @Component({
   selector: 'app-crud-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, TranslateModule, ComponentCardComponent, BadgeComponent, SearchableSelectComponent, DatePipe, SafeHtmlPipe],
+  imports: [CommonModule, FormsModule, TranslateModule, ComponentCardComponent, BadgeComponent, SearchableSelectComponent, DatePipe, SafeHtmlPipe, DocumentStatusBadgeComponent, AdjustmentTypeBadgeComponent],
   templateUrl: './crud-list.component.html',
   styles: ``
 })

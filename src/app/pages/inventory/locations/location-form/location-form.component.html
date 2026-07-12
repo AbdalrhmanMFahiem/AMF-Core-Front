@@ -35,7 +35,7 @@
     
     <!-- Code Badge -->
     <div class="mt-4 sm:mt-0 flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm">
-      <span class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{{ 'locations.fields.code' | translate }}</span>
+      <span class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{{ 'common.code' | translate }}</span>
       <div class="w-px h-4 bg-gray-200 dark:bg-gray-700"></div>
       <span class="text-base font-bold text-gray-900 dark:text-white font-mono">{{ form.get('code')?.value }}</span>
     </div>
@@ -48,7 +48,7 @@
       <!-- Arabic Name -->
       <div class="space-y-1.5">
         <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300">
-          {{ 'locations.fields.aName' | translate }} <span class="text-red-500 dark:text-red-400">*</span>
+          {{ 'common.arabicName' | translate }} <span class="text-red-500 dark:text-red-400">*</span>
         </label>
         <div class="relative">
           <div class="absolute inset-y-0 inset-s-0 flex items-center ps-3 pointer-events-none">
@@ -58,7 +58,7 @@
             type="text" 
             formControlName="aName"
             class="bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full ps-10 p-2.5 transition-colors disabled:opacity-60 disabled:bg-gray-100 dark:disabled:bg-gray-800"
-            [placeholder]="'locations.fields.aNamePlaceholder' | translate"
+            [placeholder]="'common.arabicNamePlaceholder' | translate"
             [class.border-red-500]="form.get('aName')?.invalid && form.get('aName')?.touched"
             [class.dark:border-red-500]="form.get('aName')?.invalid && form.get('aName')?.touched">
         </div>
@@ -70,7 +70,7 @@
       <!-- English Name -->
       <div class="space-y-1.5">
         <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300">
-          {{ 'locations.fields.eName' | translate }}
+          {{ 'common.englishName' | translate }}
         </label>
         <div class="relative">
           <div class="absolute inset-y-0 inset-s-0 flex items-center ps-3 pointer-events-none">
@@ -80,7 +80,7 @@
             type="text" 
             formControlName="eName"
             class="bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full ps-10 p-2.5 transition-colors disabled:opacity-60 disabled:bg-gray-100 dark:disabled:bg-gray-800"
-            [placeholder]="'locations.fields.eNamePlaceholder' | translate">
+            [placeholder]="'common.englishNamePlaceholder' | translate">
         </div>
       </div>
 
@@ -99,13 +99,13 @@
       <!-- Notes -->
       <div class="col-span-1 md:col-span-2 space-y-1.5 mt-2">
         <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300">
-          {{ 'Common.Notes' | translate }}
+          {{ 'common.notes' | translate }}
         </label>
         <textarea 
           formControlName="notes"
           rows="3"
           class="bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5 transition-colors disabled:opacity-60 disabled:bg-gray-100 dark:disabled:bg-gray-800 resize-y"
-          [placeholder]="'Common.NotesPlaceholder' | translate"></textarea>
+          [placeholder]="'common.notesPlaceholder' | translate"></textarea>
       </div>
     </div>
 
@@ -115,7 +115,7 @@
         type="button" 
         (click)="onCancel()"
         class="px-5 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 focus:ring-4 focus:outline-none focus:ring-gray-100 dark:focus:ring-gray-700 transition-all shadow-sm">
-        {{ 'Common.Cancel' | translate }}
+        {{ 'common.cancel' | translate }}
       </button>
       <button 
         type="submit" 
@@ -123,7 +123,7 @@
         class="px-5 py-2.5 text-sm font-medium text-white bg-indigo-600 dark:bg-indigo-500 rounded-lg hover:bg-indigo-700 dark:hover:bg-indigo-600 focus:ring-4 focus:outline-none focus:ring-indigo-300 dark:focus:ring-indigo-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-sm flex items-center gap-2">
         <i class="fas fa-spinner fa-spin" *ngIf="submitting"></i>
         <i class="fas fa-save" *ngIf="!submitting"></i>
-        {{ (isEditMode ? 'Common.Save' : 'Common.Add') | translate }}
+        {{ (isEditMode ? 'common.save' : 'common.add') | translate }}
       </button>
     </div>
     
@@ -132,7 +132,7 @@
         type="button" 
         (click)="onCancel()"
         class="px-5 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 focus:ring-4 focus:outline-none focus:ring-gray-100 dark:focus:ring-gray-700 transition-all shadow-sm">
-        {{ 'Common.Back' | translate }}
+        {{ 'common.back' | translate }}
       </button>
     </div>
   </form>

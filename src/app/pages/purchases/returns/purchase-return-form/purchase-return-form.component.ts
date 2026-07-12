@@ -517,7 +517,7 @@ export class PurchaseReturnFormComponent implements OnInit, HasUnsavedChanges {
   }
 
   getUnsavedChangesMessage(): string {
-    return this.translate.instant('Common.unsavedChangesMessage');
+    return this.translate.instant('common.unsavedChangesMessage');
   }
 
   confirmDeactivation(): Promise<boolean> {

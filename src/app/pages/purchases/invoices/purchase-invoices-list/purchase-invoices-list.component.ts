@@ -96,7 +96,7 @@ import { FormsModule } from '@angular/forms';
         [columns]="columns"
         [data]="data"
         [isLoading]="loading"
-        [searchPlaceholder]="'Common.SearchPlaceholder'"
+        [searchPlaceholder]="'common.searchPlaceholder'"
         addBtnText="purchaseInvoices.add"
         [filters]="filters"
         [showIncludeDisabledToggle]="false"
@@ -115,40 +115,40 @@ import { FormsModule } from '@angular/forms';
         (refresh)="resetFilters()">
 
         <div custom-filters class="flex-1 w-full flex items-center gap-2">
-          <input type="text" [(ngModel)]="filters.searchValue" (keyup.enter)="loadData()" [placeholder]="'Common.SearchPlaceholder' | translate" [disabled]="loading"
+          <input type="text" [(ngModel)]="filters.searchValue" (keyup.enter)="loadData()" [placeholder]="'common.searchPlaceholder' | translate" [disabled]="loading"
             class="dark:bg-dark-900 h-11 w-full sm:max-w-xs rounded-lg border border-gray-200 bg-transparent py-2.5 px-4 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-800 dark:bg-white/3 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800 disabled:opacity-50 disabled:cursor-not-allowed" />
         </div>
 
         <div advanced-filters class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           <div>
-            <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1.5">{{ 'Common.vendor' | translate }}</label>
-            <app-searchable-select [options]="vendorsOptions" placeholder="Common.all"
+            <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1.5">{{ 'common.vendor' | translate }}</label>
+            <app-searchable-select [options]="vendorsOptions" placeholder="common.all"
               [(ngModel)]="filters.businessPartnerId" (selectionChange)="loadData()"></app-searchable-select>
           </div>
           <div>
-            <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1.5">{{ 'purchaseInvoices.fields.status' | translate }}</label>
-            <app-searchable-select [options]="statusOptions" placeholder="Common.all"
+            <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1.5">{{ 'common.status' | translate }}</label>
+            <app-searchable-select [options]="statusOptions" placeholder="common.all"
               [(ngModel)]="filters.status" (selectionChange)="loadData()"></app-searchable-select>
           </div>
           <div>
-            <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1.5">{{ 'Common.invoiceDateFrom' | translate }}</label>
-            <app-date-picker id="invoiceDateFrom" name="invoiceDateFrom" [(ngModel)]="filters.invoiceDateFrom" (ngModelChange)="loadData()" [placeholder]="'Common.selectDate' | translate"></app-date-picker>
+            <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1.5">{{ 'common.invoiceDateFrom' | translate }}</label>
+            <app-date-picker id="invoiceDateFrom" name="invoiceDateFrom" [(ngModel)]="filters.invoiceDateFrom" (ngModelChange)="loadData()" [placeholder]="'common.selectDate' | translate"></app-date-picker>
           </div>
           <div>
-            <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1.5">{{ 'Common.invoiceDateTo' | translate }}</label>
-            <app-date-picker id="invoiceDateTo" name="invoiceDateTo" [(ngModel)]="filters.invoiceDateTo" (ngModelChange)="loadData()" [placeholder]="'Common.selectDate' | translate"></app-date-picker>
+            <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1.5">{{ 'common.invoiceDateTo' | translate }}</label>
+            <app-date-picker id="invoiceDateTo" name="invoiceDateTo" [(ngModel)]="filters.invoiceDateTo" (ngModelChange)="loadData()" [placeholder]="'common.selectDate' | translate"></app-date-picker>
           </div>
           <div>
-            <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1.5">{{ 'Common.dueDateFrom' | translate }}</label>
-            <app-date-picker id="dueDateFrom" name="dueDateFrom" [(ngModel)]="filters.dueDateFrom" (ngModelChange)="loadData()" [placeholder]="'Common.selectDate' | translate"></app-date-picker>
+            <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1.5">{{ 'common.dueDateFrom' | translate }}</label>
+            <app-date-picker id="dueDateFrom" name="dueDateFrom" [(ngModel)]="filters.dueDateFrom" (ngModelChange)="loadData()" [placeholder]="'common.selectDate' | translate"></app-date-picker>
           </div>
           <div>
-            <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1.5">{{ 'Common.dueDateTo' | translate }}</label>
-            <app-date-picker id="dueDateTo" name="dueDateTo" [(ngModel)]="filters.dueDateTo" (ngModelChange)="loadData()" [placeholder]="'Common.selectDate' | translate"></app-date-picker>
+            <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1.5">{{ 'common.dueDateTo' | translate }}</label>
+            <app-date-picker id="dueDateTo" name="dueDateTo" [(ngModel)]="filters.dueDateTo" (ngModelChange)="loadData()" [placeholder]="'common.selectDate' | translate"></app-date-picker>
           </div>
           <div class="flex items-end">
             <button (click)="resetFilters()" class="w-full px-4 py-2 text-sm text-error-600 bg-error-50 hover:bg-error-100 rounded-lg transition-colors font-medium dark:bg-error-500/10 dark:text-error-400 dark:hover:bg-error-500/20">
-              {{ 'Common.reset' | translate }}
+              {{ 'common.reset' | translate }}
             </button>
           </div>
         </div>
@@ -211,12 +211,12 @@ export class PurchaseInvoicesListComponent implements OnInit {
   };
 
   columns: CrudColumn[] = [
-    { field: 'code', header: 'purchaseInvoices.fields.code', type: 'code' },
+    { field: 'code', header: 'common.code', type: 'code' },
     { field: 'businessPartnerName', header: 'purchaseInvoices.fields.businessPartner', type: 'text' },
     { field: 'invoiceDate', header: 'purchaseInvoices.fields.invoiceDate', type: 'date' },
     { field: 'totalAmountDisplay', header: 'purchaseInvoices.fields.totalAmount', type: 'text' },
     { field: 'remainingAmountDisplay', header: 'purchaseInvoices.fields.remainingAmount', type: 'text' },
-    { field: 'statusDisplay', header: 'purchaseInvoices.fields.status', type: 'dynamic-badge' }
+    { field: 'statusDisplay', header: 'common.status', type: 'dynamic-badge' }
   ];
 
   ngOnInit(): void {

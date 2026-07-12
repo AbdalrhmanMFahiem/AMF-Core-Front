@@ -163,7 +163,7 @@ export class ItemFormComponent implements OnInit {
     // Basic Validation
     if (!this.model.code) {
       this.tabsWithErrors.push('basic');
-      this.validationErrors.push(`${this.translate.instant('items.fields.code')}: ${this.translate.instant('validation.required')}`);
+      this.validationErrors.push(`${this.translate.instant('common.code')}: ${this.translate.instant('validation.required')}`);
       isValid = false;
     }
     if (!this.model.aName) {

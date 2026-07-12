@@ -34,7 +34,7 @@ export class AppSidebarComponent {
     {
       icon: `<svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-4 0a1 1 0 01-1-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 01-1 1h-2z" stroke="currentColor"></path></svg>`,
       name: "Home Page",
-      translationKey: "HomePage.Title",
+      translationKey: "homePage.title",
       path: "/",
     },
     {
@@ -93,6 +93,9 @@ export class AppSidebarComponent {
         { name: "Items", translationKey: "pages.items", path: "/inventory/items" },
         { name: "Stock Transfers", translationKey: "pages.stockTransfers", path: "/inventory/stock-transfers" },
         { name: "Stock Adjustments", translationKey: "pages.stockAdjustments", path: "/inventory/stock-adjustments" },
+        { name: "Stock Issues", translationKey: "stockVouchers.issues.title", path: "/inventory/stock-issues" },
+        { name: "Stock Receipts", translationKey: "stockVouchers.receipts.title", path: "/inventory/stock-receipts" },
+        { name: "Inventory Counts", translationKey: "inventoryCounts.title", path: "/inventory/inventory-counts" },
         { name: "Stock Transactions", translationKey: "pages.stockTransactions", path: "/inventory/stock-transactions" }
       ],
     },

@@ -54,11 +54,11 @@
             <tr>
               <th
                 class="px-6 py-4 font-semibold text-gray-600 dark:text-gray-300 text-xs uppercase tracking-wider text-start">
-                {{ 'invoiceCostElements.fields.code' | translate }}
+                {{ 'common.code' | translate }}
               </th>
               <th
                 class="px-6 py-4 font-semibold text-gray-600 dark:text-gray-300 text-xs uppercase tracking-wider text-start">
-                {{ 'invoiceCostElements.fields.name' | translate }}
+                {{ 'common.name' | translate }}
               </th>
               <th
                 class="px-6 py-4 font-semibold text-gray-600 dark:text-gray-300 text-xs uppercase tracking-wider text-center">
@@ -75,7 +75,7 @@
               <td colspan="4" class="px-6 py-16 text-center bg-white dark:bg-gray-800">
                 <div class="flex flex-col items-center justify-center space-y-4">
                   <div class="animate-spin rounded-full h-10 w-10 border-2 border-gray-200 border-t-brand-500"></div>
-                  <span class="text-sm font-medium text-gray-500 dark:text-gray-400">{{ 'Common.loading' | translate
+                  <span class="text-sm font-medium text-gray-500 dark:text-gray-400">{{ 'common.loading' | translate
                     }}</span>
                 </div>
               </td>
@@ -90,7 +90,7 @@
                         d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
                     </svg>
                   </div>
-                  <p class="text-base font-medium text-gray-600 dark:text-gray-300">{{ 'Common.NoRecordsFound' |
+                  <p class="text-base font-medium text-gray-600 dark:text-gray-300">{{ 'common.noRecordsFound' |
                     translate }}</p>
                 </div>
               </td>
@@ -150,7 +150,7 @@
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
             </svg>
           </div>
-          <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">{{ 'Common.confirm' | translate }}</h3>
+          <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">{{ 'common.confirm' | translate }}</h3>
           <p class="text-gray-500 dark:text-gray-400 mb-8 text-sm leading-relaxed">
             {{ 'lookups.confirmSelectionOfCostElement' | translate }} <br>
             <span
@@ -161,11 +161,11 @@
           <div class="flex gap-3">
             <button (click)="cancelSelection()"
               class="flex-1 px-4 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-300 rounded-xl font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-500">
-              {{ 'Common.Cancel' | translate }}
+              {{ 'common.cancel' | translate }}
             </button>
             <button (click)="confirmSelection()"
               class="flex-1 px-4 py-3 bg-brand-600 hover:bg-brand-700 text-white rounded-xl font-semibold shadow-theme-sm transition-all hover:shadow-theme-md focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800">
-              {{ 'Common.confirm' | translate }}
+              {{ 'common.confirm' | translate }}
             </button>
           </div>
         </div>

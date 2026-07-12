@@ -22,7 +22,7 @@ import { Router } from '@angular/router';
             </h3>
             <p class="text-sm text-success-600 dark:text-success-500 mt-1 flex items-center gap-1.5 font-medium">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-              {{ 'Common.RedirectingIn' | translate: { seconds: remainingSeconds } }}
+              {{ 'common.redirectingIn' | translate: { seconds: remainingSeconds } }}
             </p>
           </div>
         </div>
@@ -31,7 +31,7 @@ import { Router } from '@angular/router';
         <div class="flex items-center gap-3 w-full sm:w-auto">
           <button (click)="onStay()" type="button"
             class="flex-1 sm:flex-none px-4 py-2.5 bg-white dark:bg-success-500/10 text-success-700 dark:text-success-400 text-sm font-medium rounded-lg border border-success-200 dark:border-success-500/20 hover:bg-success-50 dark:hover:bg-success-500/20 transition-colors shadow-theme-xs">
-            {{ 'Common.StayHere' | translate }}
+            {{ 'common.stayHere' | translate }}
           </button>
           <button (click)="onRedirect()" type="button"
             class="relative overflow-hidden flex-1 sm:flex-none px-5 py-2.5 bg-success-600 text-white text-sm font-medium rounded-lg border border-success-600 hover:bg-success-700 transition-colors shadow-theme-xs group">
@@ -39,7 +39,7 @@ import { Router } from '@angular/router';
                  [style.width.%]="(remainingSeconds / countdownSeconds) * 100"
                  [style.transitionDuration.ms]="1000"></div>
             <span class="relative z-10 flex items-center justify-center gap-2">
-              {{ 'Common.BackToList' | translate }}
+              {{ 'common.backToList' | translate }}
               <span class="flex items-center justify-center w-5 h-5 rounded-full bg-white/25 text-xs font-bold">{{ remainingSeconds }}</span>
             </span>
           </button>
@@ -51,7 +51,7 @@ import { Router } from '@angular/router';
 })
 export class SuccessRedirectBannerComponent implements OnChanges, OnDestroy {
   @Input() isVisible = false;
-  @Input() message = 'Common.SavedSuccessfully';
+  @Input() message = 'common.savedSuccessfully';
   @Input() redirectUrl = '';
   @Input() countdownSeconds = 5;
 

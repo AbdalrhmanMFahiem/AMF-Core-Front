@@ -56,7 +56,7 @@ export class BusinessPartnerStatementComponent implements OnInit {
   businessPartnersOptions: SearchableOption[] = [];
 
   columns = [
-    { field: 'entryDate', header: 'Common.date', type: 'date' as const },
+    { field: 'entryDate', header: 'common.date', type: 'date' as const },
     { field: 'invoiceCode', header: 'reports.businessPartnerStatement.table.invoiceCode', type: 'text' as const },
     { field: 'entryTypeName', header: 'reports.businessPartnerStatement.entryType', type: 'badge' as const },
     { field: 'amount', header: 'reports.businessPartnerStatement.table.amount', type: 'text' as const },

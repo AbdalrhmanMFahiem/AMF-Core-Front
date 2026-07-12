@@ -1,3 +1,4 @@
+import { DocumentStatusBadgeComponent } from '../../../../shared/components/common/document-status-badge/document-status-badge.component';
 import { Component, inject, OnInit, ViewChild, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
@@ -30,8 +31,7 @@ import { ItemLookupResponse } from '../../../../core/models/lookup.model';
     ErrorBannerComponent,
     SearchableSelectComponent,
     DatePickerComponent,
-    ItemLookupModalComponent
-  ],
+    ItemLookupModalComponent],
   templateUrl: './stock-adjustment-form.component.html',
 })
 export class StockAdjustmentFormComponent implements OnInit, HasUnsavedChanges {
@@ -43,7 +43,7 @@ export class StockAdjustmentFormComponent implements OnInit, HasUnsavedChanges {
   private router = inject(Router);
 
   id: number | null = null;
-  mode: 'add' | 'view' = 'add'; 
+  mode: 'add' | 'view' = 'add';
   loading = false;
   saving = false;
   saveSuccess = false;
@@ -80,8 +80,8 @@ export class StockAdjustmentFormComponent implements OnInit, HasUnsavedChanges {
     }
 
     this.adjustmentTypeOptions = [
-        { value: StockAdjustmentType.Inventory, label: this.translate.instant('stockAdjustments.types.inventory') },
-        { value: StockAdjustmentType.Adjustment, label: this.translate.instant('stockAdjustments.types.adjustment') }
+      { value: StockAdjustmentType.Inventory, label: this.translate.instant('stockAdjustments.types.inventory') },
+      { value: StockAdjustmentType.Adjustment, label: this.translate.instant('stockAdjustments.types.adjustment') }
     ];
 
     this.loadInitialData();
@@ -161,7 +161,7 @@ export class StockAdjustmentFormComponent implements OnInit, HasUnsavedChanges {
 
     this.model.lines.push({
       itemId: item.id,
-      systemQuantity: 0, 
+      systemQuantity: 0,
       countedQuantity: 0,
       lineOrder: this.model.lines.length + 1,
       _itemCode: item.code,
@@ -230,15 +230,34 @@ export class StockAdjustmentFormComponent implements OnInit, HasUnsavedChanges {
     if (!this.id) return;
     this.saving = true;
     this.stockAdjustmentService.confirm(this.id).subscribe({
+      next: () => {
+        this.saving = false;
+        this.loadRecord(this.id!);
+      },
+      error: (err) => {
+        this.saving = false;
+        console.error(err);
+      }
+    });
+  }
+
+  onCancelDocument(): void {
+    if (!this.id) return;
+    const title = this.translate.instant('stockAdjustments.cancelWarningTitle');
+    const text = this.translate.instant('stockAdjustments.cancelWarningText');
+    if (confirm(`${title}\n\n${text}`)) {
+      this.saving = true;
+      this.stockAdjustmentService.cancel(this.id).subscribe({
         next: () => {
-            this.saving = false;
-            this.loadRecord(this.id!);
+          this.saving = false;
+          this.loadRecord(this.id!);
         },
         error: (err) => {
-            this.saving = false;
-            console.error(err);
+          this.saving = false;
+          console.error(err);
         }
-    });
+      });
+    }
   }
 
   onCancel(): void {
@@ -250,7 +269,7 @@ export class StockAdjustmentFormComponent implements OnInit, HasUnsavedChanges {
   }
 
   getUnsavedChangesMessage(): string {
-    return this.translate.instant('Common.unsavedChangesMessage');
+    return this.translate.instant('common.unsavedChangesMessage');
   }
 
   confirmDeactivation(): Promise<boolean> {

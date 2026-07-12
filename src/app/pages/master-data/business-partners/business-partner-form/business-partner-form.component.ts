@@ -150,11 +150,11 @@ export class BusinessPartnerFormComponent implements OnInit {
     let isValid = true;
 
     if (!this.model.code) {
-      this.validationErrors.push(`${this.translate.instant('businessPartners.fields.code')}: ${this.translate.instant('validation.required')}`);
+      this.validationErrors.push(`${this.translate.instant('common.code')}: ${this.translate.instant('validation.required')}`);
       isValid = false;
     }
     if (!this.model.aName) {
-      this.validationErrors.push(`${this.translate.instant('businessPartners.fields.aName')}: ${this.translate.instant('validation.required')}`);
+      this.validationErrors.push(`${this.translate.instant('common.arabicName')}: ${this.translate.instant('validation.required')}`);
       isValid = false;
     }
 
@@ -201,7 +201,7 @@ export class BusinessPartnerFormComponent implements OnInit {
 
   private initializeLedgerFiltersEntryType(): void {
     this.ledgerFiltersEntryType = [
-      // { value: 'All', label: this.translate.instant('Common.All') },
+      // { value: 'All', label: this.translate.instant('common.all') },
       { value: LedgerEntryType.Payment, label: this.translate.instant('ledger.typeEnum.Payment') },
       { value: LedgerEntryType.Adjustment, label: this.translate.instant('ledger.typeEnum.Adjustment') },
       { value: LedgerEntryType.Invoice, label: this.translate.instant('ledger.typeEnum.Invoice') },

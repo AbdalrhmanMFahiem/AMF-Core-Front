@@ -37,9 +37,9 @@ export class ItemPropertyFormComponent implements OnInit {
   }
 
   get pageTitle(): string {
-    if (this.isView) return 'Pages.ItemProperties.ViewTitle';
-    if (this.isEdit) return 'Pages.ItemProperties.EditTitle';
-    return 'Pages.ItemProperties.AddTitle';
+    if (this.isView) return 'pages.ItemProperties.ViewTitle';
+    if (this.isEdit) return 'pages.ItemProperties.EditTitle';
+    return 'pages.ItemProperties.AddTitle';
   }
 
   ngOnInit(): void {

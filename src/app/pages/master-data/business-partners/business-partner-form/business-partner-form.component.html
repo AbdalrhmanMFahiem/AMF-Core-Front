@@ -1,13 +1,13 @@
 <app-page-breadcrumb
-  [pageTitle]="(mode === 'edit' ? 'businessPartners.edit' : mode === 'view' ? 'Common.view' : 'businessPartners.addNew')" />
+  [pageTitle]="(mode === 'edit' ? 'businessPartners.edit' : mode === 'view' ? 'common.view' : 'businessPartners.addNew')" />
 
 <div class="space-y-6">
-  <app-success-redirect-banner [isVisible]="saveSuccess" [message]="'Common.savedSuccessfully'"
+  <app-success-redirect-banner [isVisible]="saveSuccess" [message]="'common.savedSuccessfully'"
     [redirectUrl]="'/master-data/business-partners'" [countdownSeconds]="5">
   </app-success-redirect-banner>
 
   <app-component-card
-    [title]="(mode === 'edit' ? 'businessPartners.edit' : mode === 'view' ? 'Common.view' : 'businessPartners.addNew') | translate"
+    [title]="(mode === 'edit' ? 'businessPartners.edit' : mode === 'view' ? 'common.view' : 'businessPartners.addNew') | translate"
     [className]="'p-6'">
 
     <div *ngIf="loading" class="flex justify-center p-8">
@@ -33,7 +33,7 @@
         <!-- Code -->
         <div>
           <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-            {{ 'businessPartners.fields.code' | translate }} <span class="text-error-500">*</span>
+            {{ 'common.code' | translate }} <span class="text-error-500">*</span>
           </label>
           <input type="text" [(ngModel)]="model.code" name="code" required [disabled]="mode === 'view'"
             class="w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm outline-none focus:border-brand-500 dark:border-gray-800 dark:focus:border-brand-500" />
@@ -42,7 +42,7 @@
         <!-- Type -->
         <div>
           <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-            {{ 'businessPartners.fields.type' | translate }}
+            {{ 'common.type' | translate }}
           </label>
           <div class="flex items-center gap-6 mt-3">
             <label class="flex items-center gap-2"
@@ -65,7 +65,7 @@
         <!-- AName -->
         <div>
           <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-            {{ 'businessPartners.fields.aName' | translate }} <span class="text-error-500">*</span>
+            {{ 'common.arabicName' | translate }} <span class="text-error-500">*</span>
           </label>
           <input type="text" [(ngModel)]="model.aName" name="aName" required [disabled]="mode === 'view'"
             class="w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm outline-none focus:border-brand-500 dark:border-gray-800 dark:focus:border-brand-500" />
@@ -74,7 +74,7 @@
         <!-- EName -->
         <div>
           <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-            {{ 'businessPartners.fields.eName' | translate }}
+            {{ 'common.englishName' | translate }}
           </label>
           <input type="text" [(ngModel)]="model.eName" name="eName" [disabled]="mode === 'view'"
             class="w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm outline-none focus:border-brand-500 dark:border-gray-800 dark:focus:border-brand-500" />
@@ -110,7 +110,7 @@
         <!-- Notes -->
         <div class="sm:col-span-2">
           <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-            {{ 'businessPartners.fields.notes' | translate }}
+            {{ 'common.notes' | translate }}
           </label>
           <textarea [(ngModel)]="model.notes" name="notes" rows="3" [disabled]="mode === 'view'"
             class="w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm outline-none focus:border-brand-500 dark:border-gray-800 dark:focus:border-brand-500"></textarea>
@@ -123,14 +123,14 @@
           <!-- From Date -->
           <div>
             <app-date-picker id="filterFrom" name="filterFrom" [(ngModel)]="ledgerFilters.from"
-              [placeholder]="'Common.selectDate' | translate"
+              [placeholder]="'common.selectDate' | translate"
               [label]="'reports.businessPartnerStatement.from' | translate" [enableTime]="false" mode="single">
             </app-date-picker>
           </div>
           <!-- To Date -->
           <div>
             <app-date-picker id="filterTo" name="filterTo" [(ngModel)]="ledgerFilters.to"
-              [placeholder]="'Common.selectDate' | translate"
+              [placeholder]="'common.selectDate' | translate"
               [label]="'reports.businessPartnerStatement.to' | translate" [enableTime]="false" mode="single">
             </app-date-picker>
           </div>
@@ -140,7 +140,7 @@
               {{ 'ledger.entryType' | translate }}
             </label>
             <app-searchable-select [(ngModel)]="ledgerFilters.entryType" name="filterEntryType"
-              [options]="ledgerFiltersEntryType" [disabled]="mode === 'view'" placeholder="Common.Select">
+              [options]="ledgerFiltersEntryType" [disabled]="mode === 'view'" placeholder="common.select">
             </app-searchable-select>
           </div>
 
@@ -148,11 +148,11 @@
           <div class="flex items-end gap-2">
             <button type="button" (click)="applyLedgerFilter()"
               class="flex-1 rounded-lg bg-brand-500 px-4 py-2 text-sm font-medium text-white hover:bg-brand-600 transition">
-              {{ 'Common.filter' | translate }}
+              {{ 'common.filter' | translate }}
             </button>
             <button type="button" (click)="clearLedgerFilter()"
               class="flex-1 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700">
-              {{ 'Common.reset' | translate }}
+              {{ 'common.reset' | translate }}
             </button>
           </div>
         </div>
@@ -217,25 +217,25 @@
               <button type="button" (click)="onLedgerPageChange(ledgerFilters.pageNumber - 1)"
                 [disabled]="ledgerFilters.pageNumber === 1"
                 class="relative inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300">
-                {{ 'Common.Previous' | translate }}
+                {{ 'common.previous' | translate }}
               </button>
               <button type="button" (click)="onLedgerPageChange(ledgerFilters.pageNumber + 1)"
                 [disabled]="ledgerFilters.pageNumber * ledgerFilters.pageSize >= totalLedgerRecords"
                 class="relative ml-3 inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300">
-                {{ 'Common.Next' | translate }}
+                {{ 'common.next' | translate }}
               </button>
             </div>
             <div class="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
               <div>
                 <p class="text-sm text-gray-700 dark:text-gray-300">
-                  {{ 'Common.Showing' | translate }}
+                  {{ 'common.showing' | translate }}
                   <span class="font-medium">{{ (ledgerFilters.pageNumber - 1) * ledgerFilters.pageSize + 1 }}</span>
                   -
                   <span class="font-medium">{{ (ledgerFilters.pageNumber * ledgerFilters.pageSize) > totalLedgerRecords
                     ? totalLedgerRecords : (ledgerFilters.pageNumber * ledgerFilters.pageSize) }}</span>
-                  {{ 'Common.Of' | translate }}
+                  {{ 'common.of' | translate }}
                   <span class="font-medium">{{ totalLedgerRecords }}</span>
-                  {{ 'Common.Entries' | translate }}
+                  {{ 'common.entries' | translate }}
                 </p>
               </div>
               <div>
@@ -244,7 +244,7 @@
                   <button type="button" (click)="onLedgerPageChange(ledgerFilters.pageNumber - 1)"
                     [disabled]="ledgerFilters.pageNumber === 1"
                     class="relative inline-flex items-center rounded-l-md rtl:rounded-l-none rtl:rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 disabled:opacity-50 dark:ring-gray-700 dark:hover:bg-gray-800">
-                    <span class="sr-only">{{ 'Common.Previous' | translate }}</span>
+                    <span class="sr-only">{{ 'common.previous' | translate }}</span>
                     <svg class="h-5 w-5 rtl:rotate-180" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                       <path fill-rule="evenodd"
                         d="M12.79 5.23a.75.75 0 01-.02 1.06L8.832 10l3.938 3.71a.75.75 0 11-1.04 1.08l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 011.06.02z"
@@ -254,7 +254,7 @@
                   <button type="button" (click)="onLedgerPageChange(ledgerFilters.pageNumber + 1)"
                     [disabled]="ledgerFilters.pageNumber * ledgerFilters.pageSize >= totalLedgerRecords"
                     class="relative inline-flex items-center rounded-r-md rtl:rounded-r-none rtl:rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 disabled:opacity-50 dark:ring-gray-700 dark:hover:bg-gray-800">
-                    <span class="sr-only">{{ 'Common.Next' | translate }}</span>
+                    <span class="sr-only">{{ 'common.next' | translate }}</span>
                     <svg class="h-5 w-5 rtl:rotate-180" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                       <path fill-rule="evenodd"
                         d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z"
@@ -272,9 +272,9 @@
       <div class="flex items-center justify-end gap-3 border-t border-gray-200 pt-6 dark:border-gray-800 mt-8">
         <button type="button" (click)="onCancel()"
           class="rounded-lg border border-gray-300 bg-white px-5 py-2.5 text-sm font-medium text-gray-700 shadow-sm transition-colors hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700">
-          {{ (mode === 'view' ? 'Common.back' : 'Common.cancel') | translate }}
+          {{ (mode === 'view' ? 'common.back' : 'common.cancel') | translate }}
         </button>
-        <button *ngIf="mode !== 'view'" type="submit" [disabled]="saving || !form.valid"
+        <button *ngIf="mode !== 'view'" type="submit" [disabled]="saving"
           class="flex items-center gap-2 rounded-lg bg-brand-500 px-5 py-2.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-brand-600 disabled:opacity-50">
           <svg *ngIf="saving" class="h-4 w-4 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none"
             viewBox="0 0 24 24">
@@ -283,7 +283,7 @@
               d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
             </path>
           </svg>
-          <span>{{ (saving ? 'Common.saving' : 'Common.save') | translate }}</span>
+          <span>{{ (saving ? 'common.saving' : 'common.save') | translate }}</span>
         </button>
       </div>
     </form>

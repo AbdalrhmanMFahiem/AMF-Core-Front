@@ -44,12 +44,12 @@ AMFCore-Front-Temp/public/
 
 ### ⚠️ CRITICAL RULES
 
-1. **NEVER hardcode text.** Every visible string MUST use a translation key.
-2. **ALWAYS add translation keys to BOTH `ar.json` AND `en.json` simultaneously.**
-3. **Follow the existing key structure.** Use nested keys grouped by feature/page.
-4. In templates, use the `translate` pipe: `{{ 'key.path' | translate }}`
-5. In TypeScript, inject `TranslateService` and use `this.translate.instant('key.path')`
-6. **Reuse existing `Common.*`, `crud.*`, `common.*`, `validation.*`, `errors.*`, and `lookups.*` keys wherever possible.** Do NOT create duplicate translations.
+1. **NEVER hardcode text.** Every visible string MUST use a translation key. Everything in the UI will have a translation.
+2. **REUSE EXISTING TRANSLATIONS as much as possible.** Check `common.*`, `crud.*`, etc., before creating a new key to avoid redundancy.
+3. **ALWAYS add translation keys to BOTH `ar.json` AND `en.json` simultaneously.**
+4. **Follow the existing key structure.** Use nested keys grouped by feature/page.
+5. In templates, use the `translate` pipe: `{{ 'key.path' | translate }}`
+6. In TypeScript, inject `TranslateService` and use `this.translate.instant('key.path')`
 
 ### Existing Reusable Translation Keys
 

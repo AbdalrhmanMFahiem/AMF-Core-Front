@@ -102,7 +102,7 @@ export class InventorySettingsComponent implements OnInit {
       next: () => {
         this.settings = { ...this.settings, ...this.form.value };
         this.isSaving = false;
-        this.successMessage = this.translate.instant('Common.SavedSuccessfully');
+        this.successMessage = this.translate.instant('common.savedSuccessfully');
         setTimeout(() => {
           this.successMessage = '';
           this.closeModal();

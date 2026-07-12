@@ -58,7 +58,7 @@
           fill=""
         />
       </svg>
-      {{ 'Common.Edit' | translate }}
+      {{ 'common.edit' | translate }}
     </button>
   </div>
 
@@ -104,9 +104,9 @@
         </div>
         
         <div class="flex items-center gap-3 px-2 mt-6 lg:justify-end">
-          <app-button size="sm" variant="outline" (btnClick)="closeModal()" type="button">{{ 'Common.cancel' | translate }}</app-button>
+          <app-button size="sm" variant="outline" (btnClick)="closeModal()" type="button">{{ 'common.cancel' | translate }}</app-button>
           <app-button size="sm" [disabled]="isSaving" type="submit">
-            {{ isSaving ? ('Common.Saving' | translate) : ('Common.save' | translate) }}
+            {{ isSaving ? ('common.saving' | translate) : ('common.save' | translate) }}
           </app-button>
         </div>
       </form>

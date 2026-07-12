@@ -7,17 +7,17 @@
       <!-- Business Partner -->
       <div>
         <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-          {{ 'businessPartners.fields.name' | translate }} <span class="text-error-500">*</span>
+          {{ 'common.name' | translate }} <span class="text-error-500">*</span>
         </label>
         <app-searchable-select [(ngModel)]="businessPartnerId" name="businessPartnerId"
-          [options]="businessPartnersOptions" placeholder="Common.Select">
+          [options]="businessPartnersOptions" placeholder="common.select">
         </app-searchable-select>
       </div>
 
       <!-- From Date -->
       <div class="relative z-20">
         <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-          {{ 'Common.from' | translate }}
+          {{ 'common.from' | translate }}
         </label>
         <app-date-picker id="fromDate" name="fromDate" [(ngModel)]="filters.from">
         </app-date-picker>
@@ -26,7 +26,7 @@
       <!-- To Date -->
       <div class="relative z-10">
         <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-          {{ 'Common.to' | translate }}
+          {{ 'common.to' | translate }}
         </label>
         <app-date-picker id="toDate" name="toDate" [(ngModel)]="filters.to">
         </app-date-picker>
@@ -37,7 +37,7 @@
     <div class="mt-6 flex justify-end gap-3">
       <button type="button" (click)="onReset()"
         class="rounded-lg border border-gray-300 bg-white px-5 py-2.5 text-sm font-medium text-gray-700 shadow-sm transition-colors hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700">
-        {{ 'Common.reset' | translate }}
+        {{ 'common.reset' | translate }}
       </button>
       <button type="button" (click)="onSearch()" [disabled]="!businessPartnerId || loading || summaryLoading"
         class="flex items-center gap-2 rounded-lg bg-brand-500 px-5 py-2.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-brand-600 disabled:opacity-50">
@@ -48,7 +48,7 @@
             d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
           </path>
         </svg>
-        <span>{{ 'Common.search' | translate }}</span>
+        <span>{{ 'common.search' | translate }}</span>
       </button>
     </div>
   </app-component-card>
@@ -91,7 +91,7 @@
     <!-- Transactions Crud List -->
     <app-crud-list 
       [pageTitle]="'reports.businessPartnerStatement.ledger' | translate" 
-      [searchPlaceholder]="'Common.SearchPlaceholder' | translate"
+      [searchPlaceholder]="'common.searchPlaceholder' | translate"
       [columns]="columns" 
       [data]="ledgerData" 
       [filters]="filters"

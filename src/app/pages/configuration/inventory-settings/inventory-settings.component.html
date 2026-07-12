@@ -1,10 +1,10 @@
-<app-page-breadcrumb [pageTitle]="'InventorySettings.Title' | translate" />
+<app-page-breadcrumb [pageTitle]="'inventorySettings.Title' | translate" />
 
 <div class="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/3 lg:p-6">
   <div class="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
     <div class="w-full">
       <h4 class="text-lg font-semibold text-gray-800 dark:text-white/90 lg:mb-6">
-        {{ 'InventorySettings.Title' | translate }}
+        {{ 'inventorySettings.Title' | translate }}
       </h4>
       
       <div *ngIf="isLoading" class="flex justify-center p-4">
@@ -14,47 +14,47 @@
       <div *ngIf="!isLoading" class="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-7 2xl:gap-x-32">
         <div>
           <p class="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
-            {{ 'InventorySettings.AllowNegativeStock' | translate }}
+            {{ 'inventorySettings.AllowNegativeStock' | translate }}
           </p>
           <p class="text-sm font-medium text-gray-800 dark:text-white/90">
-            {{ settings.allowNegativeStock ? ('InventorySettings.Yes' | translate) : ('InventorySettings.No' | translate) }}
+            {{ settings.allowNegativeStock ? ('inventorySettings.Yes' | translate) : ('inventorySettings.No' | translate) }}
           </p>
         </div>
         <div>
           <p class="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
-            {{ 'InventorySettings.RequireStockBeforeConfirm' | translate }}
+            {{ 'inventorySettings.RequireStockBeforeConfirm' | translate }}
           </p>
           <p class="text-sm font-medium text-gray-800 dark:text-white/90">
-            {{ settings.requireStockBeforeConfirm ? ('InventorySettings.Yes' | translate) : ('InventorySettings.No' | translate) }}
+            {{ settings.requireStockBeforeConfirm ? ('inventorySettings.Yes' | translate) : ('inventorySettings.No' | translate) }}
           </p>
         </div>
         <div>
           <p class="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
-            {{ 'InventorySettings.ValuationMethod' | translate }}
+            {{ 'inventorySettings.ValuationMethod' | translate }}
           </p>
           <p class="text-sm font-medium text-gray-800 dark:text-white/90">
-            {{ settings.valuationMethod === 1 ? ('InventorySettings.WeightedAverage' | translate) : ('InventorySettings.FIFO' | translate) }}
+            {{ settings.valuationMethod === 1 ? ('inventorySettings.WeightedAverage' | translate) : ('inventorySettings.FIFO' | translate) }}
           </p>
         </div>
         <div>
           <p class="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
-            {{ 'InventorySettings.AutoPostInventoryOnSave' | translate }}
+            {{ 'inventorySettings.AutoPostInventoryOnSave' | translate }}
           </p>
           <p class="text-sm font-medium text-gray-800 dark:text-white/90">
-            {{ settings.autoPostInventoryOnSave ? ('InventorySettings.Yes' | translate) : ('InventorySettings.No' | translate) }}
+            {{ settings.autoPostInventoryOnSave ? ('inventorySettings.Yes' | translate) : ('inventorySettings.No' | translate) }}
           </p>
         </div>
         <div>
           <p class="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
-            {{ 'InventorySettings.InvoicesDirectlyAffectInventory' | translate }}
+            {{ 'inventorySettings.InvoicesDirectlyAffectInventory' | translate }}
           </p>
           <p class="text-sm font-medium text-gray-800 dark:text-white/90">
-            {{ settings.invoicesDirectlyAffectInventory ? ('InventorySettings.Yes' | translate) : ('InventorySettings.No' | translate) }}
+            {{ settings.invoicesDirectlyAffectInventory ? ('inventorySettings.Yes' | translate) : ('inventorySettings.No' | translate) }}
           </p>
         </div>
         <div class="lg:col-span-2">
           <p class="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
-            {{ 'InventorySettings.Notes' | translate }}
+            {{ 'inventorySettings.Notes' | translate }}
           </p>
           <p class="text-sm font-medium text-gray-800 dark:text-white/90">
             {{ settings.notes || 'N/A' }}
@@ -82,7 +82,7 @@
           fill=""
         />
       </svg>
-      {{ 'Common.Edit' | translate }}
+      {{ 'common.edit' | translate }}
     </button>
   </div>
 
@@ -95,10 +95,10 @@
     <div class="no-scrollbar relative w-full max-w-[700px] overflow-y-auto rounded-3xl bg-white p-4 dark:bg-gray-900 lg:p-11">
       <div class="px-2 pr-14">
         <h4 class="mb-2 text-2xl font-semibold text-gray-800 dark:text-white/90">
-          {{ 'InventorySettings.EditTitle' | translate }}
+          {{ 'inventorySettings.EditTitle' | translate }}
         </h4>
         <p class="mb-6 text-sm text-gray-500 dark:text-gray-400 lg:mb-7">
-          {{ 'InventorySettings.EditSubtitle' | translate }}
+          {{ 'inventorySettings.EditSubtitle' | translate }}
         </p>
       </div>
       
@@ -112,43 +112,43 @@
           <div class="grid grid-cols-1 gap-x-6 gap-y-5">
             <div class="flex items-center gap-3 mt-2">
               <input type="checkbox" formControlName="allowNegativeStock" id="allowNegativeStock" class="h-5 w-5 rounded border-gray-300 text-brand-500 focus:ring-brand-500 dark:border-gray-700 dark:bg-gray-900">
-              <label for="allowNegativeStock" class="text-sm font-medium text-gray-800 dark:text-white/90 cursor-pointer">{{ 'InventorySettings.AllowNegativeStock' | translate }}</label>
+              <label for="allowNegativeStock" class="text-sm font-medium text-gray-800 dark:text-white/90 cursor-pointer">{{ 'inventorySettings.AllowNegativeStock' | translate }}</label>
             </div>
 
             <div class="flex items-center gap-3">
               <input type="checkbox" formControlName="requireStockBeforeConfirm" id="requireStockBeforeConfirm" class="h-5 w-5 rounded border-gray-300 text-brand-500 focus:ring-brand-500 dark:border-gray-700 dark:bg-gray-900">
-              <label for="requireStockBeforeConfirm" class="text-sm font-medium text-gray-800 dark:text-white/90 cursor-pointer">{{ 'InventorySettings.RequireStockBeforeConfirm' | translate }}</label>
+              <label for="requireStockBeforeConfirm" class="text-sm font-medium text-gray-800 dark:text-white/90 cursor-pointer">{{ 'inventorySettings.RequireStockBeforeConfirm' | translate }}</label>
             </div>
 
             <div class="mt-2">
-              <app-label>{{ 'InventorySettings.ValuationMethod' | translate }}</app-label>
+              <app-label>{{ 'inventorySettings.ValuationMethod' | translate }}</app-label>
               <select formControlName="valuationMethod" class="h-11 w-full rounded-lg border appearance-none px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 bg-white text-gray-800 border-gray-300 focus:border-brand-300 focus:ring-brand-500/20 dark:border-gray-700 dark:text-white/90 dark:focus:border-brand-800 dark:bg-gray-900">
-                <option [ngValue]="1">{{ 'InventorySettings.WeightedAverage' | translate }}</option>
-                <option [ngValue]="2">{{ 'InventorySettings.FIFO' | translate }}</option>
+                <option [ngValue]="1">{{ 'inventorySettings.WeightedAverage' | translate }}</option>
+                <option [ngValue]="2">{{ 'inventorySettings.FIFO' | translate }}</option>
               </select>
             </div>
 
             <div class="flex items-center gap-3 mt-2">
               <input type="checkbox" formControlName="autoPostInventoryOnSave" id="autoPostInventoryOnSave" class="h-5 w-5 rounded border-gray-300 text-brand-500 focus:ring-brand-500 dark:border-gray-700 dark:bg-gray-900">
-              <label for="autoPostInventoryOnSave" class="text-sm font-medium text-gray-800 dark:text-white/90 cursor-pointer">{{ 'InventorySettings.AutoPostInventoryOnSave' | translate }}</label>
+              <label for="autoPostInventoryOnSave" class="text-sm font-medium text-gray-800 dark:text-white/90 cursor-pointer">{{ 'inventorySettings.AutoPostInventoryOnSave' | translate }}</label>
             </div>
 
             <div class="flex items-center gap-3">
               <input type="checkbox" formControlName="invoicesDirectlyAffectInventory" id="invoicesDirectlyAffectInventory" class="h-5 w-5 rounded border-gray-300 text-brand-500 focus:ring-brand-500 dark:border-gray-700 dark:bg-gray-900">
-              <label for="invoicesDirectlyAffectInventory" class="text-sm font-medium text-gray-800 dark:text-white/90 cursor-pointer">{{ 'InventorySettings.InvoicesDirectlyAffectInventory' | translate }}</label>
+              <label for="invoicesDirectlyAffectInventory" class="text-sm font-medium text-gray-800 dark:text-white/90 cursor-pointer">{{ 'inventorySettings.InvoicesDirectlyAffectInventory' | translate }}</label>
             </div>
 
             <div class="mt-4">
-              <app-label>{{ 'InventorySettings.Notes' | translate }}</app-label>
+              <app-label>{{ 'inventorySettings.Notes' | translate }}</app-label>
               <textarea formControlName="notes" rows="4" class="h-auto w-full rounded-lg border appearance-none px-4 py-2.5 text-sm shadow-theme-xs placeholder:text-gray-400 focus:outline-hidden focus:ring-3 bg-transparent text-gray-800 border-gray-300 focus:border-brand-300 focus:ring-brand-500/20 dark:border-gray-700 dark:text-white/90 dark:focus:border-brand-800 dark:bg-gray-900 dark:placeholder:text-white/30"></textarea>
             </div>
           </div>
         </div>
         
         <div class="flex items-center gap-3 px-2 mt-6 lg:justify-end">
-          <app-button size="sm" variant="outline" (btnClick)="closeModal()" type="button">{{ 'Common.cancel' | translate }}</app-button>
+          <app-button size="sm" variant="outline" (btnClick)="closeModal()" type="button">{{ 'common.cancel' | translate }}</app-button>
           <app-button size="sm" [disabled]="isSaving" type="submit">
-            {{ isSaving ? ('Common.Saving' | translate) : ('Common.save' | translate) }}
+            {{ isSaving ? ('common.saving' | translate) : ('common.save' | translate) }}
           </app-button>
         </div>
       </form>

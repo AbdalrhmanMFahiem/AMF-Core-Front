@@ -34,11 +34,11 @@ export class RolesListComponent implements OnInit {
   };
 
   columns: CrudColumn[] = [
-    { field: 'name', header: 'roles.fields.name', type: 'text' },
-    { field: 'aName', header: 'roles.fields.aName', type: 'text' },
-    { field: 'eName', header: 'roles.fields.eName', type: 'text' },
-    { field: 'notes', header: 'roles.fields.notes', type: 'text' },
-    { field: 'isActive', header: 'Common.Status', type: 'badge' }
+    { field: 'name', header: 'common.name', type: 'text' },
+    { field: 'aName', header: 'common.arabicName', type: 'text' },
+    { field: 'eName', header: 'common.englishName', type: 'text' },
+    { field: 'notes', header: 'common.notes', type: 'text' },
+    { field: 'isActive', header: 'common.status', type: 'badge' }
   ];
 
   ngOnInit(): void {

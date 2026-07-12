@@ -1,13 +1,19 @@
 {
-  "Common": {
-    "All": "All",
-    "ErrorTitle": "Please fix the following errors:",
+  "common": {
+    "saving": "Saving...",
+    "confirmStatusChange": "Are you sure you want to change the status?",
+    "statusChangedToInactive": "Status changed from Active to Inactive successfully.",
+    "statusChangedToActive": "Status changed from Inactive to Active successfully.",
+    "errorSavingData": "An error occurred while saving data.",
+    "errorLoadingData": "An error occurred while loading data.",
+    "all": "All",
+    "errorTitle": "Please fix the following errors:",
     "refresh": "Refresh",
     "view": "View",
     "back": "Back",
     "type": "Type",
     "loading": "Loading...",
-    "savedSuccessfully": "Saved Successfully",
+    "savedSuccessfully": "Saved successfully",
     "edit": "Edit",
     "activate": "Activate",
     "date": "Date",
@@ -22,7 +28,7 @@
     "vendor": "Vendor",
     "inactive": "Inactive",
     "deactivate": "Deactivate",
-    "save": "Save Record",
+    "save": "Save",
     "cancel": "Cancel",
     "search": "Search",
     "status": "Status",
@@ -32,166 +38,56 @@
     "addNew": "Add New Record",
     "confirm": "Confirm",
     "options": "Options",
-    "copyId": "Copy ID",
+    "copyId": "Copy Id",
     "noResults": "No results found",
     "searchPlaceholder": "Search...",
     "clearSelection": "Clear selection",
     "filter": "Filter",
     "apply": "Apply",
     "reset": "Reset",
-    "all": "All",
-    "Code": "Code",
-    "Name": "Name",
-    "Notes": "Notes",
-    "NotesPlaceholder": "Enter notes here...",
-    "Status": "Status",
-    "Actions": "Actions",
-    "Active": "Active",
-    "Inactive": "Inactive",
-    "Showing": "Showing",
-    "Of": "of",
-    "Entries": "Entries",
-    "Previous": "Previous",
-    "Next": "Next",
-    "Page": "Page",
-    "NoRecordsFound": "No records found.",
-    "View": "View",
-    "Edit": "Edit",
-    "ToggleStatus": "Toggle Status",
-    "SearchPlaceholder": "Search...",
-    "Home": "Home",
-    "Add": "Add",
-    "Cancel": "Cancel",
-    "Save": "Save",
-    "IncludeDisabled": "Include Disabled",
-    "ID": "ID",
-    "ArabicName": "Arabic Name",
-    "EnglishName": "English Name",
-    "Back": "Back",
-    "Saving": "Saving...",
-    "CopyCode": "Copy Code",
-    "CopyId": "Copy Id",
-    "StayHere": "Stay Here",
-    "BackToList": "Back to List",
-    "RedirectingIn": "Redirecting to list in {{seconds}} seconds...",
-    "Success": "Success",
-    "SavedSuccessfully": "Saved successfully",
-    "UpdatedSuccessfully": "Updated successfully",
-    "Select": "Select",
+    "code": "Code",
+    "name": "Name",
+    "notes": "Notes",
+    "notesPlaceholder": "Enter notes here...",
+    "actions": "Actions",
+    "showing": "Showing",
+    "of": "of",
+    "entries": "Entries",
+    "previous": "Previous",
+    "next": "Next",
+    "page": "Page",
+    "noRecordsFound": "No records found.",
+    "toggleStatus": "Toggle Status",
+    "home": "Home",
+    "add": "Add",
+    "includeDisabled": "Include Disabled",
+    "id": "ID",
+    "arabicName": "Arabic Name",
+    "englishName": "English Name",
+    "copyCode": "Copy Code",
+    "stayHere": "Stay Here",
+    "backToList": "Back to List",
+    "redirectingIn": "Redirecting to list in {{seconds}} seconds...",
+    "updatedSuccessfully": "Updated successfully",
+    "select": "Select",
     "unsavedChangesMessage": "You have unsaved changes. Are you sure you want to leave without saving?",
     "fieldRequired": "The {{field}} field is required",
     "invalidEmail": "The {{field}} field has an invalid email format",
     "invalidField": "The {{field}} field is invalid",
     "pleaseFillRequiredFields": "Please fill required fields",
-    "errorSavingData": "Error saving data"
-  },
-  "Pages": {
-    "ItemProperties": {
-      "Title": "Item Properties",
-      "AddTitle": "Add Item Property",
-      "EditTitle": "Edit Item Property",
-      "ViewTitle": "View Item Property",
-      "Add": "Add New Property",
-      "SearchPlaceholder": "Search code or name..."
-    },
-    "ItemGroups": {
-      "Title": "Item Groups",
-      "AddTitle": "Add Item Group",
-      "EditTitle": "Edit Item Group",
-      "ViewTitle": "View Item Group",
-      "Add": "Add New Group",
-      "SearchPlaceholder": "Search code or name..."
+    "amount": "Amount",
+    "percentage": "Percentage",
+    "reference": "Reference",
+    "noData": "No Data",
+    "delete": "Delete",
+    "documentStatus": {
+      "0": "Draft",
+      "1": "Confirmed",
+      "2": "Cancelled",
+      "Draft": "Draft",
+      "Confirmed": "Confirmed",
+      "Cancelled": "Cancelled"
     }
-  },
-  "warehouses": {
-    "title": "Warehouses",
-    "subTitle": "Manage your warehouses and storage areas.",
-    "addNew": "Add New Warehouse",
-    "addTitle": "Add Warehouse",
-    "form": {
-      "create": "Create Warehouse",
-      "edit": "Edit Warehouse",
-      "view": "View Warehouse"
-    },
-    "addSuccess": "Warehouse added successfully.",
-    "updateSuccess": "Warehouse updated successfully.",
-    "list": {
-      "title": "Warehouses List"
-    },
-    "sections": {
-      "capacity": "Capacity Details"
-    },
-    "fields": {
-      "code": "Code",
-      "name": "Name",
-      "aName": "Arabic Name",
-      "aNamePlaceholder": "Enter arabic name",
-      "eName": "English Name",
-      "eNamePlaceholder": "Enter english name",
-      "maxVolumeCapacity": "Volume Capacity (m³)",
-      "maxWeightCapacity": "Weight Capacity (kg)",
-      "maxPalletsCount": "Pallets Capacity"
-    }
-  },
-  "locations": {
-    "title": "Locations",
-    "subTitle": "Manage bin locations and storage areas.",
-    "addNew": "Add New Location",
-    "addTitle": "Add Location",
-    "form": {
-      "create": "Create Location",
-      "edit": "Edit Location",
-      "view": "View Location"
-    },
-    "addSuccess": "Location added successfully.",
-    "updateSuccess": "Location updated successfully.",
-    "list": {
-      "title": "Locations List"
-    },
-    "fields": {
-      "code": "Code",
-      "name": "Name",
-      "aName": "Arabic Name",
-      "aNamePlaceholder": "Enter arabic name",
-      "eName": "English Name",
-      "eNamePlaceholder": "Enter english name",
-      "parentLocation": "Parent Location",
-      "parentLocationPlaceholder": "Select parent location"
-    }
-  },
-  "login": {
-    "welcome": "Welcome Back",
-    "subtext": "Access your portal under",
-    "emailLabel": "Email Address",
-    "emailError": "Please provide a valid business email address.",
-    "passwordLabel": "Password",
-    "forgotPassword": "Forgot password?",
-    "passwordError": "Password must contain at least 4 characters.",
-    "signIn": "Sign In to System",
-    "authenticating": "Authenticating Account...",
-    "activeDatabases": "Active Databases",
-    "description": "A comprehensive system for Sales, Purchases, Customers, Suppliers, and Inventory Management, integrated with Reports and Accounting.",
-    "comingSoon": "Coming soon: Treasury and Journal Entries.",
-    "workspaceSetup": "Workspace Setup",
-    "selectCompanyAndBranch": "Select your company and branch to continue",
-    "company": "Company",
-    "branch": "Branch",
-    "chooseCompany": "Choose a company...",
-    "chooseBranch": "Choose a branch...",
-    "registerNewCompany": "Register New Company",
-    "registerCompanyDesc": "Create a new tenant for a company and setup its main branch.",
-    "companyName": "Company Name",
-    "mainBranchName": "Main Branch Name",
-    "egMainBranch": "e.g. Main Branch",
-    "registerBtn": "Register Company",
-    "cancel": "Cancel",
-    "back": "Back"
-  },
-  "serverUnavailable": {
-    "title": "Server Connection Lost",
-    "description": "We're unable to connect to the backend system services. The server may be undergoing maintenance or experiencing traffic spikes. We're actively checking the connection.",
-    "verifyConnection": "Verify Gateway Connection",
-    "verifying": "Verifying Server Health..."
   },
   "pages": {
     "invoiceCostElements": "Invoice Cost Elements",
@@ -267,6 +163,92 @@
     "inventoryValuation": "Inventory Valuation",
     "dashboard": "Dashboard"
   },
+  "warehouses": {
+    "title": "Warehouses",
+    "subTitle": "Manage your warehouses and storage areas.",
+    "addNew": "Add New Warehouse",
+    "addTitle": "Add Warehouse",
+    "form": {
+      "create": "Create Warehouse",
+      "edit": "Edit Warehouse",
+      "view": "View Warehouse"
+    },
+    "addSuccess": "Warehouse added successfully.",
+    "updateSuccess": "Warehouse updated successfully.",
+    "list": {
+      "title": "Warehouses List"
+    },
+    "sections": {
+      "capacity": "Capacity Details"
+    },
+    "fields": {
+      "aName": "Arabic Name",
+      "aNamePlaceholder": "Enter arabic name",
+      "eName": "English Name",
+      "eNamePlaceholder": "Enter english name",
+      "maxVolumeCapacity": "Volume Capacity (m³)",
+      "maxWeightCapacity": "Weight Capacity (kg)",
+      "maxPalletsCount": "Pallets Capacity"
+    }
+  },
+  "locations": {
+    "title": "Locations",
+    "subTitle": "Manage bin locations and storage areas.",
+    "addNew": "Add New Location",
+    "addTitle": "Add Location",
+    "form": {
+      "create": "Create Location",
+      "edit": "Edit Location",
+      "view": "View Location"
+    },
+    "addSuccess": "Location added successfully.",
+    "updateSuccess": "Location updated successfully.",
+    "list": {
+      "title": "Locations List"
+    },
+    "fields": {
+      "aName": "Arabic Name",
+      "aNamePlaceholder": "Enter arabic name",
+      "eName": "English Name",
+      "eNamePlaceholder": "Enter english name",
+      "parentLocation": "Parent Location",
+      "parentLocationPlaceholder": "Select parent location"
+    }
+  },
+  "login": {
+    "welcome": "Welcome Back",
+    "subtext": "Access your portal under",
+    "emailLabel": "Email Address",
+    "emailError": "Please provide a valid business email address.",
+    "passwordLabel": "Password",
+    "forgotPassword": "Forgot password?",
+    "passwordError": "Password must contain at least 4 characters.",
+    "signIn": "Sign In to System",
+    "authenticating": "Authenticating Account...",
+    "activeDatabases": "Active Databases",
+    "description": "A comprehensive system for Sales, Purchases, Customers, Suppliers, and Inventory Management, integrated with Reports and Accounting.",
+    "comingSoon": "Coming soon: Treasury and Journal Entries.",
+    "workspaceSetup": "Workspace Setup",
+    "selectCompanyAndBranch": "Select your company and branch to continue",
+    "company": "Company",
+    "branch": "Branch",
+    "chooseCompany": "Choose a company...",
+    "chooseBranch": "Choose a branch...",
+    "registerNewCompany": "Register New Company",
+    "registerCompanyDesc": "Create a new tenant for a company and setup its main branch.",
+    "companyName": "Company Name",
+    "mainBranchName": "Main Branch Name",
+    "egMainBranch": "e.g. Main Branch",
+    "registerBtn": "Register Company",
+    "back": "Back",
+    "cancel": "Cancel"
+  },
+  "serverUnavailable": {
+    "title": "Server Connection Lost",
+    "description": "We're unable to connect to the backend system services. The server may be undergoing maintenance or experiencing traffic spikes. We're actively checking the connection.",
+    "verifyConnection": "Verify Gateway Connection",
+    "verifying": "Verifying Server Health..."
+  },
   "reports": {
     "businessPartnerStatement": {
       "title": "Partner Statement of Account",
@@ -290,12 +272,9 @@
       "expandAll": "Expand All",
       "balance": "Balance:",
       "table": {
-        "date": "Date",
         "invoiceCode": "Invoice Code",
         "entryType": "Entry Type",
-        "amount": "Amount",
         "balance": "Balance",
-        "notes": "Notes",
         "emptyTable": "No details found for this partner"
       },
       "entryTypes": {
@@ -308,9 +287,7 @@
       "results": "Report Results",
       "openingBalance": "Opening Balance",
       "closingBalance": "Closing Balance",
-      "date": "Date",
       "transactionType": "Transaction Type",
-      "reference": "Reference",
       "debit": "Debit",
       "credit": "Credit",
       "balanceText": "Balance",
@@ -329,16 +306,11 @@
     "addNew": "Add New Business Partner",
     "edit": "Edit Business Partner",
     "fields": {
-      "code": "Code",
-      "name": "Name",
       "aName": "Arabic Name",
       "eName": "English Name",
-      "type": "Partner Type",
       "phone": "Phone Number",
       "email": "Email Address",
-      "address": "Address",
-      "notes": "Notes",
-      "status": "Status"
+      "address": "Address"
     },
     "types": {
       "customer": "Customer",
@@ -396,7 +368,6 @@
     "logoHint": "Upload business logo used in headers & invoices",
     "iconHint": "Upload brand shortcut icon used in tab browsers",
     "dragDropHint": "Drag & drop file here or click to browse",
-    "save": "Save Settings",
     "logo": "Company Logo",
     "icon": "Company Icon",
     "saving": "Saving Configuration...",
@@ -413,19 +384,10 @@
     "tableSearchPlaceholder": "Search by name or code...",
     "addBtn": "Add New Record",
     "editBtn": "Edit",
-    "code": "Code",
-    "name": "Name",
     "arabicName": "Name (Arabic)",
     "englishName": "Name (English)",
-    "notes": "Notes / Description",
     "sector": "Sector Name",
     "partnerType": "Partner Type",
-    "status": "Operational Status",
-    "active": "Active",
-    "inactive": "Disabled",
-    "save": "Save Entry",
-    "cancel": "Cancel",
-    "actions": "Actions",
     "typeCustomer": "Customer",
     "typeVendor": "Vendor",
     "typeLead": "Lead",
@@ -475,11 +437,8 @@
       "additional": "Additional Data"
     },
     "fields": {
-      "code": "Code",
-      "name": "Name",
       "aName": "Name (Arabic)",
       "eName": "Name (English)",
-      "notes": "Notes / Description",
       "itemGroup": "Item Group",
       "itemProperty": "Item Property",
       "dfltWarehouse": "Default Warehouse",
@@ -498,11 +457,6 @@
       "barcode": "Barcode",
       "foreignCode": "Foreign Code",
       "lastPurchasePrice": "Last Purchase Price",
-      "status": "Status",
-      "active": "Active",
-      "inactive": "Inactive",
-      "save": "Save",
-      "cancel": "Cancel",
       "reset": "Reset",
       "addNew": "Add New Record"
     },
@@ -522,7 +476,8 @@
   },
   "errors": {
     "generic": "An unexpected error occurred, please try again",
-    "conflict": "The entered data conflicts with existing records"
+    "conflict": "The entered data conflicts with existing records",
+    "STA.7106": "Cannot cancel a confirmed stock adjustment."
   },
   "invoices": {
     "paymentMethod": "Payment Method",
@@ -531,7 +486,6 @@
     "paymentAmount": "Amount",
     "exceedBalanceError": "Cannot exceed remaining balance.",
     "paymentdate": "Payment Date",
-    "reference": "Reference",
     "referencePlaceholder": "Cheque No / Transfer Ref",
     "savePayment": "Save Payment",
     "cash": "Cash",
@@ -569,13 +523,8 @@
     "invoiceDate": "Invoice Date",
     "dueDate": "Due Date",
     "customer": "Customer",
-    "status": "Status",
     "totalAmount": "Total Amount",
     "remainingAmount": "Remaining Amount",
-    "actions": "Actions",
-    "code": "Code",
-    "name": "Name",
-    "date": "Date",
     "noInvoices": "No Invoices",
     "newInvoice": "New Sales Invoice",
     "editInvoice": "Edit Sales Invoice",
@@ -590,7 +539,6 @@
     "addition": "Addition",
     "discount": "Discount",
     "generalDetails": "General Details",
-    "notes": "Notes",
     "invoiceLines": "Invoice Lines",
     "addLine": "Add Line",
     "item": "Item",
@@ -603,8 +551,6 @@
     "additionalCosts": "Additional Costs / Global Discounts",
     "addCost": "Add Cost",
     "costElement": "Cost Element",
-    "amount": "Amount",
-    "percentage": "Percentage (%)",
     "grandTotal": "Grand Total",
     "selectItem": "Select Item",
     "selectCost": "Select Cost",
@@ -631,7 +577,7 @@
     "itemSelection": "Item Selection",
     "searchItems": "Search items by code or name...",
     "stock": "Stock",
-    "Select": "Select",
+    "select": "Select",
     "noItemsFound": "No items found matching your search.",
     "selectItem": "Select Item",
     "confirmSelection": "Are you sure you want to select this item?",
@@ -650,41 +596,30 @@
     "addItems": "Add Items",
     "addCostElement": "Add Cost Element",
     "fields": {
-      "code": "Invoice Code",
       "businessPartner": "Customer",
       "invoiceDate": "Invoice Date",
       "dueDate": "Due Date",
       "warehouse": "Warehouse",
       "totalAmount": "Total Amount",
       "remainingAmount": "Remaining Amount",
-      "status": "Status",
       "subTotal": "Subtotal",
       "taxAmount": "Tax",
       "invoice": "Invoice",
-      "amount": "Amount",
       "paymentDate": "Payment Date",
       "paymentMethod": "Payment Method",
-      "reference": "Reference",
       "chequeNumber": "Cheque Number"
     },
     "tabs": {
       "items": "Items",
       "costElements": "Cost Elements"
     },
-    "status": {
-      "Draft": "Draft",
-      "Confirmed": "Confirmed",
-      "PartiallyPaid": "Partially Paid",
-      "FullyPaid": "Fully Paid",
-      "Cancelled": "Cancelled"
-    },
     "paymentMethods": {
-      "Cash": "Cash",
-      "BankTransfer": "Bank Transfer",
-      "Cheque": "Cheque",
-      "CreditCard": "Credit Card",
-      "PostDatedCheque": "Post-Dated Cheque",
-      "Other": "Other"
+      "cash": "Cash",
+      "bankTransfer": "Bank Transfer",
+      "cheque": "Cheque",
+      "creditCard": "Credit Card",
+      "postDatedCheque": "Post-Dated Cheque",
+      "other": "Other"
     },
     "errors": {
       "atLeastOneItem": "At least one item is required in the invoice.",
@@ -705,41 +640,30 @@
     "addItems": "Add Items",
     "addCostElement": "Add Cost Element",
     "fields": {
-      "code": "Invoice Code",
       "businessPartner": "Vendor",
       "invoiceDate": "Invoice Date",
       "dueDate": "Due Date",
       "warehouse": "Warehouse",
       "totalAmount": "Total Amount",
       "remainingAmount": "Remaining Amount",
-      "status": "Status",
       "subTotal": "Subtotal",
       "taxAmount": "Tax",
       "invoice": "Invoice",
-      "amount": "Amount",
       "paymentDate": "Payment Date",
       "paymentMethod": "Payment Method",
-      "reference": "Reference",
       "chequeNumber": "Cheque Number"
     },
     "tabs": {
       "items": "Items",
       "costElements": "Cost Elements"
     },
-    "status": {
-      "Draft": "Draft",
-      "Confirmed": "Confirmed",
-      "PartiallyPaid": "Partially Paid",
-      "FullyPaid": "Fully Paid",
-      "Cancelled": "Cancelled"
-    },
     "paymentMethods": {
-      "Cash": "Cash",
-      "BankTransfer": "Bank Transfer",
-      "Cheque": "Cheque",
-      "CreditCard": "Credit Card",
-      "PostDatedCheque": "Post-Dated Cheque",
-      "Other": "Other"
+      "cash": "Cash",
+      "bankTransfer": "Bank Transfer",
+      "cheque": "Cheque",
+      "creditCard": "Credit Card",
+      "postDatedCheque": "Post-Dated Cheque",
+      "other": "Other"
     },
     "errors": {
       "atLeastOneItem": "At least one item is required in the invoice.",
@@ -770,23 +694,14 @@
     "view": "View Cost Element",
     "selectCostElement": "Select Cost Element",
     "fields": {
-      "code": "Code",
-      "name": "Name",
       "aName": "Arabic Name",
       "eName": "English Name",
-      "type": "Type",
       "operationType": "Operation Type",
-      "defaultPercentage": "Default Percentage (%)",
-      "status": "Status"
-    },
-    "type": {
-      "Sales": "Sales",
-      "Purchases": "Purchases",
-      "Both": "Sales & Purchases"
+      "defaultPercentage": "Default Percentage (%)"
     },
     "operationType": {
-      "Addition": "Addition",
-      "Discount": "Discount"
+      "addition": "Addition",
+      "discount": "Discount"
     },
     "operations": {
       "addition": "Addition",
@@ -822,10 +737,8 @@
     "exportExcel": "Export Excel",
     "entryDate": "Entry Date",
     "invoiceCode": "Invoice Code",
-    "amount": "Amount",
     "paidAmount": "Paid Amount",
     "runningBalance": "Running Balance",
-    "notes": "Notes",
     "noEntries": "No ledger entries found",
     "pageSummary": "Page Summary",
     "typeEnum": {
@@ -833,35 +746,24 @@
       "2": "Payment",
       "3": "Return",
       "4": "Adjustment",
-      "Invoice": "Invoice",
-      "Payment": "Payment",
-      "Return": "Return",
-      "Adjustment": "Adjustment"
+      "invoice": "Invoice",
+      "payment": "Payment",
+      "return": "Return",
+      "adjustment": "Adjustment"
     }
   },
-  "HomePage": {
-    "Title": "Home Page",
-    "Subtitle": "Welcome to your dashboard",
-    "NextPrayer": "Next Prayer",
-    "NextPrayerDesc": "It is now time for the next prayer according to local time",
-    "PrayerTimes": "Prayer Times",
-    "LoadingPrayers": "Loading prayer times...",
-    "ConnectionFailed": "Connection Failed",
-    "CheckInternet": "Please check your internet connection",
-    "Retry": "Retry",
-    "ServerConnectionFailed": "Server Connection Failed",
-    "ServerConnectionFailedDesc": "Connection failed, please check your internet connection or try again later"
-  },
-  "common": {
-    "save": "Save",
-    "saving": "Saving...",
-    "cancel": "Cancel",
-    "confirmStatusChange": "Are you sure you want to change the status?",
-    "statusChangedToInactive": "Status changed from Active to Inactive successfully.",
-    "statusChangedToActive": "Status changed from Inactive to Active successfully.",
-    "errorSavingData": "An error occurred while saving data.",
-    "errorLoadingData": "An error occurred while loading data.",
-    "savedSuccessfully": "Data saved successfully."
+  "homePage": {
+    "title": "Home Page",
+    "subtitle": "Welcome to your dashboard",
+    "nextPrayer": "Next Prayer",
+    "nextPrayerDesc": "It is now time for the next prayer according to local time",
+    "prayerTimes": "Prayer Times",
+    "loadingPrayers": "Loading prayer times...",
+    "connectionFailed": "Connection Failed",
+    "checkInternet": "Please check your internet connection",
+    "retry": "Retry",
+    "serverConnectionFailed": "Server Connection Failed",
+    "serverConnectionFailedDesc": "Connection failed, please check your internet connection or try again later"
   },
   "salesReturns": {
     "title": "Sales Returns",
@@ -875,7 +777,6 @@
     "linkedReturn": "Linked Return",
     "available": "Available",
     "fields": {
-      "code": "Return Code",
       "originalInvoice": "Original Invoice",
       "businessPartner": "Customer",
       "invoiceDate": "Return Date",
@@ -883,14 +784,11 @@
       "warehouse": "Warehouse",
       "totalAmount": "Total Amount",
       "remainingAmount": "Remaining Amount",
-      "status": "Status",
       "subTotal": "Subtotal",
       "taxAmount": "Tax",
       "invoice": "Invoice",
-      "amount": "Amount",
       "paymentDate": "Payment Date",
       "paymentMethod": "Payment Method",
-      "reference": "Reference",
       "chequeNumber": "Cheque Number"
     },
     "tabs": {
@@ -899,13 +797,6 @@
     },
     "errors": {
       "atLeastOneItem": "At least one item is required in the return."
-    },
-    "status": {
-      "Draft": "Draft",
-      "Confirmed": "Confirmed",
-      "PartiallyPaid": "Partially Paid",
-      "FullyPaid": "Fully Paid",
-      "Cancelled": "Cancelled"
     }
   },
   "purchaseReturns": {
@@ -919,15 +810,7 @@
     "addCostElement": "Add Cost Element",
     "linkedReturn": "Linked Return",
     "available": "Available",
-    "status": {
-      "Draft": "Draft",
-      "Confirmed": "Confirmed",
-      "PartiallyPaid": "Partially Paid",
-      "FullyPaid": "Fully Paid",
-      "Cancelled": "Cancelled"
-    },
     "fields": {
-      "code": "Return Code",
       "originalInvoice": "Original Invoice",
       "businessPartner": "Vendor",
       "invoiceDate": "Return Date",
@@ -935,14 +818,11 @@
       "warehouse": "Warehouse",
       "totalAmount": "Total Amount",
       "remainingAmount": "Remaining Amount",
-      "status": "Status",
       "subTotal": "Subtotal",
       "taxAmount": "Tax",
       "invoice": "Invoice",
-      "amount": "Amount",
       "paymentDate": "Payment Date",
       "paymentMethod": "Payment Method",
-      "reference": "Reference",
       "chequeNumber": "Cheque Number"
     },
     "tabs": {
@@ -966,11 +846,6 @@
     "quantity": "Quantity",
     "confirm": "Confirm",
     "cancelTransfer": "Cancel Transfer",
-    "status": {
-      "0": "Draft",
-      "1": "Confirmed",
-      "2": "Cancelled"
-    },
     "errors": {
       "atLeastOneItem": "At least one item is required.",
       "invalidQuantity": "Quantity must be greater than zero.",
@@ -985,61 +860,63 @@
     "saveSuccess": "Stock adjustment saved successfully.",
     "mainInfo": "Main Information",
     "warehouse": "Warehouse",
-    "type": "Adjustment Type",
     "reason": "Reason",
     "items": "Items",
     "addItems": "Add Items",
     "systemQuantity": "System Qty",
     "countedQuantity": "Counted Qty",
     "difference": "Difference",
-    "confirm": "Confirm",
+    "confirm": "Approve",
+    "types": {
+      "inventory": "Inventory Count",
+      "adjustment": "Manual Adjustment",
+      "Addition": "Addition",
+      "Deduction": "Deduction"
+    },
+    "errors": {
+      "atLeastOneItem": "At least one item is required.",
+      "duplicateItem": "Item already exists in the adjustment."
+    },
+    "type": "Adjustment Type",
     "status": {
       "0": "Draft",
       "1": "Confirmed",
       "2": "Cancelled"
     },
-    "types": {
-      "inventory": "Inventory Count",
-      "adjustment": "Manual Adjustment"
-    },
-    "errors": {
-      "atLeastOneItem": "At least one item is required.",
-      "duplicateItem": "Item already exists in the adjustment."
-    }
+    "cancelDocument": "Reject",
+    "cancelWarningTitle": "Are you sure?",
+    "cancelWarningText": "This will reverse any stock changes made by this document."
   },
   "stockTransactions": {
     "title": "Stock Transactions",
-    "type": "Type",
     "item": "Item",
     "warehouse": "Warehouse",
     "quantity": "Quantity",
     "runningBalance": "Running Balance"
   },
-  "InventorySettings": {
-    "Title": "Inventory Settings",
-    "EditTitle": "Edit Inventory Settings",
-    "EditSubtitle": "Configure your inventory behavior and accounting methods.",
-    "AllowNegativeStock": "Allow Negative Stock",
-    "RequireStockBeforeConfirm": "Require Stock Before Confirm",
-    "ValuationMethod": "Inventory Valuation Method",
-    "WeightedAverage": "Weighted Average",
-    "FIFO": "First In First Out (FIFO)",
-    "AutoPostInventoryOnSave": "Auto-Post Inventory on Save",
-    "InvoicesDirectlyAffectInventory": "Invoices Directly Affect Inventory",
-    "Yes": "Yes",
-    "No": "No",
-    "Notes": "Notes"
+  "inventorySettings": {
+    "title": "Inventory Settings",
+    "editTitle": "Edit Inventory Settings",
+    "editSubtitle": "Configure your inventory behavior and accounting methods.",
+    "allowNegativeStock": "Allow Negative Stock",
+    "requireStockBeforeConfirm": "Require Stock Before Confirm",
+    "valuationMethod": "Inventory Valuation Method",
+    "weightedAverage": "Weighted Average",
+    "fifo": "First In First Out (FIFO)",
+    "autoPostInventoryOnSave": "Auto-Post Inventory on Save",
+    "invoicesDirectlyAffectInventory": "Invoices Directly Affect Inventory",
+    "yes": "Yes",
+    "no": "No"
   },
   "الكل": "All",
-  "InvoiceSettings": {
-    "Title": "Invoice Configuration",
-    "AllowSaveInvoiceWithoutPayment": "Allow Saving Invoice Without Payment",
-    "RequireCostElementPercentage": "Require Cost Element Percentage",
-    "Notes": "Notes",
-    "EditTitle": "Edit Invoice Settings",
-    "EditSubtitle": "Update the global configuration for the invoice module.",
-    "Yes": "Yes",
-    "No": "No"
+  "invoiceSettings": {
+    "title": "Invoice Configuration",
+    "allowSaveInvoiceWithoutPayment": "Allow Saving Invoice Without Payment",
+    "requireCostElementPercentage": "Require Cost Element Percentage",
+    "editTitle": "Edit Invoice Settings",
+    "editSubtitle": "Update the global configuration for the invoice module.",
+    "yes": "Yes",
+    "no": "No"
   },
   "users": {
     "title": "Users",
@@ -1049,7 +926,6 @@
     "edit": "Edit User",
     "view": "View User",
     "fields": {
-      "code": "Code",
       "firstPrimaryName": "First Primary Name",
       "lastPrimaryName": "Last Primary Name",
       "firstForeignName": "First Foreign Name",
@@ -1109,10 +985,52 @@
     "expandAll": "Expand All",
     "collapseAll": "Collapse All",
     "fields": {
-      "name": "Name",
       "aName": "Arabic Name",
-      "eName": "English Name",
-      "notes": "Notes"
+      "eName": "English Name"
+    }
+  },
+  "stockVouchers": {
+    "issues": {
+      "title": "Stock Issues",
+      "addNew": "Add Stock Issue",
+      "list": {
+        "title": "Stock Issues"
+      }
+    },
+    "receipts": {
+      "title": "Stock Receipts",
+      "addNew": "Add Stock Receipt",
+      "list": {
+        "title": "Stock Receipts"
+      }
+    },
+    "fields": {
+      "voucherType": "Type",
+      "warehouse": "Warehouse",
+      "voucherDate": "Date",
+      "reason": "Reason",
+      "item": "Item",
+      "quantity": "Quantity",
+      "uom": "UoM"
+    }
+  },
+  "inventoryCounts": {
+    "title": "Inventory Count",
+    "addNew": "New Inventory Count",
+    "list": {
+      "title": "Inventory Counts"
+    },
+    "fields": {
+      "countDate": "Count Date",
+      "countedBy": "Counted By",
+      "description": "Description",
+      "systemQuantity": "System Qty",
+      "countedQuantity": "Counted Qty",
+      "difference": "Difference",
+      "surplus": "Surplus",
+      "shortage": "Shortage",
+      "totalSurplus": "Total Surplus",
+      "totalShortage": "Total Shortage"
     }
   }
 }

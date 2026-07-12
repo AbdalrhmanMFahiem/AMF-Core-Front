@@ -23,8 +23,8 @@ export interface SearchableOption {
 })
 export class SearchableSelectComponent implements ControlValueAccessor, OnInit {
   @Input() options: SearchableOption[] = [];
-  @Input() placeholder: string = 'Common.Select';
-  @Input() searchPlaceholder: string = 'Common.SearchPlaceholder';
+  @Input() placeholder: string = 'common.select';
+  @Input() searchPlaceholder: string = 'common.searchPlaceholder';
   @Input() disabled: boolean = false;
   @Input() allowClear: boolean = true;
   

@@ -1,0 +1,177 @@
+<app-page-breadcrumb [pageTitle]="mode === 'add' ? 'stockVouchers.receipts.addNew' : 'stockVouchers.receipts.title'" />
+
+<app-success-redirect-banner
+  *ngIf="saveSuccess"
+  [message]="'common.savedSuccessfully'"
+  [redirectUrl]="'/inventory/stock-receipts'">
+</app-success-redirect-banner>
+
+<app-error-banner
+  *ngIf="validationErrors.length > 0"
+  [errors]="validationErrors">
+</app-error-banner>
+
+<div class="space-y-6" *ngIf="!saveSuccess">
+  <!-- Status Badge for View Mode -->
+  <div *ngIf="mode === 'view' && viewResponse" class="flex justify-between items-center bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+    <div class="flex items-center gap-3">
+      <span class="text-sm font-medium text-gray-500">{{ 'common.status' | translate }}:</span>
+      <app-document-status-badge [status]="viewResponse.status"></app-document-status-badge>
+      <span class="text-sm font-medium text-gray-500 ml-4">{{ 'common.code' | translate }}:</span>
+      <span class="text-sm font-bold text-gray-900">{{ viewResponse.code }}</span>
+    </div>
+    
+    <div class="flex items-center gap-2">
+      <button *ngIf="viewResponse.status === 1" 
+              type="button" 
+              (click)="onConfirm()"
+              [disabled]="saving"
+              class="px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-700 disabled:opacity-50">
+        {{ 'common.confirm' | translate }}
+      </button>
+      <button *ngIf="viewResponse.status === 1" 
+              type="button" 
+              (click)="onCancelVoucher()"
+              [disabled]="saving"
+              class="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700 disabled:opacity-50">
+        {{ 'common.cancel' | translate }}
+      </button>
+    </div>
+  </div>
+
+  <form #form="ngForm" (ngSubmit)="onSubmit()" class="space-y-6" *ngIf="!loading">
+    
+    <!-- Main Info Card -->
+    <app-component-card [title]="'stockTransfers.mainInfo'">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        
+        <!-- Warehouse -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">
+            {{ 'stockVouchers.fields.warehouse' | translate }}
+          </label>
+          <app-searchable-select
+            [name]="'warehouseId'"
+            [options]="warehousesOptions"
+            [(ngModel)]="model.warehouseId"
+            [disabled]="mode === 'view'">
+          </app-searchable-select>
+        </div>
+
+        <!-- Voucher Date -->
+        <app-date-picker
+          [id]="'voucherDate'"
+          [name]="'voucherDate'"
+          [label]="'stockVouchers.fields.voucherDate' | translate"
+          [(ngModel)]="model.voucherDate"
+          [required]="true"
+          [disabled]="mode === 'view'">
+        </app-date-picker>
+
+        <!-- Reason -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">
+            {{ 'stockVouchers.fields.reason' | translate }}
+          </label>
+          <input type="text"
+                 name="reason"
+                 [(ngModel)]="model.reason"
+                 [disabled]="mode === 'view'"
+                 class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:bg-gray-100 disabled:text-gray-500">
+        </div>
+      </div>
+    </app-component-card>
+
+    <!-- Items Card -->
+    <app-component-card [title]="'stockTransfers.items'">
+      <div class="mb-4" *ngIf="mode !== 'view'">
+        <button type="button" (click)="openItemModal()" class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700">
+          <i class="fas fa-plus mr-2"></i> {{ 'stockTransfers.addItems' | translate }}
+        </button>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200 text-sm text-left rtl:text-right">
+          <thead class="bg-gray-50 text-gray-700">
+            <tr>
+              <th scope="col" class="px-4 py-3">{{ 'common.code' | translate }}</th>
+              <th scope="col" class="px-4 py-3">{{ 'common.name' | translate }}</th>
+              <th scope="col" class="px-4 py-3 w-32">{{ 'stockVouchers.fields.quantity' | translate }}</th>
+              <th scope="col" class="px-4 py-3 text-center" *ngIf="mode !== 'view'">{{ 'common.actions' | translate }}</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-200 bg-white">
+            <tr *ngFor="let line of model.lines; let i = index">
+              <td class="px-4 py-3 font-medium text-gray-900">{{ line._itemCode }}</td>
+              <td class="px-4 py-3">{{ line._itemName }}</td>
+              <td class="px-4 py-3">
+                <input type="number" 
+                       [(ngModel)]="line.quantity" 
+                       name="qty_{{i}}" 
+                       min="1" 
+                       class="w-full rounded-md border border-gray-300 px-3 py-1.5 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none"
+                       [disabled]="mode === 'view'"
+                       required>
+              </td>
+              <td class="px-4 py-3 text-center" *ngIf="mode !== 'view'">
+                <button type="button" (click)="removeItem(i)" class="text-red-600 hover:text-red-900" title="{{ 'common.delete' | translate }}">
+                  <i class="fas fa-trash"></i>
+                </button>
+              </td>
+            </tr>
+            <tr *ngIf="model.lines.length === 0">
+              <td colspan="4" class="px-4 py-8 text-center text-gray-500">
+                {{ 'common.noData' | translate }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </app-component-card>
+
+    <!-- Form Actions -->
+    <div class="flex items-center justify-end gap-3 pt-4 border-t border-gray-200">
+      <button 
+        type="button" 
+        (click)="onCancel()"
+        class="px-5 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
+        [disabled]="saving">
+        {{ mode === 'view' ? ('common.back' | translate) : ('common.cancel' | translate) }}
+      </button>
+      <button 
+        *ngIf="mode !== 'view'"
+        type="submit" 
+        [disabled]="saving"
+        class="px-5 py-2.5 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50">
+        <span *ngIf="saving"><i class="fas fa-spinner fa-spin mr-2"></i> {{ 'common.saving' | translate }}</span>
+        <span *ngIf="!saving">{{ 'common.save' | translate }}</span>
+      </button>
+    </div>
+  </form>
+</div>
+
+<!-- Item Lookup Modal -->
+<app-item-lookup-modal
+  [isOpen]="isItemModalOpen"
+  (close)="isItemModalOpen = false"
+  (selectItem)="onItemSelected($event)">
+</app-item-lookup-modal>
+
+<!-- Leave Confirmation Modal -->
+<div *ngIf="showLeaveConfirmation" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
+  <div class="bg-white rounded-xl shadow-lg max-w-sm w-full p-6 text-center transform transition-all">
+    <div class="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
+      <i class="fas fa-exclamation-triangle text-2xl text-yellow-600"></i>
+    </div>
+    <h3 class="text-lg font-bold text-gray-900 mb-2">{{ 'common.unsavedChanges' | translate }}</h3>
+    <p class="text-gray-500 mb-6">{{ 'common.unsavedChangesMessage' | translate }}</p>
+    <div class="flex justify-center gap-3">
+      <button (click)="onCancelLeave()" class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors">
+        {{ 'common.stay' | translate }}
+      </button>
+      <button (click)="onConfirmLeave()" class="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700 transition-colors">
+        {{ 'common.leave' | translate }}
+      </button>
+    </div>
+  </div>
+</div>

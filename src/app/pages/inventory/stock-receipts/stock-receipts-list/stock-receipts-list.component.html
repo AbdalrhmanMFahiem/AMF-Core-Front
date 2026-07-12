@@ -1,0 +1,16 @@
+<app-page-breadcrumb [pageTitle]="'stockVouchers.receipts.title'" />
+<div class="space-y-6">
+  <app-crud-list 
+    [pageTitle]="'stockVouchers.receipts.list.title'" 
+    [searchPlaceholder]="'common.search'"
+    [addBtnText]="'stockVouchers.receipts.addNew'"
+    [columns]="columns" 
+    [data]="data" 
+    [filters]="{ pageNumber: pageNumber, pageSize: pageSize, searchValue: searchValue }"
+    [isLoading]="loading"
+    (search)="loadData()"
+    (add)="onAdd()"
+    (view)="onView($event)"
+    (pageChange)="onPageChange($event)">
+  </app-crud-list>
+</div>

@@ -39,9 +39,9 @@ export class ItemPropertiesListComponent implements OnInit {
   };
 
   columns: CrudColumn[] = [
-    { field: 'code', header: 'Common.Code', type: 'code' },
-    { field: 'name', header: 'Common.Name', type: 'text' },
-    { field: 'isActive', header: 'Common.Status', type: 'badge' }
+    { field: 'code', header: 'common.code', type: 'code' },
+    { field: 'name', header: 'common.name', type: 'text' },
+    { field: 'isActive', header: 'common.status', type: 'badge' }
   ];
 
   ngOnInit(): void {

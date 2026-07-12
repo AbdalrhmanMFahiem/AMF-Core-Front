@@ -37,4 +37,8 @@ export class StockAdjustmentService {
   confirm(id: number): Observable<void> {
     return this.http.put<void>(`${this.apiUrl}/${id}/confirm`, {});
   }
+
+  cancel(id: number): Observable<void> {
+    return this.http.put<void>(`${this.apiUrl}/${id}/cancel`, {});
+  }
 }

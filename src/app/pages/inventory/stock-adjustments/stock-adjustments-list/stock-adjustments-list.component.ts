@@ -36,9 +36,9 @@ export class StockAdjustmentsListComponent implements OnInit {
   columns: CrudColumn[] = [
     { field: 'code', header: 'common.code', type: 'code' },
     { field: 'warehouseName', header: 'stockAdjustments.warehouse', type: 'text' },
-    { field: 'adjustmentType', header: 'stockAdjustments.type', type: 'text' },
+    { field: 'adjustmentType', header: 'stockAdjustments.type', type: 'adjustment-type' },
     { field: 'adjustmentDate', header: 'common.date', type: 'date' },
-    { field: 'status', header: 'common.status', type: 'text' }
+    { field: 'status', header: 'common.status', type: 'document-status' }
   ];
 
   ngOnInit(): void {
@@ -66,6 +66,58 @@ export class StockAdjustmentsListComponent implements OnInit {
 
   onView(id: number): void {
     this.router.navigate(['/inventory/stock-adjustments/view', id]);
+  }
+
+  hideEditFn = (item: any): boolean => {
+    return item.status !== 0 && item.status !== '0' && item.status !== 'Draft'; // Hide edit if not draft
+  };
+
+  customActions = [
+    { 
+      id: 'confirm', 
+      label: 'stockAdjustments.confirm', 
+      icon: '<svg class="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>', 
+      visible: (item: any) => item.status === 0 || item.status === '0' || item.status === 'Draft'
+    },
+    { 
+      id: 'cancel', 
+      label: 'stockAdjustments.cancelDocument', 
+      icon: '<svg class="w-4 h-4 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>', 
+      visible: (item: any) => item.status !== 2 && item.status !== '2' && item.status !== 'Cancelled'
+    }
+  ];
+
+  onCustomAction(event: { actionId: string, item: any }): void {
+    if (event.actionId === 'confirm') {
+      const confirmMsg = this.translate.instant('common.confirmStatusChange');
+      if (confirm(confirmMsg)) {
+        this.stockAdjustmentService.confirm(event.item.id).subscribe({
+          next: () => {
+            this.toastr.success(this.translate.instant('common.updatedSuccessfully'));
+            this.loadData();
+          },
+          error: (err) => {
+            this.toastr.error('Error', 'Error');
+            console.error(err);
+          }
+        });
+      }
+    } else if (event.actionId === 'cancel') {
+      const title = this.translate.instant('stockAdjustments.cancelWarningTitle');
+      const text = this.translate.instant('stockAdjustments.cancelWarningText');
+      if (confirm(`${title}\n\n${text}`)) {
+        this.stockAdjustmentService.cancel(event.item.id).subscribe({
+          next: () => {
+            this.toastr.success(this.translate.instant('common.updatedSuccessfully'));
+            this.loadData();
+          },
+          error: (err) => {
+            this.toastr.error('Error', 'Error');
+            console.error(err);
+          }
+        });
+      }
+    }
   }
 
   onPageChange(pageIndex: number): void {

@@ -165,6 +165,54 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/inventory/stock-transactions/stock-transactions-list/stock-transactions-list.component').then(c => c.StockTransactionsListComponent),
         title: 'Stock Transactions | AMF Core'
       },
+      {
+        path: 'inventory/stock-issues',
+        loadComponent: () => import('./pages/inventory/stock-issues/stock-issues-list/stock-issues-list.component').then(c => c.StockIssuesListComponent),
+        title: 'Stock Issues | AMF Core'
+      },
+      {
+        path: 'inventory/stock-issues/add',
+        loadComponent: () => import('./pages/inventory/stock-issues/stock-issue-form/stock-issue-form.component').then(c => c.StockIssueFormComponent),
+        canDeactivate: [unsavedChangesGuard],
+        title: 'Add Stock Issue | AMF Core'
+      },
+      {
+        path: 'inventory/stock-issues/view/:id',
+        loadComponent: () => import('./pages/inventory/stock-issues/stock-issue-form/stock-issue-form.component').then(c => c.StockIssueFormComponent),
+        title: 'View Stock Issue | AMF Core'
+      },
+      {
+        path: 'inventory/stock-receipts',
+        loadComponent: () => import('./pages/inventory/stock-receipts/stock-receipts-list/stock-receipts-list.component').then(c => c.StockReceiptsListComponent),
+        title: 'Stock Receipts | AMF Core'
+      },
+      {
+        path: 'inventory/stock-receipts/add',
+        loadComponent: () => import('./pages/inventory/stock-receipts/stock-receipt-form/stock-receipt-form.component').then(c => c.StockReceiptFormComponent),
+        canDeactivate: [unsavedChangesGuard],
+        title: 'Add Stock Receipt | AMF Core'
+      },
+      {
+        path: 'inventory/stock-receipts/view/:id',
+        loadComponent: () => import('./pages/inventory/stock-receipts/stock-receipt-form/stock-receipt-form.component').then(c => c.StockReceiptFormComponent),
+        title: 'View Stock Receipt | AMF Core'
+      },
+      {
+        path: 'inventory/inventory-counts',
+        loadComponent: () => import('./pages/inventory/inventory-counts/inventory-counts-list/inventory-counts-list.component').then(c => c.InventoryCountsListComponent),
+        title: 'Inventory Counts | AMF Core'
+      },
+      {
+        path: 'inventory/inventory-counts/add',
+        loadComponent: () => import('./pages/inventory/inventory-counts/inventory-count-form/inventory-count-form.component').then(c => c.InventoryCountFormComponent),
+        canDeactivate: [unsavedChangesGuard],
+        title: 'Add Inventory Count | AMF Core'
+      },
+      {
+        path: 'inventory/inventory-counts/view/:id',
+        loadComponent: () => import('./pages/inventory/inventory-counts/inventory-count-form/inventory-count-form.component').then(c => c.InventoryCountFormComponent),
+        title: 'View Inventory Count | AMF Core'
+      },
       // support tickets
       {
         path: 'line-chart',

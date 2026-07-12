@@ -134,11 +134,11 @@ export class InvoiceCostElementFormComponent implements OnInit {
     let isValid = true;
 
     if (!this.model.code) {
-      this.validationErrors.push(`${this.translate.instant('invoiceCostElements.fields.code')}: ${this.translate.instant('validation.required')}`);
+      this.validationErrors.push(`${this.translate.instant('common.code')}: ${this.translate.instant('validation.required')}`);
       isValid = false;
     }
     if (!this.model.aName) {
-      this.validationErrors.push(`${this.translate.instant('invoiceCostElements.fields.aName')}: ${this.translate.instant('validation.required')}`);
+      this.validationErrors.push(`${this.translate.instant('common.arabicName')}: ${this.translate.instant('validation.required')}`);
       isValid = false;
     }
 

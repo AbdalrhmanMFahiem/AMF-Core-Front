@@ -38,7 +38,7 @@ export class StockTransfersListComponent implements OnInit {
     { field: 'fromWarehouseName', header: 'stockTransfers.fromWarehouse', type: 'text' },
     { field: 'toWarehouseName', header: 'stockTransfers.toWarehouse', type: 'text' },
     { field: 'transferDate', header: 'common.date', type: 'date' },
-    { field: 'status', header: 'common.status', type: 'text' }
+    { field: 'status', header: 'common.status', type: 'document-status' }
   ];
 
   ngOnInit(): void {
