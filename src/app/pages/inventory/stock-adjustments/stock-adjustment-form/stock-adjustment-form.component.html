@@ -206,7 +206,18 @@
         {{ 'common.leave' | translate }}
       </button>
     </div>
-  </div>
 </div>
+
+<!-- Confirmation Modal -->
+<app-confirmation-modal
+  [isOpen]="showConfirmationModal"
+  [title]="confirmTitle"
+  [message]="confirmMessage"
+  confirmText="common.save"
+  cancelText="common.cancel"
+  [type]="confirmType"
+  (confirm)="onProceedConfirm()"
+  (cancel)="onCancelConfirmModal()">
+</app-confirmation-modal>
 
 

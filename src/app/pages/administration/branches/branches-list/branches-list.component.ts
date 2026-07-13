@@ -4,21 +4,21 @@ import { Router } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
 
-import { WarehouseService } from '../../../../core/services/warehouse.service';
+import { BranchService } from '../../../../core/services/branch.service';
 import { RequestFilters, PaginatedList } from '../../../../core/models/pagination.model';
-import { WarehouseBasicResponse } from '../../../../core/models/warehouse.model';
+import { BranchBasicResponse } from '../../../../core/models/branch.model';
 
 import { PageBreadcrumbComponent } from '../../../../shared/components/common/page-breadcrumb/page-breadcrumb.component';
 import { CrudListComponent, CrudColumn } from '../../../../shared/components/common/crud-list/crud-list.component';
 
 @Component({
-  selector: 'app-warehouses-list',
+  selector: 'app-branches-list',
   standalone: true,
   imports: [CommonModule, TranslateModule, PageBreadcrumbComponent, CrudListComponent],
-  templateUrl: './warehouses-list.component.html'
+  templateUrl: './branches-list.component.html'
 })
-export class WarehousesListComponent implements OnInit {
-  private warehouseService = inject(WarehouseService);
+export class BranchesListComponent implements OnInit {
+  private branchService = inject(BranchService);
   public translate = inject(TranslateService);
   private router = inject(Router);
   private toastr = inject(ToastrService);
@@ -26,7 +26,7 @@ export class WarehousesListComponent implements OnInit {
   loading = false;
   includeDisabled = false;
   filters: RequestFilters = { pageNumber: 1, pageSize: 10, searchValue: '', sortColumn: '', sortDirection: '' };
-  data: PaginatedList<WarehouseBasicResponse> = { items: [], totalRecords: 0, pageIndex: 1, totalPages: 0, hasNextPage: false, hasPreviousPage: false };
+  data: PaginatedList<BranchBasicResponse> = { items: [], totalRecords: 0, pageIndex: 1, totalPages: 0, hasNextPage: false, hasPreviousPage: false };
 
   columns: CrudColumn[] = [];
 
@@ -34,7 +34,6 @@ export class WarehousesListComponent implements OnInit {
     this.setupColumns();
     this.loadData();
 
-    // Subscribe to language changes to update columns dynamically
     this.translate.onLangChange.subscribe(() => {
       this.setupColumns();
     });
@@ -43,15 +42,16 @@ export class WarehousesListComponent implements OnInit {
   setupColumns(): void {
     this.columns = [
       { field: 'code', header: 'common.code', type: 'code' },
-      { field: 'branchName', header: 'common.branch', type: 'text' },
       { field: 'name', header: 'common.name', type: 'text' },
+      { field: 'parentBranchName', header: 'common.parentBranch', type: 'text' },
+      { field: 'isDefault', header: 'common.isDefault', type: 'badge' },
       { field: 'isActive', header: 'common.status', type: 'badge' }
     ];
   }
 
   loadData(): void {
     this.loading = true;
-    this.warehouseService.getAll(this.filters, this.includeDisabled).subscribe({
+    this.branchService.getAll(this.filters, this.includeDisabled).subscribe({
       next: (res) => {
         this.data = res;
         this.loading = false;
@@ -79,19 +79,19 @@ export class WarehousesListComponent implements OnInit {
   }
 
   onAdd(): void {
-    this.router.navigate(['/inventory/warehouses/add']);
+    this.router.navigate(['/administration/branches/add']);
   }
 
   onEdit(id: number): void {
-    this.router.navigate(['/inventory/warehouses/edit', id]);
+    this.router.navigate(['/administration/branches/edit', id]);
   }
 
   onView(id: number): void {
-    this.router.navigate(['/inventory/warehouses/view', id]);
+    this.router.navigate(['/administration/branches/view', id]);
   }
 
   onToggleStatus(item: any): void {
-    this.warehouseService.toggleStatus(item.id).subscribe({
+    this.branchService.toggleStatus(item.id).subscribe({
       next: () => {
         const msg = item.isActive
           ? this.translate.instant('common.statusChangedToInactive')

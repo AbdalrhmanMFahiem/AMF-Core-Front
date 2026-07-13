@@ -17,6 +17,8 @@ import { ItemLookupModalComponent } from '../../../../shared/components/lookups/
 import { HasUnsavedChanges } from '../../../../core/guards/unsaved-changes.guard';
 import { StockTransferRequest, StockTransferResponse, StockTransferStatus } from '../../../../core/models/inventory.model';
 import { ItemLookupResponse } from '../../../../core/models/lookup.model';
+import { ToastrService } from 'ngx-toastr';
+import { ConfirmationModalComponent } from '../../../../shared/components/common/confirmation-modal/confirmation-modal.component';
 
 @Component({
   selector: 'app-stock-transfer-form',
@@ -32,7 +34,7 @@ import { ItemLookupResponse } from '../../../../core/models/lookup.model';
     SearchableSelectComponent,
     DatePickerComponent,
     ItemLookupModalComponent
-  , DocumentStatusBadgeComponent],
+    , DocumentStatusBadgeComponent, ConfirmationModalComponent],
   templateUrl: './stock-transfer-form.component.html',
 })
 export class StockTransferFormComponent implements OnInit, HasUnsavedChanges {
@@ -42,9 +44,10 @@ export class StockTransferFormComponent implements OnInit, HasUnsavedChanges {
   private translate = inject(TranslateService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
+  private toastr = inject(ToastrService);
 
   id: number | null = null;
-  mode: 'add' | 'view' = 'add'; 
+  mode: 'add' | 'view' = 'add';
   loading = false;
   saving = false;
   saveSuccess = false;
@@ -54,6 +57,12 @@ export class StockTransferFormComponent implements OnInit, HasUnsavedChanges {
   private leaveConfirmationResolver: ((value: boolean) => void) | null = null;
 
   isItemModalOpen = false;
+
+  showConfirmationModal = false;
+  confirmationActionId: string | null = null;
+  confirmTitle = 'common.confirm';
+  confirmMessage = 'common.confirmStatusChange';
+  confirmType: 'warning' | 'danger' | 'info' | 'success' = 'warning';
 
   model: StockTransferRequest = {
     fromWarehouseId: 0,
@@ -175,8 +184,8 @@ export class StockTransferFormComponent implements OnInit, HasUnsavedChanges {
     if (!this.model.toWarehouseId) {
       this.validationErrors.push(`${this.translate.instant('stockTransfers.toWarehouse')}: ${this.translate.instant('validation.required')}`);
     }
-    if (this.model.fromWarehouseId && this.model.toWarehouseId && this.model.fromWarehouseId === this.model.toWarehouseId) {
-        this.validationErrors.push(this.translate.instant('stockTransfers.errors.sameWarehouse'));
+    if (this.model.fromWarehouseId && this.model.toWarehouseId && Number(this.model.fromWarehouseId) === Number(this.model.toWarehouseId)) {
+      this.validationErrors.push(this.translate.instant('stockTransfers.errors.sameWarehouse'));
     }
     if (!this.model.lines || this.model.lines.length === 0) {
       this.validationErrors.push(this.translate.instant('stockTransfers.errors.atLeastOneItem'));
@@ -185,12 +194,23 @@ export class StockTransferFormComponent implements OnInit, HasUnsavedChanges {
       if (invalidQuantity) {
         this.validationErrors.push(this.translate.instant('stockTransfers.errors.invalidQuantity'));
       }
+
+      const itemIds = this.model.lines.map((l: any) => l.itemId);
+      const uniqueItems = new Set(itemIds);
+      if (uniqueItems.size !== itemIds.length) {
+        this.validationErrors.push(this.translate.instant('stockTransfers.errors.duplicateItem'));
+      }
     }
     return this.validationErrors.length === 0;
   }
 
   onSubmit(): void {
-    if (this.mode === 'view' || !this.validate()) return;
+    if (this.mode === 'view' || !this.validate()) {
+      if (this.validationErrors.length > 0) {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+      return;
+    }
 
     this.saving = true;
     this.validationErrors = [];
@@ -205,6 +225,8 @@ export class StockTransferFormComponent implements OnInit, HasUnsavedChanges {
       next: (res) => {
         this.saving = false;
         this.saveSuccess = true;
+        this.toastr.success(this.translate.instant('common.savedSuccessfully') || 'Saved successfully');
+        this.router.navigate(['/inventory/stock-transfers']);
       },
       error: (err: any) => {
         this.saving = false;
@@ -223,32 +245,60 @@ export class StockTransferFormComponent implements OnInit, HasUnsavedChanges {
 
   onConfirm(): void {
     if (!this.id) return;
-    this.saving = true;
-    this.stockTransferService.confirm(this.id).subscribe({
-        next: () => {
-            this.saving = false;
-            this.loadRecord(this.id!);
-        },
-        error: (err) => {
-            this.saving = false;
-            console.error(err);
-        }
-    });
+    this.confirmationActionId = 'confirm';
+    this.confirmTitle = 'stockTransfers.confirm';
+    this.confirmMessage = 'common.confirmStatusChange';
+    this.confirmType = 'info';
+    this.showConfirmationModal = true;
   }
 
   onCancelTransfer(): void {
     if (!this.id) return;
+    this.confirmationActionId = 'cancel';
+    this.confirmTitle = this.translate.instant('stockTransfers.cancelWarningTitle') || 'Cancel Warning';
+    this.confirmMessage = this.translate.instant('stockTransfers.cancelWarningText') || 'Are you sure you want to cancel?';
+    this.confirmType = 'danger';
+    this.showConfirmationModal = true;
+  }
+
+  onProceedConfirm(): void {
+    if (!this.id || !this.confirmationActionId) return;
     this.saving = true;
-    this.stockTransferService.cancel(this.id).subscribe({
+    
+    if (this.confirmationActionId === 'confirm') {
+      this.stockTransferService.confirm(this.id).subscribe({
         next: () => {
-            this.saving = false;
-            this.loadRecord(this.id!);
+          this.saving = false;
+          this.showConfirmationModal = false;
+          this.toastr.success(this.translate.instant('common.updatedSuccessfully') || 'Updated successfully');
+          this.loadRecord(this.id!);
         },
         error: (err) => {
-            this.saving = false;
-            console.error(err);
+          this.saving = false;
+          this.showConfirmationModal = false;
+          console.error(err);
         }
-    });
+      });
+    } else if (this.confirmationActionId === 'cancel') {
+      this.stockTransferService.cancel(this.id).subscribe({
+        next: () => {
+          this.saving = false;
+          this.showConfirmationModal = false;
+          this.toastr.success(this.translate.instant('common.updatedSuccessfully') || 'Updated successfully');
+          this.loadRecord(this.id!);
+        },
+        error: (err) => {
+          this.saving = false;
+          this.showConfirmationModal = false;
+          console.error(err);
+        }
+      });
+    }
+  }
+
+  onCancelConfirmModal(): void {
+    this.showConfirmationModal = false;
+    this.confirmationActionId = null;
   }
 
   onCancel(): void {

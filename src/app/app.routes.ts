@@ -47,6 +47,28 @@ export const routes: Routes = [
       },
       // Administration
       {
+        path: 'administration/branches',
+        loadComponent: () => import('./pages/administration/branches/branches-list/branches-list.component').then(c => c.BranchesListComponent),
+        title: 'Branches | AMF Core'
+      },
+      {
+        path: 'administration/branches/add',
+        loadComponent: () => import('./pages/administration/branches/branch-form/branch-form.component').then(c => c.BranchFormComponent),
+        canDeactivate: [unsavedChangesGuard],
+        title: 'Add Branch | AMF Core'
+      },
+      {
+        path: 'administration/branches/edit/:id',
+        loadComponent: () => import('./pages/administration/branches/branch-form/branch-form.component').then(c => c.BranchFormComponent),
+        canDeactivate: [unsavedChangesGuard],
+        title: 'Edit Branch | AMF Core'
+      },
+      {
+        path: 'administration/branches/view/:id',
+        loadComponent: () => import('./pages/administration/branches/branch-form/branch-form.component').then(c => c.BranchFormComponent),
+        title: 'View Branch | AMF Core'
+      },
+      {
         path: 'administration/users',
         loadComponent: () => import('./pages/administration/users/users-list/users-list.component').then(c => c.UsersListComponent),
         title: 'Users | AMF Core'

@@ -18,6 +18,8 @@ import { ItemLookupModalComponent } from '../../../../shared/components/lookups/
 import { HasUnsavedChanges } from '../../../../core/guards/unsaved-changes.guard';
 import { StockAdjustmentRequest, StockAdjustmentResponse, StockAdjustmentType } from '../../../../core/models/inventory.model';
 import { ItemLookupResponse } from '../../../../core/models/lookup.model';
+import { ToastrService } from 'ngx-toastr';
+import { ConfirmationModalComponent } from '../../../../shared/components/common/confirmation-modal/confirmation-modal.component';
 
 @Component({
   selector: 'app-stock-adjustment-form',
@@ -34,7 +36,8 @@ import { ItemLookupResponse } from '../../../../core/models/lookup.model';
     DatePickerComponent,
     ItemLookupModalComponent,
     DocumentStatusBadgeComponent,
-    StatusBadgeComponent],
+    StatusBadgeComponent,
+    ConfirmationModalComponent],
   templateUrl: './stock-adjustment-form.component.html',
 })
 export class StockAdjustmentFormComponent implements OnInit, HasUnsavedChanges {
@@ -44,6 +47,7 @@ export class StockAdjustmentFormComponent implements OnInit, HasUnsavedChanges {
   private translate = inject(TranslateService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
+  private toastr = inject(ToastrService);
 
   id: number | null = null;
   mode: 'add' | 'view' = 'add';
@@ -56,6 +60,12 @@ export class StockAdjustmentFormComponent implements OnInit, HasUnsavedChanges {
   private leaveConfirmationResolver: ((value: boolean) => void) | null = null;
 
   isItemModalOpen = false;
+
+  showConfirmationModal = false;
+  confirmationActionId: string | null = null;
+  confirmTitle = 'common.confirm';
+  confirmMessage = 'common.confirmTransaction';
+  confirmType: 'warning' | 'danger' | 'info' | 'success' = 'warning';
 
   model: StockAdjustmentRequest = {
     adjustmentType: StockAdjustmentType.Inventory,
@@ -231,36 +241,60 @@ export class StockAdjustmentFormComponent implements OnInit, HasUnsavedChanges {
 
   onConfirm(): void {
     if (!this.id) return;
-    this.saving = true;
-    this.stockAdjustmentService.confirm(this.id).subscribe({
-      next: () => {
-        this.saving = false;
-        this.loadRecord(this.id!);
-      },
-      error: (err) => {
-        this.saving = false;
-        console.error(err);
-      }
-    });
+    this.confirmationActionId = 'confirm';
+    this.confirmTitle = 'stockAdjustments.confirm';
+    this.confirmMessage = 'common.confirmTransaction';
+    this.confirmType = 'info';
+    this.showConfirmationModal = true;
   }
 
   onCancelDocument(): void {
     if (!this.id) return;
-    const title = this.translate.instant('stockAdjustments.cancelWarningTitle');
-    const text = this.translate.instant('stockAdjustments.cancelWarningText');
-    if (confirm(`${title}\n\n${text}`)) {
-      this.saving = true;
-      this.stockAdjustmentService.cancel(this.id).subscribe({
+    this.confirmationActionId = 'cancel';
+    this.confirmTitle = this.translate.instant('stockAdjustments.cancelWarningTitle') || 'Cancel Warning';
+    this.confirmMessage = this.translate.instant('stockAdjustments.cancelWarningText') || 'Are you sure you want to cancel?';
+    this.confirmType = 'danger';
+    this.showConfirmationModal = true;
+  }
+
+  onProceedConfirm(): void {
+    if (!this.id || !this.confirmationActionId) return;
+    this.saving = true;
+
+    if (this.confirmationActionId === 'confirm') {
+      this.stockAdjustmentService.confirm(this.id).subscribe({
         next: () => {
           this.saving = false;
+          this.showConfirmationModal = false;
+          this.toastr.success(this.translate.instant('common.updatedSuccessfully') || 'Updated successfully');
           this.loadRecord(this.id!);
         },
         error: (err) => {
           this.saving = false;
+          this.showConfirmationModal = false;
+          console.error(err);
+        }
+      });
+    } else if (this.confirmationActionId === 'cancel') {
+      this.stockAdjustmentService.cancel(this.id).subscribe({
+        next: () => {
+          this.saving = false;
+          this.showConfirmationModal = false;
+          this.toastr.success(this.translate.instant('common.updatedSuccessfully') || 'Updated successfully');
+          this.loadRecord(this.id!);
+        },
+        error: (err) => {
+          this.saving = false;
+          this.showConfirmationModal = false;
           console.error(err);
         }
       });
     }
+  }
+
+  onCancelConfirmModal(): void {
+    this.showConfirmationModal = false;
+    this.confirmationActionId = null;
   }
 
   onCancel(): void {

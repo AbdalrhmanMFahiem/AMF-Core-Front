@@ -390,6 +390,9 @@ export class SalesInvoiceFormComponent implements OnInit, HasUnsavedChanges {
     if (!this.model.businessPartnerId) {
       this.validationErrors.push(`${this.translate.instant('salesInvoices.fields.businessPartner')}: ${this.translate.instant('validation.required')}`);
     }
+    if (!this.model.warehouseId) {
+      this.validationErrors.push(`${this.translate.instant('salesInvoices.fields.warehouse')}: ${this.translate.instant('validation.required')}`);
+    }
     if (!this.model.lines || this.model.lines.length === 0) {
       this.validationErrors.push(this.translate.instant('salesInvoices.errors.atLeastOneItem'));
     } else {

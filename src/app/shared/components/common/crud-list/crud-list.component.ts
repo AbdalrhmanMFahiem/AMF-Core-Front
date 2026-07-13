@@ -7,6 +7,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Subject, Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { ComponentCardComponent } from '../component-card/component-card.component';
+import { ConfirmationModalComponent } from '../confirmation-modal/confirmation-modal.component';
 import { BadgeComponent } from '../../ui/badge/badge.component';
 import { PaginatedList, RequestFilters } from '../../../../core/models/pagination.model';
 import { LookupService } from '../../../../core/services/lookup.service';
@@ -24,7 +25,7 @@ export interface CrudColumn {
 @Component({
   selector: 'app-crud-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, TranslateModule, ComponentCardComponent, BadgeComponent, SearchableSelectComponent, DatePipe, SafeHtmlPipe, DocumentStatusBadgeComponent, AdjustmentTypeBadgeComponent],
+  imports: [CommonModule, FormsModule, TranslateModule, ComponentCardComponent, BadgeComponent, SearchableSelectComponent, DatePipe, SafeHtmlPipe, DocumentStatusBadgeComponent, AdjustmentTypeBadgeComponent, ConfirmationModalComponent],
   templateUrl: './crud-list.component.html',
   styles: ``
 })
@@ -34,7 +35,7 @@ export class CrudListComponent implements OnInit, OnDestroy {
   @Input() pageTitle!: string;
   @Input() searchPlaceholder: string = 'Search...';
   @Input() addBtnText: string = 'Add New';
-  
+
   @Input() columns: CrudColumn[] = [];
   @Input() data: PaginatedList<any> | null = null;
   @Input() filters!: RequestFilters;
@@ -98,7 +99,7 @@ export class CrudListComponent implements OnInit, OnDestroy {
   }
 
   private updatePageSizeOptions(): void {
-    const pageTranslation = this.translate.instant('Common.Page');
+    const pageTranslation = this.translate.instant('common.page');
     this.pageSizeOptions = this.pageSizes.map(size => ({
       value: size,
       label: `${size} / ${pageTranslation}`
@@ -155,7 +156,7 @@ export class CrudListComponent implements OnInit, OnDestroy {
       const target = event.currentTarget as HTMLElement;
       const rect = target.getBoundingClientRect();
       const isRtl = document.documentElement.dir === 'rtl' || this.translate.currentLang === 'ar';
-      
+
       this.actionPopupStyles = {
         position: 'fixed',
         top: `${rect.bottom + 8}px`,
@@ -170,10 +171,10 @@ export class CrudListComponent implements OnInit, OnDestroy {
     event.stopPropagation();
     const value = type === 'code' ? item[field] : item.id;
     navigator.clipboard.writeText(value?.toString() || '');
-    
+
     this.copiedState = { id: item.id, type };
     if (this.copyTimeout) clearTimeout(this.copyTimeout);
-    
+
     this.copyTimeout = setTimeout(() => {
       this.copiedState = null;
     }, 5000);
@@ -221,25 +222,25 @@ export class CrudListComponent implements OnInit, OnDestroy {
     this.customAction.emit({ actionId, item });
   }
 
+  showConfirmation: boolean = false;
+  itemToToggle: any = null;
+
   onToggleStatusClick(item: any): void {
-    const confirmMsg = this.translate.instant('common.confirmStatusChange');
-    const isRtl = this.translate.currentLang === 'ar';
-    Swal.fire({
-      title: confirmMsg,
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: this.translate.instant('common.save'),
-      cancelButtonText: this.translate.instant('common.cancel'),
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      customClass: {
-        popup: isRtl ? 'swal-rtl' : ''
-      }
-    }).then((result) => {
-      if (result.isConfirmed) {
-        this.toggleStatus.emit(item);
-      }
-    });
+    this.itemToToggle = item;
+    this.showConfirmation = true;
+  }
+
+  onCancelConfirm(): void {
+    this.showConfirmation = false;
+    this.itemToToggle = null;
+  }
+
+  onProceedConfirm(): void {
+    if (this.itemToToggle) {
+      this.toggleStatus.emit(this.itemToToggle);
+    }
+    this.showConfirmation = false;
+    this.itemToToggle = null;
   }
 
   isEditHidden(item: any): boolean {

@@ -8,6 +8,7 @@ import { StockAdjustmentService } from '../../../../core/services/stock-adjustme
 import { PaginatedList } from '../../../../core/models/pagination.model';
 import { StockAdjustmentResponse } from '../../../../core/models/inventory.model';
 import { ToastrService } from 'ngx-toastr';
+import { ConfirmationModalComponent } from '../../../../shared/components/common/confirmation-modal/confirmation-modal.component';
 
 @Component({
   selector: 'app-stock-adjustments-list',
@@ -16,7 +17,8 @@ import { ToastrService } from 'ngx-toastr';
     CommonModule, 
     PageBreadcrumbComponent, 
     CrudListComponent,
-    TranslateModule
+    TranslateModule,
+    ConfirmationModalComponent
   ],
   templateUrl: './stock-adjustments-list.component.html'
 })
@@ -32,6 +34,13 @@ export class StockAdjustmentsListComponent implements OnInit {
   pageNumber = 1;
   pageSize = 10;
   searchValue = '';
+
+  showConfirmationModal = false;
+  confirmationActionId: string | null = null;
+  itemToConfirm: any = null;
+  confirmTitle = 'common.confirm';
+  confirmMessage = 'common.confirmStatusChange';
+  confirmType: 'warning' | 'danger' | 'info' | 'success' = 'warning';
 
   columns: CrudColumn[] = [
     { field: 'code', header: 'common.code', type: 'code' },
@@ -104,36 +113,58 @@ export class StockAdjustmentsListComponent implements OnInit {
   ];
 
   onCustomAction(event: { actionId: string, item: any }): void {
+    this.itemToConfirm = event.item;
+    this.confirmationActionId = event.actionId;
+    
     if (event.actionId === 'confirm') {
-      const confirmMsg = this.translate.instant('common.confirmStatusChange');
-      if (confirm(confirmMsg)) {
-        this.stockAdjustmentService.confirm(event.item.id).subscribe({
-          next: () => {
-            this.toastr.success(this.translate.instant('common.updatedSuccessfully'));
-            this.loadData();
-          },
-          error: (err) => {
-            this.toastr.error('Error', 'Error');
-            console.error(err);
-          }
-        });
-      }
+      this.confirmTitle = 'stockAdjustments.confirm';
+      this.confirmMessage = 'common.confirmStatusChange';
+      this.confirmType = 'info';
+      this.showConfirmationModal = true;
     } else if (event.actionId === 'cancel') {
-      const title = this.translate.instant('stockAdjustments.cancelWarningTitle');
-      const text = this.translate.instant('stockAdjustments.cancelWarningText');
-      if (confirm(`${title}\n\n${text}`)) {
-        this.stockAdjustmentService.cancel(event.item.id).subscribe({
-          next: () => {
-            this.toastr.success(this.translate.instant('common.updatedSuccessfully'));
-            this.loadData();
-          },
-          error: (err) => {
-            this.toastr.error('Error', 'Error');
-            console.error(err);
-          }
-        });
-      }
+      this.confirmTitle = this.translate.instant('stockAdjustments.cancelWarningTitle') || 'Cancel Warning';
+      this.confirmMessage = this.translate.instant('stockAdjustments.cancelWarningText') || 'Are you sure you want to cancel?';
+      this.confirmType = 'danger';
+      this.showConfirmationModal = true;
     }
+  }
+
+  onProceedConfirm(): void {
+    if (!this.itemToConfirm || !this.confirmationActionId) return;
+
+    if (this.confirmationActionId === 'confirm') {
+      this.stockAdjustmentService.confirm(this.itemToConfirm.id).subscribe({
+        next: () => {
+          this.toastr.success(this.translate.instant('common.updatedSuccessfully') || 'Updated successfully');
+          this.loadData();
+          this.showConfirmationModal = false;
+        },
+        error: (err) => {
+          this.toastr.error('Error', 'Error');
+          console.error(err);
+          this.showConfirmationModal = false;
+        }
+      });
+    } else if (this.confirmationActionId === 'cancel') {
+      this.stockAdjustmentService.cancel(this.itemToConfirm.id).subscribe({
+        next: () => {
+          this.toastr.success(this.translate.instant('common.updatedSuccessfully') || 'Updated successfully');
+          this.loadData();
+          this.showConfirmationModal = false;
+        },
+        error: (err) => {
+          this.toastr.error('Error', 'Error');
+          console.error(err);
+          this.showConfirmationModal = false;
+        }
+      });
+    }
+  }
+
+  onCancelConfirm(): void {
+    this.showConfirmationModal = false;
+    this.itemToConfirm = null;
+    this.confirmationActionId = null;
   }
 
   onPageChange(pageIndex: number): void {

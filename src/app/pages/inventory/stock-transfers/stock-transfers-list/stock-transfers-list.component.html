@@ -1,4 +1,4 @@
-﻿<app-page-breadcrumb [pageTitle]="'stockTransfers.title'" />
+<app-page-breadcrumb [pageTitle]="'stockTransfers.title'" />
 <div class="space-y-6">
   <app-crud-list 
     [pageTitle]="'stockTransfers.title'" 
@@ -8,9 +8,31 @@
     [data]="data" 
     [filters]="{ pageNumber: pageNumber, pageSize: pageSize, searchValue: searchValue }"
     [isLoading]="loading"
+    [hideToggleStatus]="true"
+    [hideEdit]="true"
+    [customActions]="customActions"
     (search)="loadData()"
     (add)="onAdd()"
     (view)="onView($event)"
-    (pageChange)="onPageChange($event)">
+    (pageChange)="onPageChange($event)"
+    (customAction)="onCustomAction($event)">
   </app-crud-list>
 </div>
+
+<!-- Confirmation Modal -->
+<app-confirmation-modal
+  [isOpen]="showConfirmationModal"
+  [title]="confirmTitle"
+  [message]="confirmMessage"
+  confirmText="common.save"
+  cancelText="common.cancel"
+  [type]="confirmType"
+  (confirm)="onProceedConfirm()"
+  (cancel)="onCancelConfirm()">
+  
+  <span *ngIf="itemToConfirm" class="font-bold text-gray-800 dark:text-white mt-4 block text-lg bg-gray-50 dark:bg-gray-700/50 p-3 rounded-xl border border-gray-100 dark:border-gray-600 shadow-inner">
+    <span class="block text-sm text-gray-500 dark:text-gray-400 font-normal mb-1">
+      {{ itemToConfirm.code ? itemToConfirm.code : ('common.id' | translate) + ': ' + itemToConfirm.id }}
+    </span>
+  </span>
+</app-confirmation-modal>

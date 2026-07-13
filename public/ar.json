@@ -2,6 +2,7 @@
   "common": {
     "saving": "جاري الحفظ...",
     "confirmStatusChange": "هل أنت متأكد من تغيير الحالة؟",
+    "confirmTransaction": "هل أنت متأكد من الموافقه و ترحيل المعاملة؟",
     "statusChangedToInactive": "تم تغيير الحالة من نشط إلى غير نشط بنجاح.",
     "statusChangedToActive": "تم تغيير الحالة من غير نشط إلى نشط بنجاح.",
     "errorSavingData": "حدث خطأ أثناء حفظ البيانات.",
@@ -27,6 +28,10 @@
     "customer": "العميل",
     "vendor": "المورد",
     "inactive": "غير نشط",
+    "branch": "الفرع",
+    "branchs": "الفروع",
+    "warehouse": "المخزن",
+    "warehouses": "المخازن",
     "deactivate": "إلغاء التفعيل",
     "save": "حفظ",
     "cancel": "إلغاء",
@@ -63,7 +68,9 @@
     "includeDisabled": "تضمين المعطلين",
     "id": "ID",
     "arabicName": "الاسم بالعربية",
+    "arabicNamePlaceholder": "أدخل الاسم بالعربية",
     "englishName": "الاسم بالإنجليزية",
+    "englishNamePlaceholder": "أدخل الاسم بالإنجليزية",
     "copyCode": "نسخ الكود",
     "stayHere": "البقاء هنا",
     "backToList": "العودة للقائمة",
@@ -118,7 +125,15 @@
       "Bounced": "مرتجع"
     },
     "approvalStatus": "حالة الموافقة",
-    "paymentStatus": "حالة الدفع"
+    "paymentStatus": "حالة الدفع",
+    "cancelWarningTitle": "هل أنت متأكد؟",
+    "cancelWarningText": "سيؤدي هذا إلى التراجع عن أي تغييرات تمت بواسطة هذا المستند.",
+    "defaultExistsTitle": "??? ??????? ?????",
+    "defaultExistsMessage": "???? ??? ??????? ???. ?? ??? ????? ????????? ??? ?????? ??? ????? ?????????",
+    "isDefault": "???????",
+    "yes": "???",
+    "no": "??",
+    "parentBranch": "????? ???????"
   },
   "pages": {
     "invoiceCostElements": "عناصر تكلفة الفاتورة",
@@ -195,19 +210,19 @@
     "dashboard": "لوحة التحكم"
   },
   "warehouses": {
-    "title": "المستودعات",
-    "subTitle": "إدارة المستودعات ومناطق التخزين الخاصة بك.",
-    "addNew": "إضافة مستودع جديد",
-    "addTitle": "إضافة مستودع",
+    "title": "المخازن",
+    "subTitle": "إدارة المخازن ومناطق التخزين الخاصة بك.",
+    "addNew": "إضافة مخزن جديد",
+    "addTitle": "إضافة مخزن",
     "form": {
-      "create": "إضافة مستودع",
-      "edit": "تعديل مستودع",
-      "view": "عرض مستودع"
+      "create": "إضافة مخزن",
+      "edit": "تعديل مخزن",
+      "view": "عرض مخزن"
     },
-    "addSuccess": "تمت إضافة المستودع بنجاح.",
-    "updateSuccess": "تم تحديث المستودع بنجاح.",
+    "addSuccess": "تمت إضافة المخزن بنجاح.",
+    "updateSuccess": "تم تحديث المخزن بنجاح.",
     "list": {
-      "title": "قائمة المستودعات"
+      "title": "قائمة المخازن"
     },
     "sections": {
       "capacity": "تفاصيل السعة والتخزين"
@@ -472,7 +487,7 @@
       "eName": "الاسم (إنجليزي)",
       "itemGroup": "المجموعة",
       "itemProperty": "الخاصية",
-      "dfltWarehouse": "المستودع الافتراضي",
+      "dfltWarehouse": "المخزن الافتراضي",
       "dfltWeight": "الوزن الافتراضي",
       "isPurchased": "قابل للشراء",
       "purchaseUom": "وحدة قياس الشراء",
@@ -511,6 +526,7 @@
     "STA.7106": "لا يمكن إلغاء تسوية مخزنية بعد الموافقة عليها."
   },
   "invoices": {
+    "amount": "المبلغ",
     "paymentMethod": "طريقة الدفع",
     "bank": "البنك",
     "selectBank": "اختر البنك",
@@ -578,7 +594,7 @@
     "discPercent": "نسبة الخصم %",
     "taxPercent": "نسبة الضريبة %",
     "netAmount": "الصافي",
-    "noItemsAdded": "لم يتم إضافة بنود. انقر على '+ إضافة بند' للبدء.",
+    "noItemsAdded": "لم يتم إضافة بنود. انقر على \u0027+ إضافة بند\u0027 للبدء.",
     "additionalCosts": "التكاليف الإضافية",
     "addCost": "إضافة تكلفة",
     "costElement": "عنصر التكلفة",
@@ -630,7 +646,7 @@
       "businessPartner": "العميل",
       "invoiceDate": "تاريخ الفاتورة",
       "dueDate": "تاريخ الاستحقاق",
-      "warehouse": "المستودع",
+      "warehouse": "المخزن",
       "totalAmount": "إجمالي المبلغ",
       "remainingAmount": "المبلغ المتبقي",
       "subTotal": "الإجمالي الفرعي",
@@ -674,7 +690,7 @@
       "businessPartner": "المورد",
       "invoiceDate": "تاريخ الفاتورة",
       "dueDate": "تاريخ الاستحقاق",
-      "warehouse": "المستودع",
+      "warehouse": "المخزن",
       "totalAmount": "إجمالي المبلغ",
       "remainingAmount": "المبلغ المتبقي",
       "subTotal": "الإجمالي الفرعي",
@@ -741,7 +757,7 @@
     "types": {
       "sales": "مبيعات",
       "purchases": "مشتريات",
-      "both": "مبيعات & مشتريات"
+      "both": "مبيعات \u0026 مشتريات"
     },
     "recordsCount": "عدد السجلات",
     "activateTitle": "تفعيل عنصر التكلفة",

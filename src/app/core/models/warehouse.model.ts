@@ -2,6 +2,7 @@ import { RequestFilters } from './pagination.model';
 
 export interface WarehouseRequest {
   id?: number;
+  branchId: number;
   code: string;
   aName: string;
   eName?: string;
@@ -13,6 +14,8 @@ export interface WarehouseRequest {
 
 export interface WarehouseBasicResponse {
   id: number;
+  branchId: number;
+  branchName?: string;
   code: string;
   name: string;
   isActive: boolean;
@@ -24,6 +27,8 @@ export interface WarehouseBasicResponse {
 
 export interface WarehouseResponse {
   id: number;
+  branchId: number;
+  branchName?: string;
   code: string;
   aName: string;
   eName?: string;

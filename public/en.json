@@ -2,6 +2,7 @@
   "common": {
     "saving": "Saving...",
     "confirmStatusChange": "Are you sure you want to change the status?",
+    "confirmTransaction": "Are you sure you want to confirm and post the transaction?",
     "statusChangedToInactive": "Status changed from Active to Inactive successfully.",
     "statusChangedToActive": "Status changed from Inactive to Active successfully.",
     "errorSavingData": "An error occurred while saving data.",
@@ -27,6 +28,10 @@
     "customer": "Customer",
     "vendor": "Vendor",
     "inactive": "Inactive",
+    "branch": "Branch",
+    "branchs": "Branchs",
+    "warehouse": "Warehouse",
+    "warehouses": "Warehouses",
     "deactivate": "Deactivate",
     "save": "Save",
     "cancel": "Cancel",
@@ -63,7 +68,9 @@
     "includeDisabled": "Include Disabled",
     "id": "ID",
     "arabicName": "Arabic Name",
+    "arabicNamePlaceholder": "Enter Arabic Name",
     "englishName": "English Name",
+    "englishNamePlaceholder": "Enter English Name",
     "copyCode": "Copy Code",
     "stayHere": "Stay Here",
     "backToList": "Back to List",
@@ -118,7 +125,15 @@
       "Bounced": "Bounced"
     },
     "approvalStatus": "Approval Status",
-    "paymentStatus": "Payment Status"
+    "paymentStatus": "Payment Status",
+    "cancelWarningTitle": "Are you sure?",
+    "cancelWarningText": "This will reverse any changes made by this document.",
+    "defaultExistsTitle": "Default Record Exists",
+    "defaultExistsMessage": "There is another default record. Do you want to remove the default from it and make this one the default?",
+    "isDefault": "Is Default",
+    "yes": "Yes",
+    "no": "No",
+    "parentBranch": "Parent Branch"
   },
   "pages": {
     "invoiceCostElements": "Invoice Cost Elements",
@@ -276,7 +291,7 @@
   },
   "serverUnavailable": {
     "title": "Server Connection Lost",
-    "description": "We're unable to connect to the backend system services. The server may be undergoing maintenance or experiencing traffic spikes. We're actively checking the connection.",
+    "description": "We\u0027re unable to connect to the backend system services. The server may be undergoing maintenance or experiencing traffic spikes. We\u0027re actively checking the connection.",
     "verifyConnection": "Verify Gateway Connection",
     "verifying": "Verifying Server Health..."
   },
@@ -298,7 +313,7 @@
       "to": "To",
       "customer": "Customer",
       "vendor": "Vendor",
-      "customerAndVendor": "Customer & Vendor",
+      "customerAndVendor": "Customer \u0026 Vendor",
       "collapseAll": "Collapse All",
       "expandAll": "Expand All",
       "balance": "Balance:",
@@ -346,7 +361,7 @@
     "types": {
       "customer": "Customer",
       "vendor": "Vendor",
-      "both": "Customer & Vendor"
+      "both": "Customer \u0026 Vendor"
     },
     "tabs": {
       "basicInfo": "Basic Information",
@@ -373,7 +388,7 @@
   },
   "companySettings": {
     "title": "Company Configuration",
-    "subtitle": "Global Company Identity & Registration",
+    "subtitle": "Global Company Identity \u0026 Registration",
     "companyCode": "Company Code",
     "companyCodePlaceholder": "Enter unique company code",
     "companyAName": "Company Name (Arabic)",
@@ -396,9 +411,9 @@
     "websitePlaceholder": "Enter website url",
     "logoUpload": "Company Brand Logo",
     "iconUpload": "System Navigation Icon",
-    "logoHint": "Upload business logo used in headers & invoices",
+    "logoHint": "Upload business logo used in headers \u0026 invoices",
     "iconHint": "Upload brand shortcut icon used in tab browsers",
-    "dragDropHint": "Drag & drop file here or click to browse",
+    "dragDropHint": "Drag \u0026 drop file here or click to browse",
     "logo": "Company Logo",
     "icon": "Company Icon",
     "saving": "Saving Configuration...",
@@ -407,7 +422,7 @@
   "crud": {
     "back": "Back",
     "saveDraft": "Save as Draft",
-    "saveConfirm": "Save & Confirm",
+    "saveConfirm": "Save \u0026 Confirm",
     "records": "Records Counts",
     "tablePageSize": "Number of records per page",
     "prev": "Previous",
@@ -511,6 +526,7 @@
     "STA.7106": "Cannot cancel a confirmed stock adjustment."
   },
   "invoices": {
+    "amount": "Amount",
     "paymentMethod": "Payment Method",
     "bank": "Bank",
     "selectBank": "Select Bank",
@@ -530,7 +546,7 @@
     "confirmedText": "The invoice has been confirmed.",
     "loadingInvoices": "Loading Invoices...",
     "cancelTitle": "Are you sure?",
-    "cancelText": "You won't be able to revert this!",
+    "cancelText": "You won\u0027t be able to revert this!",
     "cancelConfirm": "Yes, cancel it!",
     "cancelledTitle": "Cancelled!",
     "cancelledText": "The invoice has been cancelled.",
@@ -578,7 +594,7 @@
     "discPercent": "Disc %",
     "taxPercent": "Tax %",
     "netAmount": "Net Amt",
-    "noItemsAdded": "No items added. Click '+ Add Line' to start.",
+    "noItemsAdded": "No items added. Click \u0027+ Add Line\u0027 to start.",
     "additionalCosts": "Additional Costs / Global Discounts",
     "addCost": "Add Cost",
     "costElement": "Cost Element",
@@ -741,7 +757,7 @@
     "types": {
       "sales": "Sales",
       "purchases": "Purchases",
-      "both": "Sales & Purchases"
+      "both": "Sales \u0026 Purchases"
     },
     "recordsCount": "Total Records",
     "activateTitle": "Activate Cost Element",

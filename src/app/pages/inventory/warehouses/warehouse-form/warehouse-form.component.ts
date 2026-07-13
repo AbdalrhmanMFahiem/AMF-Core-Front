@@ -10,6 +10,7 @@ import { WarehouseService } from '../../../../core/services/warehouse.service';
 import { PageBreadcrumbComponent } from '../../../../shared/components/common/page-breadcrumb/page-breadcrumb.component';
 import { SuccessRedirectBannerComponent } from '../../../../shared/components/common/success-redirect-banner/success-redirect-banner.component';
 import { ErrorBannerComponent } from '../../../../shared/components/common/error-banner/error-banner.component';
+import { SearchableSelectComponent, SearchableOption } from '../../../../shared/components/form/searchable-select/searchable-select.component';
 
 @Component({
   selector: 'app-warehouse-form',
@@ -18,6 +19,7 @@ import { ErrorBannerComponent } from '../../../../shared/components/common/error
     CommonModule, 
     ReactiveFormsModule, 
     TranslateModule, 
+    SearchableSelectComponent,
     PageBreadcrumbComponent,
     SuccessRedirectBannerComponent,
     ErrorBannerComponent
@@ -47,8 +49,14 @@ export class WarehouseFormComponent implements OnInit {
   // Breadcrumb config
   breadcrumbPath: { label: string, url: string }[] = [];
 
+  // Hardcoded branches list as per request to default to 1
+  branchesOptions: SearchableOption[] = [
+    { value: 1, label: 'الفرع الرئيسي - Main Branch' }
+  ];
+
   constructor() {
     this.form = this.fb.group({
+      branchId: [1, Validators.required],
       code: [{ value: '', disabled: true }, Validators.required],
       aName: ['', Validators.required],
       eName: [''],
@@ -107,6 +115,7 @@ export class WarehouseFormComponent implements OnInit {
     this.warehouseService.get(id).subscribe({
       next: (res) => {
         this.form.patchValue({
+          branchId: res.branchId || 1,
           code: res.code,
           aName: res.aName,
           eName: res.eName,

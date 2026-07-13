@@ -1,4 +1,4 @@
-﻿<app-page-breadcrumb 
+<app-page-breadcrumb 
   [pageTitle]="isEditMode ? ('warehouses.form.edit' | translate) : isViewMode ? ('warehouses.form.view' | translate) : ('warehouses.form.create' | translate)"
   [parentPageTitle]="'warehouses.list.title' | translate"
   parentPageUrl="/inventory/warehouses"
@@ -44,7 +44,23 @@
   <form [formGroup]="form" (ngSubmit)="onSubmit()" class="p-6">
     <!-- Grid Layout -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
-      
+
+      <!-- Branch -->
+      <div class="col-span-1 md:col-span-2 space-y-1.5">
+        <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300">
+          {{ 'common.branch' | translate }} <span class="text-red-500 dark:text-red-400">*</span>
+        </label>
+        <app-searchable-select
+          [options]="branchesOptions"
+          formControlName="branchId"
+          [placeholder]="'common.selectBranch' | translate"
+          [disabled]="isViewMode">
+        </app-searchable-select>
+        <div *ngIf="form.get('branchId')?.invalid && form.get('branchId')?.touched" class="text-red-500 dark:text-red-400 text-xs mt-1 font-medium">
+          {{ 'validation.required' | translate }}
+        </div>
+      </div>
+
       <!-- Arabic Name -->
       <div class="space-y-1.5">
         <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300">

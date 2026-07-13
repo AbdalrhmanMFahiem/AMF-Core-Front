@@ -773,7 +773,7 @@ export class MyEntityFormComponent implements OnInit {
 
 **Path:** `src/app/shared/components/common/crud-list/crud-list.component.ts`
 
-The `CrudListComponent` is the **most important reusable component.** It handles table, search, pagination, page-size selection, actions, toggle status (with SweetAlert2), and loading skeletons automatically.
+The `CrudListComponent` is the **most important reusable component.** It handles table, search, pagination, page-size selection, actions, toggle status (with a custom animated confirmation overlay modal), and loading skeletons automatically.
 
 ### All Inputs
 
@@ -1596,3 +1596,21 @@ Before creating any screen, verify:
 - [ ] `*ngFor` loops include `trackBy` (or use `@for` with `track`)
 - [ ] No cross-module imports between `pages/` directories
 - [ ] Shared models/services live in `core/` not inside a specific `pages/` module
+
+- [12. IsDefault Handling Pattern](#12-isdefault-handling-pattern)
+
+
+## 12. IsDefault Handling Pattern
+
+For any entity/table that contains an IsDefault (???????) option, there can only be ONE default record per company/tenant.
+If the user sets a new record as default, the frontend must check if another default exists and ask for confirmation.
+
+### Workflow:
+1. **Service Method**: The entity's Angular Service must implement checkDefaultExists(currentId: number): Observable<boolean>.
+2. **Form Submission Interception**: In the onSubmit() method of the form component:
+   - If orm.value.isDefault is true, call checkDefaultExists(id).
+   - If it returns true (meaning another default exists), display a confirmation popup (e.g. using SweetAlert Swal.fire).
+   - Message: "???? ??? ??????? ???? ?? ??? ????? ????????? ??? ???? ??? ????? ?? ??????????" ("There is another default record, do you want to remove the default from it and make this the default?").
+   - If the user confirms, proceed with the save (the backend handles removing the default flag from the other record).
+   - If the user cancels, do not submit the form.
+3. **Backend Responsibility**: The backend handles the actual database update to ensure only one default exists (ExecuteUpdateAsync).

@@ -1,0 +1,22 @@
+<div class="space-y-6">
+  <!-- Breadcrumbs -->
+  <app-page-breadcrumb
+    [pageTitle]="'common.branches' | translate">
+  </app-page-breadcrumb>
+
+  <!-- CRUD List Component -->
+  <app-crud-list
+    [data]="data"
+    [columns]="columns"
+    [isLoading]="loading"
+    [filters]="filters"
+    [includeDisabled]="includeDisabled"
+    (search)="onSearch()"
+    (pageChange)="onPageChange($event)"
+    (includeDisabledChange)="onIncludeDisabledChanged($event)"
+    (add)="onAdd()"
+    (edit)="onEdit($event)"
+    (view)="onView($event)"
+    (toggleStatus)="onToggleStatus($event)">
+  </app-crud-list>
+</div>

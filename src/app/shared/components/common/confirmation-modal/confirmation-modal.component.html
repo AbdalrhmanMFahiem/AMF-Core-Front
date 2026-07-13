@@ -1,0 +1,57 @@
+<div *ngIf="isOpen"
+  class="fixed inset-0 z-9999 bg-white/60 dark:bg-gray-900/80 backdrop-blur-sm flex items-center justify-center p-6 animate-fade-in">
+  <div
+    class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl border border-gray-100 dark:border-gray-700 w-full max-w-sm overflow-hidden transform transition-all animate-scale-up">
+    <div class="p-8 text-center">
+      <div
+        class="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6"
+        [ngClass]="getIconClass()">
+        
+        <!-- Warning Icon -->
+        <svg *ngIf="type === 'warning'" class="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+        </svg>
+
+        <!-- Danger Icon -->
+        <svg *ngIf="type === 'danger'" class="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+            d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+
+        <!-- Info Icon -->
+        <svg *ngIf="type === 'info'" class="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+
+        <!-- Success Icon -->
+        <svg *ngIf="type === 'success'" class="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+            d="M5 13l4 4L19 7" />
+        </svg>
+      </div>
+      
+      <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">{{ title | translate }}</h3>
+      
+      <div class="text-gray-500 dark:text-gray-400 mb-8 text-sm leading-relaxed">
+        {{ message | translate }}
+        
+        <!-- Content Projection for extra details -->
+        <ng-content></ng-content>
+      </div>
+      
+      <div class="flex gap-3">
+        <button type="button" (click)="onCancel()"
+          class="flex-1 px-4 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-300 rounded-xl font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-500">
+          {{ cancelText | translate }}
+        </button>
+        <button type="button" (click)="onConfirm()"
+          class="flex-1 px-4 py-3 rounded-xl font-semibold shadow-theme-sm transition-all hover:shadow-theme-md focus:outline-none focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
+          [ngClass]="getConfirmButtonClass()">
+          {{ confirmText | translate }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
