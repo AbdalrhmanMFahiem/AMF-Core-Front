@@ -898,7 +898,9 @@
       "invalidQuantity": "Quantity must be greater than zero.",
       "duplicateItem": "Item already exists in the transfer.",
       "sameWarehouse": "Source and destination warehouses cannot be the same."
-    }
+    },
+    "cancelWarningTitle": "Cancel Transfer?",
+    "cancelWarningText": "This will reverse any stock changes made by this transfer."
   },
   "stockAdjustments": {
     "title": "Stock Adjustments",

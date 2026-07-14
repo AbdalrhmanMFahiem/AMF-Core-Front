@@ -211,6 +211,7 @@
 <!-- Confirmation Modal -->
 <app-confirmation-modal
   [isOpen]="showConfirmationModal"
+  [isLoading]="saving"
   [title]="confirmTitle"
   [message]="confirmMessage"
   confirmText="common.save"

@@ -41,6 +41,7 @@ export class StockTransfersListComponent implements OnInit {
   confirmTitle = 'common.confirm';
   confirmMessage = 'common.confirmTransaction';
   confirmType: 'warning' | 'danger' | 'info' | 'success' = 'warning';
+  isConfirming = false;
 
   columns: CrudColumn[] = [
     { field: 'code', header: 'common.code', type: 'code' },
@@ -110,6 +111,7 @@ export class StockTransfersListComponent implements OnInit {
 
   onProceedConfirm(): void {
     if (!this.itemToConfirm || !this.confirmationActionId) return;
+    this.isConfirming = true;
 
     if (this.confirmationActionId === 'confirm') {
       this.stockTransferService.confirm(this.itemToConfirm.id).subscribe({
@@ -117,11 +119,13 @@ export class StockTransfersListComponent implements OnInit {
           this.toastr.success(this.translate.instant('common.updatedSuccessfully') || 'Updated successfully');
           this.loadData();
           this.showConfirmationModal = false;
+          this.isConfirming = false;
         },
         error: (err) => {
           this.toastr.error('Error', 'Error');
           console.error(err);
           this.showConfirmationModal = false;
+          this.isConfirming = false;
         }
       });
     } else if (this.confirmationActionId === 'cancel') {
@@ -130,11 +134,13 @@ export class StockTransfersListComponent implements OnInit {
           this.toastr.success(this.translate.instant('common.updatedSuccessfully') || 'Updated successfully');
           this.loadData();
           this.showConfirmationModal = false;
+          this.isConfirming = false;
         },
         error: (err) => {
           this.toastr.error('Error', 'Error');
           console.error(err);
           this.showConfirmationModal = false;
+          this.isConfirming = false;
         }
       });
     }

@@ -11,6 +11,7 @@ import { TranslateModule } from '@ngx-translate/core';
 })
 export class ConfirmationModalComponent {
   @Input() isOpen: boolean = false;
+  @Input() isLoading: boolean = false;
   @Input() title: string = 'common.confirm';
   @Input() message: string = 'common.confirmStatusChange';
   @Input() confirmText: string = 'common.save';
@@ -37,22 +38,24 @@ export class ConfirmationModalComponent {
   getConfirmButtonClass(): string {
     switch (this.type) {
       case 'danger':
-        return 'bg-error-600 hover:bg-error-700 text-white focus:ring-error-500';
+        return 'bg-error-600 hover:bg-error-700 text-white focus:ring-error-500 disabled:opacity-60 disabled:cursor-not-allowed';
       case 'info':
-        return 'bg-blue-600 hover:bg-blue-700 text-white focus:ring-blue-500';
+        return 'bg-blue-600 hover:bg-blue-700 text-white focus:ring-blue-500 disabled:opacity-60 disabled:cursor-not-allowed';
       case 'success':
-        return 'bg-success-600 hover:bg-success-700 text-white focus:ring-success-500';
+        return 'bg-success-600 hover:bg-success-700 text-white focus:ring-success-500 disabled:opacity-60 disabled:cursor-not-allowed';
       case 'warning':
       default:
-        return 'bg-brand-600 hover:bg-brand-700 text-white focus:ring-brand-500';
+        return 'bg-brand-600 hover:bg-brand-700 text-white focus:ring-brand-500 disabled:opacity-60 disabled:cursor-not-allowed';
     }
   }
 
   onCancel(): void {
+    if (this.isLoading) return;
     this.cancel.emit();
   }
 
   onConfirm(): void {
+    if (this.isLoading) return;
     this.confirm.emit();
   }
 }

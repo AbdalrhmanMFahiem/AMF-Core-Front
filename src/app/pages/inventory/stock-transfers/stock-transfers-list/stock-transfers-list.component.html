@@ -22,6 +22,7 @@
 <!-- Confirmation Modal -->
 <app-confirmation-modal
   [isOpen]="showConfirmationModal"
+  [isLoading]="isConfirming"
   [title]="confirmTitle"
   [message]="confirmMessage"
   confirmText="common.save"
