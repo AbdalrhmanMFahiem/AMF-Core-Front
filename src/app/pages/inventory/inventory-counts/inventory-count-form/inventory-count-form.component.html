@@ -1,4 +1,4 @@
-﻿<app-page-breadcrumb [pageTitle]="mode === 'add' ? 'inventoryCounts.addNew' : 'inventoryCounts.title'" />
+<app-page-breadcrumb [pageTitle]="mode === 'add' ? 'inventoryCounts.addNew' : 'inventoryCounts.title'" />
 
 <app-success-redirect-banner
   *ngIf="saveSuccess"
@@ -160,6 +160,7 @@
 <app-item-lookup-modal
   [isOpen]="isItemModalOpen"
   (close)="isItemModalOpen = false"
+  [warehouseId]="model.warehouseId"
   (selectItem)="onItemSelected($event)">
 </app-item-lookup-modal>
 

@@ -488,6 +488,11 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/reports/inventory-valuation/inventory-valuation.component').then(c => c.InventoryValuationComponent),
         title: 'Inventory Valuation | AMF Core'
       },
+      {
+        path: 'reports/warehouse-items-stock',
+        loadComponent: () => import('./features/reports/warehouse-items-stock/warehouse-items-stock.component').then(c => c.WarehouseItemsStockComponent),
+        title: 'Warehouse Items Stock | AMF Core'
+      },
     ]
   },
   {

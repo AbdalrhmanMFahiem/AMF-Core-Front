@@ -1,17 +1,46 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { ToastrService } from 'ngx-toastr';
+import { finalize } from 'rxjs/operators';
+import { NgApexchartsModule } from 'ng-apexcharts';
+
 import { PageBreadcrumbComponent } from '../../../shared/components/common/page-breadcrumb/page-breadcrumb.component';
 import { ComponentCardComponent } from '../../../shared/components/common/component-card/component-card.component';
 import { SearchableSelectComponent, SearchableOption } from '../../../shared/components/form/searchable-select/searchable-select.component';
-import { CrudListComponent } from '../../../shared/components/common/crud-list/crud-list.component';
 import { DatePickerComponent } from '../../../shared/components/form/date-picker/date-picker.component';
+import { PrintPreviewModalComponent } from '../../../shared/components/common/print-preview-modal/print-preview-modal.component';
+
 import { BusinessPartnerService } from '../../../core/services/business-partner.service';
+import { ReportService } from '../../../core/services/report.service';
 import { LookupService } from '../../../core/services/lookup.service';
 import { LedgerFilters, BalanceSummaryResponse, BusinessPartnerLedgerResponse } from '../../../core/models/business-partner.model';
 import { PaginatedList } from '../../../core/models/pagination.model';
-import { forkJoin } from 'rxjs';
+
+import {
+  ChartComponent,
+  ApexAxisChartSeries,
+  ApexChart,
+  ApexXAxis,
+  ApexDataLabels,
+  ApexTooltip,
+  ApexStroke,
+  ApexYAxis,
+  ApexFill
+} from 'ng-apexcharts';
+
+export type ChartOptions = {
+  series: ApexAxisChartSeries;
+  chart: ApexChart;
+  xaxis: ApexXAxis;
+  stroke: ApexStroke;
+  tooltip: ApexTooltip;
+  dataLabels: ApexDataLabels;
+  yaxis: ApexYAxis;
+  fill: ApexFill;
+  colors: string[];
+};
 
 @Component({
   selector: 'app-business-partner-statement',
@@ -23,15 +52,21 @@ import { forkJoin } from 'rxjs';
     PageBreadcrumbComponent, 
     ComponentCardComponent, 
     SearchableSelectComponent,
-    CrudListComponent,
-    DatePickerComponent
+    DatePickerComponent,
+    PrintPreviewModalComponent,
+    NgApexchartsModule
   ],
   templateUrl: './business-partner-statement.component.html'
 })
 export class BusinessPartnerStatementComponent implements OnInit {
-  private businessPartnerService = inject(BusinessPartnerService);
-  private lookupService = inject(LookupService);
-  public translate = inject(TranslateService);
+  private readonly businessPartnerService = inject(BusinessPartnerService);
+  private readonly reportService = inject(ReportService);
+  private readonly lookupService = inject(LookupService);
+  public readonly translate = inject(TranslateService);
+  private readonly toastr = inject(ToastrService);
+
+  @ViewChild('chart') chart!: ChartComponent;
+  public chartOptions!: Partial<ChartOptions> | any;
 
   filters: LedgerFilters = {
     pageNumber: 1,
@@ -54,18 +89,55 @@ export class BusinessPartnerStatementComponent implements OnInit {
   summaryLoading = false;
 
   businessPartnersOptions: SearchableOption[] = [];
-
-  columns = [
-    { field: 'entryDate', header: 'common.date', type: 'date' as const },
-    { field: 'invoiceCode', header: 'reports.businessPartnerStatement.table.invoiceCode', type: 'text' as const },
-    { field: 'entryTypeName', header: 'reports.businessPartnerStatement.entryType', type: 'badge' as const },
-    { field: 'amount', header: 'reports.businessPartnerStatement.table.amount', type: 'text' as const },
-    { field: 'runningBalance', header: 'reports.businessPartnerStatement.balance', type: 'text' as const },
-    { field: 'notes', header: 'reports.businessPartnerStatement.table.notes', type: 'text' as const }
-  ];
+  
+  // PDF Preview properties
+  isPrintModalOpen = false;
+  pdfBlobUrl: string | null = null;
+  pdfLoading = false;
+  pdfBlob: Blob | null = null;
 
   ngOnInit(): void {
     this.loadLookups();
+    this.initChart();
+  }
+  
+  initChart() {
+    this.chartOptions = {
+      series: [
+        {
+          name: this.translate.instant('reports.businessPartnerStatement.balance'),
+          data: []
+        }
+      ],
+      chart: {
+        height: 350,
+        type: 'area',
+        fontFamily: 'inherit',
+        toolbar: { show: false }
+      },
+      colors: ['#3b82f6'], // blue-500
+      dataLabels: { enabled: false },
+      stroke: {
+        curve: 'smooth',
+        width: 2
+      },
+      xaxis: {
+        type: 'datetime',
+        categories: []
+      },
+      tooltip: {
+        x: { format: 'dd/MM/yy HH:mm' }
+      },
+      fill: {
+        type: 'gradient',
+        gradient: {
+          shadeIntensity: 1,
+          opacityFrom: 0.7,
+          opacityTo: 0.1,
+          stops: [0, 90, 100]
+        }
+      }
+    };
   }
 
   loadLookups(): void {
@@ -83,8 +155,6 @@ export class BusinessPartnerStatementComponent implements OnInit {
     if (!this.businessPartnerId) {
       return;
     }
-    
-    // Reset pagination on new search
     this.filters.pageNumber = 1;
     this.loadData();
   }
@@ -95,7 +165,6 @@ export class BusinessPartnerStatementComponent implements OnInit {
     this.loading = true;
     this.summaryLoading = true;
 
-    // Load Summary
     this.businessPartnerService.getBalanceSummary(this.businessPartnerId).subscribe({
       next: (res) => {
         this.summary = res;
@@ -104,25 +173,45 @@ export class BusinessPartnerStatementComponent implements OnInit {
       error: () => this.summaryLoading = false
     });
 
-    // Load Ledger
     this.businessPartnerService.getLedger(this.businessPartnerId, this.filters).subscribe({
       next: (res) => {
         this.ledgerData = res;
         
-        // Format entry types for badges
         this.ledgerData.items = res.items.map(item => ({
           ...item,
-          // Badge color based on amount (positive debit / negative credit)
           badgeColor: item.amount >= 0 ? 'warning' : 'success',
           entryTypeName: this.getEntryTypeName(item.entryType)
         } as any));
         
+        this.updateChart();
         this.loading = false;
       },
       error: () => {
         this.loading = false;
       }
     });
+  }
+
+  updateChart() {
+    if (this.ledgerData && this.ledgerData.items.length > 0) {
+      // Sort items by date ascending for chart
+      const sortedItems = [...this.ledgerData.items].sort((a, b) => new Date(a.entryDate).getTime() - new Date(b.entryDate).getTime());
+      
+      const balances = sortedItems.map(x => x.runningBalance);
+      const dates = sortedItems.map(x => new Date(x.entryDate).getTime());
+      
+      this.chartOptions.series = [{
+        name: this.translate.instant('reports.businessPartnerStatement.balance'),
+        data: balances
+      }];
+      this.chartOptions.xaxis = {
+        ...this.chartOptions.xaxis,
+        categories: dates
+      };
+    } else {
+      this.chartOptions.series = [{ data: [] }];
+      this.chartOptions.xaxis = { categories: [] };
+    }
   }
 
   getEntryTypeName(type: number): string {
@@ -143,11 +232,76 @@ export class BusinessPartnerStatementComponent implements OnInit {
     this.filters.pageNumber = page;
     this.loadData();
   }
+  
+  onPageSizeChange(size: any): void {
+    this.filters.pageSize = size;
+    this.filters.pageNumber = 1;
+    this.loadData();
+  }
 
   onReset(): void {
     this.filters = { pageNumber: 1, pageSize: 10 };
     this.businessPartnerId = null;
     this.summary = null;
     this.ledgerData = { items: [], pageIndex: 1, totalPages: 1, totalRecords: 0, hasPreviousPage: false, hasNextPage: false };
+    this.chartOptions.series = [{ data: [] }];
+  }
+
+  exportExcel(): void {
+    if (!this.businessPartnerId) return;
+    const exportFilters = { ...this.filters, businessPartnerId: this.businessPartnerId, pageNumber: 1, pageSize: 10000 };
+    
+    this.reportService.exportStatementExcel(exportFilters).subscribe({
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `BP_Statement_${new Date().getTime()}.xlsx`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+      },
+      error: () => this.toastr.error(this.translate.instant('reports.exportError'))
+    });
+  }
+
+  openPdfPreview(): void {
+    if (!this.businessPartnerId) return;
+    
+    this.isPrintModalOpen = true;
+    this.pdfLoading = true;
+    
+    if (this.pdfBlobUrl) {
+      window.URL.revokeObjectURL(this.pdfBlobUrl);
+      this.pdfBlobUrl = null;
+    }
+
+    const exportFilters = { ...this.filters, businessPartnerId: this.businessPartnerId, pageNumber: 1, pageSize: 10000 };
+    
+    this.reportService.exportStatementPdf(exportFilters)
+      .pipe(finalize(() => this.pdfLoading = false))
+      .subscribe({
+        next: (blob) => {
+          this.pdfBlob = blob;
+          this.pdfBlobUrl = window.URL.createObjectURL(blob);
+        },
+        error: () => {
+          this.toastr.error(this.translate.instant('reports.exportError'));
+          this.isPrintModalOpen = false;
+        }
+      });
+  }
+
+  closePrintModal(): void {
+    this.isPrintModalOpen = false;
+    if (this.pdfBlobUrl) {
+      setTimeout(() => {
+        if (this.pdfBlobUrl) {
+          window.URL.revokeObjectURL(this.pdfBlobUrl);
+          this.pdfBlobUrl = null;
+        }
+      }, 1000);
+    }
   }
 }

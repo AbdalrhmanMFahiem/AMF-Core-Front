@@ -1,12 +1,15 @@
-﻿<app-page-breadcrumb [pageTitle]="'reports.businessPartnerStatement.title' | translate" />
+<app-page-breadcrumb [pageTitle]="'reports.businessPartnerStatement.title' | translate" />
 
-<div class="space-y-6">
+<div class="space-y-3">
   <!-- Filters Section -->
-  <app-component-card [title]="'reports.businessPartnerStatement.filters' | translate" [className]="'p-6'">
-    <div class="grid grid-cols-1 gap-6 sm:grid-cols-3">
+  <app-component-card [title]="'reports.businessPartnerStatement.filters' | translate" [className]="'p-2'">
+    <div class="grid grid-cols-1 gap-6 sm:grid-cols-12 items-end">
       <!-- Business Partner -->
-      <div>
-        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+      <div class="sm:col-span-4">
+        <label class="mb-1.5 flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-400">
+          <svg class="w-4 h-4 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+          </svg>
           {{ 'common.name' | translate }} <span class="text-error-500">*</span>
         </label>
         <app-searchable-select [(ngModel)]="businessPartnerId" name="businessPartnerId"
@@ -15,91 +18,247 @@
       </div>
 
       <!-- From Date -->
-      <div class="relative z-20">
-        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+      <div class="sm:col-span-2 relative z-20">
+        <label class="mb-1.5 flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-400">
+          <svg class="w-4 h-4 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
           {{ 'common.from' | translate }}
         </label>
-        <app-date-picker id="fromDate" name="fromDate" [(ngModel)]="filters.from">
-        </app-date-picker>
+        <app-date-picker id="fromDate" name="fromDate" [(ngModel)]="filters.from" [placeholder]="'common.selectDate' | translate"></app-date-picker>
       </div>
 
       <!-- To Date -->
-      <div class="relative z-10">
-        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+      <div class="sm:col-span-2 relative z-10">
+        <label class="mb-1.5 flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-400">
+          <svg class="w-4 h-4 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
           {{ 'common.to' | translate }}
         </label>
-        <app-date-picker id="toDate" name="toDate" [(ngModel)]="filters.to">
-        </app-date-picker>
+        <app-date-picker id="toDate" name="toDate" [(ngModel)]="filters.to" [placeholder]="'common.selectDate' | translate"></app-date-picker>
       </div>
-    </div>
 
-    <!-- Actions -->
-    <div class="mt-6 flex justify-end gap-3">
-      <button type="button" (click)="onReset()"
-        class="rounded-lg border border-gray-300 bg-white px-5 py-2.5 text-sm font-medium text-gray-700 shadow-sm transition-colors hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700">
-        {{ 'common.reset' | translate }}
-      </button>
-      <button type="button" (click)="onSearch()" [disabled]="!businessPartnerId || loading || summaryLoading"
-        class="flex items-center gap-2 rounded-lg bg-brand-500 px-5 py-2.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-brand-600 disabled:opacity-50">
-        <svg *ngIf="loading || summaryLoading" class="h-4 w-4 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none"
-          viewBox="0 0 24 24">
-          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-          <path class="opacity-75" fill="currentColor"
-            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
-          </path>
-        </svg>
-        <span>{{ 'common.search' | translate }}</span>
-      </button>
+      <!-- Actions -->
+      <div class="sm:col-span-4">
+        <label class="mb-1.5 block text-sm opacity-0 pointer-events-none select-none">&nbsp;</label>
+        <div class="flex justify-end gap-3">
+          <button type="button" (click)="onReset()"
+            class="h-11 rounded-lg border border-gray-300 bg-white px-5 py-2.5 text-sm font-medium text-gray-700 shadow-sm transition-all hover:bg-gray-50 hover:shadow-md dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700">
+            {{ 'common.reset' | translate }}
+          </button>
+          <button type="button" (click)="onSearch()" [disabled]="!businessPartnerId || loading || summaryLoading"
+            class="h-11 flex items-center justify-center gap-2 rounded-lg bg-brand-500 px-5 py-2.5 text-sm font-medium text-white shadow-sm transition-all hover:bg-brand-600 hover:shadow-md disabled:opacity-50">
+            <svg *ngIf="loading || summaryLoading" class="h-4 w-4 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            <svg *ngIf="!loading && !summaryLoading" class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+            <span class="whitespace-nowrap">{{ 'common.search' | translate }}</span>
+          </button>
+        </div>
+      </div>
     </div>
   </app-component-card>
 
-  <!-- Report Details -->
   <ng-container *ngIf="summary || ledgerData.items.length > 0">
-    <app-component-card *ngIf="summary" [title]="'reports.businessPartnerStatement.results' | translate" [className]="'p-0 mb-6'">
-      <div class="p-6 border-b border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-800/50">
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div>
-            <p class="text-sm text-gray-500 dark:text-gray-400">{{ 'reports.businessPartnerStatement.currentBalance' | translate }}</p>
-            <p class="font-medium text-gray-900 dark:text-white"
-              [ngClass]="{'text-success-600': summary.currentBalance > 0, 'text-error-600': summary.currentBalance < 0}">
-              {{ summary.currentBalance | number:'1.2-2' }}
-            </p>
+    <app-component-card [title]="'reports.businessPartnerStatement.results' | translate">
+      <!-- Summary Cards -->
+      <div *ngIf="summary" class="mb-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <!-- Current Balance -->
+        <div class="flex flex-col gap-1.5 p-4 rounded-xl border border-gray-200 bg-white dark:border-white/6 dark:bg-white/2 shadow-theme-xs">
+          <span class="text-sm font-medium text-gray-500 dark:text-gray-400">{{ 'reports.businessPartnerStatement.currentBalance' | translate }}</span>
+          <span class="text-2xl font-bold" [ngClass]="{'text-success-600': summary.currentBalance > 0, 'text-error-600': summary.currentBalance < 0, 'text-gray-900 dark:text-white': summary.currentBalance === 0}">
+            {{ summary.currentBalance | number:'1.2-2' }}
+          </span>
+        </div>
+        <!-- Total Sales -->
+        <div class="flex flex-col gap-1.5 p-4 rounded-xl border border-gray-200 bg-white dark:border-white/6 dark:bg-white/2 shadow-theme-xs">
+          <span class="text-sm font-medium text-gray-500 dark:text-gray-400">{{ 'reports.businessPartnerStatement.totalSales' | translate }}</span>
+          <span class="text-2xl font-bold text-gray-900 dark:text-white">
+            {{ summary.totalInvoiced | number:'1.2-2' }}
+          </span>
+        </div>
+        <!-- Paid Amount -->
+        <div class="flex flex-col gap-1.5 p-4 rounded-xl border border-gray-200 bg-white dark:border-white/6 dark:bg-white/2 shadow-theme-xs">
+          <span class="text-sm font-medium text-gray-500 dark:text-gray-400">{{ 'reports.businessPartnerStatement.paidAmount' | translate }}</span>
+          <span class="text-2xl font-bold text-gray-900 dark:text-white">
+            {{ summary.totalPaid | number:'1.2-2' }}
+          </span>
+        </div>
+        <!-- Overdue Amount -->
+        <div class="flex flex-col gap-1.5 p-4 rounded-xl border border-gray-200 bg-white dark:border-white/6 dark:bg-white/2 shadow-theme-xs">
+          <span class="text-sm font-medium text-gray-500 dark:text-gray-400">{{ 'reports.businessPartnerStatement.overdueAmount' | translate }}</span>
+          <span class="text-2xl font-bold" [ngClass]="{'text-error-600': summary.totalOverdue > 0, 'text-gray-900 dark:text-white': summary.totalOverdue <= 0}">
+            {{ summary.totalOverdue | number:'1.2-2' }}
+          </span>
+        </div>
+      </div>
+
+      <!-- Export Buttons -->
+      <div class="mb-5 flex justify-end gap-3">
+        <button type="button" (click)="exportExcel()"
+          class="group flex items-center gap-2 rounded-lg border border-success-200 bg-success-50 px-4 py-2.5 text-sm font-medium text-success-700 shadow-sm transition-all hover:bg-success-500 hover:text-white hover:shadow-md hover:border-success-500 dark:bg-success-500/10 dark:border-success-500/30 dark:text-success-400 dark:hover:bg-success-500 dark:hover:text-white">
+          <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3M3 17V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"></path>
+          </svg>
+          {{ 'reports.exportExcel' | translate }}
+        </button>
+        <button type="button" (click)="openPdfPreview()"
+          class="group flex items-center gap-2 rounded-lg border border-error-200 bg-error-50 px-4 py-2.5 text-sm font-medium text-error-700 shadow-sm transition-all hover:bg-error-500 hover:text-white hover:shadow-md hover:border-error-500 dark:bg-error-500/10 dark:border-error-500/30 dark:text-error-400 dark:hover:bg-error-500 dark:hover:text-white">
+          <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
+          </svg>
+          {{ 'reports.printPdf' | translate }}
+        </button>
+      </div>
+
+      <!-- Data Table -->
+      <div class="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/6 dark:bg-white/2">
+        <div class="max-w-full overflow-x-auto">
+          <table class="min-w-full">
+            <thead>
+              <tr class="bg-gray-50/80 dark:bg-white/3">
+                <th class="px-5 py-3.5 font-semibold text-gray-600 text-start text-xs dark:text-gray-300 uppercase tracking-wider">{{ 'common.date' | translate }}</th>
+                <th class="px-5 py-3.5 font-semibold text-gray-600 text-start text-xs dark:text-gray-300 uppercase tracking-wider">{{ 'reports.businessPartnerStatement.table.invoiceCode' | translate }}</th>
+                <th class="px-5 py-3.5 font-semibold text-gray-600 text-start text-xs dark:text-gray-300 uppercase tracking-wider">{{ 'reports.businessPartnerStatement.entryType' | translate }}</th>
+                <th class="px-5 py-3.5 font-semibold text-gray-600 text-end text-xs dark:text-gray-300 uppercase tracking-wider">{{ 'reports.businessPartnerStatement.table.amount' | translate }}</th>
+                <th class="px-5 py-3.5 font-semibold text-gray-600 text-end text-xs dark:text-gray-300 uppercase tracking-wider">{{ 'reports.businessPartnerStatement.balance' | translate }}</th>
+                <th class="px-5 py-3.5 font-semibold text-gray-600 text-start text-xs dark:text-gray-300 uppercase tracking-wider">{{ 'reports.businessPartnerStatement.table.notes' | translate }}</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100 dark:divide-white/4">
+              <!-- Loading -->
+              <tr *ngIf="loading">
+                <td colspan="6" class="px-5 py-10 text-center">
+                  <div class="flex flex-col items-center justify-center gap-3">
+                    <div class="relative w-10 h-10">
+                      <div class="absolute inset-0 rounded-full border-2 border-gray-200 dark:border-gray-700"></div>
+                      <div class="absolute inset-0 rounded-full border-2 border-brand-500 border-t-transparent animate-spin"></div>
+                    </div>
+                    <span class="text-sm text-gray-500 dark:text-gray-400">{{ 'common.loading' | translate }}...</span>
+                  </div>
+                </td>
+              </tr>
+              <!-- Empty -->
+              <tr *ngIf="!loading && ledgerData.items.length === 0">
+                <td colspan="6" class="px-5 py-12 text-center">
+                  <div class="flex flex-col items-center justify-center gap-4">
+                    <div class="w-16 h-16 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
+                      <svg class="w-8 h-8 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path>
+                      </svg>
+                    </div>
+                    <div class="text-center">
+                      <p class="text-sm font-medium text-gray-600 dark:text-gray-300">{{ 'common.noRecordsFound' | translate }}</p>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <!-- Rows -->
+              <tr *ngFor="let item of ledgerData.items" class="group transition-colors hover:bg-brand-50/40 dark:hover:bg-brand-500/4">
+                <td class="px-5 py-4 text-start text-sm text-gray-700 dark:text-gray-300">
+                  {{ item.entryDate | date:'yyyy-MM-dd HH:mm' }}
+                </td>
+                <td class="px-5 py-4 text-start">
+                  <span class="inline-block text-xs font-mono font-medium text-brand-600 dark:text-brand-400 bg-brand-50 dark:bg-brand-500/10 px-2 py-0.5 rounded">
+                    {{ item.invoiceCode || '-' }}
+                  </span>
+                </td>
+                <td class="px-5 py-4 text-start">
+                  <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium"
+                    [ngClass]="item.amount >= 0 ? 'bg-warning-50 text-warning-700 dark:bg-warning-500/10 dark:text-warning-400' : 'bg-success-50 text-success-700 dark:bg-success-500/10 dark:text-success-400'">
+                    {{ item.entryTypeName | translate }}
+                  </span>
+                </td>
+                <td class="px-5 py-4 text-end">
+                  <span class="inline-flex items-center px-3 py-1.5 rounded-lg text-sm font-semibold tabular-nums"
+                    [ngClass]="item.amount > 0 ? 'bg-warning-50 text-warning-700 dark:bg-warning-500/10 dark:text-warning-400' : 'bg-success-50 text-success-700 dark:bg-success-500/10 dark:text-success-400'">
+                    {{ item.amount | number:'1.2-2' }}
+                  </span>
+                </td>
+                <td class="px-5 py-4 text-end text-sm font-semibold text-gray-900 dark:text-white tabular-nums">
+                  {{ item.runningBalance | number:'1.2-2' }}
+                </td>
+                <td class="px-5 py-4 text-start text-sm text-gray-500 dark:text-gray-400 max-w-[200px] truncate" [title]="item.notes || ''">
+                  {{ item.notes || '-' }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Pagination -->
+      <div class="mt-5 flex flex-col sm:flex-row justify-between items-center text-sm text-gray-500 dark:text-gray-400 gap-4">
+        <div class="flex items-center gap-1.5 bg-gray-50 dark:bg-white/3 px-3 py-1.5 rounded-lg border border-gray-200 dark:border-gray-800">
+          <span>{{ 'common.showing' | translate }}</span>
+          <span class="font-semibold text-gray-800 dark:text-white/90">{{ ledgerData.items.length || 0 }}</span>
+          <span>{{ 'common.of' | translate }}</span>
+          <span class="font-semibold text-gray-800 dark:text-white/90">{{ ledgerData.totalRecords || 0 }}</span>
+          <span>{{ 'common.entries' | translate }}</span>
+        </div>
+
+        <div class="flex items-center gap-4">
+          <div class="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+            <span>{{ 'common.select' | translate }}</span>
+            <div class="w-32">
+              <app-searchable-select [options]="[{value:10,label:'10'},{value:25,label:'25'},{value:50,label:'50'},{value:100,label:'100'}]" placeholder="common.select" [allowClear]="false"
+                [(ngModel)]="filters.pageSize" (selectionChange)="onPageSizeChange($event)">
+              </app-searchable-select>
+            </div>
           </div>
-          <div>
-            <p class="text-sm text-gray-500 dark:text-gray-400">{{ 'reports.businessPartnerStatement.totalSales' | translate }}</p>
-            <p class="font-medium text-gray-900 dark:text-white">
-              {{ summary.totalInvoiced | number:'1.2-2' }}
-            </p>
-          </div>
-          <div>
-            <p class="text-sm text-gray-500 dark:text-gray-400">{{ 'reports.businessPartnerStatement.paidAmount' | translate }}</p>
-            <p class="font-medium text-gray-900 dark:text-white">
-              {{ summary.totalPaid | number:'1.2-2' }}
-            </p>
-          </div>
-          <div>
-            <p class="text-sm text-gray-500 dark:text-gray-400">{{ 'reports.businessPartnerStatement.overdueAmount' | translate }}</p>
-            <p class="font-medium text-gray-900 dark:text-white"
-              [ngClass]="{'text-error-600': summary.totalOverdue > 0}">
-              {{ summary.totalOverdue | number:'1.2-2' }}
-            </p>
+
+          <div class="flex items-center gap-2">
+            <button [disabled]="!ledgerData.hasPreviousPage" (click)="onPageChange(filters.pageNumber - 1)"
+              class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-gray-200 bg-white text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-brand-500 disabled:opacity-50 disabled:cursor-not-allowed dark:border-gray-800 dark:bg-gray-900 dark:text-gray-400 dark:hover:bg-white/3 dark:hover:text-brand-400 transition-all">
+              <svg class="w-4 h-4 rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+              </svg>
+              <span class="hidden sm:block font-medium">{{ 'common.previous' | translate }}</span>
+            </button>
+
+            <div class="flex items-center justify-center px-3 py-1.5 rounded-lg bg-gray-50 text-gray-500 dark:bg-white/3 dark:text-gray-400 border border-gray-200 dark:border-gray-800">
+              <span>{{ 'common.page' | translate }}</span>
+              <span class="font-semibold text-brand-500 dark:text-brand-400 mx-1.5">{{ filters.pageNumber || 1 }}</span>
+              <span>{{ 'common.of' | translate }}</span>
+              <span class="font-semibold text-gray-800 dark:text-white/90 mx-1.5">{{ ledgerData.totalPages || 1 }}</span>
+            </div>
+
+            <button [disabled]="!ledgerData.hasNextPage" (click)="onPageChange(filters.pageNumber + 1)"
+              class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-gray-200 bg-white text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-brand-500 disabled:opacity-50 disabled:cursor-not-allowed dark:border-gray-800 dark:bg-gray-900 dark:text-gray-400 dark:hover:bg-white/3 dark:hover:text-brand-400 transition-all">
+              <span class="hidden sm:block font-medium">{{ 'common.next' | translate }}</span>
+              <svg class="w-4 h-4 rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
           </div>
         </div>
       </div>
+      
+      <!-- Chart -->
+      <div *ngIf="chartOptions?.series[0]?.data?.length > 0" class="mt-8 rounded-xl border border-gray-200 bg-white dark:border-white/6 dark:bg-white/2 p-5 shadow-theme-xs">
+        <h4 class="text-sm font-semibold text-gray-800 dark:text-white/90 mb-4">{{ 'reports.businessPartnerStatement.balanceTrend' | translate }}</h4>
+        <div id="chart" class="w-full">
+          <apx-chart
+            [series]="chartOptions.series"
+            [chart]="chartOptions.chart"
+            [xaxis]="chartOptions.xaxis"
+            [stroke]="chartOptions.stroke"
+            [tooltip]="chartOptions.tooltip"
+            [dataLabels]="chartOptions.dataLabels"
+            [colors]="chartOptions.colors"
+            [fill]="chartOptions.fill"
+            dir="ltr"
+          ></apx-chart>
+        </div>
+      </div>
+      
     </app-component-card>
-
-    <!-- Transactions Crud List -->
-    <app-crud-list 
-      [pageTitle]="'reports.businessPartnerStatement.ledger' | translate" 
-      [searchPlaceholder]="'common.searchPlaceholder' | translate"
-      [columns]="columns" 
-      [data]="ledgerData" 
-      [filters]="filters"
-      [isLoading]="loading"
-      [hideEdit]="true"
-      [hideView]="true"
-      [hideBuiltInSearch]="true"
-      (pageChange)="onPageChange($event)">
-    </app-crud-list>
   </ng-container>
 </div>
+
+<app-print-preview-modal [isOpen]="isPrintModalOpen" [loading]="pdfLoading" [pdfBlobUrl]="pdfBlobUrl"
+  title="reports.businessPartnerStatement.printTitle" (close)="closePrintModal()"></app-print-preview-modal>

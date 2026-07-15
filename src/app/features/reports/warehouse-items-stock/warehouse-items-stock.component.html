@@ -1,0 +1,256 @@
+<app-page-breadcrumb [pageTitle]="'reports.warehouseStock.title' | translate" />
+
+<div class="space-y-3">
+  <!-- Filters Section -->
+  <app-component-card [title]="'reports.warehouseStock.filters' | translate" [className]="'p-2'">
+    <div class="grid grid-cols-1 gap-6 sm:grid-cols-12 items-end">
+
+      <!-- Warehouse Multi-Select -->
+      <div class="sm:col-span-5">
+        <label class="mb-1.5 flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-400">
+          <svg class="w-4 h-4 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+          </svg>
+          {{ 'reports.warehouseStock.warehouses' | translate }}
+        </label>
+        <app-multi-select [options]="warehouses" [defaultSelected]="selectedWarehouseIds"
+          (selectionChange)="onWarehouseSelectionChange($event)">
+        </app-multi-select>
+      </div>
+
+      <!-- Search Input -->
+      <div class="sm:col-span-4">
+        <label class="mb-1.5 flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-400">
+          <svg class="w-4 h-4 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+          {{ 'common.search' | translate }}
+        </label>
+        <form [formGroup]="filterForm">
+          <div class="relative">
+            <input type="text" formControlName="searchValue"
+              class="dark:bg-gray-900 h-11 w-full rounded-lg border border-gray-200 bg-transparent py-2.5 ltr:pr-4 ltr:pl-10 rtl:pl-4 rtl:pr-10 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-800 dark:text-white/90 dark:placeholder:text-white/30"
+              [placeholder]="'reports.warehouseStock.searchPlaceholder' | translate">
+            <svg
+              class="absolute ltr:left-3 rtl:right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 dark:text-gray-500 pointer-events-none"
+              fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </div>
+        </form>
+      </div>
+
+      <!-- Actions -->
+      <div class="sm:col-span-3">
+        <label class="mb-1.5 block text-sm opacity-0 pointer-events-none select-none">&nbsp;</label>
+        <div class="flex justify-end gap-3">
+          <button type="button" (click)="onReset()"
+            class="h-11 rounded-lg border border-gray-300 bg-white px-5 py-2.5 text-sm font-medium text-gray-700 shadow-sm transition-all hover:bg-gray-50 hover:shadow-md dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700">
+            {{ 'common.reset' | translate }}
+          </button>
+          <button type="button" (click)="onSearch()" [disabled]="loading"
+            class="h-11 flex items-center justify-center gap-2 rounded-lg bg-brand-500 px-5 py-2.5 text-sm font-medium text-white shadow-sm transition-all hover:bg-brand-600 hover:shadow-md disabled:opacity-50">
+            <svg *ngIf="loading" class="h-4 w-4 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none"
+              viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+              </path>
+            </svg>
+            <svg *ngIf="!loading" class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+            <span class="whitespace-nowrap">{{ 'common.search' | translate }}</span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </app-component-card>
+
+  <!-- Results Section -->
+  <app-component-card [title]="'reports.warehouseStock.results' | translate">
+
+    <!-- Export Buttons -->
+    <div class="mb-5 flex justify-end gap-3">
+      <button type="button" (click)="exportExcel()"
+        class="group flex items-center gap-2 rounded-lg border border-success-200 bg-success-50 px-4 py-2.5 text-sm font-medium text-success-700 shadow-sm transition-all hover:bg-success-500 hover:text-white hover:shadow-md hover:border-success-500 dark:bg-success-500/10 dark:border-success-500/30 dark:text-success-400 dark:hover:bg-success-500 dark:hover:text-white">
+        <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M12 10v6m0 0l-3-3m3 3l3-3M3 17V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"></path>
+        </svg>
+        {{ 'reports.exportExcel' | translate }}
+      </button>
+      <button type="button" (click)="openPdfPreview()"
+        class="group flex items-center gap-2 rounded-lg border border-error-200 bg-error-50 px-4 py-2.5 text-sm font-medium text-error-700 shadow-sm transition-all hover:bg-error-500 hover:text-white hover:shadow-md hover:border-error-500 dark:bg-error-500/10 dark:border-error-500/30 dark:text-error-400 dark:hover:bg-error-500 dark:hover:text-white">
+        <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z">
+          </path>
+        </svg>
+        {{ 'reports.printPdf' | translate }}
+      </button>
+    </div>
+
+    <!-- Data Table -->
+    <div class="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/6 dark:bg-white/2">
+      <div class="max-w-full overflow-x-auto">
+        <table class="min-w-full">
+          <thead>
+            <tr class="bg-gray-50/80 dark:bg-white/3">
+              <th
+                class="px-5 py-3.5 font-semibold text-gray-600 text-start text-xs dark:text-gray-300 uppercase tracking-wider">
+                {{ 'reports.warehouseStock.warehouse' | translate }}</th>
+              <th
+                class="px-5 py-3.5 font-semibold text-gray-600 text-start text-xs dark:text-gray-300 uppercase tracking-wider">
+                {{ 'reports.warehouseStock.itemName' | translate }}</th>
+              <th
+                class="px-5 py-3.5 font-semibold text-gray-600 text-start text-xs dark:text-gray-300 uppercase tracking-wider">
+                {{ 'reports.warehouseStock.uom' | translate }}</th>
+              <th
+                class="px-5 py-3.5 font-semibold text-gray-600 text-end text-xs dark:text-gray-300 uppercase tracking-wider">
+                {{ 'reports.warehouseStock.onHandQty' | translate }}</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-100 dark:divide-white/4">
+            <!-- Loading Skeleton -->
+            <tr *ngIf="loading">
+              <td colspan="4" class="px-5 py-10 text-center">
+                <div class="flex flex-col items-center justify-center gap-3">
+                  <div class="relative w-10 h-10">
+                    <div class="absolute inset-0 rounded-full border-2 border-gray-200 dark:border-gray-700"></div>
+                    <div
+                      class="absolute inset-0 rounded-full border-2 border-brand-500 border-t-transparent animate-spin">
+                    </div>
+                  </div>
+                  <span class="text-sm text-gray-500 dark:text-gray-400">{{ 'common.loading' | translate }}...</span>
+                </div>
+              </td>
+            </tr>
+            <!-- Empty State -->
+            <tr *ngIf="!loading && items.length === 0">
+              <td colspan="4" class="px-5 py-12 text-center">
+                <div class="flex flex-col items-center justify-center gap-4">
+                  <div class="w-16 h-16 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
+                    <svg class="w-8 h-8 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor"
+                      viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                        d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4">
+                      </path>
+                    </svg>
+                  </div>
+                  <div class="text-center">
+                    <p class="text-sm font-medium text-gray-600 dark:text-gray-300">{{ 'common.noRecordsFound' |
+                      translate }}</p>
+                    <p class="text-xs text-gray-400 dark:text-gray-500 mt-1">{{
+                      'reports.warehouseStock.searchPlaceholder' | translate }}</p>
+                  </div>
+                </div>
+              </td>
+            </tr>
+            <!-- Data Rows -->
+            <tr *ngFor="let item of items"
+              class="group transition-colors hover:bg-brand-50/40 dark:hover:bg-brand-500/4">
+              <!-- Warehouse -->
+              <td class="px-5 py-4 text-start">
+                <div class="flex items-center gap-2.5">
+                  <div
+                    class="shrink-0 w-8 h-8 rounded-lg bg-brand-50 dark:bg-brand-500/10 flex items-center justify-center">
+                    <svg class="w-4 h-4 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                    </svg>
+                  </div>
+                  <div>
+                    <span class="text-xs font-mono text-gray-400 dark:text-gray-500">{{ item.warehouseCode }}</span>
+                    <p class="text-sm font-medium text-gray-800 dark:text-white/90 leading-tight">{{ item.warehouseName
+                      }}</p>
+                  </div>
+                </div>
+              </td>
+              <!-- Item (Code above Name) -->
+              <td class="px-5 py-4 text-start">
+                <div>
+                  <span
+                    class="inline-block text-xs font-mono font-medium text-brand-600 dark:text-brand-400 bg-brand-50 dark:bg-brand-500/10 px-2 py-0.5 rounded mb-1">{{
+                    item.itemCode }}</span>
+                  <p class="text-sm text-gray-700 dark:text-white/80 leading-tight">{{ item.itemName }}</p>
+                </div>
+              </td>
+              <!-- UOM -->
+              <td class="px-5 py-4 text-start">
+                <span
+                  class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-300">{{
+                  item.uomName }}</span>
+              </td>
+              <!-- Quantity -->
+              <td class="px-5 py-4 text-end">
+                <span class="inline-flex items-center px-3 py-1.5 rounded-lg text-sm font-semibold tabular-nums"
+                  [ngClass]="item.onHandQty > 0 ? 'bg-success-50 text-success-700 dark:bg-success-500/10 dark:text-success-400' : item.onHandQty < 0 ? 'bg-error-50 text-error-700 dark:bg-error-500/10 dark:text-error-400' : 'bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400'">
+                  {{ item.onHandQty | number:'1.2-2' }}
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Pagination -->
+    <div
+      class="mt-5 flex flex-col sm:flex-row justify-between items-center text-sm text-gray-500 dark:text-gray-400 gap-4">
+      <div
+        class="flex items-center gap-1.5 bg-gray-50 dark:bg-white/3 px-3 py-1.5 rounded-lg border border-gray-200 dark:border-gray-800">
+        <span>{{ 'common.showing' | translate }}</span>
+        <span class="font-semibold text-gray-800 dark:text-white/90">{{ items.length || 0 }}</span>
+        <span>{{ 'common.of' | translate }}</span>
+        <span class="font-semibold text-gray-800 dark:text-white/90">{{ totalItems || 0 }}</span>
+        <span>{{ 'common.entries' | translate }}</span>
+      </div>
+
+      <div class="flex items-center gap-4">
+        <div class="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+          <span>{{ 'common.select' | translate }}</span>
+          <div class="w-32">
+            <app-searchable-select [options]="pageSizeOptions" placeholder="common.select" [allowClear]="false"
+              [(ngModel)]="pageSize" (selectionChange)="onPageSizeChange($event)">
+            </app-searchable-select>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <button [disabled]="!hasPreviousPage" (click)="onPreviousPage()"
+            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-gray-200 bg-white text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-brand-500 disabled:opacity-50 disabled:cursor-not-allowed dark:border-gray-800 dark:bg-gray-900 dark:text-gray-400 dark:hover:bg-white/3 dark:hover:text-brand-400 transition-all">
+            <svg class="w-4 h-4 rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+            </svg>
+            <span class="hidden sm:block font-medium">{{ 'common.previous' | translate }}</span>
+          </button>
+
+          <div
+            class="flex items-center justify-center px-3 py-1.5 rounded-lg bg-gray-50 text-gray-500 dark:bg-white/3 dark:text-gray-400 border border-gray-200 dark:border-gray-800">
+            <span>{{ 'common.page' | translate }}</span>
+            <span class="font-semibold text-brand-500 dark:text-brand-400 mx-1.5">{{ pageNumber || 1 }}</span>
+            <span>{{ 'common.of' | translate }}</span>
+            <span class="font-semibold text-gray-800 dark:text-white/90 mx-1.5">{{ totalPages || 1 }}</span>
+          </div>
+
+          <button [disabled]="!hasNextPage" (click)="onNextPage()"
+            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-gray-200 bg-white text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-brand-500 disabled:opacity-50 disabled:cursor-not-allowed dark:border-gray-800 dark:bg-gray-900 dark:text-gray-400 dark:hover:bg-white/3 dark:hover:text-brand-400 transition-all">
+            <span class="hidden sm:block font-medium">{{ 'common.next' | translate }}</span>
+            <svg class="w-4 h-4 rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </app-component-card>
+</div>
+
+<app-print-preview-modal [isOpen]="isPrintModalOpen" [loading]="pdfLoading" [pdfBlobUrl]="pdfBlobUrl"
+  title="reports.warehouseStock.printTitle" (close)="closePrintModal()"></app-print-preview-modal>

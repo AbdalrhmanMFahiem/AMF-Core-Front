@@ -4,6 +4,18 @@ export interface LookupsFilters {
   pageSize?: number;
 }
 
+export enum ItemUsageType {
+  All = 0,
+  Sales = 1,
+  Purchases = 2
+}
+
+export interface ItemLookupsFilters extends LookupsFilters {
+  warehouseId?: number;
+  usageType?: ItemUsageType;
+  checkWarehouseExistence?: boolean;
+}
+
 export interface IdNameResponse {
   id: number;
   name: string;

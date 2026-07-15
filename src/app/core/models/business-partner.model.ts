@@ -47,6 +47,8 @@ export interface BusinessPartnerLedgerResponse {
   amount: number;
   runningBalance: number;
   notes?: string;
+  entryTypeName?: string;
+  badgeColor?: string;
 }
 
 export interface LedgerFilters {

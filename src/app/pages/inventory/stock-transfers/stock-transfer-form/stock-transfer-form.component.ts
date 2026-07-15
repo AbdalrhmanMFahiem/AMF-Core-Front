@@ -149,6 +149,10 @@ export class StockTransferFormComponent implements OnInit, HasUnsavedChanges {
 
   openItemModal(): void {
     if (this.mode === 'view') return;
+    if (!this.model.fromWarehouseId) {
+      this.toastr.warning(this.translate.instant('errors.ITM.1017'));
+      return;
+    }
     this.isItemModalOpen = true;
   }
 

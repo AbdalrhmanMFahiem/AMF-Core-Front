@@ -437,8 +437,13 @@
   (close)="validationErrors = []"></app-error-banner>
 
 <!-- Modals -->
-<app-item-lookup-modal [isOpen]="isItemModalOpen" (close)="isItemModalOpen = false"
-  (selectItem)="onItemSelected($event)"></app-item-lookup-modal>
+<app-item-lookup-modal 
+  [isOpen]="isItemModalOpen" 
+  (close)="isItemModalOpen = false"
+  [usageType]="1"
+  [warehouseId]="model.warehouseId"
+  (selectItem)="onItemSelected($event)">
+</app-item-lookup-modal>
 <app-cost-element-lookup-modal [isOpen]="isCostElementModalOpen" [type]="'sales'"
   (close)="isCostElementModalOpen = false"
   (selectElement)="onCostElementSelected($event)"></app-cost-element-lookup-modal>

@@ -1,4 +1,4 @@
-﻿<app-page-breadcrumb [pageTitle]="mode === 'add' ? 'stockVouchers.receipts.addNew' : 'stockVouchers.receipts.title'" />
+<app-page-breadcrumb [pageTitle]="mode === 'add' ? 'stockVouchers.receipts.addNew' : 'stockVouchers.receipts.title'" />
 
 <app-success-redirect-banner
   *ngIf="saveSuccess"
@@ -154,6 +154,8 @@
 <app-item-lookup-modal
   [isOpen]="isItemModalOpen"
   (close)="isItemModalOpen = false"
+  [warehouseId]="model.warehouseId"
+  [checkWarehouseExistence]="false"
   (selectItem)="onItemSelected($event)">
 </app-item-lookup-modal>
 

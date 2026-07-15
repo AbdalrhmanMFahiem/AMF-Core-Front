@@ -190,7 +190,7 @@
     @apply relative font-normal font-outfit z-1 bg-gray-50;
   }
   html {
-    font-size: 85%;
+    font-size: 76.5%;
   }
   html:not(.dark) input, html:not(.dark) textarea, html:not(.dark) select {
     color: #101828 important!;

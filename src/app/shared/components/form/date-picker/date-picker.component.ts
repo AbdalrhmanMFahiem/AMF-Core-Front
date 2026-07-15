@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, ElementRef, ViewChild, forwardRef, inject, AfterViewInit, OnDestroy } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ElementRef, ViewChild, forwardRef, inject, AfterViewInit, OnDestroy, OnInit } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import flatpickr from 'flatpickr';
@@ -20,7 +20,7 @@ import "flatpickr/dist/flatpickr.css";
     }
   ]
 })
-export class DatePickerComponent implements ControlValueAccessor, AfterViewInit, OnDestroy {
+export class DatePickerComponent implements ControlValueAccessor, OnInit, AfterViewInit, OnDestroy {
 
   @Input() id!: string;
   @Input() mode: 'single' | 'multiple' | 'range' | 'time' = 'single';
@@ -37,7 +37,13 @@ export class DatePickerComponent implements ControlValueAccessor, AfterViewInit,
 
   private onChange: (value: any) => void = () => {};
   private onTouched: () => void = () => {};
-  private value: any;
+  private value: any = null;
+
+  ngOnInit() {
+    if (!this.placeholder && this.placeholder !== '') {
+      this.placeholder = this.translate.instant('common.selectDate');
+    }
+  }
 
   ngAfterViewInit() {
     const isArabic = this.translate.currentLang === 'ar' || document.documentElement.dir === 'rtl';
@@ -48,7 +54,7 @@ export class DatePickerComponent implements ControlValueAccessor, AfterViewInit,
       monthSelectorType: 'static',
       dateFormat: this.enableTime ? 'Y-m-d H:i' : 'Y-m-d',
       enableTime: this.enableTime,
-      defaultDate: this.value || this.defaultDate,
+      defaultDate: (this.value && this.value !== 'undefined') ? this.value : ((this.defaultDate && this.defaultDate !== 'undefined') ? this.defaultDate : null),
       onChange: (selectedDates, dateStr, instance) => {
         this.value = dateStr;
         this.onChange(dateStr);
@@ -64,9 +70,13 @@ export class DatePickerComponent implements ControlValueAccessor, AfterViewInit,
   }
 
   writeValue(val: any): void {
-    this.value = val;
+    this.value = val === undefined ? null : val;
     if (this.flatpickrInstance) {
-      this.flatpickrInstance.setDate(val, false);
+      if (!this.value) {
+        this.flatpickrInstance.clear();
+      } else {
+        this.flatpickrInstance.setDate(this.value, false);
+      }
     }
   }
 

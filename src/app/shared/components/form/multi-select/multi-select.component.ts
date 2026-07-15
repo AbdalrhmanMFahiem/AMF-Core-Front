@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, ElementRef, HostListener } from '@angular/core';
+import { TranslateModule } from '@ngx-translate/core';
 
 export interface Option {
   value: string;
@@ -8,15 +9,18 @@ export interface Option {
 
 @Component({
   selector: 'app-multi-select',
+  standalone: true,
   imports: [
     CommonModule,
+    TranslateModule
   ],
   templateUrl: './multi-select.component.html',
   styles: ``
 })
-export class MultiSelectComponent {
+export class MultiSelectComponent implements OnInit {
 
   @Input() label: string = '';
+  @Input() placeholder: string = 'common.select';
   @Input() options: Option[] = [];
   @Input() defaultSelected: string[] = [];
   @Input() disabled: boolean = false;
@@ -24,6 +28,15 @@ export class MultiSelectComponent {
 
   selectedOptions: string[] = [];
   isOpen = false;
+
+  constructor(private elementRef: ElementRef) {}
+
+  @HostListener('document:click', ['$event'])
+  onClickOutside(event: Event) {
+    if (!this.elementRef.nativeElement.contains(event.target)) {
+      this.isOpen = false;
+    }
+  }
 
   ngOnInit() {
     this.selectedOptions = [...this.defaultSelected];
@@ -51,5 +64,11 @@ export class MultiSelectComponent {
     return this.selectedOptions
       .map(value => this.options.find(option => option.value === value)?.text || '')
       .filter(Boolean);
+  }
+
+  clearAll(event: Event) {
+    event.stopPropagation();
+    this.selectedOptions = [];
+    this.selectionChange.emit(this.selectedOptions);
   }
 }

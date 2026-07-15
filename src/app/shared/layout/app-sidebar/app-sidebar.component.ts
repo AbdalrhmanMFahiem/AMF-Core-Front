@@ -125,7 +125,8 @@ export class AppSidebarComponent {
         { name: "Business Partner Statement", translationKey: "pages.businessPartnerStatement", path: "/reports/business-partner-statement" },
         { name: "Sales Report", translationKey: "pages.salesReport", path: "/reports/sales" },
         { name: "Purchases Report", translationKey: "pages.purchasesReport", path: "/reports/purchases" },
-        { name: "Inventory Valuation", translationKey: "pages.inventoryValuation", path: "/reports/inventory-valuation" }
+        { name: "Inventory Valuation", translationKey: "pages.inventoryValuation", path: "/reports/inventory-valuation" },
+        { name: "Warehouse Items Stock", translationKey: "reports.warehouseStock.title", path: "/reports/warehouse-items-stock" }
       ],
     },
     {

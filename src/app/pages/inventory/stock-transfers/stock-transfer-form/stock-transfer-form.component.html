@@ -187,6 +187,7 @@
 <app-item-lookup-modal
   [isOpen]="isItemModalOpen"
   (close)="isItemModalOpen = false"
+  [warehouseId]="model.fromWarehouseId"
   (selectItem)="onItemSelected($event)">
 </app-item-lookup-modal>
 

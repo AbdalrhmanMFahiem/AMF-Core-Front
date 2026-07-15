@@ -40,6 +40,17 @@ export interface InventoryValuationResponse {
   totalValue: number;
 }
 
+export interface WarehouseItemsStockResponse {
+  warehouseId: number;
+  warehouseCode: string;
+  warehouseName: string;
+  itemId: number;
+  itemCode: string;
+  itemName: string;
+  uomName: string;
+  onHandQty: number;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -78,5 +89,79 @@ export class ReportService {
     });
 
     return this.http.get<Result<PaginatedList<InventoryValuationResponse>>>(`${this.baseUrl}/inventory-valuation`, { params });
+  }
+
+  getWarehouseItemsStockReport(filters: any): Observable<Result<PaginatedList<WarehouseItemsStockResponse>>> {
+    let params = new HttpParams();
+    Object.keys(filters).forEach(key => {
+      if (filters[key] !== null && filters[key] !== undefined && filters[key] !== '') {
+        // If it's an array (like warehouseIds), we can append multiple times or rely on default serialization
+        if (Array.isArray(filters[key])) {
+          filters[key].forEach((val: any) => {
+            params = params.append(key, val);
+          });
+        } else {
+          params = params.set(key, filters[key]);
+        }
+      }
+    });
+
+    return this.http.get<Result<PaginatedList<WarehouseItemsStockResponse>>>(`${this.baseUrl}/warehouse-items-stock`, { params });
+  }
+
+  exportWarehouseItemsStockExcel(filters: any): Observable<Blob> {
+    let params = new HttpParams();
+    Object.keys(filters).forEach(key => {
+      if (filters[key] !== null && filters[key] !== undefined && filters[key] !== '') {
+        if (Array.isArray(filters[key])) {
+          filters[key].forEach((val: any) => {
+            params = params.append(key, val);
+          });
+        } else {
+          params = params.set(key, filters[key]);
+        }
+      }
+    });
+
+    return this.http.get(`${this.baseUrl}/warehouse-items-stock/export-excel`, { params, responseType: 'blob' });
+  }
+
+  exportWarehouseItemsStockPdf(filters: any): Observable<Blob> {
+    let params = new HttpParams();
+    Object.keys(filters).forEach(key => {
+      if (filters[key] !== null && filters[key] !== undefined && filters[key] !== '') {
+        if (Array.isArray(filters[key])) {
+          filters[key].forEach((val: any) => {
+            params = params.append(key, val);
+          });
+        } else {
+          params = params.set(key, filters[key]);
+        }
+      }
+    });
+
+    return this.http.get(`${this.baseUrl}/warehouse-items-stock/export-pdf`, { params, responseType: 'blob' });
+  }
+
+  exportStatementExcel(filters: any): Observable<Blob> {
+    let params = new HttpParams();
+    Object.keys(filters).forEach(key => {
+      if (filters[key] !== null && filters[key] !== undefined && filters[key] !== '') {
+        params = params.set(key, filters[key]);
+      }
+    });
+
+    return this.http.get(`${this.baseUrl}/business-partners/statement/export-excel`, { params, responseType: 'blob' });
+  }
+
+  exportStatementPdf(filters: any): Observable<Blob> {
+    let params = new HttpParams();
+    Object.keys(filters).forEach(key => {
+      if (filters[key] !== null && filters[key] !== undefined && filters[key] !== '') {
+        params = params.set(key, filters[key]);
+      }
+    });
+
+    return this.http.get(`${this.baseUrl}/business-partners/statement/export-pdf`, { params, responseType: 'blob' });
   }
 }

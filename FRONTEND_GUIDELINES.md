@@ -1614,3 +1614,22 @@ If the user sets a new record as default, the frontend must check if another def
    - If the user confirms, proceed with the save (the backend handles removing the default flag from the other record).
    - If the user cancels, do not submit the form.
 3. **Backend Responsibility**: The backend handles the actual database update to ensure only one default exists (ExecuteUpdateAsync).
+
+## 13. PDF and Excel Export Guidelines
+**Objective:** Standardize how we request, view, and download PDF/Excel reports in the frontend.
+
+### PDF Exports
+1. **Service Call:** The export function should hit the API using `{ responseType: 'blob' }` and return an `Observable<Blob>`.
+   - Example: `this.http.get(url, { params, responseType: 'blob' })`
+   - *Note:* The `language.interceptor.ts` automatically appends the `amf-language` header so the backend can generate the PDF in the correct language and RTL/LTR direction.
+2. **Preview Component:** Use the `PrintPreviewModalComponent` to preview PDFs instead of forcing a direct download.
+   - Component state requires: `isPrintModalOpen`, `pdfLoading`, `pdfBlobUrl` (must be of type `string | null`).
+   - Create URL: `this.pdfBlobUrl = window.URL.createObjectURL(blob);`
+   - Bind it to the modal input: `<app-print-preview-modal [pdfBlobUrl]="pdfBlobUrl" ...>`
+   - *Crucial:* Do NOT manually sanitize `pdfBlobUrl` in the parent component using `DomSanitizer`. `PrintPreviewModalComponent` internally handles the conversion to `SafeResourceUrl` to prevent `NG0904: unsafe value` errors.
+3. **Cleanup:** Ensure the Object URL is revoked using `window.URL.revokeObjectURL(this.pdfBlobUrl)` when the modal is closed to prevent memory leaks.
+
+### Excel Exports
+1. **Service Call:** Return an `Observable<Blob>` with `{ responseType: 'blob' }`.
+2. **Download Handling:** Use a hidden `<a>` element to download the generated blob directly.
+   - Create a URL from the blob, set it to `href`, set a `download` attribute, append to body, click, and remove.

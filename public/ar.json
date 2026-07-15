@@ -321,7 +321,9 @@
         "invoiceCode": "رقم الفاتورة",
         "entryType": "نوع الحركة",
         "balance": "الرصيد",
-        "emptyTable": "لا توجد تفاصيل لهذا الشريك"
+        "emptyTable": "لا توجد تفاصيل لهذا الشريك",
+        "amount": "المبلغ",
+        "notes": "ملاحظات"
       },
       "entryTypes": {
         "all": "الكل",
@@ -342,8 +344,33 @@
       "paidAmount": "المبلغ المدفوع",
       "overdueAmount": "المبلغ المتأخر",
       "ledger": "حركة الحساب",
-      "filters": "فلاتر البحث"
-    }
+      "filters": "فلاتر البحث",
+      "balanceTrend": "تحليل تدرج الرصيد",
+      "printTitle": "طباعة كشف الحساب"
+    },
+    "warehouseStock": {
+      "title": "تقرير أرصدة المخازن",
+      "subtitle": "عرض الأرصدة الحالية للأصناف في المخازن",
+      "warehouses": "المخازن",
+      "searchPlaceholder": "ابحث بالكود، الاسم...",
+      "hideZeroStock": "إخفاء الرصيد الصفري",
+      "warehouse": "المخزن",
+      "itemCode": "كود الصنف",
+      "itemName": "اسم الصنف",
+      "uom": "وحدة القياس",
+      "onHandQty": "الرصيد",
+      "printTitle": "طباعة الأرصدة"
+    },
+    "exportExcel": "تصدير Excel",
+    "printPdf": "طباعة PDF",
+    "exportError": "حدث خطأ أثناء التصدير"
+  },
+  "printPreview": {
+    "title": "معاينة الطباعة",
+    "close": "إغلاق",
+    "loading": "جاري تجهيز المستند...",
+    "downloadPdf": "تحميل PDF",
+    "printDirect": "طباعة"
   },
   "businessPartners": {
     "list": {
@@ -886,8 +913,8 @@
     "view": "عرض التحويل",
     "saveSuccess": "تم حفظ تحويل المخزون بنجاح.",
     "mainInfo": "المعلومات الأساسية",
-    "fromWarehouse": "من مخزن",
-    "toWarehouse": "إلى مخزن",
+    "fromWarehouse": "المخزن المحول منه",
+    "toWarehouse": "المخزن المحول إليه",
     "items": "الأصناف",
     "addItems": "إضافة أصناف",
     "quantity": "الكمية",

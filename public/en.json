@@ -343,7 +343,30 @@
       "overdueAmount": "Overdue Amount",
       "ledger": "Account Ledger",
       "filters": "Filters"
-    }
+    },
+    "warehouseStock": {
+      "title": "Warehouse Items Stock",
+      "subtitle": "View current stock balances of items across warehouses",
+      "warehouses": "Warehouses",
+      "searchPlaceholder": "Search by code, name...",
+      "hideZeroStock": "Hide Zero Stock",
+      "warehouse": "Warehouse",
+      "itemCode": "Item Code",
+      "itemName": "Item Name",
+      "uom": "UOM",
+      "onHandQty": "On-Hand Qty",
+      "printTitle": "Print Stock Balances"
+    },
+    "exportExcel": "Export Excel",
+    "printPdf": "Print PDF",
+    "exportError": "An error occurred during export"
+  },
+  "printPreview": {
+    "title": "Print Preview",
+    "close": "Close",
+    "loading": "Preparing document...",
+    "downloadPdf": "Download PDF",
+    "printDirect": "Print"
   },
   "businessPartners": {
     "list": {
@@ -523,7 +546,8 @@
   "errors": {
     "generic": "An unexpected error occurred, please try again",
     "conflict": "The entered data conflicts with existing records",
-    "STA.7106": "Cannot cancel a confirmed stock adjustment."
+    "STA.7106": "Cannot cancel a confirmed stock adjustment.",
+    "ITM.1017": "Please select the warehouse first to work on it."
   },
   "invoices": {
     "amount": "Amount",
@@ -886,8 +910,8 @@
     "view": "View Transfer",
     "saveSuccess": "Stock transfer saved successfully.",
     "mainInfo": "Main Information",
-    "fromWarehouse": "From Warehouse",
-    "toWarehouse": "To Warehouse",
+    "fromWarehouse": "Source Warehouse",
+    "toWarehouse": "Destination Warehouse",
     "items": "Items",
     "addItems": "Add Items",
     "quantity": "Quantity",

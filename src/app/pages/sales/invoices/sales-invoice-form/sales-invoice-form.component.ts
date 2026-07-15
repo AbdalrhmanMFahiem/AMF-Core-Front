@@ -30,6 +30,8 @@ import {
 } from '../../../../core/models/invoice.model';
 import { ItemLookupResponse, InvoiceCostElementDropdown } from '../../../../core/models/lookup.model';
 
+import { ToastrService } from 'ngx-toastr';
+
 @Component({
   selector: 'app-sales-invoice-form',
   standalone: true,
@@ -59,6 +61,7 @@ export class SalesInvoiceFormComponent implements OnInit, HasUnsavedChanges {
   private translate = inject(TranslateService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
+  private toastr = inject(ToastrService);
 
   id: number | null = null;
   mode: 'add' | 'view' = 'add'; // Note: no edit mode
@@ -214,6 +217,10 @@ export class SalesInvoiceFormComponent implements OnInit, HasUnsavedChanges {
   // Items Tab Actions
   openItemModal(): void {
     if (this.mode === 'view') return;
+    if (!this.model.warehouseId) {
+      this.toastr.warning(this.translate.instant('errors.ITM.1017'));
+      return;
+    }
     this.isItemModalOpen = true;
   }
 

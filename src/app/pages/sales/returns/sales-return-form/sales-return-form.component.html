@@ -1,4 +1,4 @@
-﻿<app-page-breadcrumb [pageTitle]="(mode === 'view' ? 'common.view' : 'salesReturns.addNew')"
+<app-page-breadcrumb [pageTitle]="(mode === 'view' ? 'common.view' : 'salesReturns.addNew')"
   parentPageTitle="salesReturns.title" parentPageUrl="/sales/returns" />
 
 <div class="space-y-6">
@@ -438,8 +438,14 @@
   (close)="validationErrors = []"></app-error-banner>
 
 <!-- Modals -->
-<app-item-lookup-modal [isOpen]="isItemModalOpen" (close)="isItemModalOpen = false"
-  (selectItem)="onItemSelected($event)"></app-item-lookup-modal>
+<app-item-lookup-modal 
+  [isOpen]="isItemModalOpen" 
+  (close)="isItemModalOpen = false"
+  [usageType]="1"
+  [warehouseId]="model.warehouseId"
+  [checkWarehouseExistence]="false"
+  (selectItem)="onItemSelected($event)">
+</app-item-lookup-modal>
 <app-cost-element-lookup-modal [isOpen]="isCostElementModalOpen" [type]="'sales'"
   (close)="isCostElementModalOpen = false"
   (selectElement)="onCostElementSelected($event)"></app-cost-element-lookup-modal>

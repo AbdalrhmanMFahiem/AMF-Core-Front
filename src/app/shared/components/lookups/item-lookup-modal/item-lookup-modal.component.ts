@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { ModalComponent } from '../../ui/modal/modal.component';
 import { LookupService } from '../../../../core/services/lookup.service';
-import { ItemLookupResponse } from '../../../../core/models/lookup.model';
+import { ItemLookupResponse, ItemUsageType, ItemLookupsFilters } from '../../../../core/models/lookup.model';
 import { Subject, Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
@@ -18,6 +18,9 @@ export class ItemLookupModalComponent implements OnChanges, OnInit, OnDestroy {
   private lookupService = inject(LookupService);
 
   @Input() isOpen = false;
+  @Input() usageType?: ItemUsageType;
+  @Input() warehouseId?: number;
+  @Input() checkWarehouseExistence?: boolean;
   @Output() close = new EventEmitter<void>();
   @Output() selectItem = new EventEmitter<ItemLookupResponse>();
 
@@ -61,11 +64,26 @@ export class ItemLookupModalComponent implements OnChanges, OnInit, OnDestroy {
 
   loadItems() {
     this.loading = true;
-    this.lookupService.getSalesItemsLookup({ 
+    
+    const filters: ItemLookupsFilters = {
       searchValue: this.searchTerm,
       pageNumber: this.pageNumber,
       pageSize: this.pageSize
-    }).subscribe({
+    };
+
+    if (this.usageType !== undefined) {
+      filters.usageType = this.usageType;
+    }
+    
+    if (this.warehouseId !== undefined) {
+      filters.warehouseId = this.warehouseId;
+    }
+
+    if (this.checkWarehouseExistence !== undefined) {
+      filters.checkWarehouseExistence = this.checkWarehouseExistence;
+    }
+
+    this.lookupService.getItemsLookup(filters).subscribe({
       next: (res) => {
         this.items = res.items || [];
         this.pageNumber = res.pageIndex || 1;

@@ -1,64 +1,50 @@
 <div class="w-full">
-  <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+  <label *ngIf="label" class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
     {{ label }}
   </label>
   <div class="relative z-20 inline-block w-full">
     <div class="relative flex flex-col items-center">
-      <div (click)="toggleDropdown()" class="w-full">
-        <div class="mb-2 flex h-11 rounded-lg border border-gray-300 py-1.5 pl-3 pr-3 shadow-theme-xs outline-hidden transition focus:border-brand-300 focus:shadow-focus-ring dark:border-gray-700 dark:bg-gray-900 dark:focus:border-brand-300">
-          <div class="flex flex-wrap flex-auto gap-2">
+      <div (click)="toggleDropdown()" class="w-full"
+        [ngClass]="{'cursor-not-allowed opacity-60': disabled, 'cursor-pointer': !disabled}">
+        <div
+          class="flex min-h-[35px] rounded-lg border border-gray-200 bg-white py-1.5 pl-3 pr-2 shadow-theme-xs outline-hidden transition-all hover:border-brand-300 focus:border-brand-400 focus:ring-3 focus:ring-brand-500/10 dark:border-gray-800 dark:bg-gray-900 dark:hover:border-brand-500/50"
+          [ngClass]="{'border-brand-400 ring-3 ring-brand-500/10 dark:border-brand-500/50': isOpen}">
+          <div class="flex flex-wrap flex-auto gap-2 items-center">
             @if (selectedValuesText.length > 0) {
-              @for (text of selectedValuesText; track $index; let i = $index) {
-              <div
-                class="group flex items-center justify-center rounded-full border-[0.7px] border-transparent bg-gray-100 py-1 pl-2.5 pr-2 text-sm text-gray-800 hover:border-gray-200 dark:bg-gray-800 dark:text-white/90 dark:hover:border-gray-800"
-              >
-                <span class="flex-initial max-w-full">{{ text }}</span>
-                <div class="flex flex-row-reverse flex-auto">
-                  <div
-                    (click)="removeOption(selectedOptions[i]); $event.stopPropagation()"
-                    class="pl-2 text-gray-500 cursor-pointer group-hover:text-gray-400 dark:text-gray-400"
-                  >
-                    <svg class="fill-current" role="button" width="14" height="14" viewBox="0 0 14 14">
-                      <path
-                        fill-rule="evenodd"
-                        clip-rule="evenodd"
-                        d="M3.40717 4.46881C3.11428 4.17591 3.11428 3.70104 3.40717 3.40815C3.70006 3.11525 4.17494 3.11525 4.46783 3.40815L6.99943 5.93975L9.53095 3.40822C9.82385 3.11533 10.2987 3.11533 10.5916 3.40822C10.8845 3.70112 10.8845 4.17599 10.5916 4.46888L8.06009 7.00041L10.5916 9.53193C10.8845 9.82482 10.8845 10.2997 10.5916 10.5926C10.2987 10.8855 9.82385 10.8855 9.53095 10.5926L6.99943 8.06107L4.46783 10.5927C4.17494 10.8856 3.70006 10.8856 3.40717 10.5927C3.11428 10.2998 3.11428 9.8249 3.40717 9.53201L5.93877 7.00041L3.40717 4.46881Z"
-                      />
-                    </svg>
-                  </div>
-                </div>
-              </div>
-              }
+            @for (text of selectedValuesText; track $index; let i = $index) {
+            <div
+              class="group flex items-center justify-center gap-1.5 rounded-md border border-brand-100 bg-brand-50 py-1 px-2 text-sm font-medium text-brand-700 transition-colors hover:bg-brand-100 dark:border-brand-500/20 dark:bg-brand-500/10 dark:text-brand-400 dark:hover:bg-brand-500/20">
+              <span class="truncate max-w-[150px]">{{ text }}</span>
+              <button type="button" (click)="removeOption(selectedOptions[i]); $event.stopPropagation()"
+                class="p-0.5 rounded-sm text-brand-500/70 hover:bg-brand-200/50 hover:text-brand-700 dark:hover:bg-brand-500/30 dark:hover:text-brand-300 transition-colors focus:outline-hidden shrink-0">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+              </button>
+            </div>
+            }
             } @else {
-              <input
-                placeholder="Select option"
-                class="w-full h-full p-1 pr-2 text-sm bg-transparent border-0 outline-hidden appearance-none placeholder:text-gray-800 focus:border-0 focus:outline-hidden focus:ring-0 dark:placeholder:text-white/90"
-                readonly
-                value="Select option"
-              />
+            <div class="flex-1 text-sm text-gray-500 dark:text-gray-400 select-none py-1">
+              {{ placeholder | translate }}
+            </div>
             }
           </div>
-          <div class="flex items-center py-1 pl-1 pr-1 w-7">
-            <button
-              type="button"
-              (click)="toggleDropdown()"
-              class="w-5 h-5 text-gray-700 outline-hidden cursor-pointer focus:outline-hidden dark:text-gray-400"
-            >
-              <svg
-                class="stroke-current"
-                [ngClass]="{ 'rotate-180': isOpen }"
-                width="20"
-                height="20"
-                viewBox="0 0 20 20"
-                fill="none"
-              >
-                <path
-                  d="M4.79175 7.39551L10.0001 12.6038L15.2084 7.39551"
-                  stroke="currentColor"
-                  stroke-width="1.5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
+          <div
+            class="flex items-center gap-1 py-1 px-1 ltr:border-l rtl:border-r border-gray-100 dark:border-white/5 ltr:ml-2 rtl:mr-2">
+            @if (selectedOptions.length > 0) {
+            <button type="button" (click)="clearAll($event)"
+              class="p-1 text-gray-400 hover:text-error-500 transition-colors focus:outline-hidden"
+              title="{{ 'common.clear' | translate }}">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+              </svg>
+            </button>
+            }
+            <button type="button"
+              class="p-1 text-gray-500 transition-transform duration-200 focus:outline-hidden dark:text-gray-400"
+              [ngClass]="{ 'rotate-180': isOpen }">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
               </svg>
             </button>
           </div>
@@ -66,23 +52,26 @@
       </div>
       @if (isOpen) {
       <div
-        class="absolute left-0 z-40 w-full overflow-y-auto bg-white rounded-lg shadow-sm top-full max-h-select dark:bg-gray-900"
-        (click)="$event.stopPropagation()"
-      >
-        <div class="flex flex-col">
+        class="absolute left-0 z-50 w-full mt-1 bg-white rounded-lg shadow-lg border border-gray-100 top-full max-h-60 overflow-y-auto dark:border-white/10 dark:bg-gray-900"
+        (click)="$event.stopPropagation()">
+        <div class="flex flex-col p-1">
+          @if (options.length === 0) {
+          <div class="p-3 text-sm text-center text-gray-500 dark:text-gray-400">
+            {{ 'common.noRecordsFound' | translate }}
+          </div>
+          }
           @for (option of options; track $index) {
           <div
-            class="hover:bg-primary/5 w-full cursor-pointer rounded-t border-b border-gray-200 dark:border-gray-800"
-            (click)="handleSelect(option.value)"
-          >
-            <div
-              class="relative flex w-full items-center p-2 pl-2"
-              [ngClass]="{ 'bg-primary/10': selectedOptions.includes(option.value) }"
-            >
-              <div class="mx-2 leading-6 text-gray-800 dark:text-white/90">
-                {{ option.text }}
-              </div>
-            </div>
+            class="group flex w-full cursor-pointer items-center justify-between rounded-md px-3 py-2.5 text-sm transition-colors hover:bg-gray-50 dark:hover:bg-white/5"
+            [ngClass]="{'bg-brand-50/50 text-brand-700 dark:bg-brand-500/10 dark:text-brand-400 font-medium': selectedOptions.includes(option.value), 'text-gray-700 dark:text-gray-300': !selectedOptions.includes(option.value)}"
+            (click)="handleSelect(option.value)">
+            <span class="truncate">{{ option.text }}</span>
+            @if (selectedOptions.includes(option.value)) {
+            <svg class="w-4 h-4 text-brand-500 dark:text-brand-400" fill="none" stroke="currentColor"
+              viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path>
+            </svg>
+            }
           </div>
           }
         </div>
