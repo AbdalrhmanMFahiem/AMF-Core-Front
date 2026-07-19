@@ -67,6 +67,15 @@
             {{ 'salesInvoices.addPayment' | translate }}
           </button>
 
+          <!-- Print Button -->
+          <button *ngIf="mode === 'view'" type="button" (click)="openPdfPreview()"
+            class="flex items-center gap-2 px-5 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg shadow-theme-xs hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700 dark:hover:bg-gray-700 transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
+            </svg>
+            {{ 'salesInvoices.printInvoice' | translate }}
+          </button>
+
           <button type="button" (click)="onCancel()"
             class="px-5 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg shadow-theme-xs hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700 dark:hover:bg-gray-700 transition-colors">
             {{ (mode === 'view' ? 'common.back' : 'common.cancel') | translate }}
@@ -117,7 +126,7 @@
             <label class="mb-2.5 block text-sm font-medium text-gray-800 dark:text-white/90">
               {{ 'salesInvoices.fields.warehouse' | translate }} <span class="text-error-500">*</span>
             </label>
-            <app-searchable-select [(ngModel)]="model.warehouseId" name="warehouseId" required [options]="warehousesOptions"
+            <app-searchable-select [(ngModel)]="model.warehouseId" (ngModelChange)="onWarehouseChange($event)" name="warehouseId" required [options]="warehousesOptions"
               [disabled]="mode === 'view'" placeholder="common.select">
             </app-searchable-select>
           </div>
@@ -263,14 +272,14 @@
                   <td class="px-4 py-2">
                     <input type="number" [(ngModel)]="line.quantity" name="qty_{{i}}"
                       (ngModelChange)="recalculateTotals()" [disabled]="mode === 'view'" min="1"
-                      class="w-full min-w-[100px] rounded-md border border-gray-200 px-3 py-1.5 text-sm dark:bg-dark-900 dark:border-gray-700" />
+                      class="w-full min-w-[100px] rounded-md border border-gray-200 px-3 py-1.5 text-sm dark:bg-dark-900 dark:border-gray-700 dark:text-white" />
                   </td>
 
                   <!-- Price -->
                   <td class="px-4 py-2">
                     <input type="number" [(ngModel)]="line.unitPrice" name="price_{{i}}"
                       (ngModelChange)="recalculateTotals()" [disabled]="mode === 'view'" min="0"
-                      class="w-full min-w-[100px] rounded-md border border-gray-200 px-3 py-1.5 text-sm dark:bg-dark-900 dark:border-gray-700" />
+                      class="w-full min-w-[100px] rounded-md border border-gray-200 px-3 py-1.5 text-sm dark:bg-dark-900 dark:border-gray-700 dark:text-white" />
                   </td>
 
                   <!-- Discount -->
@@ -279,7 +288,7 @@
                       <div class="relative w-full">
                         <input type="number" [(ngModel)]="line.discountPercent" name="disc_perc_{{i}}"
                           (ngModelChange)="onDiscountPercentChange(i)" [disabled]="mode === 'view'" min="0" max="100"
-                          class="w-full min-w-[60px] rounded-t-md rounded-b-none border border-gray-200 pl-2 pr-6 py-1 text-xs h-7 dark:bg-dark-900 dark:border-gray-700 ltr:pr-6 rtl:pl-6 rtl:pr-2 focus:z-10 relative"
+                          class="w-full min-w-[60px] rounded-t-md rounded-b-none border border-gray-200 pl-2 pr-6 py-1 text-xs h-7 dark:bg-dark-900 dark:border-gray-700 dark:text-white ltr:pr-6 rtl:pl-6 rtl:pr-2 focus:z-10 relative"
                           placeholder="%" />
                         <span
                           class="absolute inset-y-0 inset-e-0 flex items-center pe-2 text-gray-400 text-[11px] font-medium z-20">%</span>
@@ -287,7 +296,7 @@
                       <div class="relative w-full">
                         <input type="number" [(ngModel)]="line._discountAmount" name="disc_amt_{{i}}"
                           (ngModelChange)="onDiscountAmountChange(i)" [disabled]="mode === 'view'" min="0"
-                          class="w-full min-w-[60px] rounded-b-md rounded-t-none border border-gray-200 px-2 py-1 text-xs h-7 dark:bg-dark-900 dark:border-gray-700 focus:z-10 relative"
+                          class="w-full min-w-[60px] rounded-b-md rounded-t-none border border-gray-200 px-2 py-1 text-xs h-7 dark:bg-dark-900 dark:border-gray-700 dark:text-white focus:z-10 relative"
                           [placeholder]="'invoices.amount' | translate" />
                       </div>
                     </div>
@@ -299,7 +308,7 @@
                       <div class="relative w-full">
                         <input type="number" [(ngModel)]="line.taxPercent" name="tax_perc_{{i}}"
                           (ngModelChange)="onTaxPercentChange(i)" [disabled]="mode === 'view'" min="0" max="100"
-                          class="w-full min-w-[60px] rounded-t-md rounded-b-none border border-gray-200 pl-2 pr-6 py-1 text-xs h-7 dark:bg-dark-900 dark:border-gray-700 ltr:pr-6 rtl:pl-6 rtl:pr-2 focus:z-10 relative"
+                          class="w-full min-w-[60px] rounded-t-md rounded-b-none border border-gray-200 pl-2 pr-6 py-1 text-xs h-7 dark:bg-dark-900 dark:border-gray-700 dark:text-white ltr:pr-6 rtl:pl-6 rtl:pr-2 focus:z-10 relative"
                           placeholder="%" />
                         <span
                           class="absolute inset-y-0 inset-e-0 flex items-center pe-2 text-gray-400 text-[11px] font-medium z-20">%</span>
@@ -307,7 +316,7 @@
                       <div class="relative w-full">
                         <input type="number" [(ngModel)]="line._taxAmount" name="tax_amt_{{i}}"
                           (ngModelChange)="onTaxAmountChange(i)" [disabled]="mode === 'view'" min="0"
-                          class="w-full min-w-[60px] rounded-b-md rounded-t-none border border-gray-200 px-2 py-1 text-xs h-7 dark:bg-dark-900 dark:border-gray-700 focus:z-10 relative"
+                          class="w-full min-w-[60px] rounded-b-md rounded-t-none border border-gray-200 px-2 py-1 text-xs h-7 dark:bg-dark-900 dark:border-gray-700 dark:text-white focus:z-10 relative"
                           [placeholder]="'invoices.amount' | translate" />
                       </div>
                     </div>
@@ -392,14 +401,14 @@
                   <td class="px-4 py-2">
                     <input type="number" [(ngModel)]="cost.percentage" name="cost_perc_{{i}}"
                       (ngModelChange)="onCostPercentageChange(i)" [disabled]="mode === 'view'" min="0" max="100"
-                      class="w-full rounded-md border border-gray-200 px-3 py-1.5 text-sm dark:bg-dark-900 dark:border-gray-700" />
+                      class="w-full rounded-md border border-gray-200 px-3 py-1.5 text-sm dark:bg-dark-900 dark:border-gray-700 dark:text-white" />
                   </td>
 
                   <!-- Amount -->
                   <td class="px-4 py-2">
                     <input type="number" [(ngModel)]="cost.amount" name="cost_amt_{{i}}"
                       (ngModelChange)="onCostAmountChange(i)" [disabled]="mode === 'view'" min="0"
-                      class="w-full rounded-md border border-gray-200 px-3 py-1.5 text-sm dark:bg-dark-900 dark:border-gray-700" />
+                      class="w-full rounded-md border border-gray-200 px-3 py-1.5 text-sm dark:bg-dark-900 dark:border-gray-700 dark:text-white" />
                   </td>
 
                   <!-- Actions -->
@@ -481,3 +490,12 @@
   </div>
 </div>
 
+<!-- Print Preview Modal -->
+<app-print-preview-modal 
+  *ngIf="isPrintModalOpen"
+  [isOpen]="isPrintModalOpen" 
+  [pdfBlobUrl]="pdfBlobUrl" 
+  [loading]="pdfLoading"
+  [title]="'Sales Invoice ' + model.code"
+  (close)="closePrintModal()">
+</app-print-preview-modal>

@@ -58,9 +58,8 @@ export class CostElementLookupModalComponent implements OnChanges, OnInit, OnDes
 
   loadElements() {
     this.loading = true;
-    const request = this.type === 'sales'
-      ? this.lookupService.getInvoiceCostElementsSalesDropdown()
-      : this.lookupService.getInvoiceCostElementsPurchaseDropdown();
+    const mappedType = this.type === 'sales' ? 'Sales' : 'Purchases';
+    const request = this.lookupService.getInvoiceCostElementsDropdown(mappedType);
 
     request.subscribe({
       next: (res) => {

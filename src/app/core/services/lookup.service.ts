@@ -46,6 +46,13 @@ export class LookupService {
     return this.http.get<IntIdCodeNameResponse[]>(`${this.apiUrl}/business-partner-customers`, this.getOptions(filters));
   }
 
+  getBranches(filters?: LookupsFilters): Observable<IdNameResponse[]> {
+    return this.http.get<IdNameResponse[]>(`${this.apiUrl}/branches`, this.getOptions(filters));
+  }
+
+  getCurrencies(filters?: LookupsFilters): Observable<IdNameResponse[]> {
+    return this.http.get<IdNameResponse[]>(`${this.apiUrl}/currencies`, this.getOptions(filters));
+  }
 
   getItemGroups(filters?: LookupsFilters): Observable<IdNameResponse[]> {
     return this.http.get<IdNameResponse[]>(`${this.apiUrl}/item-groups`, this.getOptions(filters));
@@ -66,12 +73,13 @@ export class LookupService {
     );
   }
 
-  getInvoiceCostElementsSalesDropdown(filters?: LookupsFilters): Observable<InvoiceCostElementDropdown[]> {
-    return this.http.get<InvoiceCostElementDropdown[]>(`${this.invCostElementsApiUrl}/sales-dropdown`, this.getOptions(filters));
-  }
-
-  getInvoiceCostElementsPurchaseDropdown(filters?: LookupsFilters): Observable<InvoiceCostElementDropdown[]> {
-    return this.http.get<InvoiceCostElementDropdown[]>(`${this.invCostElementsApiUrl}/purchase-dropdown`, this.getOptions(filters));
+  getInvoiceCostElementsDropdown(type: string, filters?: LookupsFilters): Observable<InvoiceCostElementDropdown[]> {
+    if (!type) {
+      throw new Error("InvoiceCostElementType must be provided");
+    }
+    const options = this.getOptions(filters);
+    options.params = options.params.set('type', type);
+    return this.http.get<InvoiceCostElementDropdown[]>(`${this.invCostElementsApiUrl}/dropdown`, options);
   }
 
   getSalesInvoicesLookup(filters?: LookupsFilters): Observable<IdNameResponse[]> {

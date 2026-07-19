@@ -214,16 +214,16 @@ export class BusinessPartnerStatementComponent implements OnInit {
     }
   }
 
-  getEntryTypeName(type: number): string {
+  getEntryTypeName(type: string | number): string {
+    if (typeof type === 'string') {
+      const key = type.toLowerCase();
+      return `reports.businessPartnerStatement.entryTypes.${key}`;
+    }
     const map: Record<number, string> = {
-      1: 'Sales Invoice',
-      2: 'Sales Return',
-      3: 'Purchase Invoice',
-      4: 'Purchase Return',
-      5: 'Opening Balance',
-      6: 'Payment',
-      7: 'Receipt',
-      8: 'Manual Journal'
+      1: 'reports.businessPartnerStatement.entryTypes.invoice',
+      2: 'reports.businessPartnerStatement.entryTypes.return',
+      3: 'reports.businessPartnerStatement.entryTypes.payment',
+      4: 'reports.businessPartnerStatement.entryTypes.adjustment'
     };
     return map[type] || type.toString();
   }

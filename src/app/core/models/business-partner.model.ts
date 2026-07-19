@@ -43,7 +43,7 @@ export interface BusinessPartnerLedgerResponse {
   entryDate: string;
   invoiceId?: number;
   invoiceCode?: string;
-  entryType: number;
+  entryType: string | number;
   amount: number;
   runningBalance: number;
   notes?: string;
@@ -56,7 +56,7 @@ export interface LedgerFilters {
   pageSize: number;
   from?: string;
   to?: string;
-  entryType?: number;
+  entryType?: string | number;
 }
 
 export enum LedgerEntryType {

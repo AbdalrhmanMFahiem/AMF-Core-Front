@@ -114,6 +114,12 @@ export class InvoiceService {
     return this.http.get<ReturnableItemResponse[]>(`${this.getApiUrl(type)}/${id}/returnable-items`);
   }
 
+  printPdf(id: number, type: 'sales' | 'purchases' = 'sales'): Observable<Blob> {
+    return this.http.get(`${this.getApiUrl(type)}/${id}/print-pdf`, {
+      responseType: 'blob'
+    });
+  }
+
   // --- Lookups ---
   getSalesInvoicesLookup(): Observable<any[]> {
     return this.http.get<any[]>(`${this.getApiUrl('sales')}/lookup`);

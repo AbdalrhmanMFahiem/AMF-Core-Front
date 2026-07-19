@@ -65,6 +65,7 @@ export class PurchaseInvoiceFormComponent implements OnInit, HasUnsavedChanges {
   saving = false;
   saveSuccess = false;
   validationErrors: string[] = [];
+  previousWarehouseId?: number;
 
   showLeaveConfirmation = false;
   private leaveConfirmationResolver: ((value: boolean) => void) | null = null;
@@ -137,6 +138,7 @@ export class PurchaseInvoiceFormComponent implements OnInit, HasUnsavedChanges {
           this.model.code = res.actionData.nextCode;
         }
 
+        this.previousWarehouseId = this.model.warehouseId;
         this.loading = false;
       },
       error: (err) => {
@@ -210,9 +212,51 @@ export class PurchaseInvoiceFormComponent implements OnInit, HasUnsavedChanges {
     this.activeTab = tab;
   }
 
+  onWarehouseChange(newWarehouseId: number): void {
+    if (this.mode === 'view') return;
+
+    if (this.model.lines.length > 0 && this.previousWarehouseId !== undefined && newWarehouseId !== this.previousWarehouseId) {
+      import('sweetalert2').then(Swal => {
+        const isDark = document.documentElement.classList.contains('dark');
+        Swal.default.fire({
+          title: this.translate.instant('common.cancelWarningTitle'),
+          text: this.translate.instant('purchaseInvoices.errors.changeWarehouseWarning'),
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#ef4444',
+          cancelButtonColor: '#6b7280',
+          confirmButtonText: this.translate.instant('common.yes'),
+          cancelButtonText: this.translate.instant('common.no'),
+          background: isDark ? '#1f2937' : '#ffffff',
+          color: isDark ? '#ffffff' : '#545454'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            this.model.lines = [];
+            this.previousWarehouseId = newWarehouseId;
+            this.recalculateTotals();
+          } else {
+            // Revert selection
+            setTimeout(() => {
+              this.model.warehouseId = this.previousWarehouseId;
+            });
+          }
+        });
+      });
+    } else {
+      this.previousWarehouseId = newWarehouseId;
+    }
+  }
+
   // Items Tab Actions
   openItemModal(): void {
     if (this.mode === 'view') return;
+
+    if (!this.model.warehouseId) {
+      this.validationErrors = [this.translate.instant('purchaseInvoices.errors.warehouseRequiredFirst')];
+      setTimeout(() => this.validationErrors = [], 4000);
+      return;
+    }
+
     this.isItemModalOpen = true;
   }
 
@@ -389,6 +433,9 @@ export class PurchaseInvoiceFormComponent implements OnInit, HasUnsavedChanges {
     if (!this.model.businessPartnerId) {
       this.validationErrors.push(`${this.translate.instant('purchaseInvoices.fields.businessPartner')}: ${this.translate.instant('validation.required')}`);
     }
+    if (!this.model.warehouseId) {
+      this.validationErrors.push(`${this.translate.instant('purchaseInvoices.fields.warehouse')}: ${this.translate.instant('validation.required')}`);
+    }
     if (!this.model.lines || this.model.lines.length === 0) {
       this.validationErrors.push(this.translate.instant('purchaseInvoices.errors.atLeastOneItem'));
     } else {
@@ -451,6 +498,7 @@ export class PurchaseInvoiceFormComponent implements OnInit, HasUnsavedChanges {
   onConfirm(): void {
     if (!this.id) return;
     import('sweetalert2').then(Swal => {
+      const isDark = document.documentElement.classList.contains('dark');
       Swal.default.fire({
         title: this.translate.instant('common.confirmTitle'),
         text: this.translate.instant('common.confirmWarning'),
@@ -459,7 +507,9 @@ export class PurchaseInvoiceFormComponent implements OnInit, HasUnsavedChanges {
         confirmButtonColor: '#10b981',
         cancelButtonColor: '#ef4444',
         confirmButtonText: this.translate.instant('stockAdjustments.confirm'),
-        cancelButtonText: this.translate.instant('login.cancel')
+        cancelButtonText: this.translate.instant('login.cancel'),
+        background: isDark ? '#1f2937' : '#ffffff',
+        color: isDark ? '#ffffff' : '#545454'
       }).then((result) => {
         if (result.isConfirmed) {
           this.invoiceService.confirm(this.id!, 'purchases').subscribe({
@@ -475,6 +525,7 @@ export class PurchaseInvoiceFormComponent implements OnInit, HasUnsavedChanges {
   onCancelDocument(): void {
     if (!this.id) return;
     import('sweetalert2').then(Swal => {
+      const isDark = document.documentElement.classList.contains('dark');
       Swal.default.fire({
         title: this.translate.instant('common.cancelWarningTitle'),
         text: this.translate.instant('common.cancelWarningText'),
@@ -483,7 +534,9 @@ export class PurchaseInvoiceFormComponent implements OnInit, HasUnsavedChanges {
         confirmButtonColor: '#ef4444',
         cancelButtonColor: '#6b7280',
         confirmButtonText: this.translate.instant('common.delete'),
-        cancelButtonText: this.translate.instant('login.cancel')
+        cancelButtonText: this.translate.instant('login.cancel'),
+        background: isDark ? '#1f2937' : '#ffffff',
+        color: isDark ? '#ffffff' : '#545454'
       }).then((result) => {
         if (result.isConfirmed) {
           this.invoiceService.cancel(this.id!, 'purchases').subscribe({

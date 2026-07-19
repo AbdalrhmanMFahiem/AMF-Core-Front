@@ -12,6 +12,7 @@ export interface ItemResponse {
   dfltWeight: number;
   itemPropertyId?: number;
   itemPropertyName?: string;
+  unitsOfMeasure?: ItemUnitOfMeasureResponse[];
 }
 
 export interface ItemBasicResponse {
@@ -59,6 +60,7 @@ export interface ItemBasicResponse {
   dfltTaxPercent: number;
   barcode?: string;
   foreignCode?: string;
+  unitsOfMeasure?: any[];
 }
 
 export interface ItemRequest {
@@ -93,8 +95,30 @@ export interface ItemRequest {
   dfltTaxPercent: number;
   barcode?: string;
   foreignCode?: string;
+  unitsOfMeasure?: any[];
 }
 
 export interface NextCodeResponse {
   code: string;
+}
+
+export interface ItemUnitOfMeasureRequest {
+  id: number;
+  unitOfMeasureId: number;
+  conversionFactor: number;
+  isBaseUnit: boolean;
+  isDefaultPurchaseUnit: boolean;
+  isDefaultSalesUnit: boolean;
+  barcode?: string;
+}
+
+export interface ItemUnitOfMeasureResponse {
+  id: number;
+  unitOfMeasureId: number;
+  unitOfMeasureName: string;
+  conversionFactor: number;
+  isBaseUnit: boolean;
+  isDefaultPurchaseUnit: boolean;
+  isDefaultSalesUnit: boolean;
+  barcode?: string;
 }

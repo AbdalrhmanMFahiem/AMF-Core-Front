@@ -20,6 +20,9 @@
     "date": "Date",
     "from": "From",
     "to": "To",
+    "unitOfMeasure": "Unit of Measure",
+    "additionalDetails": "Additional Details",
+    "currency": "Currency",
     "invoiceDateFrom": "Invoice Date From",
     "invoiceDateTo": "Invoice Date To",
     "dueDateFrom": "Due Date From",
@@ -88,18 +91,6 @@
     "noData": "No Data",
     "delete": "Delete",
     "documentStatus": {
-      "D": "Draft",
-      "F": "Confirmed",
-      "P": "Partially Received",
-      "R": "Received",
-      "C": "Closed",
-      "L": "Cancelled",
-      "A": "Partially Paid",
-      "U": "Fully Paid",
-      "O": "Open",
-      "0": "Draft",
-      "1": "Confirmed",
-      "2": "Cancelled",
       "Draft": "Draft",
       "Open": "Open",
       "Approved": "Approved",
@@ -133,7 +124,12 @@
     "isDefault": "Is Default",
     "yes": "Yes",
     "no": "No",
-    "parentBranch": "Parent Branch"
+    "parentBranch": "Parent Branch",
+    "errors": {
+      "cannotCancelConfirmedStockAdjustment": "Cannot cancel a confirmed stock adjustment.",
+      "mustSelectSourceWarehouse": "Must select the source warehouse first.",
+      "mustSelectFromWarehouse": "Must select the Target (From) warehouse first."
+    }
   },
   "pages": {
     "invoiceCostElements": "Invoice Cost Elements",
@@ -179,6 +175,7 @@
     "salesInvoices": "Sales Invoices",
     "salesReturns": "Sales Returns",
     "purchases": "Purchases",
+    "purchaseOrders": "Purchase Orders",
     "purchaseInvoices": "Purchase Invoices",
     "purchaseReturns": "Purchase Returns",
     "customers": "Customers",
@@ -207,7 +204,15 @@
     "salesReport": "Sales Report",
     "purchasesReport": "Purchases Report",
     "inventoryValuation": "Inventory Valuation",
-    "dashboard": "Dashboard"
+    "dashboard": "Dashboard",
+    "UnitOfMeasure": {
+      "Title": "Unit of Measures",
+      "AddTitle": "Add Unit of Measure",
+      "EditTitle": "Edit Unit of Measure",
+      "ViewTitle": "View Unit of Measure",
+      "SearchPlaceholder": "Search by code or name",
+      "Add": "Add Unit of Measure"
+    }
   },
   "warehouses": {
     "title": "Warehouses",
@@ -328,7 +333,10 @@
         "invoice": "Invoice",
         "payment": "Payment",
         "return": "Return",
-        "adjustment": "Adjustment"
+        "adjustment": "Adjustment",
+        "openingbalance": "Opening Balance",
+        "receipt": "Receipt",
+        "manualjournal": "Manual Journal"
       },
       "results": "Report Results",
       "openingBalance": "Opening Balance",
@@ -355,7 +363,27 @@
       "itemName": "Item Name",
       "uom": "UOM",
       "onHandQty": "On-Hand Qty",
-      "printTitle": "Print Stock Balances"
+      "printTitle": "Print Stock Balances",
+      "results": "Results",
+      "filters": "Filters"
+    },
+    "salesReport": {
+      "title": "Sales Report",
+      "subtitle": "View and analyze sales invoices data",
+      "filters": "Filters",
+      "dateFrom": "Date From",
+      "dateTo": "Date To",
+      "searchPlaceholder": "Search by invoice code, partner name...",
+      "results": "Report Results",
+      "invoiceCode": "Invoice Code",
+      "businessPartnerName": "Customer Name",
+      "invoiceDate": "Invoice Date",
+      "dueDate": "Due Date",
+      "totalAmount": "Total Amount",
+      "paidAmount": "Paid Amount",
+      "status": "Status",
+      "printTitle": "Print Sales Report",
+      "invalidDateRange": "Date To cannot be before Date From"
     },
     "exportExcel": "Export Excel",
     "printPdf": "Print PDF",
@@ -503,7 +531,8 @@
       "purchasing": "Purchasing Data",
       "sales": "Sales Data",
       "inventory": "Inventory Data",
-      "additional": "Additional Data"
+      "additional": "Additional Data",
+      "uoms": "Units of Measure"
     },
     "fields": {
       "aName": "Name (Arabic)",
@@ -535,7 +564,18 @@
     "addSuccess": "Item added successfully",
     "updateSuccess": "Item updated successfully",
     "confirmToggle": "Are you sure you want to change this item status?",
-    "recordsCount": "Total Records"
+    "recordsCount": "Total Records",
+    "uomGrid": {
+      "isBaseUnit": "Base Unit",
+      "conversionFactor": "Factor",
+      "isDefaultPurchase": "Dflt Purchase",
+      "isDefaultSales": "Dflt Sales",
+      "barcode": "Barcode"
+    },
+    "errors": {
+      "exactlyOneBaseUnit": "There must be exactly one base unit of measure.",
+      "invalidConversionFactor": "Conversion factor must be greater than zero."
+    }
   },
   "validation": {
     "required": "This field is required",
@@ -545,9 +585,7 @@
   },
   "errors": {
     "generic": "An unexpected error occurred, please try again",
-    "conflict": "The entered data conflicts with existing records",
-    "STA.7106": "Cannot cancel a confirmed stock adjustment.",
-    "ITM.1017": "Please select the warehouse first to work on it."
+    "conflict": "The entered data conflicts with existing records"
   },
   "invoices": {
     "amount": "Amount",
@@ -657,6 +695,32 @@
     "selectElement": "Select Element",
     "confirmSelectionOfCostElement": "Are you sure you want to select this cost element?"
   },
+  "purchaseOrders": {
+    "title": "Purchase Orders",
+    "list": "Purchase Orders List",
+    "add": "Add Purchase Order",
+    "addNew": "Add New Purchase Order",
+    "view": "View Purchase Order",
+    "printOrder": "Print Order",
+    "addItems": "Add Items",
+    "addCostElement": "Add Cost Element",
+    "approvalStatus": "Approval Status",
+    "status": {
+      "Pending": "Pending",
+      "Approved": "Approved",
+      "Rejected": "Rejected"
+    },
+    "approveTitle": "Approve Purchase Order",
+    "approveText": "Are you sure you want to approve this purchase order?",
+    "cancelTitle": "Cancel Purchase Order",
+    "cancelText": "Are you sure you want to cancel this purchase order?",
+    "convertTitle": "Convert to Invoice",
+    "convertText": "Are you sure you want to convert this purchase order to a purchase invoice?",
+    "convertToInvoice": "Convert to Invoice",
+    "approvedSuccess": "Purchase order approved successfully",
+    "cancelledSuccess": "Purchase order cancelled successfully",
+    "convertedSuccess": "Purchase order converted successfully"
+  },
   "salesInvoices": {
     "title": "Sales Invoices",
     "list": "Sales Invoices List",
@@ -664,6 +728,7 @@
     "addNew": "Add New Invoice",
     "view": "View Invoice",
     "addPayment": "Add Payment",
+    "printInvoice": "Print Invoice",
     "addItems": "Add Items",
     "addCostElement": "Add Cost Element",
     "fields": {
@@ -698,7 +763,9 @@
       "invalidQuantity": "Quantity must be greater than zero.",
       "invalidPrice": "Price must be greater than zero.",
       "duplicateItem": "This item is already added to the invoice.",
-      "duplicateCostElement": "This cost element is already added to the invoice."
+      "duplicateCostElement": "This cost element is already added to the invoice.",
+      "warehouseRequiredFirst": "You must select a warehouse before adding items.",
+      "changeWarehouseWarning": "Changing the warehouse will clear all selected items. Do you want to proceed?"
     }
   },
   "purchaseInvoices": {
@@ -742,7 +809,9 @@
       "invalidQuantity": "Quantity must be greater than zero.",
       "invalidPrice": "Price must be greater than zero.",
       "duplicateItem": "This item is already added to the invoice.",
-      "duplicateCostElement": "This cost element is already added to the invoice."
+      "duplicateCostElement": "This cost element is already added to the invoice.",
+      "warehouseRequiredFirst": "You must select a warehouse before adding items.",
+      "changeWarehouseWarning": "Changing the warehouse will clear all selected items. Do you want to proceed?"
     }
   },
   "overview": {
@@ -772,16 +841,23 @@
     },
     "operationType": {
       "addition": "Addition",
-      "discount": "Discount"
+      "discount": "Discount",
+      "Addition": "Addition",
+      "Discount": "Discount"
     },
     "operations": {
       "addition": "Addition",
       "discount": "Discount"
     },
+    "type": {
+      "Sales": "Sales",
+      "Purchases": "Purchases",
+      "Both": "Sales & Purchases"
+    },
     "types": {
       "sales": "Sales",
       "purchases": "Purchases",
-      "both": "Sales \u0026 Purchases"
+      "both": "Sales & Purchases"
     },
     "recordsCount": "Total Records",
     "activateTitle": "Activate Cost Element",
@@ -1104,6 +1180,26 @@
       "shortage": "Shortage",
       "totalSurplus": "Total Surplus",
       "totalShortage": "Total Shortage"
+    }
+  },
+  "uom": {
+    "uomType": "Unit Type",
+    "isBaseUnit": "Base Unit",
+    "conversionFactor": "Conversion Factor",
+    "warnings": {
+      "baseUnitExistsForType": "A base unit already exists for this unit type."
+    },
+    "baseUnitReference": "Base Unit Reference",
+    "newUnit": "Current Unit",
+    "types": {
+      "Length": "Length",
+      "Area": "Area",
+      "Volume": "Volume",
+      "Weight": "Weight",
+      "Time": "Time",
+      "Timing": "Timing",
+      "Quantity": "Quantity",
+      "Other": "Other"
     }
   }
 }

@@ -193,10 +193,10 @@
     font-size: 76.5%;
   }
   html:not(.dark) input, html:not(.dark) textarea, html:not(.dark) select {
-    color: #101828 important!;
+    color: #101828 !important;
   }
   .dark input, .dark textarea, .dark select {
-    color: white important!;
+    color: white !important;
   }
 }
 
@@ -304,7 +304,7 @@
 }
 
 .dark .text-primary {
-  color: #ffffff important!;
+  color: #ffffff !important;
 }
 
 @layer utilities {
@@ -463,20 +463,20 @@
 }
 
 .flatpickr-months > .flatpickr-month {
-  background: none important!;
+  background: none !important;
 }
 .flatpickr-month .flatpickr-current-month .flatpickr-monthDropdown-months {
-  background: none important!;
+  background: none !important;
   appearance: none;
-  background-image: none important!;
+  background-image: none !important;
   font-weight: 500;
 }
 
 .flatpickr-month
   .flatpickr-current-month
   .flatpickr-monthDropdown-months:focus {
-  outline: none important!;
-  border: 0 important!;
+  outline: none !important;
+  border: 0 !important;
 }
 .flatpickr-months .flatpickr-prev-month,
 .flatpickr-months .flatpickr-next-month {
@@ -509,7 +509,7 @@ span.flatpickr-weekday,
   @apply bg-none!;
 }
 .flatpickr-day.inRange {
-  box-shadow: -5px 0 0 #f9fafb, 5px 0 0 #f9fafb important!;
+  box-shadow: -5px 0 0 #f9fafb, 5px 0 0 #f9fafb !important;
   @apply dark:shadow-datepicker!;
 }
 .flatpickr-day.inRange,
@@ -567,17 +567,17 @@ span.flatpickr-weekday,
 }
 .flatpickr-months .flatpickr-prev-month:hover svg,
 .flatpickr-months .flatpickr-next-month:hover svg {
-  fill: none important!;
+  fill: none !important;
 }
 
 .flatpickr-calendar.static {
   @apply right-0;
 }
 .flatpickr-calendar.hasTime {
-  width: 300px important!;
+  width: 300px !important;
 }
 .flatpickr-calendar.hasTime .flatpickr-time {
-  border: transparent important!;
+  border: transparent !important;
 }
 .fc .fc-view-harness {
   @apply max-w-full overflow-x-auto custom-scrollbar;
@@ -819,7 +819,7 @@ code[class*="language-"],
 pre[class*="language-"] {
   text-shadow: none;
   color: #344054;
-  overflow: hidden important!;
+  overflow: hidden !important;
   font-size: 14px;
   margin: 0;
   padding: 0;
@@ -834,10 +834,10 @@ pre[class*="language-"] {
   color: #98a2b3;
 }
 [data-theme="light"] .language-html {
-  background-color: #ffffff important!;
+  background-color: #ffffff !important;
 }
 [data-theme="dark"] .language-html {
-  background-color: #171f2e important!;
+  background-color: #171f2e !important;
 }
 .token {
   text-shadow: none;
@@ -873,10 +873,10 @@ pre[class*="language-"] {
 }
 
 .line-numbers .line-numbers-rows {
-  border-right: 0 important!;
+  border-right: 0 !important;
 }
 pre[class*="language-"].line-numbers {
-  padding-left: 2.8em important!;
+  padding-left: 2.8em !important;
 }
 
 .swal-rtl { direction: rtl; }

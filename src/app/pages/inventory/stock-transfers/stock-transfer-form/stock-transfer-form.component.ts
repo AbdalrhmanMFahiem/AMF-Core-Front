@@ -150,7 +150,7 @@ export class StockTransferFormComponent implements OnInit, HasUnsavedChanges {
   openItemModal(): void {
     if (this.mode === 'view') return;
     if (!this.model.fromWarehouseId) {
-      this.toastr.warning(this.translate.instant('errors.ITM.1017'));
+      this.toastr.warning(this.translate.instant('common.errors.mustSelectFromWarehouse'));
       return;
     }
     this.isItemModalOpen = true;
@@ -268,7 +268,7 @@ export class StockTransferFormComponent implements OnInit, HasUnsavedChanges {
   onProceedConfirm(): void {
     if (!this.id || !this.confirmationActionId) return;
     this.saving = true;
-    
+
     if (this.confirmationActionId === 'confirm') {
       this.stockTransferService.confirm(this.id).subscribe({
         next: () => {

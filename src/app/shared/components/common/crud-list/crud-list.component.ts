@@ -1,6 +1,6 @@
 import { DocumentStatusBadgeComponent } from '../document-status-badge/document-status-badge.component';
 import { AdjustmentTypeBadgeComponent } from '../adjustment-type-badge/adjustment-type-badge.component';
-import { Component, EventEmitter, Input, Output, HostListener, OnInit, OnDestroy } from '@angular/core';
+import { Component, EventEmitter, Input, Output, HostListener, OnInit, OnDestroy, ContentChild, TemplateRef } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
@@ -19,7 +19,7 @@ import Swal from 'sweetalert2';
 export interface CrudColumn {
   field: string;
   header: string;
-  type?: 'text' | 'badge' | 'code' | 'dynamic-badge' | 'date' | 'document-status' | 'adjustment-type';
+  type?: 'text' | 'badge' | 'code' | 'dynamic-badge' | 'date' | 'document-status' | 'adjustment-type' | 'custom' | 'boolean' | 'number';
 }
 
 @Component({
@@ -35,6 +35,7 @@ export class CrudListComponent implements OnInit, OnDestroy {
   @Input() pageTitle!: string;
   @Input() searchPlaceholder: string = 'Search...';
   @Input() addBtnText: string = 'Add New';
+  @ContentChild('customColumn') customTemplate!: TemplateRef<any>;
 
   @Input() columns: CrudColumn[] = [];
   @Input() data: PaginatedList<any> | null = null;

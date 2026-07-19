@@ -127,7 +127,7 @@
                   </ng-container>
                 </ng-template>
                 <ng-template #codeCell>
-                  <ng-container *ngIf="col.type === 'code'; else textCell">
+                  <ng-container *ngIf="col.type === 'code'; else customCell">
                     <div>
                       <!-- Code Badge Button -->
                       <button (click)="toggleCodePopup(item.id, $event)"
@@ -178,6 +178,20 @@
                           {{ 'common.copyId' | translate }}
                         </button>
                       </div>
+                    </div>
+                  </ng-container>
+                </ng-template>
+                <ng-template #customCell>
+                  <ng-container *ngIf="col.type === 'custom'; else booleanCell">
+                    <ng-container *ngTemplateOutlet="customTemplate; context: { $implicit: item, col: col }"></ng-container>
+                  </ng-container>
+                </ng-template>
+                <ng-template #booleanCell>
+                  <ng-container *ngIf="col.type === 'boolean'; else textCell">
+                    <div class="inline-flex items-center justify-center p-1 rounded-full"
+                         [ngClass]="item[col.field] ? 'bg-success-50 text-success-500 dark:bg-success-500/10 dark:text-success-400' : 'bg-gray-100 text-gray-400 dark:bg-gray-800 dark:text-gray-500'">
+                      <svg *ngIf="item[col.field]" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg>
+                      <svg *ngIf="!item[col.field]" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path></svg>
                     </div>
                   </ng-container>
                 </ng-template>

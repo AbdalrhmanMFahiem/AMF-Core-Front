@@ -1,136 +1,159 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { finalize } from 'rxjs/operators';
+import { ToastrService } from 'ngx-toastr';
+
 import { ReportService, InvoiceReportResponse } from '../../../core/services/report.service';
+import { PageBreadcrumbComponent } from '../../../shared/components/common/page-breadcrumb/page-breadcrumb.component';
+import { ComponentCardComponent } from '../../../shared/components/common/component-card/component-card.component';
+import { SearchableSelectComponent } from '../../../shared/components/form/searchable-select/searchable-select.component';
 import { BadgeComponent } from '../../../shared/components/ui/badge/badge.component';
+import { DatePickerComponent } from '../../../shared/components/form/date-picker/date-picker.component';
 
 @Component({
   selector: 'app-sales-report',
   standalone: true,
-  imports: [CommonModule, FormsModule, TranslateModule, BadgeComponent],
-  template: `
-    <div class="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/3 lg:p-6">
-      <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-6">
-        <h3 class="text-lg font-semibold text-gray-800 dark:text-white/90">
-          {{ 'dashboard.salesReport' | translate }}
-        </h3>
-        
-        <div class="flex items-center gap-3">
-          <input type="date" [(ngModel)]="filters.dateFrom" class="form-input" placeholder="Date From">
-          <input type="date" [(ngModel)]="filters.dateTo" class="form-input" placeholder="Date To">
-          <button (click)="loadReport()" class="btn-primary px-4 py-2 rounded-lg bg-brand-500 text-white hover:bg-brand-600">
-            {{ 'common.filter' | translate }}
-          </button>
-        </div>
-      </div>
-
-      <div class="max-w-full overflow-x-auto">
-        <table class="w-full text-left">
-          <thead class="border-b border-gray-100 dark:border-gray-800">
-            <tr>
-              <th class="py-3 font-medium text-gray-500 text-theme-xs dark:text-gray-400">{{ 'invoice.code' | translate }}</th>
-              <th class="py-3 font-medium text-gray-500 text-theme-xs dark:text-gray-400">{{ 'businessPartner.title' | translate }}</th>
-              <th class="py-3 font-medium text-gray-500 text-theme-xs dark:text-gray-400">{{ 'invoice.date' | translate }}</th>
-              <th class="py-3 font-medium text-gray-500 text-theme-xs dark:text-gray-400">{{ 'invoice.totalAmount' | translate }}</th>
-              <th class="py-3 font-medium text-gray-500 text-theme-xs dark:text-gray-400">{{ 'invoice.status.label' | translate }}</th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-gray-100 dark:divide-gray-800">
-            @for (row of data; track row.id) {
-            <tr>
-              <td class="py-3 text-gray-800 text-theme-sm dark:text-white/90 font-medium">#{{ row.code }}</td>
-              <td class="py-3 text-gray-500 text-theme-sm dark:text-gray-400">{{ row.businessPartnerName }}</td>
-              <td class="py-3 text-gray-500 text-theme-sm dark:text-gray-400">{{ row.invoiceDate | date:'shortDate' }}</td>
-              <td class="py-3 text-gray-500 text-theme-sm dark:text-gray-400">{{ row.totalAmount | number:'1.2-2' }}</td>
-              <td class="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
-                <app-badge size="sm" [color]="getBadgeColor(row.status)">
-                  {{ getStatusTranslation(row.status) | translate }}
-                </app-badge>
-              </td>
-            </tr>
-            }
-            @if (data.length === 0 && !loading) {
-            <tr>
-              <td colspan="5" class="py-6 text-center text-gray-500 dark:text-gray-400">
-                {{ 'common.noData' | translate }}
-              </td>
-            </tr>
-            }
-          </tbody>
-        </table>
-      </div>
-      
-      <div class="mt-4 flex justify-between items-center" *ngIf="totalPages > 1">
-        <button [disabled]="!hasPreviousPage" (click)="changePage(filters.pageNumber - 1)" class="btn-outline px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700">Previous</button>
-        <span class="text-sm text-gray-500">Page {{filters.pageNumber}} of {{totalPages}}</span>
-        <button [disabled]="!hasNextPage" (click)="changePage(filters.pageNumber + 1)" class="btn-outline px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700">Next</button>
-      </div>
-    </div>
-  `
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    FormsModule,
+    TranslateModule,
+    PageBreadcrumbComponent,
+    ComponentCardComponent,
+    SearchableSelectComponent,
+    BadgeComponent,
+    DatePickerComponent
+  ],
+  templateUrl: './sales-report.component.html'
 })
 export class SalesReportComponent implements OnInit {
-  private reportService = inject(ReportService);
+  private readonly reportService = inject(ReportService);
+  private readonly fb = inject(FormBuilder);
+  private readonly toastr = inject(ToastrService);
+  private readonly translate = inject(TranslateService);
+
+  filterForm!: FormGroup;
   
-  data: InvoiceReportResponse[] = [];
+  items: InvoiceReportResponse[] = [];
   loading = false;
-  
-  filters: any = {
-    pageNumber: 1,
-    pageSize: 10,
-    dateFrom: null,
-    dateTo: null
-  };
-  
-  totalPages = 0;
+  totalItems = 0;
+  pageSize = 10;
+  pageNumber = 1;
   hasPreviousPage = false;
   hasNextPage = false;
+  totalPages = 1;
+  pageSizeOptions = [
+    { value: 10, label: '10' },
+    { value: 25, label: '25' },
+    { value: 50, label: '50' },
+    { value: 100, label: '100' }
+  ];
 
-  ngOnInit() {
-    this.loadReport();
+  ngOnInit(): void {
+    this.initForm();
+    this.loadData();
   }
 
-  loadReport() {
+  private initForm(): void {
+    this.filterForm = this.fb.group({
+      searchValue: [''],
+      dateFrom: [''],
+      dateTo: ['']
+    }, { validators: this.dateRangeValidator });
+  }
+
+  private dateRangeValidator(group: FormGroup) {
+    const from = group.get('dateFrom')?.value;
+    const to = group.get('dateTo')?.value;
+    if (from && to && new Date(from) > new Date(to)) {
+      return { dateRangeInvalid: true };
+    }
+    return null;
+  }
+
+  loadData(): void {
     this.loading = true;
-    this.reportService.getSalesReport(this.filters).subscribe({
-      next: (res) => {
-        if (res.succeeded) {
-          this.data = res.data.items;
-          this.totalPages = res.data.totalPages;
-          this.hasPreviousPage = res.data.hasPreviousPage;
-          this.hasNextPage = res.data.hasNextPage;
-        }
-        this.loading = false;
-      },
-      error: () => {
-        this.loading = false;
-      }
-    });
+    
+    const filters = {
+      ...this.filterForm.value,
+      pageNumber: this.pageNumber,
+      pageSize: this.pageSize
+    };
+
+    this.reportService.getSalesReport(filters)
+      .pipe(finalize(() => this.loading = false))
+      .subscribe({
+        next: (response: any) => {
+          const isSuccess = response.isSuccess !== undefined ? response.isSuccess : response.succeeded;
+          if (isSuccess) {
+            const data = response.value || response.data;
+            this.items = data?.items || [];
+            this.totalItems = data?.totalRecords || data?.totalCount || 0;
+            this.hasPreviousPage = data?.hasPreviousPage || false;
+            this.hasNextPage = data?.hasNextPage || false;
+            this.totalPages = data?.totalPages || 1;
+          } else {
+            const errorMsg = response.error?.description || response.messages?.[0] || 'Error fetching data';
+            this.toastr.error(errorMsg);
+          }
+        },
+        error: () => this.toastr.error(this.translate.instant('common.error'))
+      });
   }
 
-  changePage(page: number) {
-    this.filters.pageNumber = page;
-    this.loadReport();
+  onSearch(): void {
+    this.pageNumber = 1;
+    this.loadData();
+  }
+
+  onReset(): void {
+    this.filterForm.reset({
+      searchValue: '',
+      dateFrom: '',
+      dateTo: ''
+    });
+    this.onSearch();
+  }
+
+  onPageChange(page: number): void {
+    this.pageNumber = page;
+    this.loadData();
+  }
+  
+  onPageSizeChange(size: any): void {
+    this.pageSize = size;
+    this.pageNumber = 1;
+    this.loadData();
+  }
+
+  onPreviousPage(): void {
+    if (this.hasPreviousPage) {
+      this.pageNumber--;
+      this.loadData();
+    }
+  }
+
+  onNextPage(): void {
+    if (this.hasNextPage) {
+      this.pageNumber++;
+      this.loadData();
+    }
   }
 
   getStatusTranslation(status: string): string {
-    const statusMap: { [key: string]: string } = {
-      'Draft': 'common.documentStatus.Draft',
-      'Confirmed': 'common.documentStatus.Confirmed',
-      'PartiallyPaid': 'common.documentStatus.PartiallyPaid',
-      'FullyPaid': 'common.documentStatus.FullyPaid',
-      'Cancelled': 'common.documentStatus.Cancelled'
-    };
-    return statusMap[status] || status;
+    return 'common.documentStatus.' + status;
   }
 
-  getBadgeColor(status: string): 'success' | 'warning' | 'error' | 'info' {
+  getBadgeColor(status: string): 'success' | 'warning' | 'error' | 'info' | 'primary' {
     switch (status) {
-      case 'Paid': return 'success';
-      case 'PartiallyPaid': return 'warning';
-      case 'Draft': return 'info';
+      case 'Draft': return 'warning';
+      case 'Open': return 'success';
+      case 'Confirmed': return 'success';
+      case 'Closed': return 'error';
       case 'Cancelled': return 'error';
-      default: return 'success';
+      default: return 'primary';
     }
   }
 }

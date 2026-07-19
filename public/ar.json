@@ -20,6 +20,9 @@
     "date": "التاريخ",
     "from": "من",
     "to": "إلى",
+    "unitOfMeasure": "وحدة القياس",
+    "additionalDetails": "تفاصيل إضافية",
+    "currency": "العملة",
     "invoiceDateFrom": "تاريخ الفاتورة من",
     "invoiceDateTo": "تاريخ الفاتورة إلى",
     "dueDateFrom": "تاريخ الاستحقاق من",
@@ -88,18 +91,6 @@
     "noData": "لا توجد بيانات",
     "delete": "حذف",
     "documentStatus": {
-      "D": "مسودة",
-      "F": "مؤكد",
-      "P": "تم الاستلام جزئياً",
-      "R": "تم الاستلام",
-      "C": "مغلق",
-      "L": "ملغي",
-      "A": "مدفوع جزئياً",
-      "U": "مدفوع بالكامل",
-      "O": "مفتوح",
-      "0": "مسودة",
-      "1": "مؤكد",
-      "2": "ملغي",
       "Draft": "مسودة",
       "Confirmed": "مؤكد",
       "Cancelled": "ملغي",
@@ -128,12 +119,17 @@
     "paymentStatus": "حالة الدفع",
     "cancelWarningTitle": "هل أنت متأكد؟",
     "cancelWarningText": "سيؤدي هذا إلى التراجع عن أي تغييرات تمت بواسطة هذا المستند.",
-    "defaultExistsTitle": "??? ??????? ?????",
-    "defaultExistsMessage": "???? ??? ??????? ???. ?? ??? ????? ????????? ??? ?????? ??? ????? ?????????",
-    "isDefault": "???????",
-    "yes": "???",
-    "no": "??",
-    "parentBranch": "????? ???????"
+    "defaultExistsTitle": "يوجد سجل افتراضي",
+    "defaultExistsMessage": "يوجد سجل افتراضي آخر. هل ترغب في إلغاء التحديد الافتراضي منه وجعله هذا السجل افتراضياً؟",
+    "isDefault": "افتراضي",
+    "yes": "نعم",
+    "no": "لا",
+    "parentBranch": "فرع الأصل",
+    "errors": {
+      "cannotCancelConfirmedStockAdjustment": "لا يمكن إلغاء تسوية مخزون مؤكدة",
+      "mustSelectSourceWarehouse": "يجب اختيار المخزن المصدر أولاً.",
+      "mustSelectFromWarehouse": "يجب اختيار المخزن المحول منه أولاً."
+    }
   },
   "pages": {
     "invoiceCostElements": "عناصر تكلفة الفاتورة",
@@ -179,6 +175,7 @@
     "salesInvoices": "فواتير المبيعات",
     "salesReturns": "مردودات المبيعات",
     "purchases": "المشتريات",
+    "purchaseOrders": "أوامر الشراء",
     "purchaseInvoices": "فواتير المشتريات",
     "purchaseReturns": "مردودات المشتريات",
     "customers": "العملاء",
@@ -207,7 +204,15 @@
     "salesReport": "تقرير المبيعات",
     "purchasesReport": "تقرير المشتريات",
     "inventoryValuation": "تقييم المخزون",
-    "dashboard": "لوحة التحكم"
+    "dashboard": "لوحة التحكم",
+    "UnitOfMeasure": {
+      "Title": "وحدات القياس",
+      "AddTitle": "إضافة وحدة قياس",
+      "EditTitle": "تعديل وحدة قياس",
+      "ViewTitle": "عرض وحدة قياس",
+      "SearchPlaceholder": "البحث بالكود أو الاسم",
+      "Add": "إضافة وحدة قياس"
+    }
   },
   "warehouses": {
     "title": "المخازن",
@@ -330,7 +335,10 @@
         "invoice": "فاتورة",
         "payment": "سداد",
         "return": "مردود",
-        "adjustment": "تسوية"
+        "adjustment": "تسوية",
+        "openingbalance": "رصيد افتتاحي",
+        "receipt": "سند قبض",
+        "manualjournal": "قيد يومية"
       },
       "results": "نتائج التقرير",
       "openingBalance": "الرصيد الافتتاحي",
@@ -359,7 +367,27 @@
       "itemName": "اسم الصنف",
       "uom": "وحدة القياس",
       "onHandQty": "الرصيد",
-      "printTitle": "طباعة الأرصدة"
+      "printTitle": "طباعة الأرصدة",
+      "results": "النتائج",
+      "filters": "الفلاتر"
+    },
+    "salesReport": {
+      "title": "تقرير المبيعات",
+      "subtitle": "عرض وتحليل بيانات فواتير المبيعات",
+      "filters": "الفلاتر",
+      "dateFrom": "من تاريخ",
+      "dateTo": "إلى تاريخ",
+      "searchPlaceholder": "ابحث برقم الفاتورة، اسم العميل...",
+      "results": "نتائج التقرير",
+      "invoiceCode": "رقم الفاتورة",
+      "businessPartnerName": "اسم العميل",
+      "invoiceDate": "تاريخ الفاتورة",
+      "dueDate": "تاريخ الاستحقاق",
+      "totalAmount": "إجمالي المبلغ",
+      "paidAmount": "المبلغ المدفوع",
+      "status": "الحالة",
+      "printTitle": "طباعة تقرير المبيعات",
+      "invalidDateRange": "تاريخ النهاية لا يمكن أن يكون قبل تاريخ البداية"
     },
     "exportExcel": "تصدير Excel",
     "printPdf": "طباعة PDF",
@@ -507,7 +535,8 @@
       "purchasing": "بيانات الشراء",
       "sales": "بيانات البيع",
       "inventory": "بيانات المخزون",
-      "additional": "بيانات إضافية"
+      "additional": "بيانات إضافية",
+      "uoms": "وحدات القياس"
     },
     "fields": {
       "aName": "الاسم (عربي)",
@@ -539,7 +568,18 @@
     "addSuccess": "تمت إضافة الصنف بنجاح",
     "updateSuccess": "تم تحديث الصنف بنجاح",
     "confirmToggle": "هل أنت متأكد من تغيير حالة هذا الصنف؟",
-    "recordsCount": "عدد السجلات"
+    "recordsCount": "عدد السجلات",
+    "uomGrid": {
+      "isBaseUnit": "الوحدة الأساسية",
+      "conversionFactor": "معامل التحويل",
+      "isDefaultPurchase": "شراء افتراضية",
+      "isDefaultSales": "بيع افتراضية",
+      "barcode": "الباركود"
+    },
+    "errors": {
+      "exactlyOneBaseUnit": "يجب تحديد وحدة قياس أساسية واحدة فقط.",
+      "invalidConversionFactor": "معامل التحويل يجب أن يكون أكبر من صفر."
+    }
   },
   "validation": {
     "required": "هذا الحقل مطلوب",
@@ -549,8 +589,7 @@
   },
   "errors": {
     "generic": "حدث خطأ غير متوقع، يرجى المحاولة مرة أخرى",
-    "conflict": "البيانات المدخلة تتعارض مع سجلات موجودة",
-    "STA.7106": "لا يمكن إلغاء تسوية مخزنية بعد الموافقة عليها."
+    "conflict": "البيانات المدخلة تتعارض مع سجلات موجودة"
   },
   "invoices": {
     "amount": "المبلغ",
@@ -658,7 +697,33 @@
     "searchElements": "ابحث عن عناصر التكاليف بالكود أو الاسم...",
     "noElementsFound": "لم يتم العثور على عناصر تطابق بحثك.",
     "selectElement": "اختر عنصر التكلفة",
-    "confirmSelectionOfCostElement": "هل أنت متأكد من رغبتك في اختيار عنصر التكلفة هذا؟"
+    "confirmSelectionOfCostElement": "هل أنت متأكد من أنك تريد اختيار عنصر التكلفة هذا؟"
+  },
+  "purchaseOrders": {
+    "title": "أوامر الشراء",
+    "list": "قائمة أوامر الشراء",
+    "add": "إضافة أمر شراء",
+    "addNew": "إضافة أمر شراء جديد",
+    "view": "عرض أمر الشراء",
+    "printOrder": "طباعة الأمر",
+    "addItems": "إضافة أصناف",
+    "addCostElement": "إضافة عنصر تكلفة",
+    "approvalStatus": "حالة الاعتماد",
+    "status": {
+      "Pending": "قيد الانتظار",
+      "Approved": "معتمد",
+      "Rejected": "مرفوض"
+    },
+    "approveTitle": "اعتماد أمر الشراء",
+    "approveText": "هل أنت متأكد من أنك تريد اعتماد أمر الشراء هذا؟",
+    "cancelTitle": "إلغاء أمر الشراء",
+    "cancelText": "هل أنت متأكد من أنك تريد إلغاء أمر الشراء هذا؟",
+    "convertTitle": "تحويل إلى فاتورة",
+    "convertText": "هل أنت متأكد من أنك تريد تحويل أمر الشراء هذا إلى فاتورة مشتريات؟",
+    "convertToInvoice": "تحويل إلى فاتورة",
+    "approvedSuccess": "تم اعتماد أمر الشراء بنجاح",
+    "cancelledSuccess": "تم إلغاء أمر الشراء بنجاح",
+    "convertedSuccess": "تم تحويل أمر الشراء بنجاح"
   },
   "salesInvoices": {
     "title": "فواتير المبيعات",
@@ -667,6 +732,7 @@
     "addNew": "إضافة فاتورة جديدة",
     "view": "عرض الفاتورة",
     "addPayment": "إضافة دفعة",
+    "printInvoice": "طباعة الفاتورة",
     "addItems": "إضافة أصناف",
     "addCostElement": "إضافة عنصر تكلفة",
     "fields": {
@@ -701,7 +767,9 @@
       "invalidQuantity": "يجب أن تكون الكمية أكبر من صفر.",
       "invalidPrice": "يجب أن يكون السعر أكبر من صفر.",
       "duplicateItem": "هذا الصنف مضاف مسبقاً للفاتورة.",
-      "duplicateCostElement": "عنصر التكلفة هذا مضاف مسبقاً للفاتورة."
+      "duplicateCostElement": "عنصر التكلفة هذا مضاف مسبقاً للفاتورة.",
+      "warehouseRequiredFirst": "يجب اختيار المخزن أولاً قبل إضافة الأصناف.",
+      "changeWarehouseWarning": "تغيير المخزن سيؤدي إلى مسح جميع الأصناف المحددة. هل تود الاستمرار؟"
     }
   },
   "purchaseInvoices": {
@@ -745,7 +813,9 @@
       "invalidQuantity": "يجب أن تكون الكمية أكبر من صفر.",
       "invalidPrice": "يجب أن يكون السعر أكبر من صفر.",
       "duplicateItem": "هذا الصنف مضاف مسبقاً للفاتورة.",
-      "duplicateCostElement": "عنصر التكلفة هذا مضاف مسبقاً للفاتورة."
+      "duplicateCostElement": "عنصر التكلفة هذا مضاف مسبقاً للفاتورة.",
+      "warehouseRequiredFirst": "يجب اختيار المخزن أولاً قبل إضافة الأصناف.",
+      "changeWarehouseWarning": "تغيير المخزن سيؤدي إلى مسح جميع الأصناف المحددة. هل تود الاستمرار؟"
     }
   },
   "overview": {
@@ -775,16 +845,23 @@
     },
     "operationType": {
       "addition": "إضافة",
-      "discount": "خصم"
+      "discount": "خصم",
+      "Addition": "إضافة",
+      "Discount": "خصم"
     },
     "operations": {
       "addition": "إضافة",
       "discount": "خصم"
     },
+    "type": {
+      "Sales": "مبيعات",
+      "Purchases": "مشتريات",
+      "Both": "مبيعات & مشتريات"
+    },
     "types": {
       "sales": "مبيعات",
       "purchases": "مشتريات",
-      "both": "مبيعات \u0026 مشتريات"
+      "both": "مبيعات & مشتريات"
     },
     "recordsCount": "عدد السجلات",
     "activateTitle": "تفعيل عنصر التكلفة",
@@ -1107,6 +1184,26 @@
       "shortage": "نقص (عجز)",
       "totalSurplus": "إجمالي الفائض",
       "totalShortage": "إجمالي العجز"
+    }
+  },
+  "uom": {
+    "uomType": "نوع الوحدة",
+    "isBaseUnit": "الوحدة الأساسية",
+    "conversionFactor": "معامل التحويل",
+    "warnings": {
+      "baseUnitExistsForType": "يوجد بالفعل وحدة قياس أساسية لهذا النوع."
+    },
+    "baseUnitReference": "الوحدة الأساسية",
+    "newUnit": "الوحدة الحالية",
+    "types": {
+      "Length": "طول",
+      "Area": "مساحة",
+      "Volume": "حجم",
+      "Weight": "وزن",
+      "Time": "وقت",
+      "Timing": "توقيت",
+      "Quantity": "كمية",
+      "Other": "أخرى"
     }
   }
 }

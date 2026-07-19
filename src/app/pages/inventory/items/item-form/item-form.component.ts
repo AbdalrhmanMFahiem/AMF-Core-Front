@@ -35,7 +35,7 @@ export class ItemFormComponent implements OnInit {
   saveSuccess: boolean = false;
   validationErrors: string[] = [];
 
-  activeTab: 'basic' | 'purchasing' | 'sales' | 'inventory' | 'additional' = 'basic';
+  activeTab: 'basic' | 'purchasing' | 'sales' | 'inventory' | 'additional' | 'uoms' = 'basic';
   tabsWithErrors: string[] = [];
 
   // Dropdown options
@@ -74,7 +74,8 @@ export class ItemFormComponent implements OnInit {
     maxStockLevel: 0,
     dfltTaxPercent: 0,
     barcode: '',
-    foreignCode: ''
+    foreignCode: '',
+    unitsOfMeasure: []
   };
 
   ngOnInit(): void {
@@ -137,7 +138,8 @@ export class ItemFormComponent implements OnInit {
           salesUomId: res.salesUomId,
           inventoryUomId: res.inventoryUomId,
           barcode: res.barcode,
-          foreignCode: res.foreignCode
+          foreignCode: res.foreignCode,
+          unitsOfMeasure: res.unitsOfMeasure ? [...res.unitsOfMeasure] : []
         };
         this.loading = false;
       },
@@ -151,8 +153,47 @@ export class ItemFormComponent implements OnInit {
     });
   }
 
-  setTab(tab: 'basic' | 'purchasing' | 'sales' | 'inventory' | 'additional'): void {
+  setTab(tab: 'basic' | 'purchasing' | 'sales' | 'inventory' | 'additional' | 'uoms'): void {
     this.activeTab = tab;
+  }
+
+  addUomRow(): void {
+    if (!this.model.unitsOfMeasure) {
+      this.model.unitsOfMeasure = [];
+    }
+    this.model.unitsOfMeasure.push({
+      id: 0,
+      unitOfMeasureId: null as any,
+      conversionFactor: 1,
+      isBaseUnit: false,
+      isDefaultPurchaseUnit: false,
+      isDefaultSalesUnit: false,
+      barcode: ''
+    });
+  }
+
+  removeUomRow(index: number): void {
+    if (this.model.unitsOfMeasure) {
+      this.model.unitsOfMeasure.splice(index, 1);
+    }
+  }
+
+  onBaseUnitChange(index: number, isChecked: boolean): void {
+    if (!this.model.unitsOfMeasure || !isChecked) return;
+    
+    // Set conversion factor to 1
+    this.model.unitsOfMeasure[index].conversionFactor = 1;
+
+    // Uncheck other rows
+    this.model.unitsOfMeasure.forEach((uom, i) => {
+      if (i !== index) {
+        uom.isBaseUnit = false;
+      }
+    });
+  }
+
+  onUomBaseChange(): void {
+    // If base unit is checked, ensure others are unchecked
   }
 
   validate(): boolean {
@@ -183,6 +224,22 @@ export class ItemFormComponent implements OnInit {
       this.tabsWithErrors.push('purchasing', 'sales');
       this.validationErrors.push(this.translate.instant('validation.invalid'));
       isValid = false;
+    }
+
+    if (this.model.unitsOfMeasure && this.model.unitsOfMeasure.length > 0) {
+      const baseUnits = this.model.unitsOfMeasure.filter(u => u.isBaseUnit).length;
+      if (baseUnits !== 1) {
+        this.tabsWithErrors.push('uoms');
+        this.validationErrors.push(this.translate.instant('items.errors.exactlyOneBaseUnit'));
+        isValid = false;
+      }
+      
+      const hasInvalidConversion = this.model.unitsOfMeasure.some(u => !u.isBaseUnit && (!u.conversionFactor || u.conversionFactor <= 0));
+      if (hasInvalidConversion) {
+        this.tabsWithErrors.push('uoms');
+        this.validationErrors.push(this.translate.instant('items.errors.invalidConversionFactor'));
+        isValid = false;
+      }
     }
 
     return isValid;

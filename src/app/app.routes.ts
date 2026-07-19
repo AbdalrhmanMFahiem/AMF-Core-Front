@@ -298,6 +298,26 @@ export const routes: Routes = [
         title: 'View Item Property | AMF Core'
       },
       {
+        path: 'inventory/unit-of-measure',
+        loadComponent: () => import('./pages/inventory/unit-of-measure/unit-of-measure-list/unit-of-measure-list.component').then(c => c.UnitOfMeasureListComponent),
+        title: 'Unit of Measure | AMF Core'
+      },
+      {
+        path: 'inventory/unit-of-measure/add',
+        loadComponent: () => import('./pages/inventory/unit-of-measure/unit-of-measure-form/unit-of-measure-form.component').then(c => c.UnitOfMeasureFormComponent),
+        title: 'Add Unit of Measure | AMF Core'
+      },
+      {
+        path: 'inventory/unit-of-measure/edit/:id',
+        loadComponent: () => import('./pages/inventory/unit-of-measure/unit-of-measure-form/unit-of-measure-form.component').then(c => c.UnitOfMeasureFormComponent),
+        title: 'Edit Unit of Measure | AMF Core'
+      },
+      {
+        path: 'inventory/unit-of-measure/view/:id',
+        loadComponent: () => import('./pages/inventory/unit-of-measure/unit-of-measure-form/unit-of-measure-form.component').then(c => c.UnitOfMeasureFormComponent),
+        title: 'View Unit of Measure | AMF Core'
+      },
+      {
         path: 'inventory/item-groups',
         loadComponent: () => import('./pages/inventory/item-groups/item-groups-list/item-groups-list.component').then(c => c.ItemGroupsListComponent),
         title: 'Item Groups | AMF Core'
@@ -433,6 +453,23 @@ export const routes: Routes = [
         title: 'View Sales Return | AMF Core'
       },
       // Purchases
+      {
+        path: 'purchases/purchase-orders',
+        loadComponent: () => import('./pages/purchases/purchase-orders/purchase-orders-list/purchase-orders-list.component').then(c => c.PurchaseOrdersListComponent),
+        title: 'Purchase Orders | AMF Core'
+      },
+      {
+        path: 'purchases/purchase-orders/add',
+        loadComponent: () => import('./pages/purchases/purchase-orders/purchase-order-form/purchase-order-form.component').then(c => c.PurchaseOrderFormComponent),
+        canDeactivate: [unsavedChangesGuard],
+        title: 'Add Purchase Order | AMF Core'
+      },
+      {
+        path: 'purchases/purchase-orders/view/:id',
+        loadComponent: () => import('./pages/purchases/purchase-orders/purchase-order-form/purchase-order-form.component').then(c => c.PurchaseOrderFormComponent),
+        canDeactivate: [unsavedChangesGuard],
+        title: 'View Purchase Order | AMF Core'
+      },
       {
         path: 'purchases/invoices',
         loadComponent: () => import('./pages/purchases/invoices/purchase-invoices-list/purchase-invoices-list.component').then(c => c.PurchaseInvoicesListComponent),

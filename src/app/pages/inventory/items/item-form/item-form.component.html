@@ -1,4 +1,4 @@
-﻿<app-page-breadcrumb
+<app-page-breadcrumb
   [pageTitle]="(mode === 'edit' ? 'items.edit' : mode === 'view' ? 'common.view' : 'items.addNew') | translate"
   parentPageTitle="items.title"
   parentPageUrl="/inventory/items" />
@@ -94,6 +94,14 @@
             [class.text-gray-500]="activeTab !== 'additional'"
             class="whitespace-nowrap pb-4 px-1 border-b-2 font-medium text-sm transition-colors flex items-center hover:text-gray-700 hover:border-gray-300">
             {{ 'items.tabs.additional' | translate }}
+          </button>
+          
+          <button type="button" (click)="setTab('uoms')" [class.border-brand-500]="activeTab === 'uoms'"
+            [class.text-brand-600]="activeTab === 'uoms'" [class.border-transparent]="activeTab !== 'uoms'"
+            [class.text-gray-500]="activeTab !== 'uoms'"
+            class="whitespace-nowrap pb-4 px-1 border-b-2 font-medium text-sm transition-colors flex items-center hover:text-gray-700 hover:border-gray-300">
+            {{ 'items.tabs.uoms' | translate }}
+            <span *ngIf="tabsWithErrors.includes('uoms')" class="ml-2 w-2 h-2 rounded-full bg-error-500"></span>
           </button>
         </nav>
       </div>
@@ -304,6 +312,85 @@
           </label>
           <input type="text" [(ngModel)]="model.foreignCode" name="foreignCode" [disabled]="mode === 'view'"
             class="w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm outline-none focus:border-brand-500 dark:border-gray-800 dark:focus:border-brand-500" />
+        </div>
+      </div>
+
+      <!-- Tab Content: Units of Measure -->
+      <div *ngIf="activeTab === 'uoms'">
+        <div class="flex justify-between items-center mb-4">
+          <h3 class="text-sm font-medium text-gray-900 dark:text-white">{{ 'items.tabs.uoms' | translate }}</h3>
+          <button *ngIf="mode !== 'view'" type="button" (click)="addUomRow()"
+            class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-brand-600 bg-brand-50 rounded hover:bg-brand-100 dark:bg-brand-500/10 dark:text-brand-400 dark:hover:bg-brand-500/20 transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+            </svg>
+            {{ 'common.add' | translate }}
+          </button>
+        </div>
+
+        <div class="overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-800">
+          <table class="w-full text-left text-sm whitespace-nowrap">
+            <thead class="bg-gray-50 dark:bg-gray-800/50 text-gray-700 dark:text-gray-300">
+              <tr>
+                <th class="px-4 py-3 font-medium">{{ 'common.unitOfMeasure' | translate }}</th>
+                <th class="px-4 py-3 font-medium text-center">{{ 'items.uomGrid.isBaseUnit' | translate }}</th>
+                <th class="px-4 py-3 font-medium">{{ 'items.uomGrid.conversionFactor' | translate }}</th>
+                <th class="px-4 py-3 font-medium text-center">{{ 'items.uomGrid.isDefaultPurchase' | translate }}</th>
+                <th class="px-4 py-3 font-medium text-center">{{ 'items.uomGrid.isDefaultSales' | translate }}</th>
+                <th class="px-4 py-3 font-medium">{{ 'items.uomGrid.barcode' | translate }}</th>
+                <th *ngIf="mode !== 'view'" class="px-4 py-3 font-medium text-right w-16"></th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200 dark:divide-gray-800 text-gray-700 dark:text-gray-300">
+              <tr *ngFor="let uom of model.unitsOfMeasure; let i = index">
+                <td class="px-4 py-2 min-w-[200px]">
+                  <app-searchable-select [(ngModel)]="uom.unitOfMeasureId" [name]="'uom_id_' + i"
+                    [options]="uomsOptions" [disabled]="mode === 'view'" placeholder="common.select">
+                  </app-searchable-select>
+                </td>
+                <td class="px-4 py-2 text-center">
+                  <input type="checkbox" [(ngModel)]="uom.isBaseUnit" [name]="'uom_base_' + i"
+                    [disabled]="mode === 'view'" (ngModelChange)="onBaseUnitChange(i, $event)"
+                    class="w-4 h-4 rounded border-gray-300 text-brand-500 focus:ring-brand-500 bg-gray-100 dark:border-gray-700 dark:bg-gray-800" />
+                </td>
+                <td class="px-4 py-2 w-32">
+                  <input type="number" [(ngModel)]="uom.conversionFactor" [name]="'uom_conv_' + i"
+                    [disabled]="mode === 'view' || uom.isBaseUnit"
+                    class="w-full rounded-md border border-gray-300 bg-transparent px-3 py-1.5 text-sm outline-none focus:border-brand-500 dark:border-gray-800 dark:focus:border-brand-500 disabled:opacity-50" />
+                </td>
+                <td class="px-4 py-2 text-center">
+                  <input type="checkbox" [(ngModel)]="uom.isDefaultPurchaseUnit" [name]="'uom_pur_' + i"
+                    [disabled]="mode === 'view'"
+                    class="w-4 h-4 rounded border-gray-300 text-brand-500 focus:ring-brand-500 bg-gray-100 dark:border-gray-700 dark:bg-gray-800" />
+                </td>
+                <td class="px-4 py-2 text-center">
+                  <input type="checkbox" [(ngModel)]="uom.isDefaultSalesUnit" [name]="'uom_sal_' + i"
+                    [disabled]="mode === 'view'"
+                    class="w-4 h-4 rounded border-gray-300 text-brand-500 focus:ring-brand-500 bg-gray-100 dark:border-gray-700 dark:bg-gray-800" />
+                </td>
+                <td class="px-4 py-2 min-w-[150px]">
+                  <input type="text" [(ngModel)]="uom.barcode" [name]="'uom_bar_' + i"
+                    [disabled]="mode === 'view'"
+                    class="w-full rounded-md border border-gray-300 bg-transparent px-3 py-1.5 text-sm outline-none focus:border-brand-500 dark:border-gray-800 dark:focus:border-brand-500" />
+                </td>
+                <td *ngIf="mode !== 'view'" class="px-4 py-2 text-right">
+                  <button type="button" (click)="removeUomRow(i)"
+                    class="p-1 text-gray-400 hover:text-error-500 transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+            <tfoot *ngIf="!model.unitsOfMeasure || model.unitsOfMeasure.length === 0">
+              <tr>
+                <td colspan="7" class="px-4 py-8 text-center text-sm text-gray-500 dark:text-gray-400">
+                  {{ 'common.noRecordsFound' | translate }}
+                </td>
+              </tr>
+            </tfoot>
+          </table>
         </div>
       </div>
 

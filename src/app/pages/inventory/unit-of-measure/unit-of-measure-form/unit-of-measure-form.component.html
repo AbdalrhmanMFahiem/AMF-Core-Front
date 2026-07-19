@@ -1,0 +1,222 @@
+<app-page-breadcrumb
+  [pageTitle]="isEditMode ? ('pages.UnitOfMeasure.EditTitle' | translate) : isView ? ('pages.UnitOfMeasure.ViewTitle' | translate) : ('pages.UnitOfMeasure.AddTitle' | translate)"
+  [parentPageTitle]="'pages.UnitOfMeasure.Title' | translate"
+  parentPageUrl="/inventory/unit-of-measure"></app-page-breadcrumb>
+
+<!-- Notifications -->
+<app-success-redirect-banner [isVisible]="showSuccessBanner"
+  [message]="isEditMode ? ('items.updateSuccess' | translate) : ('items.addSuccess' | translate)"
+  redirectUrl="/inventory/unit-of-measure"></app-success-redirect-banner>
+
+<!-- Form Container -->
+<div
+  class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden mt-4"
+  *ngIf="!loading">
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <!-- Header: Title & Code Badge -->
+    <div
+      class="flex flex-col sm:flex-row justify-between items-start sm:items-center p-6 border-b border-gray-100 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/50">
+      <div class="flex items-center gap-3">
+        <div
+          class="w-10 h-10 rounded-lg bg-indigo-50 dark:bg-indigo-900/30 flex items-center justify-center border border-indigo-100 dark:border-indigo-800/50">
+          <i class="fas fa-balance-scale text-indigo-600 dark:text-indigo-400 text-lg"></i>
+        </div>
+        <div>
+          <h2 class="text-lg font-bold text-gray-900 dark:text-white">
+            {{ isEditMode ? ('pages.UnitOfMeasure.EditTitle' | translate) : isView ? ('pages.UnitOfMeasure.ViewTitle' |
+            translate) : ('pages.UnitOfMeasure.AddTitle' | translate) }}
+          </h2>
+          <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">{{ 'pages.UnitOfMeasure.Title' | translate }}</p>
+        </div>
+      </div>
+
+      <!-- Code Input Badge -->
+      <div
+        class="mt-4 sm:mt-0 flex items-center gap-2 px-3 py-2 bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-100 dark:border-indigo-500/20 rounded-lg shadow-sm">
+        <svg class="w-4 h-4 text-indigo-600 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+        </svg>
+        <span
+          class="text-xs font-semibold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider whitespace-nowrap">{{
+          'common.code' | translate }}</span>
+        <div class="w-px h-4 bg-indigo-200 dark:bg-indigo-500/30 mx-1"></div>
+        <input type="text" formControlName="code"
+          class="font-mono text-sm font-bold text-gray-900 dark:text-white bg-transparent border-none outline-none focus:ring-0 p-0 w-32 placeholder:text-gray-400 dark:placeholder:text-gray-500 disabled:opacity-70"
+          placeholder="---">
+      </div>
+    </div>
+
+    <div class="p-6">
+      <!-- Grid Layout -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+
+        <!-- Type -->
+        <div class="space-y-1.5">
+          <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300">
+            {{ 'uom.uomType' | translate }} <span class="text-red-500 dark:text-red-400">*</span>
+          </label>
+          <select formControlName="uomType"
+            class="bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5 transition-colors disabled:opacity-60 disabled:bg-gray-100 dark:disabled:bg-gray-800"
+            [class.border-red-500]="form.get('uomType')?.invalid && form.get('uomType')?.touched"
+            [class.dark:border-red-500]="form.get('uomType')?.invalid && form.get('uomType')?.touched">
+            <option [ngValue]="null" disabled>{{ 'common.select' | translate }}</option>
+            <option *ngFor="let type of uomTypes" [value]="type">{{ 'uom.types.' + type | translate }}</option>
+          </select>
+          <div *ngIf="form.get('uomType')?.invalid && form.get('uomType')?.touched"
+            class="text-red-500 dark:text-red-400 text-xs mt-1 font-medium">
+            {{ 'validation.required' | translate }}
+          </div>
+        </div>
+
+        <!-- Arabic Name -->
+        <div class="space-y-1.5">
+          <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300">
+            {{ 'common.arabicName' | translate }} <span class="text-red-500 dark:text-red-400">*</span>
+          </label>
+          <div class="relative">
+            <div class="absolute inset-y-0 inset-s-0 flex items-center ps-3 pointer-events-none">
+              <i class="fas fa-language text-gray-400 dark:text-gray-500"></i>
+            </div>
+            <input type="text" formControlName="aName"
+              class="bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full ps-10 p-2.5 transition-colors disabled:opacity-60 disabled:bg-gray-100 dark:disabled:bg-gray-800"
+              [class.border-red-500]="form.get('aName')?.invalid && form.get('aName')?.touched"
+              [class.dark:border-red-500]="form.get('aName')?.invalid && form.get('aName')?.touched">
+          </div>
+          <div *ngIf="form.get('aName')?.invalid && form.get('aName')?.touched"
+            class="text-red-500 dark:text-red-400 text-xs mt-1 font-medium">
+            {{ 'validation.required' | translate }}
+          </div>
+        </div>
+
+        <!-- English Name -->
+        <div class="space-y-1.5">
+          <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300">
+            {{ 'common.englishName' | translate }}
+          </label>
+          <div class="relative">
+            <div class="absolute inset-y-0 inset-s-0 flex items-center ps-3 pointer-events-none">
+              <i class="fas fa-language text-gray-400 dark:text-gray-500"></i>
+            </div>
+            <input type="text" formControlName="eName"
+              class="bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full ps-10 p-2.5 transition-colors disabled:opacity-60 disabled:bg-gray-100 dark:disabled:bg-gray-800">
+          </div>
+        </div>
+
+        <!-- Is Base Unit & Conversion Factor -->
+        <div class="space-y-1.5 flex flex-col justify-center">
+          <label class="flex items-center cursor-pointer mb-2">
+            <div class="relative">
+              <input type="checkbox" formControlName="isBaseUnit" class="sr-only" />
+              <div class="box block h-6 w-10 rounded-full bg-gray-300 dark:bg-gray-700 transition-colors duration-200"
+                [ngClass]="{'bg-indigo-600 dark:bg-indigo-500': form.get('isBaseUnit')?.value}"></div>
+              <div class="dot absolute left-1 top-1 h-4 w-4 rounded-full bg-white transition-transform duration-200"
+                [ngClass]="{'translate-x-4': form.get('isBaseUnit')?.value}"></div>
+            </div>
+            <div class="ms-3 text-sm font-semibold text-gray-700 dark:text-gray-300">
+              {{ 'uom.isBaseUnit' | translate }}
+            </div>
+          </label>
+        </div>
+
+        <!-- Conversion Factor -->
+        <div class="space-y-1.5">
+          <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300">
+            {{ 'uom.conversionFactor' | translate }} <span class="text-red-500 dark:text-red-400"
+              *ngIf="!form.get('isBaseUnit')?.value">*</span>
+          </label>
+          <input type="number" step="any" formControlName="conversionFactor"
+            class="bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5 transition-colors disabled:opacity-60 disabled:bg-gray-100 dark:disabled:bg-gray-800"
+            [class.border-red-500]="form.get('conversionFactor')?.invalid && form.get('conversionFactor')?.touched"
+            [class.dark:border-red-500]="form.get('conversionFactor')?.invalid && form.get('conversionFactor')?.touched">
+          <div *ngIf="form.get('conversionFactor')?.invalid && form.get('conversionFactor')?.touched"
+            class="text-red-500 dark:text-red-400 text-xs mt-1 font-medium">
+            {{ 'validation.invalid' | translate }}
+          </div>
+          
+          <!-- Base Unit Reference Hint -->
+          <div *ngIf="baseUnitForSelectedType && !form.get('isBaseUnit')?.value" 
+               class="mt-3 p-3 bg-indigo-50/50 dark:bg-indigo-500/5 rounded-lg border border-indigo-100 dark:border-indigo-500/10 flex gap-3">
+            <i class="fas fa-info-circle text-indigo-500 mt-0.5"></i>
+            <div class="text-sm">
+              <p class="font-medium text-indigo-900 dark:text-indigo-300 mb-1">
+                {{ 'uom.baseUnitReference' | translate }}: <span class="font-bold">{{ baseUnitForSelectedType.aName }} ({{ baseUnitForSelectedType.code }})</span>
+              </p>
+              <p class="text-indigo-700 dark:text-indigo-400">
+                1 <span class="font-semibold">{{ form.get('aName')?.value || ('uom.newUnit' | translate) }}</span> = 
+                <span class="font-semibold">{{ form.get('conversionFactor')?.value || 1 }}</span> 
+                {{ baseUnitForSelectedType.aName }}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Notes -->
+        <div class="col-span-1 md:col-span-2 space-y-1.5 mt-2">
+          <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300">
+            {{ 'common.notes' | translate }}
+          </label>
+          <textarea formControlName="notes" rows="3"
+            class="bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5 transition-colors disabled:opacity-60 disabled:bg-gray-100 dark:disabled:bg-gray-800 resize-y"></textarea>
+        </div>
+      </div>
+
+      <!-- Actions Footer -->
+      <div class="mt-8 pt-5 border-t border-gray-100 dark:border-gray-700 flex items-center justify-end gap-3"
+        *ngIf="!isView">
+        <button type="button" (click)="onCancel()"
+          class="px-5 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 focus:ring-4 focus:outline-none focus:ring-gray-100 dark:focus:ring-gray-700 transition-all shadow-sm">
+          {{ 'common.cancel' | translate }}
+        </button>
+        <button type="submit" [disabled]="form.invalid || isSaving"
+          class="px-5 py-2.5 text-sm font-medium text-white bg-indigo-600 dark:bg-indigo-500 rounded-lg hover:bg-indigo-700 dark:hover:bg-indigo-600 focus:ring-4 focus:outline-none focus:ring-indigo-300 dark:focus:ring-indigo-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-sm flex items-center gap-2">
+          <i class="fas fa-spinner fa-spin" *ngIf="isSaving"></i>
+          <i class="fas fa-save" *ngIf="!isSaving"></i>
+          {{ (isEditMode ? 'common.save' : 'common.add') | translate }}
+        </button>
+      </div>
+
+      <div class="mt-8 pt-5 border-t border-gray-100 dark:border-gray-700 flex items-center justify-end gap-3"
+        *ngIf="isView">
+        <button type="button" (click)="onCancel()"
+          class="px-5 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 focus:ring-4 focus:outline-none focus:ring-gray-100 dark:focus:ring-gray-700 transition-all shadow-sm">
+          {{ 'common.back' | translate }}
+        </button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<!-- Loading Skeleton -->
+<div *ngIf="loading"
+  class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 mt-4 animate-pulse">
+  <div class="flex justify-between items-center mb-8 border-b border-gray-100 dark:border-gray-700 pb-6">
+    <div class="flex items-center gap-4">
+      <div class="w-10 h-10 bg-gray-200 dark:bg-gray-700 rounded-lg"></div>
+      <div>
+        <div class="h-5 bg-gray-200 dark:bg-gray-700 rounded-md w-32 mb-2"></div>
+        <div class="h-3 bg-gray-200 dark:bg-gray-700 rounded-md w-48"></div>
+      </div>
+    </div>
+    <div class="h-10 bg-gray-200 dark:bg-gray-700 rounded-lg w-32"></div>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+    <div>
+      <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-24 mb-3"></div>
+      <div class="h-10 bg-gray-200 dark:bg-gray-700 rounded-lg w-full"></div>
+    </div>
+    <div>
+      <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-24 mb-3"></div>
+      <div class="h-10 bg-gray-200 dark:bg-gray-700 rounded-lg w-full"></div>
+    </div>
+    <div class="col-span-1 md:col-span-2">
+      <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-32 mb-3"></div>
+      <div class="h-10 bg-gray-200 dark:bg-gray-700 rounded-lg w-full"></div>
+    </div>
+    <div class="col-span-1 md:col-span-2">
+      <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-24 mb-3"></div>
+      <div class="h-24 bg-gray-200 dark:bg-gray-700 rounded-lg w-full"></div>
+    </div>
+  </div>
+</div>

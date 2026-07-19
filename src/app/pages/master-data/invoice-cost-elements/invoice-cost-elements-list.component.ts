@@ -36,8 +36,8 @@ export class InvoiceCostElementsListComponent implements OnInit {
   columns: CrudColumn[] = [
     { field: 'code', header: 'common.code', type: 'code' },
     { field: 'name', header: 'common.name', type: 'text' },
-    { field: 'typeDisplay', header: 'common.type', type: 'text' },
-    { field: 'operationTypeDisplay', header: 'invoiceCostElements.fields.operationType', type: 'text' },
+    { field: 'typeDisplay', header: 'common.type', type: 'dynamic-badge' },
+    { field: 'operationTypeDisplay', header: 'invoiceCostElements.fields.operationType', type: 'dynamic-badge' },
     { field: 'defaultPercentage', header: 'invoiceCostElements.fields.defaultPercentage', type: 'text' },
     { field: 'isActive', header: 'common.status', type: 'badge' }
   ];
@@ -54,7 +54,9 @@ export class InvoiceCostElementsListComponent implements OnInit {
         anyRes.items = anyRes.items.map((item: any) => ({
           ...item,
           typeDisplay: this.getTypeLabel(item.type),
-          operationTypeDisplay: this.getOperationTypeLabel(item.operationType)
+          typeDisplayColor: item.type === 'Sales' ? 'success' : (item.type === 'Purchases' ? 'warning' : 'primary'),
+          operationTypeDisplay: this.getOperationTypeLabel(item.operationType),
+          operationTypeDisplayColor: item.operationType === 'Addition' ? 'error' : 'success'
         }));
         this.data = anyRes;
         this.loading = false;

@@ -7,7 +7,7 @@
       <div (click)="toggleDropdown()" class="w-full"
         [ngClass]="{'cursor-not-allowed opacity-60': disabled, 'cursor-pointer': !disabled}">
         <div
-          class="flex min-h-[35px] rounded-lg border border-gray-200 bg-white py-1.5 pl-3 pr-2 shadow-theme-xs outline-hidden transition-all hover:border-brand-300 focus:border-brand-400 focus:ring-3 focus:ring-brand-500/10 dark:border-gray-800 dark:bg-gray-900 dark:hover:border-brand-500/50"
+          class="flex h-11 rounded-lg border border-gray-200 bg-white py-1.5 pl-3 pr-2 shadow-theme-xs outline-hidden transition-all hover:border-brand-300 focus:border-brand-400 focus:ring-3 focus:ring-brand-500/10 dark:border-gray-800 dark:bg-gray-900 dark:hover:border-brand-500/50"
           [ngClass]="{'border-brand-400 ring-3 ring-brand-500/10 dark:border-brand-500/50': isOpen}">
           <div class="flex flex-wrap flex-auto gap-2 items-center">
             @if (selectedValuesText.length > 0) {

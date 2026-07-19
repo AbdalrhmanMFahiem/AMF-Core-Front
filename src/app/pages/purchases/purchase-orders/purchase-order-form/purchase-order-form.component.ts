@@ -4,7 +4,7 @@ import { FormsModule, NgForm } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { forkJoin } from 'rxjs';
-import { InvoiceService } from '../../../../core/services/invoice.service';
+import { PurchaseOrderService } from '../../../../core/services/purchase-order.service';
 import { LookupService } from '../../../../core/services/lookup.service';
 import { ComponentCardComponent } from '../../../../shared/components/common/component-card/component-card.component';
 import { PageBreadcrumbComponent } from '../../../../shared/components/common/page-breadcrumb/page-breadcrumb.component';
@@ -13,28 +13,22 @@ import { ErrorBannerComponent } from '../../../../shared/components/common/error
 import { SearchableSelectComponent, SearchableOption } from '../../../../shared/components/form/searchable-select/searchable-select.component';
 import { DatePickerComponent } from '../../../../shared/components/form/date-picker/date-picker.component';
 import { ItemLookupModalComponent } from '../../../../shared/components/lookups/item-lookup-modal/item-lookup-modal.component';
-import { CostElementLookupModalComponent } from '../../../../shared/components/lookups/cost-element-lookup-modal/cost-element-lookup-modal.component';
-import { PaymentModalComponent } from '../payment-modal/payment-modal.component';
 import { DocumentStatusBadgeComponent } from '../../../../shared/components/common/document-status-badge/document-status-badge.component';
 import { StatusBadgeComponent } from '../../../../shared/components/ui/status-badge/status-badge.component';
 import { PrintPreviewModalComponent } from '../../../../shared/components/common/print-preview-modal/print-preview-modal.component';
 import { HasUnsavedChanges } from '../../../../core/guards/unsaved-changes.guard';
 import {
-  InvoiceRequest,
-  InvoiceResponse,
-  InvoiceType,
+  PurchaseOrderRequest,
+  PurchaseOrderResponse,
   DocumentStatus,
-  InvoiceLineRequest,
-  InvoiceCostLineRequest,
-  InvoiceCostOperation,
-  PaymentMethod
-} from '../../../../core/models/invoice.model';
-import { ItemLookupResponse, InvoiceCostElementDropdown } from '../../../../core/models/lookup.model';
-
+  ApprovalStatus,
+  PurchaseOrderLineRequest
+} from '../../../../core/models/purchase-order.model';
+import { ItemLookupResponse } from '../../../../core/models/lookup.model';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
-  selector: 'app-sales-invoice-form',
+  selector: 'app-purchase-order-form',
   standalone: true,
   imports: [
     CommonModule,
@@ -47,18 +41,16 @@ import { ToastrService } from 'ngx-toastr';
     SearchableSelectComponent,
     DatePickerComponent,
     ItemLookupModalComponent,
-    CostElementLookupModalComponent,
-    PaymentModalComponent,
     DocumentStatusBadgeComponent,
     StatusBadgeComponent,
     PrintPreviewModalComponent
   ],
-  templateUrl: './sales-invoice-form.component.html',
+  templateUrl: './purchase-order-form.component.html',
 })
-export class SalesInvoiceFormComponent implements OnInit, HasUnsavedChanges {
+export class PurchaseOrderFormComponent implements OnInit, HasUnsavedChanges {
   @ViewChild('form') form!: NgForm;
 
-  private invoiceService = inject(InvoiceService);
+  private purchaseOrderService = inject(PurchaseOrderService);
   private lookupService = inject(LookupService);
   private translate = inject(TranslateService);
   private route = inject(ActivatedRoute);
@@ -66,7 +58,7 @@ export class SalesInvoiceFormComponent implements OnInit, HasUnsavedChanges {
   private toastr = inject(ToastrService);
 
   id: number | null = null;
-  mode: 'add' | 'view' = 'add'; // Note: no edit mode
+  mode: 'add' | 'view' | 'edit' = 'add';
   loading = false;
   saving = false;
   saveSuccess = false;
@@ -76,34 +68,49 @@ export class SalesInvoiceFormComponent implements OnInit, HasUnsavedChanges {
   showLeaveConfirmation = false;
   private leaveConfirmationResolver: ((value: boolean) => void) | null = null;
 
-  activeTab: 'items' | 'cost-elements' = 'items';
+  activeTab: 'items' | 'additional' = 'items';
   isItemModalOpen = false;
-  isCostElementModalOpen = false;
-  isPaymentModalOpen = false;
   
   isPrintModalOpen = false;
   pdfBlobUrl: string | null = null;
   pdfLoading = false;
 
-  model: InvoiceRequest = {
+  model: PurchaseOrderRequest = {
+    id: 0,
     code: '',
-    invoiceType: InvoiceType.Sales,
+    documentNumber: '',
     businessPartnerId: 0,
     currencyId: undefined,
     branchId: undefined,
     warehouseId: undefined,
-    invoiceDate: new Date().toISOString().split('T')[0],
-    dueDate: undefined,
+    postingDate: new Date().toISOString().split('T')[0],
+    documentDate: new Date().toISOString().split('T')[0],
+    dueDate: new Date().toISOString().split('T')[0],
+    requiredDate: undefined,
+    status: DocumentStatus.Draft,
+    approvalStatus: ApprovalStatus.Pending,
+    exchangeRate: 1,
+    discountPercent: 0,
+    discountAmount: 0,
+    taxAmount: 0,
+    totalBeforeDiscount: 0,
+    totalBeforeTax: 0,
+    totalAmount: 0,
+    freightAmount: 0,
+    referenceNumber: '',
     notes: '',
-    lines: [],
-    costLines: []
+    internalNotes: '',
+    lines: []
   };
 
-  viewResponse?: InvoiceResponse;
+  viewResponse?: PurchaseOrderResponse;
 
   // Options for Dropdowns
-  partnersOptions: SearchableOption[] = [];
+  vendorsOptions: SearchableOption[] = [];
   warehousesOptions: SearchableOption[] = [];
+  branchesOptions: SearchableOption[] = [];
+  currenciesOptions: SearchableOption[] = [];
+  uomOptions: SearchableOption[] = [];
 
   // Totals calculated on the fly
   subTotal = 0;
@@ -115,6 +122,7 @@ export class SalesInvoiceFormComponent implements OnInit, HasUnsavedChanges {
     this.route.url.subscribe(url => {
       const path = url[url.length - (this.route.snapshot.paramMap.has('id') ? 2 : 1)]?.path;
       if (path === 'view') this.mode = 'view';
+      else if (path === 'edit') this.mode = 'edit';
       else this.mode = 'add';
     });
 
@@ -129,21 +137,30 @@ export class SalesInvoiceFormComponent implements OnInit, HasUnsavedChanges {
   loadInitialData(): void {
     this.loading = true;
 
-    const customers$ = this.lookupService.getCustomers();
+    const vendors$ = this.lookupService.getVendors();
     const warehouses$ = this.lookupService.getWarehouses();
-    const action$ = this.id ? this.invoiceService.get(this.id) : this.invoiceService.getNextCode();
+    const branches$ = this.lookupService.getBranches();
+    const currencies$ = this.lookupService.getCurrencies();
+    const uoms$ = this.lookupService.getUnitOfMeasures();
+    const action$ = this.id ? this.purchaseOrderService.get(this.id) : this.purchaseOrderService.getNextCode();
 
     forkJoin({
-      customers: customers$,
+      vendors: vendors$,
       warehouses: warehouses$,
+      branches: branches$,
+      currencies: currencies$,
+      uoms: uoms$,
       actionData: action$
     }).subscribe({
       next: (res: any) => {
-        this.partnersOptions = res.customers.map((v: any) => ({ value: v.id, label: `${v.code} - ${v.name}` }));
+        this.vendorsOptions = res.vendors.map((v: any) => ({ value: v.id, label: `${v.code} - ${v.name}` }));
         this.warehousesOptions = res.warehouses.map((w: any) => ({ value: w.id, label: w.name }));
+        this.branchesOptions = res.branches.map((b: any) => ({ value: b.id, label: b.name }));
+        this.currenciesOptions = res.currencies.map((c: any) => ({ value: c.id, label: c.name }));
+        this.uomOptions = res.uoms.map((u: any) => ({ value: u.id, label: u.name }));
 
         if (this.id) {
-          this.processViewResponse(res.actionData as InvoiceResponse);
+          this.processViewResponse(res.actionData as PurchaseOrderResponse);
         } else {
           this.model.code = res.actionData.nextCode;
         }
@@ -158,47 +175,41 @@ export class SalesInvoiceFormComponent implements OnInit, HasUnsavedChanges {
     });
   }
 
-  processViewResponse(res: InvoiceResponse): void {
+  processViewResponse(res: PurchaseOrderResponse): void {
     this.viewResponse = res;
     this.model = {
-      code: res.code,
-      invoiceType: res.invoiceType,
-      businessPartnerId: res.businessPartnerId,
-      currencyId: res.currencyId,
-      branchId: res.branchId,
-      warehouseId: res.warehouseId,
-      invoiceDate: res.invoiceDate.split('T')[0],
-      dueDate: res.dueDate ? res.dueDate.split('T')[0] : undefined,
-      notes: res.notes,
+      ...res,
+      postingDate: res.postingDate.split('T')[0],
+      documentDate: res.documentDate.split('T')[0],
+      dueDate: res.dueDate.split('T')[0],
+      requiredDate: res.requiredDate ? res.requiredDate.split('T')[0] : undefined,
       lines: res.lines.map(l => ({
+        id: l.id,
         itemId: l.itemId,
-        uomId: l.uomId,
         warehouseId: l.warehouseId,
-        binLocationId: l.binLocationId,
+        lineNumber: l.lineNumber,
+        description: l.description,
         quantity: l.quantity,
+        unitOfMeasureId: l.unitOfMeasureId,
+        uomConversionFactor: l.uomConversionFactor,
         unitPrice: l.unitPrice,
         discountPercent: l.discountPercent,
+        discountAmount: l.discountAmount,
         taxPercent: l.taxPercent,
-        lineOrder: l.lineOrder,
+        taxAmount: l.taxAmount,
+        lineTotalBeforeDiscount: l.lineTotalBeforeDiscount,
+        lineTotalBeforeTax: l.lineTotalBeforeTax,
+        lineTotal: l.lineTotal,
+        lineDueDate: l.lineDueDate ? l.lineDueDate.split('T')[0] : undefined,
+        lineStatus: l.lineStatus,
+        mrpRecommendationId: l.mrpRecommendationId,
+        vendorItemCode: l.vendorItemCode,
         notes: l.notes,
         // Add extra fields just for UI display
         _itemName: l.itemName,
         _itemCode: l.itemCode,
-        _netAmount: l.netAmount,
-        _discountAmount: 0,
-        _taxAmount: 0,
         _discountFixedMode: 'percentage',
         _taxFixedMode: 'percentage'
-      } as any)),
-      costLines: res.costLines.map(c => ({
-        invoiceCostElementId: c.invoiceCostElementId,
-        amount: c.amount,
-        percentage: c.percentage,
-        notes: c.notes,
-        // Add extra fields just for UI display
-        _name: c.invoiceCostElementName,
-        _operationType: c.invoiceCostOperation,
-        _fixedMode: 'amount'
       } as any))
     };
     this.recalculateTotals();
@@ -206,8 +217,8 @@ export class SalesInvoiceFormComponent implements OnInit, HasUnsavedChanges {
 
   loadRecord(id: number): void {
     this.loading = true;
-    this.invoiceService.get(id).subscribe({
-      next: (res: InvoiceResponse) => {
+    this.purchaseOrderService.get(id).subscribe({
+      next: (res: PurchaseOrderResponse) => {
         this.processViewResponse(res);
         this.loading = false;
       },
@@ -218,7 +229,7 @@ export class SalesInvoiceFormComponent implements OnInit, HasUnsavedChanges {
     });
   }
 
-  setTab(tab: 'items' | 'cost-elements'): void {
+  setTab(tab: 'items' | 'additional'): void {
     this.activeTab = tab;
   }
 
@@ -230,7 +241,7 @@ export class SalesInvoiceFormComponent implements OnInit, HasUnsavedChanges {
         const isDark = document.documentElement.classList.contains('dark');
         Swal.default.fire({
           title: this.translate.instant('common.cancelWarningTitle'),
-          text: this.translate.instant('salesInvoices.errors.changeWarehouseWarning'),
+          text: this.translate.instant('salesInvoices.errors.changeWarehouseWarning'), // Reuse translation
           icon: 'warning',
           showCancelButton: true,
           confirmButtonColor: '#ef4444',
@@ -277,20 +288,28 @@ export class SalesInvoiceFormComponent implements OnInit, HasUnsavedChanges {
     }
 
     this.model.lines.push({
+      id: 0,
       itemId: item.id,
+      warehouseId: this.model.warehouseId!,
       quantity: 1,
-      unitPrice: item.salesPrice || 0,
+      unitPrice: item.salesPrice || 0, // Should be purchase price if available
       discountPercent: 0,
+      discountAmount: 0,
       taxPercent: 0,
-      lineOrder: this.model.lines.length + 1,
+      taxAmount: 0,
+      lineNumber: this.model.lines.length + 1,
+      uomConversionFactor: 1,
+      description: item.name,
+      lineTotalBeforeDiscount: 0,
+      lineTotalBeforeTax: 0,
+      lineTotal: 0,
+      lineStatus: DocumentStatus.Open,
       // Internal properties for UI
       _itemCode: item.code,
       _itemName: item.name,
-      _netAmount: 0,
-      _discountAmount: 0,
-      _taxAmount: 0,
       _discountFixedMode: 'percentage',
-      _taxFixedMode: 'percentage'
+      _taxFixedMode: 'percentage',
+      notes: ''
     } as any);
     this.form?.form.markAsDirty();
     this.recalculateTotals();
@@ -327,52 +346,6 @@ export class SalesInvoiceFormComponent implements OnInit, HasUnsavedChanges {
     this.recalculateTotals();
   }
 
-  // Cost Elements Tab Actions
-  openCostElementModal(): void {
-    if (this.mode === 'view') return;
-    this.isCostElementModalOpen = true;
-  }
-
-  onCostElementSelected(element: InvoiceCostElementDropdown): void {
-    const exists = this.model.costLines.some((c: any) => c.invoiceCostElementId === element.id);
-    if (exists) {
-      this.validationErrors = [this.translate.instant('salesInvoices.errors.duplicateCostElement')];
-      setTimeout(() => this.validationErrors = [], 4000);
-      return;
-    }
-
-    this.model.costLines.push({
-      invoiceCostElementId: element.id,
-      amount: 0,
-      percentage: element.defaultPercentage || 0,
-      // Internal properties for UI
-      _name: element.name,
-      _operationType: element.operationType,
-      _fixedMode: 'percentage'
-    } as any);
-    this.form?.form.markAsDirty();
-    this.recalculateTotals();
-  }
-
-  onCostPercentageChange(index: number): void {
-    const cost = this.model.costLines[index] as any;
-    cost._fixedMode = 'percentage';
-    this.recalculateTotals();
-  }
-
-  onCostAmountChange(index: number): void {
-    const cost = this.model.costLines[index] as any;
-    cost._fixedMode = 'amount';
-    this.recalculateTotals();
-  }
-
-  removeCostElement(index: number): void {
-    if (this.mode === 'view') return;
-    this.model.costLines.splice(index, 1);
-    this.form?.form.markAsDirty();
-    this.recalculateTotals();
-  }
-
   recalculateTotals(): void {
     this.subTotal = 0;
     this.totalDiscount = 0;
@@ -382,64 +355,50 @@ export class SalesInvoiceFormComponent implements OnInit, HasUnsavedChanges {
     // Line items
     this.model.lines.forEach((line: any) => {
       const gross = line.quantity * line.unitPrice;
+      line.lineTotalBeforeDiscount = gross;
 
       // Discount sync
       if (line._discountFixedMode === 'amount') {
-        line.discountPercent = gross > 0 ? Number(((line._discountAmount / gross) * 100).toFixed(2)) : 0;
+        line.discountPercent = gross > 0 ? Number(((line.discountAmount / gross) * 100).toFixed(2)) : 0;
       } else {
-        line._discountAmount = Number((gross * ((line.discountPercent || 0) / 100)).toFixed(2));
+        line.discountAmount = Number((gross * ((line.discountPercent || 0) / 100)).toFixed(2));
       }
 
-      const discount = line._discountAmount || 0;
+      const discount = line.discountAmount || 0;
       const afterDiscount = gross - discount;
+      line.lineTotalBeforeTax = afterDiscount;
 
       // Tax sync
       if (line._taxFixedMode === 'amount') {
-        line.taxPercent = afterDiscount > 0 ? Number(((line._taxAmount / afterDiscount) * 100).toFixed(2)) : 0;
+        line.taxPercent = afterDiscount > 0 ? Number(((line.taxAmount / afterDiscount) * 100).toFixed(2)) : 0;
       } else {
-        line._taxAmount = Number((afterDiscount * ((line.taxPercent || 0) / 100)).toFixed(2));
+        line.taxAmount = Number((afterDiscount * ((line.taxPercent || 0) / 100)).toFixed(2));
       }
 
-      const tax = line._taxAmount || 0;
+      const tax = line.taxAmount || 0;
       const net = afterDiscount + tax;
 
-      line._netAmount = net;
+      line.lineTotal = net;
 
       this.subTotal += gross;
       this.totalDiscount += discount;
       this.totalTax += tax;
     });
 
-    // Items Net Total for cost calculation
-    const itemsNetTotal = this.model.lines.reduce((sum: any, line: any) => sum + (line['_netAmount'] || 0), 0);
-
-    // Cost elements
-    let additionalCosts = 0;
-    this.model.costLines.forEach((cost: any) => {
-      // Sync percentage & amount
-      if (cost._fixedMode === 'amount') {
-        cost.percentage = itemsNetTotal > 0 ? Number(((cost.amount / itemsNetTotal) * 100).toFixed(2)) : 0;
-      } else {
-        cost.amount = Number(((cost.percentage / 100) * itemsNetTotal).toFixed(2));
-      }
-
-      if (cost._operationType === 'Addition') {
-        additionalCosts += cost.amount;
-      } else if (cost._operationType === 'Discount' || cost._operationType === 'Deduction') {
-        this.totalDiscount += cost.amount;
-      }
-    });
-
-    // Combine item taxes and cost element additions into totalTax (which represents additionalAmount in UI)
-    this.totalTax += additionalCosts;
-
     this.netTotal = this.subTotal - this.totalDiscount + this.totalTax;
+    
+    // Update model totals
+    this.model.totalBeforeDiscount = this.subTotal;
+    this.model.discountAmount = this.totalDiscount;
+    this.model.totalBeforeTax = this.subTotal - this.totalDiscount;
+    this.model.taxAmount = this.totalTax;
+    this.model.totalAmount = this.netTotal;
   }
 
   validate(): boolean {
     this.validationErrors = [];
     if (!this.model.businessPartnerId) {
-      this.validationErrors.push(`${this.translate.instant('salesInvoices.fields.businessPartner')}: ${this.translate.instant('validation.required')}`);
+      this.validationErrors.push(`${this.translate.instant('common.vendor')}: ${this.translate.instant('validation.required')}`);
     }
     if (!this.model.warehouseId) {
       this.validationErrors.push(`${this.translate.instant('salesInvoices.fields.warehouse')}: ${this.translate.instant('validation.required')}`);
@@ -470,15 +429,16 @@ export class SalesInvoiceFormComponent implements OnInit, HasUnsavedChanges {
     requestToSend.lines.forEach((l: any) => {
       delete l._itemName;
       delete l._itemCode;
-      delete l._netAmount;
-    });
-    requestToSend.costLines.forEach((c: any) => {
-      delete c._name;
-      delete c._operationType;
+      delete l._discountFixedMode;
+      delete l._taxFixedMode;
     });
 
-    this.invoiceService.add(requestToSend).subscribe({
-      next: (res) => {
+    const obs$: any = this.id 
+      ? this.purchaseOrderService.update(this.id, requestToSend)
+      : this.purchaseOrderService.add(requestToSend);
+
+    obs$.subscribe({
+      next: (res: any) => {
         this.saving = false;
         this.saveSuccess = true;
       },
@@ -497,31 +457,26 @@ export class SalesInvoiceFormComponent implements OnInit, HasUnsavedChanges {
     });
   }
 
-  onPaymentAdded(): void {
-    if (this.id) {
-      this.loadRecord(this.id);
-    }
-  }
-
-  onConfirm(): void {
+  onApprove(): void {
     if (!this.id) return;
     import('sweetalert2').then(Swal => {
       const isDark = document.documentElement.classList.contains('dark');
       Swal.default.fire({
-        title: this.translate.instant('common.confirmTitle'),
-        text: this.translate.instant('common.confirmWarning'),
+        title: this.translate.instant('purchaseOrders.approveTitle'),
+        text: this.translate.instant('purchaseOrders.approveText'),
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#10b981',
-        cancelButtonColor: '#ef4444',
+        cancelButtonColor: '#6b7280',
         confirmButtonText: this.translate.instant('stockAdjustments.confirm'),
-        cancelButtonText: this.translate.instant('login.cancel'),
+        cancelButtonText: this.translate.instant('common.cancel'),
         background: isDark ? '#1f2937' : '#ffffff',
         color: isDark ? '#ffffff' : '#545454'
       }).then((result) => {
         if (result.isConfirmed) {
-          this.invoiceService.confirm(this.id!).subscribe({
+          this.purchaseOrderService.approve(this.id!).subscribe({
             next: () => {
+              this.toastr.success(this.translate.instant('purchaseOrders.approvedSuccess'));
               this.loadRecord(this.id!);
             }
           });
@@ -535,20 +490,21 @@ export class SalesInvoiceFormComponent implements OnInit, HasUnsavedChanges {
     import('sweetalert2').then(Swal => {
       const isDark = document.documentElement.classList.contains('dark');
       Swal.default.fire({
-        title: this.translate.instant('common.cancelWarningTitle'),
-        text: this.translate.instant('common.cancelWarningText'),
+        title: this.translate.instant('purchaseOrders.cancelTitle'),
+        text: this.translate.instant('purchaseOrders.cancelText'),
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#ef4444',
         cancelButtonColor: '#6b7280',
         confirmButtonText: this.translate.instant('common.delete'),
-        cancelButtonText: this.translate.instant('login.cancel'),
+        cancelButtonText: this.translate.instant('common.cancel'),
         background: isDark ? '#1f2937' : '#ffffff',
         color: isDark ? '#ffffff' : '#545454'
       }).then((result) => {
         if (result.isConfirmed) {
-          this.invoiceService.cancel(this.id!).subscribe({
+          this.purchaseOrderService.cancel(this.id!).subscribe({
             next: () => {
+              this.toastr.success(this.translate.instant('purchaseOrders.cancelledSuccess'));
               this.loadRecord(this.id!);
             }
           });
@@ -557,8 +513,32 @@ export class SalesInvoiceFormComponent implements OnInit, HasUnsavedChanges {
     });
   }
 
+  onConvertToInvoice(): void {
+    if (!this.id) return;
+    import('sweetalert2').then(Swal => {
+      const isDark = document.documentElement.classList.contains('dark');
+      Swal.default.fire({
+        title: this.translate.instant('purchaseOrders.convertTitle'),
+        text: this.translate.instant('purchaseOrders.convertText'),
+        icon: 'info',
+        showCancelButton: true,
+        confirmButtonColor: '#3b82f6',
+        cancelButtonColor: '#6b7280',
+        confirmButtonText: this.translate.instant('purchaseOrders.convertToInvoice'),
+        cancelButtonText: this.translate.instant('common.cancel'),
+        background: isDark ? '#1f2937' : '#ffffff',
+        color: isDark ? '#ffffff' : '#545454'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          // Placeholder action
+          this.toastr.info('Conversion to Purchase Invoice will be supported soon.');
+        }
+      });
+    });
+  }
+
   onCancel(): void {
-    this.router.navigate(['/invoices/sales']);
+    this.router.navigate(['/purchases/purchase-orders']);
   }
 
   openPdfPreview(): void {
@@ -566,18 +546,12 @@ export class SalesInvoiceFormComponent implements OnInit, HasUnsavedChanges {
     this.isPrintModalOpen = true;
     this.pdfLoading = true;
     
-    this.invoiceService.printPdf(this.id).subscribe({
-      next: (blob) => {
-        const url = window.URL.createObjectURL(blob);
-        this.pdfBlobUrl = url;
+    // Placeholder for print
+    setTimeout(() => {
         this.pdfLoading = false;
-      },
-      error: () => {
-        this.toastr.error(this.translate.instant('errors.generic'));
-        this.pdfLoading = false;
+        this.toastr.info('Print preview is not implemented yet.');
         this.isPrintModalOpen = false;
-      }
-    });
+    }, 1000);
   }
 
   closePrintModal(): void {

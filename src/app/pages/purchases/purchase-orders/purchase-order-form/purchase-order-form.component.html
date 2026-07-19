@@ -1,12 +1,12 @@
-<app-page-breadcrumb [pageTitle]="(mode === 'view' ? 'common.view' : 'purchaseInvoices.addNew')"
-  parentPageTitle="purchaseInvoices.title" parentPageUrl="/purchases/invoices" />
+<app-page-breadcrumb [pageTitle]="(mode === 'view' ? 'common.view' : 'purchaseOrders.addNew')"
+  parentPageTitle="purchaseOrders.title" parentPageUrl="/purchases/purchase-orders" />
 
 <div class="space-y-6">
   <app-success-redirect-banner [isVisible]="saveSuccess" [message]="'common.savedSuccessfully'"
-    [redirectUrl]="'/purchases/invoices'" [countdownSeconds]="5" (stay)="saveSuccess = false">
+    [redirectUrl]="'/purchases/purchase-orders'" [countdownSeconds]="5" (stay)="saveSuccess = false">
   </app-success-redirect-banner>
 
-  <app-component-card [title]="(mode === 'view' ? 'common.view' : 'purchaseInvoices.addNew') | translate"
+  <app-component-card [title]="(mode === 'view' ? 'common.view' : 'purchaseOrders.addNew') | translate"
     [className]="'p-6'">
 
     <div *ngIf="loading" class="flex justify-center p-8">
@@ -19,7 +19,7 @@
       <div class="flex flex-wrap items-center justify-between gap-4 border-b border-gray-100 dark:border-white/5 pb-5">
 
         <div class="flex items-center gap-2">
-          <!-- Invoice Code -->
+          <!-- Order Code -->
           <div
             class="flex items-center gap-2 px-3 py-2 bg-brand-50 dark:bg-brand-500/10 border border-brand-100 dark:border-brand-500/20 rounded-lg shadow-theme-xs">
             <svg class="w-4 h-4 text-brand-600 dark:text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -38,33 +38,39 @@
           <!-- Status Badges -->
           <ng-container *ngIf="mode === 'view' && viewResponse">
             <app-document-status-badge [status]="viewResponse.status"></app-document-status-badge>
-            <app-status-badge *ngIf="viewResponse.approvalStatus" [status]="viewResponse.approvalStatus" [translationPrefix]="'common.approvalStatusEnum'"></app-status-badge>
-            <app-status-badge *ngIf="viewResponse.paymentStatus" [status]="viewResponse.paymentStatus" [translationPrefix]="'common.paidStatusEnum'"></app-status-badge>
+            <app-status-badge *ngIf="viewResponse.approvalStatus" [status]="viewResponse.approvalStatus" [translationPrefix]="'purchaseOrders.status'"></app-status-badge>
           </ng-container>
         </div>
 
         <!-- Action Buttons -->
         <div class="flex items-center gap-3">
-          <button *ngIf="mode === 'view' && $any(viewResponse?.status) === 'D'" type="button" (click)="onConfirm()"
+          <button *ngIf="mode === 'view' && $any(viewResponse?.status) === 'Draft' && $any(viewResponse?.approvalStatus) === 'Pending'" type="button" (click)="onApprove()"
             class="flex items-center gap-2 px-5 py-2.5 text-sm font-medium text-white bg-success-500 rounded-lg shadow-theme-xs hover:bg-success-600 transition-colors">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-            {{ 'stockAdjustments.confirm' | translate }}
+            {{ 'purchaseOrders.approveTitle' | translate }}
           </button>
 
-          <button *ngIf="mode === 'view' && $any(viewResponse?.status) !== 'Cancelled' && $any(viewResponse?.status) !== 'FullyPaid'" type="button" (click)="onCancelDocument()"
+          <button *ngIf="mode === 'view' && $any(viewResponse?.status) !== 'Cancelled' && $any(viewResponse?.status) !== 'Closed'" type="button" (click)="onCancelDocument()"
             class="flex items-center gap-2 px-5 py-2.5 text-sm font-medium text-white bg-error-500 rounded-lg shadow-theme-xs hover:bg-error-600 transition-colors">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
             {{ 'stockAdjustments.cancelDocument' | translate }}
           </button>
 
-          <button *ngIf="mode === 'view' && viewResponse?.remainingAmount! > 0" type="button"
-            (click)="isPaymentModalOpen = true"
+          <button *ngIf="mode === 'view' && $any(viewResponse?.approvalStatus) === 'Approved' && $any(viewResponse?.status) !== 'Cancelled'" type="button" (click)="onConvertToInvoice()"
             class="flex items-center gap-2 px-5 py-2.5 text-sm font-medium text-white bg-blue-500 rounded-lg shadow-theme-xs hover:bg-blue-600 transition-colors">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6">
-              </path>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path>
             </svg>
-            {{ 'purchaseInvoices.addPayment' | translate }}
+            {{ 'purchaseOrders.convertToInvoice' | translate }}
+          </button>
+
+          <!-- Print Button -->
+          <button *ngIf="mode === 'view'" type="button" (click)="openPdfPreview()"
+            class="flex items-center gap-2 px-5 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg shadow-theme-xs hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700 dark:hover:bg-gray-700 transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
+            </svg>
+            {{ 'purchaseOrders.printOrder' | translate }}
           </button>
 
           <button type="button" (click)="onCancel()"
@@ -91,23 +97,23 @@
 
         <!-- Left Side: Form Fields -->
         <div class="lg:col-span-3 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          <!-- Invoice Date -->
+          <!-- Document Date -->
           <div>
             <label class="mb-2.5 block text-sm font-medium text-gray-800 dark:text-white/90">
-              {{ 'purchaseInvoices.fields.invoiceDate' | translate }} <span class="text-error-500">*</span>
+              {{ 'common.date' | translate }} <span class="text-error-500">*</span>
             </label>
-            <app-date-picker id="invoiceDate" name="invoiceDate" [(ngModel)]="model.invoiceDate"
+            <app-date-picker id="documentDate" name="documentDate" [(ngModel)]="model.documentDate"
               [disabled]="mode === 'view'" [placeholder]="'common.selectDate' | translate" required>
             </app-date-picker>
           </div>
 
-          <!-- Business Partner -->
+          <!-- Vendor (Business Partner) -->
           <div>
             <label class="mb-2.5 block text-sm font-medium text-gray-800 dark:text-white/90">
-              {{ 'purchaseInvoices.fields.businessPartner' | translate }} <span class="text-error-500">*</span>
+              {{ 'common.vendor' | translate }} <span class="text-error-500">*</span>
             </label>
             <app-searchable-select [(ngModel)]="model.businessPartnerId" name="businessPartnerId" required
-              [options]="partnersOptions" [disabled]="mode === 'view'" placeholder="common.select">
+              [options]="vendorsOptions" [disabled]="mode === 'view'" placeholder="common.select">
             </app-searchable-select>
           </div>
 
@@ -115,7 +121,7 @@
           <!-- Warehouse -->
           <div>
             <label class="mb-2.5 block text-sm font-medium text-gray-800 dark:text-white/90">
-              {{ 'purchaseInvoices.fields.warehouse' | translate }} <span class="text-error-500">*</span>
+              {{ 'salesInvoices.fields.warehouse' | translate }} <span class="text-error-500">*</span>
             </label>
             <app-searchable-select [(ngModel)]="model.warehouseId" (ngModelChange)="onWarehouseChange($event)" name="warehouseId" required [options]="warehousesOptions"
               [disabled]="mode === 'view'" placeholder="common.select">
@@ -125,11 +131,31 @@
           <!-- Due Date -->
           <div>
             <label class="mb-2.5 block text-sm font-medium text-gray-800 dark:text-white/90">
-              {{ 'purchaseInvoices.fields.dueDate' | translate }}
+              {{ 'salesInvoices.fields.dueDate' | translate }}
             </label>
             <app-date-picker id="dueDate" name="dueDate" [(ngModel)]="model.dueDate"
               [placeholder]="'common.selectDate' | translate" [disabled]="mode === 'view'">
             </app-date-picker>
+          </div>
+
+          <!-- Currency -->
+          <div>
+            <label class="mb-2.5 block text-sm font-medium text-gray-800 dark:text-white/90">
+              {{ 'common.currency' | translate }}
+            </label>
+            <app-searchable-select [(ngModel)]="model.currencyId" name="currencyId" [options]="currenciesOptions"
+              [disabled]="mode === 'view'" placeholder="common.select">
+            </app-searchable-select>
+          </div>
+
+          <!-- Branch -->
+          <div>
+            <label class="mb-2.5 block text-sm font-medium text-gray-800 dark:text-white/90">
+              {{ 'common.branch' | translate }}
+            </label>
+            <app-searchable-select [(ngModel)]="model.branchId" name="branchId" [options]="branchesOptions"
+              [disabled]="mode === 'view'" placeholder="common.select">
+            </app-searchable-select>
           </div>
         </div>
 
@@ -138,7 +164,7 @@
           <div
             class="w-full h-full rounded-xl bg-gray-50 dark:bg-gray-800/50 p-5 space-y-3 shadow-theme-xs border border-gray-100 dark:border-white/5 flex flex-col justify-center">
             <div class="flex justify-between items-center text-sm">
-              <span class="text-gray-500 dark:text-gray-400">{{ 'purchaseInvoices.fields.subTotal' | translate }}</span>
+              <span class="text-gray-500 dark:text-gray-400">{{ 'salesInvoices.fields.subTotal' | translate }}</span>
               <span class="font-semibold text-gray-900 dark:text-white">{{ subTotal | number:'1.2-2' }}</span>
             </div>
             <div class="flex justify-between items-center text-sm">
@@ -147,12 +173,12 @@
                 }}</span>
             </div>
             <div class="flex justify-between items-center text-sm">
-              <span class="text-gray-500 dark:text-gray-400">{{ 'invoices.additionalAmount' | translate }}</span>
+              <span class="text-gray-500 dark:text-gray-400">{{ 'invoices.taxAmount' | translate }}</span>
               <span class="font-semibold text-gray-900 dark:text-white">{{ totalTax | number:'1.2-2' }}</span>
             </div>
             <div
               class="pt-4 mt-auto border-t border-gray-200 dark:border-gray-700/60 flex justify-between items-center">
-              <span class="text-base font-medium text-gray-900 dark:text-white">{{ 'purchaseInvoices.fields.totalAmount' |
+              <span class="text-base font-medium text-gray-900 dark:text-white">{{ 'salesInvoices.fields.totalAmount' |
                 translate }}</span>
               <span class="text-xl font-bold text-brand-600 dark:text-brand-400">{{ netTotal | number:'1.2-2' }}</span>
             </div>
@@ -168,16 +194,14 @@
             [class.text-gray-500]="activeTab !== 'items'" [class.hover:text-gray-700]="activeTab !== 'items'"
             [class.hover:border-gray-300]="activeTab !== 'items'"
             class="whitespace-nowrap pb-4 px-1 border-b-2 font-medium text-sm transition-colors flex items-center">
-            {{ 'purchaseInvoices.tabs.items' | translate }}
+            {{ 'salesInvoices.tabs.items' | translate }}
           </button>
-
-          <button type="button" (click)="setTab('cost-elements')"
-            [class.border-brand-500]="activeTab === 'cost-elements'"
-            [class.text-brand-600]="activeTab === 'cost-elements'"
-            [class.border-transparent]="activeTab !== 'cost-elements'"
-            [class.text-gray-500]="activeTab !== 'cost-elements'"
-            class="whitespace-nowrap pb-4 px-1 border-b-2 font-medium text-sm transition-colors flex items-center hover:text-gray-700 hover:border-gray-300">
-            {{ 'purchaseInvoices.tabs.costElements' | translate }}
+          <button type="button" (click)="setTab('additional')" [class.border-brand-500]="activeTab === 'additional'"
+            [class.text-brand-600]="activeTab === 'additional'" [class.border-transparent]="activeTab !== 'additional'"
+            [class.text-gray-500]="activeTab !== 'additional'" [class.hover:text-gray-700]="activeTab !== 'additional'"
+            [class.hover:border-gray-300]="activeTab !== 'additional'"
+            class="whitespace-nowrap pb-4 px-1 border-b-2 font-medium text-sm transition-colors flex items-center">
+            {{ 'common.additionalDetails' | translate }}
           </button>
         </nav>
       </div>
@@ -190,7 +214,7 @@
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
             </svg>
-            {{ 'purchaseInvoices.addItems' | translate }}
+            {{ 'purchaseOrders.addItems' | translate }}
           </button>
         </div>
 
@@ -208,7 +232,15 @@
                   <th class="px-4 py-3 font-medium text-gray-500 text-start text-xs dark:text-gray-400 uppercase w-32">
                     {{ 'invoices.qty' | translate }}</th>
                   <th class="px-4 py-3 font-medium text-gray-500 text-start text-xs dark:text-gray-400 uppercase w-32">
+                    {{ 'salesInvoices.fields.warehouse' | translate }}</th>
+                  <th class="px-4 py-3 font-medium text-gray-500 text-start text-xs dark:text-gray-400 uppercase w-32">
+                    {{ 'common.unitOfMeasure' | translate }}</th>
+                  <th class="px-4 py-3 font-medium text-gray-500 text-start text-xs dark:text-gray-400 uppercase w-32">
+                    {{ 'salesInvoices.fields.dueDate' | translate }}</th>
+                  <th class="px-4 py-3 font-medium text-gray-500 text-start text-xs dark:text-gray-400 uppercase w-32">
                     {{ 'invoices.price' | translate }}</th>
+                  <th class="px-4 py-3 font-medium text-gray-500 text-start text-xs dark:text-gray-400 uppercase w-32">
+                    {{ 'common.notes' | translate }}</th>
                   <th class="px-4 py-3 font-medium text-gray-500 text-start text-xs dark:text-gray-400 uppercase w-32">
                     <div class="flex flex-col gap-1">
                       <span>{{ 'invoices.discount' | translate }}</span>
@@ -231,9 +263,9 @@
               </thead>
               <tbody class="divide-y divide-gray-100 dark:divide-white/5">
                 <tr *ngIf="model.lines.length === 0">
-                  <td [attr.colspan]="mode !== 'view' ? 10 : 9"
+                  <td [attr.colspan]="mode !== 'view' ? 11 : 10"
                     class="px-4 py-8 text-center text-gray-500 dark:text-gray-400">
-                    {{ 'purchaseInvoices.errors.atLeastOneItem' | translate }}
+                    {{ 'salesInvoices.errors.atLeastOneItem' | translate }}
                   </td>
                 </tr>
                 <tr *ngFor="let line of model.lines; let i = index">
@@ -266,10 +298,39 @@
                       class="w-full min-w-[100px] rounded-md border border-gray-200 px-3 py-1.5 text-sm dark:bg-dark-900 dark:border-gray-700 dark:text-white" />
                   </td>
 
+                  <!-- Line Warehouse -->
+                  <td class="px-4 py-2">
+                    <select [(ngModel)]="line.warehouseId" name="line_wh_{{i}}" [disabled]="mode === 'view'" required
+                      class="w-full min-w-[100px] rounded-md border border-gray-200 px-3 py-1.5 text-sm dark:bg-dark-900 dark:border-gray-700 dark:text-white">
+                      <option *ngFor="let opt of warehousesOptions" [ngValue]="opt.value">{{ opt.label }}</option>
+                    </select>
+                  </td>
+
+                  <!-- UOM -->
+                  <td class="px-4 py-2">
+                    <select [(ngModel)]="line.unitOfMeasureId" name="uom_{{i}}" [disabled]="mode === 'view'"
+                      class="w-full min-w-[100px] rounded-md border border-gray-200 px-3 py-1.5 text-sm dark:bg-dark-900 dark:border-gray-700 dark:text-white">
+                      <option [ngValue]="undefined">{{ 'common.select' | translate }}</option>
+                      <option *ngFor="let opt of uomOptions" [ngValue]="opt.value">{{ opt.label }}</option>
+                    </select>
+                  </td>
+
+                  <!-- Line Due Date -->
+                  <td class="px-4 py-2">
+                    <input type="date" [(ngModel)]="line.lineDueDate" name="line_due_date_{{i}}" [disabled]="mode === 'view'"
+                      class="w-full min-w-[130px] rounded-md border border-gray-200 px-3 py-1.5 text-sm dark:bg-dark-900 dark:border-gray-700 dark:text-white" />
+                  </td>
+
                   <!-- Price -->
                   <td class="px-4 py-2">
                     <input type="number" [(ngModel)]="line.unitPrice" name="price_{{i}}"
                       (ngModelChange)="recalculateTotals()" [disabled]="mode === 'view'" min="0"
+                      class="w-full min-w-[100px] rounded-md border border-gray-200 px-3 py-1.5 text-sm dark:bg-dark-900 dark:border-gray-700 dark:text-white" />
+                  </td>
+
+                  <!-- Notes -->
+                  <td class="px-4 py-2">
+                    <input type="text" [(ngModel)]="line.notes" name="line_notes_{{i}}" [disabled]="mode === 'view'"
                       class="w-full min-w-[100px] rounded-md border border-gray-200 px-3 py-1.5 text-sm dark:bg-dark-900 dark:border-gray-700 dark:text-white" />
                   </td>
 
@@ -285,7 +346,7 @@
                           class="absolute inset-y-0 inset-e-0 flex items-center pe-2 text-gray-400 text-[11px] font-medium z-20">%</span>
                       </div>
                       <div class="relative w-full">
-                        <input type="number" [(ngModel)]="line._discountAmount" name="disc_amt_{{i}}"
+                        <input type="number" [(ngModel)]="line.discountAmount" name="disc_amt_{{i}}"
                           (ngModelChange)="onDiscountAmountChange(i)" [disabled]="mode === 'view'" min="0"
                           class="w-full min-w-[60px] rounded-b-md rounded-t-none border border-gray-200 px-2 py-1 text-xs h-7 dark:bg-dark-900 dark:border-gray-700 dark:text-white focus:z-10 relative"
                           [placeholder]="'invoices.amount' | translate" />
@@ -305,7 +366,7 @@
                           class="absolute inset-y-0 inset-e-0 flex items-center pe-2 text-gray-400 text-[11px] font-medium z-20">%</span>
                       </div>
                       <div class="relative w-full">
-                        <input type="number" [(ngModel)]="line._taxAmount" name="tax_amt_{{i}}"
+                        <input type="number" [(ngModel)]="line.taxAmount" name="tax_amt_{{i}}"
                           (ngModelChange)="onTaxAmountChange(i)" [disabled]="mode === 'view'" min="0"
                           class="w-full min-w-[60px] rounded-b-md rounded-t-none border border-gray-200 px-2 py-1 text-xs h-7 dark:bg-dark-900 dark:border-gray-700 dark:text-white focus:z-10 relative"
                           [placeholder]="'invoices.amount' | translate" />
@@ -315,7 +376,7 @@
 
                   <!-- Net -->
                   <td class="px-4 py-3 text-sm text-gray-800 dark:text-white/90 text-end font-medium">
-                    {{ line['_netAmount'] | number:'1.2-2' }}
+                    {{ line.lineTotal | number:'1.2-2' }}
                   </td>
 
                   <!-- Actions -->
@@ -335,86 +396,50 @@
         </div>
       </div>
 
-      <!-- Cost Elements Tab -->
-      <div *ngIf="activeTab === 'cost-elements'" class="space-y-4">
-        <div class="flex justify-end" *ngIf="mode !== 'view'">
-          <button type="button" (click)="openCostElementModal()"
-            class="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-brand-500 rounded-lg shadow-theme-xs hover:bg-brand-600 transition-colors">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-            </svg>
-            {{ 'purchaseInvoices.addCostElement' | translate }}
-          </button>
-        </div>
-
-        <div
-          class="w-full min-w-0 overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/5 dark:bg-white/3">
-          <div class="w-full overflow-x-auto">
-            <table class="min-w-full">
-              <thead class="border-b border-gray-100 dark:border-white/5 bg-gray-50 dark:bg-gray-800/50">
-                <tr>
-                  <th class="px-4 py-3 font-medium text-gray-500 text-start text-xs dark:text-gray-400 uppercase">{{
-                    'invoices.costElement' | translate }}</th>
-                  <th class="px-4 py-3 font-medium text-gray-500 text-start text-xs dark:text-gray-400 uppercase">{{
-                    'common.type' | translate }}
-                  </th>
-                  <th class="px-4 py-3 font-medium text-gray-500 text-start text-xs dark:text-gray-400 uppercase w-48">
-                    {{ 'invoices.percentage' | translate }}</th>
-                  <th class="px-4 py-3 font-medium text-gray-500 text-start text-xs dark:text-gray-400 uppercase w-48">
-                    {{ 'invoices.amount' | translate }}</th>
-                  <th *ngIf="mode !== 'view'"
-                    class="px-4 py-3 font-medium text-gray-500 text-center text-xs dark:text-gray-400 uppercase w-20">
-                  </th>
-                </tr>
-              </thead>
-              <tbody class="divide-y divide-gray-100 dark:divide-white/5">
-                <tr *ngIf="model.costLines.length === 0">
-                  <td [attr.colspan]="mode !== 'view' ? 4 : 3"
-                    class="px-4 py-8 text-center text-gray-500 dark:text-gray-400">
-                    {{ 'common.noRecordsFound' | translate }}
-                  </td>
-                </tr>
-                <tr *ngFor="let cost of model.costLines; let i = index">
-                  <!-- Name -->
-                  <td class="px-4 py-3 text-sm text-gray-800 dark:text-white/90">
-                    {{ cost['_name'] }}
-                  </td>
-
-                  <!-- Type -->
-                  <td class="px-4 py-3 text-sm text-gray-800 dark:text-white/90">
-                    <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium"
-                      [ngClass]="cost['_operationType'] === 'Addition' ? 'bg-error-100 text-error-800 dark:bg-error-500/20 dark:text-error-400' : 'bg-success-100 text-success-800 dark:bg-success-500/20 dark:text-success-400'">
-                      {{ ('invoiceCostElements.operationType.' + cost['_operationType']) | translate }}
-                    </span>
-                  </td>
-
-                  <!-- Percentage -->
-                  <td class="px-4 py-2">
-                    <input type="number" [(ngModel)]="cost.percentage" name="cost_perc_{{i}}"
-                      (ngModelChange)="onCostPercentageChange(i)" [disabled]="mode === 'view'" min="0" max="100"
-                      class="w-full rounded-md border border-gray-200 px-3 py-1.5 text-sm dark:bg-dark-900 dark:border-gray-700 dark:text-white" />
-                  </td>
-
-                  <!-- Amount -->
-                  <td class="px-4 py-2">
-                    <input type="number" [(ngModel)]="cost.amount" name="cost_amt_{{i}}"
-                      (ngModelChange)="onCostAmountChange(i)" [disabled]="mode === 'view'" min="0"
-                      class="w-full rounded-md border border-gray-200 px-3 py-1.5 text-sm dark:bg-dark-900 dark:border-gray-700 dark:text-white" />
-                  </td>
-
-                  <!-- Actions -->
-                  <td *ngIf="mode !== 'view'" class="px-4 py-3 text-center">
-                    <button type="button" (click)="removeCostElement(i)"
-                      class="text-error-500 hover:text-error-600 transition-colors">
-                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                      </svg>
-                    </button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+      <!-- Additional Details Tab -->
+      <div *ngIf="activeTab === 'additional'" class="space-y-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label class="mb-2.5 block text-sm font-medium text-gray-800 dark:text-white/90">
+              {{ 'common.paymentTerms' | translate }}
+            </label>
+            <input type="text" [(ngModel)]="model.paymentTerms" name="paymentTerms" [disabled]="mode === 'view'"
+              class="w-full rounded-md border border-gray-200 px-3 py-2 text-sm dark:bg-dark-900 dark:border-gray-700 dark:text-white" />
+          </div>
+          <div>
+            <label class="mb-2.5 block text-sm font-medium text-gray-800 dark:text-white/90">
+              {{ 'common.paymentMethod' | translate }}
+            </label>
+            <input type="text" [(ngModel)]="model.paymentMethod" name="paymentMethod" [disabled]="mode === 'view'"
+              class="w-full rounded-md border border-gray-200 px-3 py-2 text-sm dark:bg-dark-900 dark:border-gray-700 dark:text-white" />
+          </div>
+          <div>
+            <label class="mb-2.5 block text-sm font-medium text-gray-800 dark:text-white/90">
+              {{ 'common.shippingMethod' | translate }}
+            </label>
+            <input type="text" [(ngModel)]="model.shippingMethod" name="shippingMethod" [disabled]="mode === 'view'"
+              class="w-full rounded-md border border-gray-200 px-3 py-2 text-sm dark:bg-dark-900 dark:border-gray-700 dark:text-white" />
+          </div>
+          <div>
+            <label class="mb-2.5 block text-sm font-medium text-gray-800 dark:text-white/90">
+              {{ 'common.vendorReference' | translate }}
+            </label>
+            <input type="text" [(ngModel)]="model.vendorReferenceNumber" name="vendorReferenceNumber" [disabled]="mode === 'view'"
+              class="w-full rounded-md border border-gray-200 px-3 py-2 text-sm dark:bg-dark-900 dark:border-gray-700 dark:text-white" />
+          </div>
+          <div>
+            <label class="mb-2.5 block text-sm font-medium text-gray-800 dark:text-white/90">
+              {{ 'common.buyer' | translate }}
+            </label>
+            <input type="text" [(ngModel)]="model.buyerId" name="buyerId" [disabled]="mode === 'view'"
+              class="w-full rounded-md border border-gray-200 px-3 py-2 text-sm dark:bg-dark-900 dark:border-gray-700 dark:text-white" />
+          </div>
+          <div>
+            <label class="mb-2.5 block text-sm font-medium text-gray-800 dark:text-white/90">
+              {{ 'common.contactPerson' | translate }}
+            </label>
+            <input type="text" [(ngModel)]="model.contactPersonName" name="contactPersonName" [disabled]="mode === 'view'"
+              class="w-full rounded-md border border-gray-200 px-3 py-2 text-sm dark:bg-dark-900 dark:border-gray-700 dark:text-white" />
           </div>
         </div>
       </div>
@@ -440,16 +465,10 @@
 <app-item-lookup-modal 
   [isOpen]="isItemModalOpen" 
   (close)="isItemModalOpen = false"
-  [usageType]="2"
+  [usageType]="1"
   [warehouseId]="model.warehouseId"
-  [checkWarehouseExistence]="false"
   (selectItem)="onItemSelected($event)">
 </app-item-lookup-modal>
-<app-cost-element-lookup-modal [isOpen]="isCostElementModalOpen" [type]="'purchase'"
-  (close)="isCostElementModalOpen = false"
-  (selectElement)="onCostElementSelected($event)"></app-cost-element-lookup-modal>
-<app-payment-modal [isOpen]="isPaymentModalOpen" [invoice]="viewResponse || null" (close)="isPaymentModalOpen = false"
-  (paymentAdded)="onPaymentAdded()"></app-payment-modal>
 
 <!-- Unsaved Changes Confirmation Overlay -->
 <div *ngIf="showLeaveConfirmation"
@@ -482,3 +501,12 @@
   </div>
 </div>
 
+<!-- Print Preview Modal -->
+<app-print-preview-modal 
+  *ngIf="isPrintModalOpen"
+  [isOpen]="isPrintModalOpen" 
+  [pdfBlobUrl]="pdfBlobUrl" 
+  [loading]="pdfLoading"
+  [title]="'Purchase Order ' + model.code"
+  (close)="closePrintModal()">
+</app-print-preview-modal>

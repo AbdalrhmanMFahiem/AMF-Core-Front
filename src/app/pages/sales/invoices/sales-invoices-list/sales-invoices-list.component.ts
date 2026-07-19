@@ -9,13 +9,14 @@ import { PageBreadcrumbComponent } from '../../../../shared/components/common/pa
 import { PaymentModalComponent } from '../payment-modal/payment-modal.component';
 import { SearchableSelectComponent, SearchableOption } from '../../../../shared/components/form/searchable-select/searchable-select.component';
 import { DatePickerComponent } from '../../../../shared/components/form/date-picker/date-picker.component';
+import { PrintPreviewModalComponent } from '../../../../shared/components/common/print-preview-modal/print-preview-modal.component';
 import { LookupService } from '../../../../core/services/lookup.service';
 import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-sales-invoices-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, TranslateModule, CrudListComponent, PageBreadcrumbComponent, PaymentModalComponent, SearchableSelectComponent, DatePickerComponent],
+  imports: [CommonModule, FormsModule, TranslateModule, CrudListComponent, PageBreadcrumbComponent, PaymentModalComponent, SearchableSelectComponent, DatePickerComponent, PrintPreviewModalComponent],
   template: `
     <app-page-breadcrumb [pageTitle]="'salesInvoices.title'" />
     <div class="space-y-6">
@@ -162,6 +163,16 @@ import { FormsModule } from '@angular/forms';
       (close)="isPaymentModalOpen = false"
       (paymentAdded)="onPaymentSaved()">
     </app-payment-modal>
+
+    <!-- Print Preview Modal -->
+    <app-print-preview-modal 
+      *ngIf="isPrintModalOpen"
+      [isOpen]="isPrintModalOpen" 
+      [pdfBlobUrl]="pdfBlobUrl" 
+      [loading]="pdfLoading"
+      [title]="'Sales Invoice ' + (selectedInvoiceForPrint?.code || '')"
+      (close)="closePrintModal()">
+    </app-print-preview-modal>
   `
 })
 export class SalesInvoicesListComponent implements OnInit {
@@ -180,6 +191,11 @@ export class SalesInvoicesListComponent implements OnInit {
 
   isPaymentModalOpen = false;
   selectedInvoiceForPayment: InvoiceBasicResponse | null = null;
+
+  isPrintModalOpen = false;
+  pdfBlobUrl: string | null = null;
+  pdfLoading = false;
+  selectedInvoiceForPrint: InvoiceBasicResponse | null = null;
 
   get hasActiveAdvancedFilters(): boolean {
     return !!(
@@ -213,6 +229,13 @@ export class SalesInvoicesListComponent implements OnInit {
       icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>',
       colorClass: 'text-success-600 dark:text-success-400 hover:bg-success-50 dark:hover:bg-success-500/10',
       visible: (item: any) => item.status !== 'FullyPaid' && item.status !== 'Cancelled' && item.status !== 'Draft'
+    },
+    {
+      id: 'print',
+      label: 'salesInvoices.printInvoice',
+      icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>',
+      colorClass: 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-500/10',
+      visible: (item: any) => true
     }
   ];
 
@@ -231,7 +254,7 @@ export class SalesInvoicesListComponent implements OnInit {
     { field: 'totalAmountDisplay', header: 'salesInvoices.fields.totalAmount', type: 'text' },
     { field: 'remainingAmountDisplay', header: 'salesInvoices.fields.remainingAmount', type: 'text' },
     { field: 'statusDisplay', header: 'common.status', type: 'dynamic-badge' },
-    { field: 'approvalStatusDisplay', header: 'common.approvalStatus', type: 'dynamic-badge' },
+    // { field: 'approvalStatusDisplay', header: 'common.approvalStatus', type: 'dynamic-badge' },
     { field: 'paymentStatusDisplay', header: 'common.paymentStatus', type: 'dynamic-badge' }
   ];
 
@@ -400,6 +423,31 @@ export class SalesInvoicesListComponent implements OnInit {
           }
         });
       });
+    } else if (event.actionId === 'print') {
+      this.selectedInvoiceForPrint = event.item;
+      this.isPrintModalOpen = true;
+      this.pdfLoading = true;
+
+      this.invoiceService.printPdf(event.item.id).subscribe({
+        next: (blob) => {
+          const url = window.URL.createObjectURL(blob);
+          this.pdfBlobUrl = url;
+          this.pdfLoading = false;
+        },
+        error: () => {
+          // toastr would be nice here, but maybe not injected, just close for now
+          this.pdfLoading = false;
+          this.isPrintModalOpen = false;
+        }
+      });
+    }
+  }
+
+  closePrintModal(): void {
+    this.isPrintModalOpen = false;
+    if (this.pdfBlobUrl) {
+      window.URL.revokeObjectURL(this.pdfBlobUrl);
+      this.pdfBlobUrl = null;
     }
   }
 

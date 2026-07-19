@@ -20,21 +20,7 @@ export class InvoiceCostElementService {
   private apiUrl = `${environment.apiUrl}/api/md/invoice-cost-elements`;
 
   getAll(filters: RequestFilters, includeDisabled: boolean = false): Observable<PaginatedList<InvoiceCostElementBasicResponse>> {
-    let params = new HttpParams()
-      .set('pageNumber', filters.pageNumber.toString())
-      .set('pageSize', filters.pageSize.toString())
-      .set('includeDisabled', includeDisabled.toString());
-
-    if (filters.searchValue) {
-      params = params.set('searchValue', filters.searchValue);
-    }
-    if (filters.sortColumn) {
-      params = params.set('sortColumn', filters.sortColumn);
-    }
-    if (filters.sortDirection) {
-      params = params.set('sortDirection', filters.sortDirection);
-    }
-
+    const params: any = { ...filters, includeDisabled };
     return this.http.get<PaginatedList<InvoiceCostElementBasicResponse>>(this.apiUrl, { params });
   }
 
@@ -58,23 +44,11 @@ export class InvoiceCostElementService {
     return this.http.put<void>(`${this.apiUrl}/${id}/toggleStatus`, {});
   }
 
-  getSalesDropdown(filters?: LookupsFilters): Observable<InvoiceCostElementDropdownResponse[]> {
-    let params = new HttpParams();
-    if (filters) {
-      if (filters.searchValue) params = params.set('searchValue', filters.searchValue);
-      if (filters.pageNumber) params = params.set('pageNumber', filters.pageNumber.toString());
-      if (filters.pageSize) params = params.set('pageSize', filters.pageSize.toString());
+  getDropdown(type: InvoiceCostElementType, filters?: LookupsFilters): Observable<InvoiceCostElementDropdownResponse[]> {
+    if (!type) {
+      throw new Error('InvoiceCostElementType must be provided');
     }
-    return this.http.get<InvoiceCostElementDropdownResponse[]>(`${this.apiUrl}/sales-dropdown`, { params });
-  }
-
-  getPurchaseDropdown(filters?: LookupsFilters): Observable<InvoiceCostElementDropdownResponse[]> {
-    let params = new HttpParams();
-    if (filters) {
-      if (filters.searchValue) params = params.set('searchValue', filters.searchValue);
-      if (filters.pageNumber) params = params.set('pageNumber', filters.pageNumber.toString());
-      if (filters.pageSize) params = params.set('pageSize', filters.pageSize.toString());
-    }
-    return this.http.get<InvoiceCostElementDropdownResponse[]>(`${this.apiUrl}/purchase-dropdown`, { params });
+    const params: any = { ...filters, type };
+    return this.http.get<InvoiceCostElementDropdownResponse[]>(`${this.apiUrl}/dropdown`, { params });
   }
 }
