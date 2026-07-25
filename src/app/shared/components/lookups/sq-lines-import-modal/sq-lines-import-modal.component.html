@@ -1,0 +1,102 @@
+<app-modal [isOpen]="isOpen" [title]="'SalesQuotations.importLines' | translate" (close)="onClose()"
+  [className]="'max-w-4xl'">
+  
+  <div class="flex flex-col h-150 max-h-[80vh]">
+    <!-- Search Bar -->
+    <div class="p-4 border-b border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-gray-800/20">
+      <div class="relative">
+        <div class="absolute inset-y-0 inset-s-0 flex items-center ps-3 pointer-events-none">
+          <svg class="w-4 h-4 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+          </svg>
+        </div>
+        <input type="text" [(ngModel)]="searchTerm"
+          class="block w-full h-10 ps-10 text-sm text-gray-900 border border-gray-200 rounded-lg bg-white focus:ring-brand-500 focus:border-brand-500 dark:bg-dark-900 dark:border-gray-700 dark:placeholder-gray-400 dark:text-white dark:focus:ring-brand-500 dark:focus:border-brand-500 transition-colors"
+          [placeholder]="'common.searchPlaceholder' | translate">
+      </div>
+    </div>
+
+    <!-- Content Area -->
+    <div class="flex-1 overflow-auto bg-gray-50 dark:bg-dark-900/50 relative">
+      <div *ngIf="loading" class="absolute inset-0 z-10 flex items-center justify-center bg-white/80 dark:bg-dark-900/80 backdrop-blur-sm">
+        <div class="flex flex-col items-center gap-3">
+          <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-500"></div>
+          <span class="text-sm font-medium text-gray-500 dark:text-gray-400">{{ 'common.loading' | translate }}</span>
+        </div>
+      </div>
+
+      <div class="p-4">
+        <!-- Lines Grid -->
+        <div *ngIf="!loading && filteredLines.length > 0" class="w-full overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/5 dark:bg-white/3">
+          <table class="min-w-full">
+            <thead class="border-b border-gray-100 dark:border-white/5 bg-gray-50 dark:bg-gray-800/50">
+              <tr>
+                <th class="px-4 py-3 font-medium text-gray-500 text-center text-xs dark:text-gray-400 uppercase w-12">
+                  <input type="checkbox" [checked]="isAllSelected()" (change)="toggleAll()"
+                    class="w-4 h-4 text-brand-600 bg-gray-100 border-gray-300 rounded focus:ring-brand-500 dark:focus:ring-brand-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                </th>
+                <th class="px-4 py-3 font-medium text-gray-500 text-start text-xs dark:text-gray-400 uppercase">PO</th>
+                <th class="px-4 py-3 font-medium text-gray-500 text-start text-xs dark:text-gray-400 uppercase">{{ 'invoices.item' | translate }}</th>
+                <th class="px-4 py-3 font-medium text-gray-500 text-end text-xs dark:text-gray-400 uppercase">{{ 'invoices.qty' | translate }}</th>
+                <th class="px-4 py-3 font-medium text-gray-500 text-end text-xs dark:text-gray-400 uppercase">{{ 'SalesQuotations.openQty' | translate }}</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100 dark:divide-white/5">
+              <tr *ngFor="let line of filteredLines" class="hover:bg-gray-50/50 dark:hover:bg-gray-800/50 cursor-pointer" (click)="toggleSelection(line.salesQuotationLineId)">
+                <td class="px-4 py-3 text-center">
+                  <input type="checkbox" [checked]="selectedLines.has(line.salesQuotationLineId)" (click)="$event.stopPropagation()" (change)="toggleSelection(line.salesQuotationLineId)"
+                    class="w-4 h-4 text-brand-600 bg-gray-100 border-gray-300 rounded focus:ring-brand-500 dark:focus:ring-brand-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                </td>
+                <td class="px-4 py-3 text-sm font-medium text-gray-900 dark:text-white/90">
+                  {{ line.salesQuotationCode }}
+                </td>
+                <td class="px-4 py-3">
+                  <div class="flex flex-col gap-1">
+                    <span class="text-sm font-semibold text-gray-900 dark:text-white/90">{{ line.itemName }}</span>
+                    <span class="text-xs text-gray-500 dark:text-gray-400 font-mono">{{ line.itemCode }}</span>
+                  </div>
+                </td>
+                <td class="px-4 py-3 text-sm text-end text-gray-500 dark:text-gray-400">
+                  {{ line.quantity }}
+                </td>
+                <td class="px-4 py-3 text-sm text-end font-semibold text-brand-600 dark:text-brand-400">
+                  {{ line.openQuantity }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Empty State -->
+        <div *ngIf="!loading && filteredLines.length === 0" class="flex flex-col items-center justify-center py-12 px-4 text-center">
+          <div class="w-16 h-16 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mb-4 text-gray-400 dark:text-gray-500">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+            </svg>
+          </div>
+          <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-1">{{ 'common.noData' | translate }}</h3>
+          <p class="text-sm text-gray-500 dark:text-gray-400 max-w-sm">
+            {{ 'SalesQuotations.noOpenLines' | translate }}
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer Actions -->
+    <div class="p-4 border-t border-gray-100 dark:border-white/5 bg-white dark:bg-dark-900 flex justify-end gap-3">
+      <button type="button" (click)="onClose()"
+        class="px-5 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg shadow-theme-xs hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-100 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700 dark:hover:bg-gray-700 dark:focus:ring-offset-gray-900 transition-all">
+        {{ 'common.cancel' | translate }}
+      </button>
+      <button type="button" (click)="confirmSelection()"
+        [disabled]="selectedLines.size === 0"
+        class="flex items-center gap-2 px-5 py-2.5 text-sm font-medium text-white bg-brand-500 rounded-lg shadow-theme-xs hover:bg-brand-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-500 dark:focus:ring-offset-gray-900 disabled:opacity-50 disabled:cursor-not-allowed transition-all">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+        </svg>
+        {{ 'SalesQuotations.importSelected' | translate }} ({{ selectedLines.size }})
+      </button>
+    </div>
+  </div>
+</app-modal>
+

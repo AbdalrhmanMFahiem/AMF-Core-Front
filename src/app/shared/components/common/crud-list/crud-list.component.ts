@@ -20,6 +20,7 @@ export interface CrudColumn {
   field: string;
   header: string;
   type?: 'text' | 'badge' | 'code' | 'dynamic-badge' | 'date' | 'document-status' | 'adjustment-type' | 'custom' | 'boolean' | 'number';
+  sortable?: boolean;
 }
 
 @Component({
@@ -270,5 +271,19 @@ export class CrudListComponent implements OnInit, OnDestroy {
       return action.visible(item);
     }
     return true;
+  }
+
+  onSort(col: CrudColumn): void {
+    if (!col.sortable) return;
+
+    if (this.filters.sortColumn === col.field || this.filters.sortColumn?.toLowerCase() === col.field.toLowerCase()) {
+      this.filters.sortDirection = this.filters.sortDirection === 'ASC' ? 'DESC' : 'ASC';
+    } else {
+      this.filters.sortColumn = col.field;
+      this.filters.sortDirection = 'ASC';
+    }
+    
+    this.filters.pageNumber = 1;
+    this.search.emit();
   }
 }

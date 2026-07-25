@@ -127,8 +127,13 @@ export class BranchFormComponent implements OnInit {
             showCancelButton: true,
             confirmButtonText: this.translate.instant('common.yes'),
             cancelButtonText: this.translate.instant('common.no'),
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33'
+            customClass: {
+              popup: 'bg-white dark:bg-gray-800 border dark:border-gray-700 rounded-2xl shadow-xl',
+              title: 'text-xl font-semibold text-gray-800 dark:text-gray-100',
+              htmlContainer: 'text-base text-gray-600 dark:text-gray-300',
+              confirmButton: 'px-4 py-2 bg-brand-500 text-white rounded-lg hover:bg-brand-600 font-medium transition-colors',
+              cancelButton: 'px-4 py-2 bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-600 rounded-lg ml-2 font-medium transition-colors'
+            }
           });
 
           if (!result.isConfirmed) {

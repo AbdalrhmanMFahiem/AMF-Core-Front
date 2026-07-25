@@ -1,9 +1,9 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { ItemResponse, ItemBasicResponse, ItemRequest } from '../models/item.model';
+import { ItemResponse, ItemBasicResponse, ItemRequest, ItemFilters, ItemUnitOfMeasureResponse, ItemPurchasingDetailsResponse } from '../models/item.model';
 import { NextCodeResponse } from '../models/lookup.model';
-import { PaginatedList, RequestFilters } from '../models/pagination.model';
+import { PaginatedList } from '../models/pagination.model';
 import { environment } from '../../../environments/environment';
 
 @Injectable({
@@ -13,10 +13,10 @@ export class ItemService {
   private http = inject(HttpClient);
   private apiUrl = `${environment.apiUrl}/api/Items`;
 
-  getAll(filters: RequestFilters, includeDisabled: boolean = false): Observable<PaginatedList<ItemResponse>> {
+  getAll(filters: ItemFilters, includeDisabled: boolean = false): Observable<PaginatedList<ItemBasicResponse>> {
     let params = new HttpParams()
-      .set('pageNumber', filters.pageNumber.toString())
-      .set('pageSize', filters.pageSize.toString())
+      .set('pageNumber', (filters.pageNumber || 1).toString())
+      .set('pageSize', (filters.pageSize || 10).toString())
       .set('includeDisabled', includeDisabled.toString());
 
     if (filters.searchValue) {
@@ -28,12 +28,26 @@ export class ItemService {
     if (filters.sortDirection) {
       params = params.set('sortDirection', filters.sortDirection);
     }
+    if (filters.itemGroupId) {
+      params = params.set('itemGroupId', filters.itemGroupId.toString());
+    }
+    if (filters.itemPropertyId) {
+      params = params.set('itemPropertyId', filters.itemPropertyId.toString());
+    }
 
-    return this.http.get<PaginatedList<ItemResponse>>(this.apiUrl, { params });
+    return this.http.get<PaginatedList<ItemBasicResponse>>(this.apiUrl, { params });
   }
 
   get(id: number): Observable<ItemBasicResponse> {
     return this.http.get<ItemBasicResponse>(`${this.apiUrl}/${id}`);
+  }
+
+  getPurchasingDetails(id: number): Observable<ItemPurchasingDetailsResponse> {
+    return this.http.get<ItemPurchasingDetailsResponse>(`${this.apiUrl}/${id}/purchasing-details`);
+  }
+
+  getUnitsOfMeasure(id: number): Observable<ItemUnitOfMeasureResponse[]> {
+    return this.http.get<ItemUnitOfMeasureResponse[]>(`${this.apiUrl}/${id}/units-of-measure`);
   }
 
   getNextCode(): Observable<NextCodeResponse> {

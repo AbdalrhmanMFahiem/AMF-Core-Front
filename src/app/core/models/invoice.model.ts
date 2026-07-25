@@ -57,6 +57,7 @@ export interface InvoiceLineResponse {
   netAmount: number;
   lineOrder: number;
   notes?: string;
+  purchaseOrderLineId?: number;
 }
 
 export interface InvoiceCostLineResponse {

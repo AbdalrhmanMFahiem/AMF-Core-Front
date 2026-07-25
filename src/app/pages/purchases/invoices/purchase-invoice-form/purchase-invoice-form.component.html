@@ -184,19 +184,26 @@
 
       <!-- Items Tab -->
       <div *ngIf="activeTab === 'items'" class="space-y-4">
-        <div class="flex justify-end" *ngIf="mode !== 'view'">
+        <div class="flex justify-end gap-3" *ngIf="mode !== 'view'">
+          <button type="button" (click)="openPoLinesModal()"
+            class="flex items-center gap-2 px-4 py-2 text-sm font-medium text-brand-700 bg-brand-50 border border-brand-200 rounded-lg shadow-theme-xs hover:bg-brand-100 dark:bg-brand-500/10 dark:text-brand-400 dark:border-brand-500/20 dark:hover:bg-brand-500/20 transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+            </svg>
+            {{ 'purchaseOrders.importFromPO' | translate }}
+          </button>
           <button type="button" (click)="openItemModal()"
             class="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-brand-500 rounded-lg shadow-theme-xs hover:bg-brand-600 transition-colors">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
             </svg>
-            {{ 'purchaseInvoices.addItems' | translate }}
+            {{ 'invoices.addItem' | translate }}
           </button>
         </div>
 
         <div
-          class="w-full min-w-0 overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/5 dark:bg-white/3">
-          <div class="w-full overflow-x-auto">
+          class="w-full min-w-0 overflow-visible rounded-xl border border-gray-200 bg-white dark:border-white/5 dark:bg-white/3">
+          <div class="w-full overflow-visible">
             <table class="min-w-full">
               <thead class="border-b border-gray-100 dark:border-white/5 bg-gray-50 dark:bg-gray-800/50">
                 <tr>
@@ -205,6 +212,8 @@
                   <th class="px-4 py-3 font-medium text-gray-500 text-start text-xs dark:text-gray-400 uppercase">{{
                     'invoices.item' | translate }}
                   </th>
+                  <th class="px-4 py-3 font-medium text-gray-500 text-start text-xs dark:text-gray-400 uppercase w-32">
+                    {{ 'common.uom' | translate }}</th>
                   <th class="px-4 py-3 font-medium text-gray-500 text-start text-xs dark:text-gray-400 uppercase w-32">
                     {{ 'invoices.qty' | translate }}</th>
                   <th class="px-4 py-3 font-medium text-gray-500 text-start text-xs dark:text-gray-400 uppercase w-32">
@@ -236,13 +245,21 @@
                     {{ 'purchaseInvoices.errors.atLeastOneItem' | translate }}
                   </td>
                 </tr>
-                <tr *ngFor="let line of model.lines; let i = index">
+                <tr *ngFor="let line of model.lines; let i = index"
+                  [ngClass]="{'opacity-50 pointer-events-none bg-gray-50/50 dark:bg-white/5': line['_isLoading']}">
                   <!-- Serial -->
                   <td class="px-4 py-3 text-center text-sm font-medium text-gray-500 dark:text-gray-400 align-top pt-4">
-                    {{ i + 1 }}
+                    <ng-container *ngIf="line['_isLoading']; else serialNum">
+                      <div
+                        class="inline-block animate-spin w-4 h-4 border-2 border-brand-500 border-t-transparent rounded-full"
+                        [title]="'common.loading' | translate"></div>
+                    </ng-container>
+                    <ng-template #serialNum>
+                      {{ i + 1 }}
+                    </ng-template>
                   </td>
                   <!-- Item Info -->
-                  <td class="px-4 py-3 align-top  min-w-[200px]">
+                  <td class="px-4 py-3 align-top  min-w-50">
                     <div class="flex flex-col items-start gap-1.5">
                       <div
                         class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-xs font-mono font-medium bg-gray-100 text-gray-600 border border-gray-200 shadow-sm dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700">
@@ -259,27 +276,36 @@
                     </div>
                   </td>
 
+                  <!-- UoM -->
+                  <td class="px-4 py-2 min-w-32.5">
+                    <app-searchable-select
+                      [options]="line['_availableUomsOptions'] || getUomOptions(line['_baseUomType'])"
+                      [(ngModel)]="line.uomId" name="uom_{{i}}" [disabled]="mode === 'view' || line['_isFromPo']"
+                      [placeholder]="'common.select' | translate">
+                    </app-searchable-select>
+                  </td>
+
                   <!-- Quantity -->
                   <td class="px-4 py-2">
                     <input type="number" [(ngModel)]="line.quantity" name="qty_{{i}}"
                       (ngModelChange)="recalculateTotals()" [disabled]="mode === 'view'" min="1"
-                      class="w-full min-w-[100px] rounded-md border border-gray-200 px-3 py-1.5 text-sm dark:bg-dark-900 dark:border-gray-700 dark:text-white" />
+                      class="w-full min-w-25 rounded-md border border-gray-200 px-3 py-1.5 text-sm dark:bg-dark-900 dark:border-gray-700 dark:text-white" />
                   </td>
 
                   <!-- Price -->
                   <td class="px-4 py-2">
                     <input type="number" [(ngModel)]="line.unitPrice" name="price_{{i}}"
                       (ngModelChange)="recalculateTotals()" [disabled]="mode === 'view'" min="0"
-                      class="w-full min-w-[100px] rounded-md border border-gray-200 px-3 py-1.5 text-sm dark:bg-dark-900 dark:border-gray-700 dark:text-white" />
+                      class="w-full min-w-25 rounded-md border border-gray-200 px-3 py-1.5 text-sm dark:bg-dark-900 dark:border-gray-700 dark:text-white" />
                   </td>
 
                   <!-- Discount -->
-                  <td class="px-4 py-1.5 min-w-[110px]">
+                  <td class="px-4 py-1.5 min-w-27.5">
                     <div class="flex flex-col -space-y-px">
                       <div class="relative w-full">
                         <input type="number" [(ngModel)]="line.discountPercent" name="disc_perc_{{i}}"
                           (ngModelChange)="onDiscountPercentChange(i)" [disabled]="mode === 'view'" min="0" max="100"
-                          class="w-full min-w-[60px] rounded-t-md rounded-b-none border border-gray-200 pl-2 pr-6 py-1 text-xs h-7 dark:bg-dark-900 dark:border-gray-700 dark:text-white ltr:pr-6 rtl:pl-6 rtl:pr-2 focus:z-10 relative"
+                          class="w-full min-w-15 rounded-t-md rounded-b-none border border-gray-200 pl-2 pr-6 py-1 text-xs h-7 dark:bg-dark-900 dark:border-gray-700 dark:text-white ltr:pr-6 rtl:pl-6 rtl:pr-2 focus:z-10 relative"
                           placeholder="%" />
                         <span
                           class="absolute inset-y-0 inset-e-0 flex items-center pe-2 text-gray-400 text-[11px] font-medium z-20">%</span>
@@ -287,19 +313,19 @@
                       <div class="relative w-full">
                         <input type="number" [(ngModel)]="line._discountAmount" name="disc_amt_{{i}}"
                           (ngModelChange)="onDiscountAmountChange(i)" [disabled]="mode === 'view'" min="0"
-                          class="w-full min-w-[60px] rounded-b-md rounded-t-none border border-gray-200 px-2 py-1 text-xs h-7 dark:bg-dark-900 dark:border-gray-700 dark:text-white focus:z-10 relative"
+                          class="w-full min-w-15 rounded-b-md rounded-t-none border border-gray-200 px-2 py-1 text-xs h-7 dark:bg-dark-900 dark:border-gray-700 dark:text-white focus:z-10 relative"
                           [placeholder]="'invoices.amount' | translate" />
                       </div>
                     </div>
                   </td>
 
                   <!-- Tax -->
-                  <td class="px-4 py-1.5 min-w-[110px]">
+                  <td class="px-4 py-1.5 min-w-27.5">
                     <div class="flex flex-col -space-y-px">
                       <div class="relative w-full">
                         <input type="number" [(ngModel)]="line.taxPercent" name="tax_perc_{{i}}"
                           (ngModelChange)="onTaxPercentChange(i)" [disabled]="mode === 'view'" min="0" max="100"
-                          class="w-full min-w-[60px] rounded-t-md rounded-b-none border border-gray-200 pl-2 pr-6 py-1 text-xs h-7 dark:bg-dark-900 dark:border-gray-700 dark:text-white ltr:pr-6 rtl:pl-6 rtl:pr-2 focus:z-10 relative"
+                          class="w-full min-w-15 rounded-t-md rounded-b-none border border-gray-200 pl-2 pr-6 py-1 text-xs h-7 dark:bg-dark-900 dark:border-gray-700 dark:text-white ltr:pr-6 rtl:pl-6 rtl:pr-2 focus:z-10 relative"
                           placeholder="%" />
                         <span
                           class="absolute inset-y-0 inset-e-0 flex items-center pe-2 text-gray-400 text-[11px] font-medium z-20">%</span>
@@ -307,7 +333,7 @@
                       <div class="relative w-full">
                         <input type="number" [(ngModel)]="line._taxAmount" name="tax_amt_{{i}}"
                           (ngModelChange)="onTaxAmountChange(i)" [disabled]="mode === 'view'" min="0"
-                          class="w-full min-w-[60px] rounded-b-md rounded-t-none border border-gray-200 px-2 py-1 text-xs h-7 dark:bg-dark-900 dark:border-gray-700 dark:text-white focus:z-10 relative"
+                          class="w-full min-w-15 rounded-b-md rounded-t-none border border-gray-200 px-2 py-1 text-xs h-7 dark:bg-dark-900 dark:border-gray-700 dark:text-white focus:z-10 relative"
                           [placeholder]="'invoices.amount' | translate" />
                       </div>
                     </div>
@@ -445,7 +471,16 @@
   [checkWarehouseExistence]="false"
   (selectItem)="onItemSelected($event)">
 </app-item-lookup-modal>
-<app-cost-element-lookup-modal [isOpen]="isCostElementModalOpen" [type]="'purchase'"
+
+<app-po-lines-import-modal
+  [isOpen]="isPoLinesModalOpen"
+  [vendorId]="model.businessPartnerId"
+  (close)="isPoLinesModalOpen = false"
+  (importLines)="onPoLinesImported($event)">
+</app-po-lines-import-modal>
+
+<app-cost-element-lookup-modal
+  [isOpen]="isCostElementModalOpen"
   (close)="isCostElementModalOpen = false"
   (selectElement)="onCostElementSelected($event)"></app-cost-element-lookup-modal>
 <app-payment-modal [isOpen]="isPaymentModalOpen" [invoice]="viewResponse || null" (close)="isPaymentModalOpen = false"

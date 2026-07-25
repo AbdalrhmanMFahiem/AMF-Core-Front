@@ -70,8 +70,10 @@
         <!-- Current Balance -->
         <div class="flex flex-col gap-1.5 p-4 rounded-xl border border-gray-200 bg-white dark:border-white/6 dark:bg-white/2 shadow-theme-xs">
           <span class="text-sm font-medium text-gray-500 dark:text-gray-400">{{ 'reports.businessPartnerStatement.currentBalance' | translate }}</span>
-          <span class="text-2xl font-bold" [ngClass]="{'text-success-600': summary.currentBalance > 0, 'text-error-600': summary.currentBalance < 0, 'text-gray-900 dark:text-white': summary.currentBalance === 0}">
-            {{ summary.currentBalance | number:'1.2-2' }}
+          <span class="text-2xl font-bold flex items-center gap-2" [ngClass]="{'text-success-600': summary.currentBalance > 0, 'text-error-600': summary.currentBalance < 0, 'text-gray-900 dark:text-white': summary.currentBalance === 0}">
+            {{ getAbs(summary.currentBalance) | number:'1.2-2' }}
+            <span *ngIf="summary.currentBalance > 0" class="text-xs bg-success-100 text-success-800 px-2 py-1 rounded-full dark:bg-success-900/30 dark:text-success-400">{{ 'reports.businessPartnerStatement.owesUs' | translate }}</span>
+            <span *ngIf="summary.currentBalance < 0" class="text-xs bg-error-100 text-error-800 px-2 py-1 rounded-full dark:bg-error-900/30 dark:text-error-400">{{ 'reports.businessPartnerStatement.weOwe' | translate }}</span>
           </span>
         </div>
         <!-- Total Sales -->
@@ -124,7 +126,9 @@
                 <th class="px-5 py-3.5 font-semibold text-gray-600 text-start text-xs dark:text-gray-300 uppercase tracking-wider">{{ 'common.date' | translate }}</th>
                 <th class="px-5 py-3.5 font-semibold text-gray-600 text-start text-xs dark:text-gray-300 uppercase tracking-wider">{{ 'reports.businessPartnerStatement.table.invoiceCode' | translate }}</th>
                 <th class="px-5 py-3.5 font-semibold text-gray-600 text-start text-xs dark:text-gray-300 uppercase tracking-wider">{{ 'reports.businessPartnerStatement.entryType' | translate }}</th>
-                <th class="px-5 py-3.5 font-semibold text-gray-600 text-end text-xs dark:text-gray-300 uppercase tracking-wider">{{ 'reports.businessPartnerStatement.table.amount' | translate }}</th>
+                <th class="px-5 py-3.5 font-semibold text-gray-600 text-end text-xs dark:text-gray-300 uppercase tracking-wider">{{ 'reports.businessPartnerStatement.table.balanceBefore' | translate }}</th>
+                <th class="px-5 py-3.5 font-semibold text-gray-600 text-end text-xs dark:text-gray-300 uppercase tracking-wider">{{ 'reports.businessPartnerStatement.table.debit' | translate }}</th>
+                <th class="px-5 py-3.5 font-semibold text-gray-600 text-end text-xs dark:text-gray-300 uppercase tracking-wider">{{ 'reports.businessPartnerStatement.table.credit' | translate }}</th>
                 <th class="px-5 py-3.5 font-semibold text-gray-600 text-end text-xs dark:text-gray-300 uppercase tracking-wider">{{ 'reports.businessPartnerStatement.balance' | translate }}</th>
                 <th class="px-5 py-3.5 font-semibold text-gray-600 text-start text-xs dark:text-gray-300 uppercase tracking-wider">{{ 'reports.businessPartnerStatement.table.notes' | translate }}</th>
               </tr>
@@ -173,16 +177,25 @@
                     {{ item.entryTypeName | translate }}
                   </span>
                 </td>
+                <td class="px-5 py-4 text-end text-sm text-gray-900 dark:text-white tabular-nums">
+                  {{ item.balanceBefore | number:'1.2-2' }}
+                </td>
                 <td class="px-5 py-4 text-end">
-                  <span class="inline-flex items-center px-3 py-1.5 rounded-lg text-sm font-semibold tabular-nums"
-                    [ngClass]="item.amount > 0 ? 'bg-warning-50 text-warning-700 dark:bg-warning-500/10 dark:text-warning-400' : 'bg-success-50 text-success-700 dark:bg-success-500/10 dark:text-success-400'">
-                    {{ item.amount | number:'1.2-2' }}
+                  <span *ngIf="item.debit > 0" class="inline-flex items-center px-3 py-1.5 rounded-lg text-sm font-semibold tabular-nums bg-success-50 text-success-700 dark:bg-success-500/10 dark:text-success-400">
+                    {{ item.debit | number:'1.2-2' }}
                   </span>
+                  <span *ngIf="item.debit === 0" class="text-gray-400 dark:text-gray-600">-</span>
                 </td>
-                <td class="px-5 py-4 text-end text-sm font-semibold text-gray-900 dark:text-white tabular-nums">
-                  {{ item.runningBalance | number:'1.2-2' }}
+                <td class="px-5 py-4 text-end">
+                  <span *ngIf="item.credit > 0" class="inline-flex items-center px-3 py-1.5 rounded-lg text-sm font-semibold tabular-nums bg-error-50 text-error-700 dark:bg-error-500/10 dark:text-error-400">
+                    {{ item.credit | number:'1.2-2' }}
+                  </span>
+                  <span *ngIf="item.credit === 0" class="text-gray-400 dark:text-gray-600">-</span>
                 </td>
-                <td class="px-5 py-4 text-start text-sm text-gray-500 dark:text-gray-400 max-w-[200px] truncate" [title]="item.notes || ''">
+                <td class="px-5 py-4 text-end text-sm font-bold tabular-nums" [ngClass]="{'text-success-600': item.runningBalance > 0, 'text-error-600': item.runningBalance < 0, 'text-gray-900 dark:text-white': item.runningBalance === 0}">
+                  {{ getAbs(item.runningBalance) | number:'1.2-2' }}
+                </td>
+                <td class="px-5 py-4 text-start text-sm text-gray-500 dark:text-gray-400 max-w-50 truncate" [title]="item.notes || ''">
                   {{ item.notes || '-' }}
                 </td>
               </tr>

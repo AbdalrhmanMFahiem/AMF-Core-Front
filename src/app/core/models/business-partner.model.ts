@@ -45,6 +45,9 @@ export interface BusinessPartnerLedgerResponse {
   invoiceCode?: string;
   entryType: string | number;
   amount: number;
+  debit: number;
+  credit: number;
+  balanceBefore: number;
   runningBalance: number;
   notes?: string;
   entryTypeName?: string;

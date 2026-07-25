@@ -1,8 +1,8 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, forkJoin } from 'rxjs';
 import { PaginatedList, RequestFilters } from '../models/pagination.model';
-import { UnitOfMeasure, UnitOfMeasureRequest, UomType, UnitOfMeasureFilters } from '../models/uom.model';
+import { UnitOfMeasure, UnitOfMeasureRequest, UomType, UnitOfMeasureFilters, PendingDerivedUnit } from '../models/uom.model';
 import { NextCodeResponse } from '../models/lookup.model';
 import { environment } from '../../../environments/environment';
 
@@ -56,5 +56,25 @@ export class UnitOfMeasureService {
     let params = new HttpParams();
     if (excludeId) params = params.set('excludeId', excludeId.toString());
     return this.http.get<UnitOfMeasure | null>(`${this.apiUrl}/base-unit/${type}`, { params });
+  }
+
+  batchAddDerivedUnits(baseRequest: Partial<UnitOfMeasureRequest>, derivedUnits: PendingDerivedUnit[]): Observable<number[]> {
+    const requests: Observable<number>[] = derivedUnits.map(unit => {
+      const request: UnitOfMeasureRequest = {
+        ...baseRequest,
+        aName: unit.aName,
+        eName: unit.eName || '',
+        conversionFactor: unit.conversionFactor || 1,
+        isBaseUnit: false,
+        // Ensure properties exist
+        code: unit.code || baseRequest.code || '',
+        uomType: baseRequest.uomType as UomType,
+        isActive: baseRequest.isActive ?? true,
+        notes: baseRequest.notes || ''
+      };
+      return this.addUnitOfMeasure(request);
+    });
+
+    return forkJoin(requests);
   }
 }

@@ -115,3 +115,4 @@ export class PaymentModalComponent implements OnChanges {
     this.close.emit();
   }
 }
+

@@ -21,6 +21,7 @@
     "from": "From",
     "to": "To",
     "unitOfMeasure": "Unit of Measure",
+    "uom": "UoM",
     "additionalDetails": "Additional Details",
     "currency": "Currency",
     "invoiceDateFrom": "Invoice Date From",
@@ -52,6 +53,7 @@
     "clearSelection": "Clear selection",
     "filter": "Filter",
     "apply": "Apply",
+    "statement": "Statement",
     "reset": "Reset",
     "code": "Code",
     "name": "Name",
@@ -112,11 +114,18 @@
       "Unpaid": "Unpaid",
       "PartiallyPaid": "Partially Paid",
       "Paid": "Paid",
-      "FullyPaid": "Fully Paid",
+      "FullyPaid": "Fully Paid"
+    },
+    "paymentStatusEnum": {
+      "Pending": "Pending",
+      "Completed": "Completed",
+      "Cancelled": "Cancelled",
       "Bounced": "Bounced"
     },
     "approvalStatus": "Approval Status",
     "paymentStatus": "Payment Status",
+    "confirmTitle": "Are you sure?",
+    "confirmWarning": "Are you sure you want to confirm this document?",
     "cancelWarningTitle": "Are you sure?",
     "cancelWarningText": "This will reverse any changes made by this document.",
     "defaultExistsTitle": "Default Record Exists",
@@ -178,6 +187,8 @@
     "purchaseOrders": "Purchase Orders",
     "purchaseInvoices": "Purchase Invoices",
     "purchaseReturns": "Purchase Returns",
+    "salesQuotations": "Sales Quotations",
+    "salesOrders": "Sales Orders",
     "customers": "Customers",
     "quotations": "Quotations",
     "reports": "Reports",
@@ -322,11 +333,18 @@
       "collapseAll": "Collapse All",
       "expandAll": "Expand All",
       "balance": "Balance:",
+      "weOwe": "We Owe",
+      "owesUs": "Owes Us",
       "table": {
         "invoiceCode": "Invoice Code",
         "entryType": "Entry Type",
         "balance": "Balance",
-        "emptyTable": "No details found for this partner"
+        "emptyTable": "No details found for this partner",
+        "amount": "Amount",
+        "notes": "Notes",
+        "balanceBefore": "Balance Before",
+        "debit": "Debit",
+        "credit": "Credit"
       },
       "entryTypes": {
         "all": "All",
@@ -522,10 +540,37 @@
     "aname": "Name (Arabic)",
     "ename": "Name (English)"
   },
+  "item": {
+    "title": "Item",
+    "pluralTitle": "Items",
+    "uomInfo": "UOM Info",
+    "baseUomType": "Base UOM Type",
+    "inventoryUom": "Inventory UOM"
+  },
   "items": {
     "title": "Items",
     "addNew": "Add New Record",
     "edit": "Edit Record",
+    "uomTypeSelectFirst": "Select Unit of Measure Type first to start",
+    "uomTypeWarning": "Please select UOM Type (Weight/Quantity/Volume..) to unlock remaining item tabs",
+    "uomTypeRequired": "Unit of Measure Type must be selected before saving",
+    "confirmChangeTypeTitle": "Confirm Changing UOM Type",
+    "confirmChangeTypeText": "Changing UOM type will reset and clear existing unit of measure lines. Are you sure you want to proceed?",
+    "types": {
+      "Weight": "Weight",
+      "Quantity": "Quantity",
+      "Volume": "Volume",
+      "Length": "Length",
+      "Area": "Area",
+      "Time": "Time",
+      "Other": "Other"
+    },
+    "suggestions": {
+      "title": "Quick Suggestions",
+      "baseUnit": "Base Unit",
+      "smallestRetail": "Smallest Retail Unit",
+      "largestWholesale": "Largest Wholesale Unit"
+    },
     "tabs": {
       "basic": "Basic Data",
       "purchasing": "Purchasing Data",
@@ -574,7 +619,20 @@
     },
     "errors": {
       "exactlyOneBaseUnit": "There must be exactly one base unit of measure.",
-      "invalidConversionFactor": "Conversion factor must be greater than zero."
+      "exactlyOneBaseUnitRequired": "There must be exactly one base unit of measure.",
+      "invalidConversionFactor": "Conversion factor for non-base unit must be greater than zero.",
+      "unitsOfMeasureRequired": "At least one unit of measure is required for inventory items.",
+      "duplicateUnitsOfMeasure": "Duplicate unit of measure in multiple lines is not allowed.",
+      "multipleDefaultPurchaseUnits": "Only one default purchase unit can be specified.",
+      "multipleDefaultSalesUnits": "Only one default sales unit can be specified.",
+      "salesUomRequired": "Sales unit must be selected if item is sold.",
+      "purchaseUomRequired": "Purchase unit must be selected if item is purchased.",
+      "inventoryUomRequired": "Inventory unit must be selected if item is an inventory item.",
+      "defaultWarehouseRequired": "Default warehouse is required for inventory items.",
+      "itemMustBePurchasedOrSold": "Item must be purchasable, sellable, or both.",
+      "minStockExceedsMax": "Min stock level cannot exceed max stock level.",
+      "invalidSalesPrice": "Sales price cannot be negative.",
+      "invalidTaxPercent": "Default tax percentage must be between 0 and 100."
     }
   },
   "validation": {
@@ -650,6 +708,7 @@
     "generalDetails": "General Details",
     "invoiceLines": "Invoice Lines",
     "addLine": "Add Line",
+    "addItem": "Add Item",
     "item": "Item",
     "qty": "Qty",
     "price": "Price",
@@ -659,6 +718,7 @@
     "noItemsAdded": "No items added. Click \u0027+ Add Line\u0027 to start.",
     "additionalCosts": "Additional Costs / Global Discounts",
     "addCost": "Add Cost",
+    "percentage": "Percentage",
     "costElement": "Cost Element",
     "grandTotal": "Grand Total",
     "selectItem": "Select Item",
@@ -704,22 +764,107 @@
     "printOrder": "Print Order",
     "addItems": "Add Items",
     "addCostElement": "Add Cost Element",
+    "labels": {
+      "paymentTerms": "Define the time limit for payment, e.g., Net 30, Cash on Delivery (COD).",
+      "paymentMethod": "Select the preferred payment method, e.g., Cash, Bank Transfer, Credit Card.",
+      "shippingMethod": "Specify the delivery or shipping method to be used.",
+      "vendorReference": "The reference number or code provided by the vendor.",
+      "buyer": "The individual or agent responsible for this purchase.",
+      "contactPerson": "The primary contact person for this order."
+    },
     "approvalStatus": "Approval Status",
     "status": {
       "Pending": "Pending",
       "Approved": "Approved",
       "Rejected": "Rejected"
     },
-    "approveTitle": "Approve Purchase Order",
-    "approveText": "Are you sure you want to approve this purchase order?",
+    "confirmTitle": "Confirm Purchase Order",
+    "confirmText": "Are you sure you want to confirm this purchase order?",
     "cancelTitle": "Cancel Purchase Order",
     "cancelText": "Are you sure you want to cancel this purchase order?",
     "convertTitle": "Convert to Invoice",
     "convertText": "Are you sure you want to convert this purchase order to a purchase invoice?",
     "convertToInvoice": "Convert to Invoice",
-    "approvedSuccess": "Purchase order approved successfully",
+    "confirmedSuccess": "Purchase order confirmed successfully",
     "cancelledSuccess": "Purchase order cancelled successfully",
-    "convertedSuccess": "Purchase order converted successfully"
+    "convertedSuccess": "Purchase order converted successfully",
+    "importLines": "Import Lines from PO",
+    "importFromPO": "Import from PO",
+    "openQty": "Open Qty",
+    "noOpenLines": "No open purchase order lines for this vendor",
+    "importSelected": "Import Selected"
+  },
+  "salesQuotations": {
+    "title": "Sales Quotations",
+    "list": "Sales Quotations List",
+    "add": "Add Sales Quotation",
+    "addNew": "Add New Quotation",
+    "view": "View Quotation",
+    "printOrder": "Print Quotation",
+    "addItems": "Add Items",
+    "addCostElement": "Add Cost Element",
+    "labels": {
+      "paymentTerms": "Payment Terms",
+      "paymentMethod": "Payment Method",
+      "shippingMethod": "Shipping Method",
+      "buyer": "Buyer",
+      "contactPerson": "Contact Person"
+    },
+    "approvalStatus": "Approval Status",
+    "status": {
+      "Pending": "Pending",
+      "Approved": "Approved",
+      "Rejected": "Rejected"
+    },
+    "confirmTitle": "Confirm Sales Quotation",
+    "confirmText": "Are you sure you want to confirm this sales quotation?",
+    "cancelTitle": "Cancel Sales Quotation",
+    "cancelText": "Are you sure you want to cancel this sales quotation?",
+    "convertTitle": "Convert to Sales Order",
+    "convertText": "Are you sure you want to convert this quotation to a sales order?",
+    "convertToInvoice": "Convert to Sales Order",
+    "confirmedSuccess": "Sales quotation confirmed successfully",
+    "cancelledSuccess": "Sales quotation cancelled successfully",
+    "convertedSuccess": "Sales quotation converted successfully"
+  },
+  "salesOrders": {
+    "title": "Sales Orders",
+    "list": "Sales Orders List",
+    "add": "Add Sales Order",
+    "addNew": "Add New Sales Order",
+    "view": "View Sales Order",
+    "printOrder": "Print Order",
+    "addItems": "Add Items",
+    "copyFromSQ": "Copy From Quotation",
+    "addCostElement": "Add Cost Element",
+    "labels": {
+      "paymentTerms": "Payment Terms",
+      "paymentMethod": "Payment Method",
+      "shippingMethod": "Shipping Method",
+      "buyer": "Buyer",
+      "contactPerson": "Contact Person"
+    },
+    "approvalStatus": "Approval Status",
+    "status": {
+      "Pending": "Pending",
+      "Approved": "Approved",
+      "Rejected": "Rejected"
+    },
+    "confirmTitle": "Confirm Sales Order",
+    "confirmText": "Are you sure you want to confirm this sales order?",
+    "cancelTitle": "Cancel Sales Order",
+    "cancelText": "Are you sure you want to cancel this sales order?",
+    "convertTitle": "Convert to Sales Invoice",
+    "convertText": "Are you sure you want to convert this sales order to a sales invoice?",
+    "convertToInvoice": "Convert to Invoice",
+    "confirmedSuccess": "Sales order confirmed successfully",
+    "cancelledSuccess": "Sales order cancelled successfully",
+    "convertedSuccess": "Sales order converted successfully",
+    "importLines": "Import Lines from Quotation",
+    "importFromPO": "Import from Quotation",
+    "openQty": "Open Qty",
+    "noOpenLines": "No open quotation lines for this customer",
+    "importSelected": "Import Selected"
   },
   "salesInvoices": {
     "title": "Sales Invoices",
@@ -796,6 +941,10 @@
       "costElements": "Cost Elements"
     },
     "paymentMethods": {
+      "Cash": "Cash",
+      "BankTransfer": "Bank Transfer",
+      "Cheque": "Cheque",
+      "CreditCard": "Credit Card",
       "cash": "Cash",
       "bankTransfer": "Bank Transfer",
       "cheque": "Cheque",
@@ -811,7 +960,8 @@
       "duplicateItem": "This item is already added to the invoice.",
       "duplicateCostElement": "This cost element is already added to the invoice.",
       "warehouseRequiredFirst": "You must select a warehouse before adding items.",
-      "changeWarehouseWarning": "Changing the warehouse will clear all selected items. Do you want to proceed?"
+      "changeWarehouseWarning": "Changing the warehouse will clear all selected items. Do you want to proceed?",
+      "vendorRequiredFirst": "You must select a vendor before adding items."
     }
   },
   "overview": {
@@ -1200,6 +1350,33 @@
       "Timing": "Timing",
       "Quantity": "Quantity",
       "Other": "Other"
+    }
+  },
+  "unitOfMeasure": {
+    "builder": {
+      "step1": "Step 1: Select Type",
+      "addBaseUnitNow": "Add Base Unit Now",
+      "step2": "Step 2: Select Function",
+      "baseUnitCard": "Base Unit",
+      "baseUnitDesc": "The standard reference unit for this type",
+      "alreadyExists": "Already Exists",
+      "derivedUnitCard": "Derived Unit (Packaging)",
+      "derivedUnitDesc": "Units based on the base unit",
+      "needsBaseFirst": "Needs Base Unit First",
+      "step3Base": "Step 3: Base Unit Details",
+      "baseUnitConversionInfo": "The conversion factor for a base unit is always 1 by default.",
+      "step3Derived": "Step 3: Build Derived Units",
+      "referenceBase": "Reference Unit",
+      "presets": "Quick Presets",
+      "derivedNamePlaceholder": "e.g. Carton, Box, Pack",
+      "addRow": "+ Add Another Unit",
+      "batchSuccess": "Successfully saved {{count}} units",
+      "duplicateNamesInBatch": "Cannot duplicate unit names in the same batch"
+    },
+    "status": {
+      "hasBaseUnit": "Base Unit Exists",
+      "noBaseUnit": "No base unit for this type",
+      "baseUnitCreated": "Base unit created successfully"
     }
   }
 }

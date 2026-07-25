@@ -60,6 +60,16 @@ export interface ItemLookupResponse {
   name: string;
   stock?: number;
   salesPrice?: number;
+  baseUomType?: string;
+  purchaseUomId?: number;
+  purchaseUomName?: string;
+  purchaseUomConvFactor?: number;
+  salesUomId?: number;
+  salesUomName?: string;
+  salesUomConvFactor?: number;
+  inventoryUomId?: number;
+  inventoryUomName?: string;
+  inventoryUomConvFactor?: number;
 }
 
 export interface NextCodeResponse {

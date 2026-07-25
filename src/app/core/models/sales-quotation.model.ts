@@ -2,7 +2,7 @@ import { RequestFilters } from './pagination.model';
 import { DocumentStatus, ApprovalStatus } from './document-status.model';
 export { DocumentStatus, ApprovalStatus };
 
-export interface PurchaseOrderBasicResponse {
+export interface SalesQuotationBasicResponse {
   id: number;
   code: string;
   documentNumber: string;
@@ -14,7 +14,7 @@ export interface PurchaseOrderBasicResponse {
   totalAmount: number;
 }
 
-export interface PurchaseOrderLineResponse {
+export interface SalesQuotationLineResponse {
   id: number;
   itemId: number;
   itemCode: string;
@@ -26,9 +26,6 @@ export interface PurchaseOrderLineResponse {
   description: string;
   quantity: number;
   openQuantity: number;
-  receivedQuantity: number;
-  returnedQuantity: number;
-  remainingQuantity: number;
   unitOfMeasureId?: number;
   unitOfMeasureName?: string;
   uomConversionFactor: number;
@@ -42,16 +39,14 @@ export interface PurchaseOrderLineResponse {
   lineTotal: number;
   lineDueDate?: string;
   lineStatus: DocumentStatus;
-  mrpRecommendationId?: number;
-  vendorItemCode?: string;
   notes?: string;
   baseUomType?: string;
 }
 
-export interface OpenPurchaseOrderLineResponse {
-  purchaseOrderLineId: number;
-  purchaseOrderId: number;
-  purchaseOrderCode: string;
+export interface OpenSalesQuotationLineResponse {
+  salesQuotationLineId: number;
+  salesQuotationId: number;
+  salesQuotationCode: string;
   itemId: number;
   itemCode: string;
   itemName: string;
@@ -69,7 +64,7 @@ export interface OpenPurchaseOrderLineResponse {
   notes?: string;
 }
 
-export interface PurchaseOrderResponse {
+export interface SalesQuotationResponse {
   id: number;
   code: string;
   notes?: string;
@@ -107,19 +102,15 @@ export interface PurchaseOrderResponse {
   freightAmount: number;
   shipToAddress?: string;
   incoterms?: string;
-  vendorReferenceNumber?: string;
   referenceNumber: string;
-  salesQuotationId?: number;
-  mrpRunId?: number;
-  mrpRecommendationId?: number;
   buyerId?: string;
   buyerName?: string;
   internalNotes?: string;
   printedNotes?: string;
-  lines: PurchaseOrderLineResponse[];
+  lines: SalesQuotationLineResponse[];
 }
 
-export interface PurchaseOrderLineRequest {
+export interface SalesQuotationLineRequest {
   itemId: number;
   warehouseId: number;
   lineNumber: number;
@@ -137,8 +128,6 @@ export interface PurchaseOrderLineRequest {
   lineTotal: number;
   lineDueDate?: string;
   lineStatus: DocumentStatus;
-  mrpRecommendationId?: number;
-  vendorItemCode?: string;
   notes?: string;
   // UI properties
   _itemName?: string;
@@ -149,7 +138,7 @@ export interface PurchaseOrderLineRequest {
   [key: string]: any;
 }
 
-export interface PurchaseOrderRequest {
+export interface SalesQuotationRequest {
   id: number;
   code: string;
   notes?: string;
@@ -180,18 +169,14 @@ export interface PurchaseOrderRequest {
   freightAmount: number;
   shipToAddress?: string;
   incoterms?: string;
-  vendorReferenceNumber?: string;
   referenceNumber: string;
-  salesQuotationId?: number;
-  mrpRunId?: number;
-  mrpRecommendationId?: number;
   buyerId?: string;
   internalNotes?: string;
   printedNotes?: string;
-  lines: PurchaseOrderLineRequest[];
+  lines: SalesQuotationLineRequest[];
 }
 
-export interface PurchaseOrderFilters extends RequestFilters {
+export interface SalesQuotationFilters extends RequestFilters {
   status?: DocumentStatus;
   approvalStatus?: ApprovalStatus;
   businessPartnerId?: number;

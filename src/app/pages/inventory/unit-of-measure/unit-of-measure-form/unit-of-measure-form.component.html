@@ -1,222 +1,378 @@
-<app-page-breadcrumb
-  [pageTitle]="isEditMode ? ('pages.UnitOfMeasure.EditTitle' | translate) : isView ? ('pages.UnitOfMeasure.ViewTitle' | translate) : ('pages.UnitOfMeasure.AddTitle' | translate)"
-  [parentPageTitle]="'pages.UnitOfMeasure.Title' | translate"
-  parentPageUrl="/inventory/unit-of-measure"></app-page-breadcrumb>
+<app-page-breadcrumb [pageTitle]="pageTitle() | translate" parentPageTitle="pages.UnitOfMeasure.title"
+  parentPageUrl="/inventory/unit-of-measure">
+</app-page-breadcrumb>
 
-<!-- Notifications -->
-<app-success-redirect-banner [isVisible]="showSuccessBanner"
-  [message]="isEditMode ? ('items.updateSuccess' | translate) : ('items.addSuccess' | translate)"
-  redirectUrl="/inventory/unit-of-measure"></app-success-redirect-banner>
+<app-success-redirect-banner *ngIf="showSuccessBanner()" message="common.saveSuccess"
+  redirectUrl="/inventory/unit-of-measure">
+</app-success-redirect-banner>
 
-<!-- Form Container -->
-<div
-  class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden mt-4"
-  *ngIf="!loading">
-  <form [formGroup]="form" (ngSubmit)="onSubmit()">
-    <!-- Header: Title & Code Badge -->
-    <div
-      class="flex flex-col sm:flex-row justify-between items-start sm:items-center p-6 border-b border-gray-100 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/50">
-      <div class="flex items-center gap-3">
-        <div
-          class="w-10 h-10 rounded-lg bg-indigo-50 dark:bg-indigo-900/30 flex items-center justify-center border border-indigo-100 dark:border-indigo-800/50">
-          <i class="fas fa-balance-scale text-indigo-600 dark:text-indigo-400 text-lg"></i>
-        </div>
-        <div>
-          <h2 class="text-lg font-bold text-gray-900 dark:text-white">
-            {{ isEditMode ? ('pages.UnitOfMeasure.EditTitle' | translate) : isView ? ('pages.UnitOfMeasure.ViewTitle' |
-            translate) : ('pages.UnitOfMeasure.AddTitle' | translate) }}
-          </h2>
-          <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">{{ 'pages.UnitOfMeasure.Title' | translate }}</p>
-        </div>
-      </div>
+<form *ngIf="!showSuccessBanner() && !loading()" (ngSubmit)="onSubmit()" class="flex flex-col gap-6">
 
-      <!-- Code Input Badge -->
-      <div
-        class="mt-4 sm:mt-0 flex items-center gap-2 px-3 py-2 bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-100 dark:border-indigo-500/20 rounded-lg shadow-sm">
-        <svg class="w-4 h-4 text-indigo-600 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
-        </svg>
-        <span
-          class="text-xs font-semibold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider whitespace-nowrap">{{
-          'common.code' | translate }}</span>
-        <div class="w-px h-4 bg-indigo-200 dark:bg-indigo-500/30 mx-1"></div>
-        <input type="text" formControlName="code"
-          class="font-mono text-sm font-bold text-gray-900 dark:text-white bg-transparent border-none outline-none focus:ring-0 p-0 w-32 placeholder:text-gray-400 dark:placeholder:text-gray-500 disabled:opacity-70"
-          placeholder="---">
-      </div>
+  <!-- Header Actions -->
+  <div class="flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <span *ngIf="isEditMode() || isView()"
+        class="inline-flex items-center rounded-md bg-gray-50 px-2.5 py-1 text-sm font-medium text-gray-700 ring-1 ring-inset ring-gray-600/20 dark:bg-gray-800 dark:text-gray-300 dark:ring-gray-700">
+        #{{ id() }}
+      </span>
+      <h2 class="text-xl font-semibold text-gray-800 dark:text-white/90">
+        {{ pageTitle() | translate }}
+      </h2>
     </div>
 
-    <div class="p-6">
-      <!-- Grid Layout -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+    <div class="flex items-center gap-3">
+      <button type="button" (click)="onCancel()" [disabled]="isSaving()"
+        class="rounded-lg px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 focus:outline-hidden focus:ring-2 focus:ring-brand-500 focus:ring-offset-2 dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800 transition-colors shadow-theme-xs disabled:opacity-50">
+        {{ (isView() ? 'common.back' : 'common.cancel') | translate }}
+      </button>
 
-        <!-- Type -->
-        <div class="space-y-1.5">
-          <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300">
-            {{ 'uom.uomType' | translate }} <span class="text-red-500 dark:text-red-400">*</span>
+      <button *ngIf="!isView()" type="button" (click)="onSubmit()"
+        [disabled]="isSaving() || (mode() === 'base' && baseForm.invalid) || (mode() === 'derived' && derivedFormArray.invalid) || (!mode()) || (mode() === 'derived' && derivedFormArray.length === 0)"
+        class="inline-flex items-center justify-center gap-2 rounded-lg bg-brand-500 px-4 py-2 text-sm font-medium text-white shadow-theme-xs hover:bg-brand-600 focus:outline-hidden focus:ring-2 focus:ring-brand-500 focus:ring-offset-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+        <svg *ngIf="isSaving()" class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor"
+            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+          </path>
+        </svg>
+        <svg *ngIf="!isSaving()" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+        </svg>
+        {{ 'common.save' | translate }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Step 1: UOM Type Selection -->
+  <div class="rounded-xl border border-gray-200 bg-white p-6 shadow-theme-sm dark:border-gray-800 dark:bg-gray-900">
+    <h3 class="text-base font-semibold text-gray-800 dark:text-white/90 mb-4">{{ 'unitOfMeasure.builder.step1' |
+      translate }}</h3>
+
+    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-4">
+      <button *ngFor="let type of uomTypes" type="button" (click)="selectType(type)"
+        [disabled]="isEditMode() || isView()"
+        class="flex flex-col items-center justify-center gap-2 p-4 rounded-xl border transition-all duration-200 group focus:outline-hidden"
+        [ngClass]="{
+          'border-brand-500 bg-brand-50 text-brand-600 dark:border-brand-400 dark:bg-brand-500/10 dark:text-brand-400': selectedType() === type,
+          'border-gray-200 bg-white text-gray-600 hover:border-gray-300 hover:bg-gray-50 dark:border-gray-800 dark:bg-white/3 dark:text-gray-400 dark:hover:border-gray-700 dark:hover:bg-white/5': selectedType() !== type,
+          'opacity-50 cursor-not-allowed': isEditMode() || isView()
+        }">
+        <svg class="w-8 h-8 transition-transform group-hover:scale-110" fill="none" stroke="currentColor"
+          viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" [attr.d]="getIconForType(type)">
+          </path>
+        </svg>
+        <span class="font-medium text-sm">{{ 'uom.types.' + type | translate }}</span>
+      </button>
+    </div>
+
+    <!-- Status Banner -->
+    <div *ngIf="selectedType() && !checkingBaseUnit()" class="mt-6 animate-fade-in">
+      <div *ngIf="baseUnitExists() && baseUnit()"
+        class="flex items-start gap-3 rounded-lg bg-success-50 p-4 border border-success-200 dark:bg-success-500/10 dark:border-success-500/20">
+        <svg class="w-5 h-5 text-success-500 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        </svg>
+        <div>
+          <h4 class="text-sm font-medium text-success-800 dark:text-success-400">
+            {{ 'unitOfMeasure.status.hasBaseUnit' | translate }}
+          </h4>
+          <p class="mt-1 text-sm text-success-700 dark:text-success-500/80">
+            {{ baseUnit()?.code }} - {{ baseUnit()?.name }}
+          </p>
+        </div>
+      </div>
+
+      <div *ngIf="!baseUnitExists()"
+        class="flex items-start gap-3 rounded-lg bg-warning-50 p-4 border border-warning-200 dark:bg-warning-500/10 dark:border-warning-500/20">
+        <svg class="w-5 h-5 text-warning-500 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z">
+          </path>
+        </svg>
+        <div>
+          <h4 class="text-sm font-medium text-warning-800 dark:text-warning-400">
+            {{ 'unitOfMeasure.status.noBaseUnit' | translate }}
+          </h4>
+          <button type="button" (click)="selectMode('base')"
+            class="mt-2 text-sm font-medium text-brand-600 hover:text-brand-500 dark:text-brand-400 dark:hover:text-brand-300 focus:outline-hidden underline underline-offset-2">
+            {{ 'unitOfMeasure.builder.addBaseUnitNow' | translate }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 2: Mode Selection -->
+  <div *ngIf="selectedType() && !checkingBaseUnit() && (!isEditMode() && !isView())"
+    class="rounded-xl border border-gray-200 bg-white p-6 shadow-theme-sm dark:border-gray-800 dark:bg-gray-900 animate-fade-in">
+    <h3 class="text-base font-semibold text-gray-800 dark:text-white/90 mb-4">{{ 'unitOfMeasure.builder.step2' |
+      translate }}</h3>
+
+    <div class="grid sm:grid-cols-2 gap-4">
+      <!-- Base Unit Card -->
+      <label class="relative flex cursor-pointer rounded-xl border p-5 transition-all duration-200 focus:outline-hidden"
+        [ngClass]="{
+          'border-brand-500 bg-brand-50 dark:border-brand-400 dark:bg-brand-500/10': mode() === 'base',
+          'border-gray-200 bg-white hover:bg-gray-50 dark:border-gray-800 dark:bg-white/3 dark:hover:bg-white/5': mode() !== 'base' && !baseUnitExists(),
+          'border-gray-100 bg-gray-50 opacity-50 cursor-not-allowed dark:border-gray-800 dark:bg-gray-900/50': baseUnitExists()
+        }">
+        <input type="radio" name="modeSelection" value="base" class="sr-only" (click)="selectMode('base')"
+          [disabled]="baseUnitExists()">
+        <span class="flex flex-1">
+          <span class="flex flex-col">
+            <span class="block text-sm font-semibold text-gray-900 dark:text-white/90">
+              {{ 'unitOfMeasure.builder.baseUnitCard' | translate }}
+            </span>
+            <span class="mt-1 flex items-center text-sm text-gray-500 dark:text-gray-400">
+              {{ 'unitOfMeasure.builder.baseUnitDesc' | translate }}
+            </span>
+            <span *ngIf="baseUnitExists()" class="mt-3 inline-flex">
+              <span
+                class="inline-flex items-center rounded-md bg-gray-100 px-2 py-1 text-xs font-medium text-gray-600 dark:bg-gray-800 dark:text-gray-400">
+                {{ 'unitOfMeasure.builder.alreadyExists' | translate }}
+              </span>
+            </span>
+          </span>
+        </span>
+        <svg *ngIf="mode() === 'base'" class="h-5 w-5 text-brand-600 dark:text-brand-400" viewBox="0 0 20 20"
+          fill="currentColor">
+          <path fill-rule="evenodd"
+            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"
+            clip-rule="evenodd" />
+        </svg>
+      </label>
+
+      <!-- Derived Unit Card -->
+      <label class="relative flex cursor-pointer rounded-xl border p-5 transition-all duration-200 focus:outline-hidden"
+        [ngClass]="{
+          'border-brand-500 bg-brand-50 dark:border-brand-400 dark:bg-brand-500/10': mode() === 'derived',
+          'border-gray-200 bg-white hover:bg-gray-50 dark:border-gray-800 dark:bg-white/3 dark:hover:bg-white/5': mode() !== 'derived' && baseUnitExists(),
+          'border-gray-100 bg-gray-50 opacity-50 cursor-not-allowed dark:border-gray-800 dark:bg-gray-900/50': !baseUnitExists()
+        }">
+        <input type="radio" name="modeSelection" value="derived" class="sr-only" (click)="selectMode('derived')"
+          [disabled]="!baseUnitExists()">
+        <span class="flex flex-1">
+          <span class="flex flex-col">
+            <span class="block text-sm font-semibold text-gray-900 dark:text-white/90">
+              {{ 'unitOfMeasure.builder.derivedUnitCard' | translate }}
+            </span>
+            <span class="mt-1 flex items-center text-sm text-gray-500 dark:text-gray-400">
+              {{ 'unitOfMeasure.builder.derivedUnitDesc' | translate }}
+            </span>
+            <span *ngIf="!baseUnitExists()" class="mt-3 inline-flex">
+              <span
+                class="inline-flex items-center rounded-md bg-warning-100 px-2 py-1 text-xs font-medium text-warning-700 dark:bg-warning-500/10 dark:text-warning-400">
+                {{ 'unitOfMeasure.builder.needsBaseFirst' | translate }}
+              </span>
+            </span>
+          </span>
+        </span>
+        <svg *ngIf="mode() === 'derived'" class="h-5 w-5 text-brand-600 dark:text-brand-400" viewBox="0 0 20 20"
+          fill="currentColor">
+          <path fill-rule="evenodd"
+            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"
+            clip-rule="evenodd" />
+        </svg>
+      </label>
+    </div>
+  </div>
+
+  <!-- Step 3a: Base Form -->
+  <div *ngIf="mode() === 'base'"
+    class="rounded-xl border border-gray-200 bg-white shadow-theme-sm dark:border-gray-800 dark:bg-gray-900 animate-fade-in">
+    <div class="border-b border-gray-200 px-6 py-4 dark:border-gray-800">
+      <h3 class="text-base font-semibold text-gray-800 dark:text-white/90">{{ 'unitOfMeasure.builder.step3Base' |
+        translate }}</h3>
+    </div>
+    <div class="p-6" [formGroup]="baseForm">
+      <div
+        class="mb-6 flex items-start gap-3 rounded-lg bg-blue-50 p-4 border border-blue-200 dark:bg-blue-500/10 dark:border-blue-500/20">
+        <svg class="w-5 h-5 text-blue-500 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        </svg>
+        <div>
+          <p class="text-sm text-blue-800 dark:text-blue-400">
+            {{ 'unitOfMeasure.builder.baseUnitConversionInfo' | translate }}
+          </p>
+        </div>
+      </div>
+
+      <div class="grid sm:grid-cols-2 gap-x-6 gap-y-4">
+
+        <!-- Code -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            {{ 'common.code' | translate }} <span class="text-error-500">*</span>
           </label>
-          <select formControlName="uomType"
-            class="bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5 transition-colors disabled:opacity-60 disabled:bg-gray-100 dark:disabled:bg-gray-800"
-            [class.border-red-500]="form.get('uomType')?.invalid && form.get('uomType')?.touched"
-            [class.dark:border-red-500]="form.get('uomType')?.invalid && form.get('uomType')?.touched">
-            <option [ngValue]="null" disabled>{{ 'common.select' | translate }}</option>
-            <option *ngFor="let type of uomTypes" [value]="type">{{ 'uom.types.' + type | translate }}</option>
-          </select>
-          <div *ngIf="form.get('uomType')?.invalid && form.get('uomType')?.touched"
-            class="text-red-500 dark:text-red-400 text-xs mt-1 font-medium">
-            {{ 'validation.required' | translate }}
-          </div>
+          <input type="text" formControlName="code"
+            class="block w-full rounded-lg border-gray-300 py-2.5 px-3 shadow-theme-xs focus:border-brand-500 focus:ring-brand-500 sm:text-sm dark:border-gray-700 dark:bg-white/5 dark:text-white dark:focus:border-brand-400 dark:focus:ring-brand-400"
+            [placeholder]="'common.code' | translate" />
         </div>
 
         <!-- Arabic Name -->
-        <div class="space-y-1.5">
-          <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300">
-            {{ 'common.arabicName' | translate }} <span class="text-red-500 dark:text-red-400">*</span>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            {{ 'common.fields.aName' | translate }} <span class="text-error-500">*</span>
           </label>
-          <div class="relative">
-            <div class="absolute inset-y-0 inset-s-0 flex items-center ps-3 pointer-events-none">
-              <i class="fas fa-language text-gray-400 dark:text-gray-500"></i>
-            </div>
-            <input type="text" formControlName="aName"
-              class="bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full ps-10 p-2.5 transition-colors disabled:opacity-60 disabled:bg-gray-100 dark:disabled:bg-gray-800"
-              [class.border-red-500]="form.get('aName')?.invalid && form.get('aName')?.touched"
-              [class.dark:border-red-500]="form.get('aName')?.invalid && form.get('aName')?.touched">
-          </div>
-          <div *ngIf="form.get('aName')?.invalid && form.get('aName')?.touched"
-            class="text-red-500 dark:text-red-400 text-xs mt-1 font-medium">
-            {{ 'validation.required' | translate }}
+          <input type="text" formControlName="aName"
+            class="block w-full rounded-lg border-gray-300 py-2.5 px-3 shadow-theme-xs focus:border-brand-500 focus:ring-brand-500 sm:text-sm dark:border-gray-700 dark:bg-white/5 dark:text-white dark:focus:border-brand-400 dark:focus:ring-brand-400"
+            [placeholder]="'common.fields.aNamePlaceholder' | translate" />
+          <div *ngIf="baseForm.get('aName')?.invalid && baseForm.get('aName')?.touched"
+            class="mt-1 text-sm text-error-500">
+            {{ 'common.requiredField' | translate }}
           </div>
         </div>
 
         <!-- English Name -->
-        <div class="space-y-1.5">
-          <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300">
-            {{ 'common.englishName' | translate }}
+        <div>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            {{ 'common.fields.eName' | translate }}
           </label>
-          <div class="relative">
-            <div class="absolute inset-y-0 inset-s-0 flex items-center ps-3 pointer-events-none">
-              <i class="fas fa-language text-gray-400 dark:text-gray-500"></i>
-            </div>
-            <input type="text" formControlName="eName"
-              class="bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full ps-10 p-2.5 transition-colors disabled:opacity-60 disabled:bg-gray-100 dark:disabled:bg-gray-800">
-          </div>
-        </div>
-
-        <!-- Is Base Unit & Conversion Factor -->
-        <div class="space-y-1.5 flex flex-col justify-center">
-          <label class="flex items-center cursor-pointer mb-2">
-            <div class="relative">
-              <input type="checkbox" formControlName="isBaseUnit" class="sr-only" />
-              <div class="box block h-6 w-10 rounded-full bg-gray-300 dark:bg-gray-700 transition-colors duration-200"
-                [ngClass]="{'bg-indigo-600 dark:bg-indigo-500': form.get('isBaseUnit')?.value}"></div>
-              <div class="dot absolute left-1 top-1 h-4 w-4 rounded-full bg-white transition-transform duration-200"
-                [ngClass]="{'translate-x-4': form.get('isBaseUnit')?.value}"></div>
-            </div>
-            <div class="ms-3 text-sm font-semibold text-gray-700 dark:text-gray-300">
-              {{ 'uom.isBaseUnit' | translate }}
-            </div>
-          </label>
-        </div>
-
-        <!-- Conversion Factor -->
-        <div class="space-y-1.5">
-          <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300">
-            {{ 'uom.conversionFactor' | translate }} <span class="text-red-500 dark:text-red-400"
-              *ngIf="!form.get('isBaseUnit')?.value">*</span>
-          </label>
-          <input type="number" step="any" formControlName="conversionFactor"
-            class="bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5 transition-colors disabled:opacity-60 disabled:bg-gray-100 dark:disabled:bg-gray-800"
-            [class.border-red-500]="form.get('conversionFactor')?.invalid && form.get('conversionFactor')?.touched"
-            [class.dark:border-red-500]="form.get('conversionFactor')?.invalid && form.get('conversionFactor')?.touched">
-          <div *ngIf="form.get('conversionFactor')?.invalid && form.get('conversionFactor')?.touched"
-            class="text-red-500 dark:text-red-400 text-xs mt-1 font-medium">
-            {{ 'validation.invalid' | translate }}
-          </div>
-          
-          <!-- Base Unit Reference Hint -->
-          <div *ngIf="baseUnitForSelectedType && !form.get('isBaseUnit')?.value" 
-               class="mt-3 p-3 bg-indigo-50/50 dark:bg-indigo-500/5 rounded-lg border border-indigo-100 dark:border-indigo-500/10 flex gap-3">
-            <i class="fas fa-info-circle text-indigo-500 mt-0.5"></i>
-            <div class="text-sm">
-              <p class="font-medium text-indigo-900 dark:text-indigo-300 mb-1">
-                {{ 'uom.baseUnitReference' | translate }}: <span class="font-bold">{{ baseUnitForSelectedType.aName }} ({{ baseUnitForSelectedType.code }})</span>
-              </p>
-              <p class="text-indigo-700 dark:text-indigo-400">
-                1 <span class="font-semibold">{{ form.get('aName')?.value || ('uom.newUnit' | translate) }}</span> = 
-                <span class="font-semibold">{{ form.get('conversionFactor')?.value || 1 }}</span> 
-                {{ baseUnitForSelectedType.aName }}
-              </p>
-            </div>
-          </div>
+          <input type="text" formControlName="eName"
+            class="block w-full rounded-lg border-gray-300 py-2.5 px-3 shadow-theme-xs focus:border-brand-500 focus:ring-brand-500 sm:text-sm dark:border-gray-700 dark:bg-white/5 dark:text-white dark:focus:border-brand-400 dark:focus:ring-brand-400"
+            [placeholder]="'common.fields.eNamePlaceholder' | translate" />
         </div>
 
         <!-- Notes -->
-        <div class="col-span-1 md:col-span-2 space-y-1.5 mt-2">
-          <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300">
+        <div class="sm:col-span-2">
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
             {{ 'common.notes' | translate }}
           </label>
           <textarea formControlName="notes" rows="3"
-            class="bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5 transition-colors disabled:opacity-60 disabled:bg-gray-100 dark:disabled:bg-gray-800 resize-y"></textarea>
+            class="block w-full rounded-lg border-gray-300 py-2.5 px-3 shadow-theme-xs focus:border-brand-500 focus:ring-brand-500 sm:text-sm dark:border-gray-700 dark:bg-white/5 dark:text-white dark:focus:border-brand-400 dark:focus:ring-brand-400"
+            [placeholder]="'common.notes' | translate"></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 3b: Derived Builder -->
+  <div *ngIf="mode() === 'derived'"
+    class="rounded-xl border border-gray-200 bg-white shadow-theme-sm dark:border-gray-800 dark:bg-gray-900 animate-fade-in">
+    <div class="border-b border-gray-200 px-6 py-4 flex items-center justify-between dark:border-gray-800">
+      <h3 class="text-base font-semibold text-gray-800 dark:text-white/90">
+        {{ 'unitOfMeasure.builder.step3Derived' | translate }}
+      </h3>
+      <div class="inline-flex items-center gap-2 rounded-md bg-gray-50 px-3 py-1.5 dark:bg-white/5">
+        <span class="text-xs text-gray-500 dark:text-gray-400">{{ 'unitOfMeasure.builder.referenceBase' | translate
+          }}:</span>
+        <span class="text-sm font-medium text-gray-900 dark:text-white/90">{{ baseUnit()?.code }} - {{ baseUnit()?.name
+          }}</span>
+      </div>
+    </div>
+
+    <!-- Presets -->
+    <div *ngIf="presets().length > 0 && !isEditMode() && !isView()" class="px-6 pt-5 pb-2">
+      <p class="text-xs font-medium text-gray-500 uppercase tracking-wider mb-3 dark:text-gray-400">
+        {{ 'unitOfMeasure.builder.presets' | translate }}
+      </p>
+      <div class="flex flex-wrap gap-2">
+        <button *ngFor="let p of presets()" type="button" (click)="applyPreset(p)"
+          class="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-sm font-medium bg-gray-100 text-gray-700 hover:bg-gray-200 hover:text-gray-900 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white transition-colors focus:outline-hidden border border-transparent dark:border-gray-700">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+          </svg>
+          {{ p }} {{ baseUnit()?.name }}
+        </button>
+      </div>
+    </div>
+
+    <!-- Repeatable Rows -->
+    <div class="p-6">
+      <div class="space-y-6">
+        <div *ngFor="let row of derivedFormArray.controls; let i = index; trackBy: trackByRow"
+          [formGroup]="asFormGroup(row)"
+          class="relative rounded-xl border border-gray-200 bg-gray-50/50 p-5 dark:border-gray-800 dark:bg-white/2">
+
+          <button *ngIf="derivedFormArray.length > 1 && !isView()" type="button" (click)="removeDerivedRow(i)"
+            class="absolute top-4 rtl:left-4 ltr:right-4 text-gray-400 hover:text-error-500 transition-colors focus:outline-hidden"
+            [title]="'common.delete' | translate">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+          </button>
+
+          <div class="grid sm:grid-cols-12 gap-5 items-start pr-8 rtl:pl-8 rtl:pr-0">
+
+            <!-- Code -->
+            <div class="sm:col-span-3">
+              <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1.5">
+                {{ 'common.code' | translate }} <span class="text-error-500">*</span>
+              </label>
+              <input type="text" formControlName="code"
+                class="block w-full rounded-lg border-gray-300 py-2 px-3 shadow-theme-xs focus:border-brand-500 focus:ring-brand-500 sm:text-sm dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:focus:border-brand-400 dark:focus:ring-brand-400"
+                [placeholder]="'common.code' | translate" />
+            </div>
+
+            <!-- New Unit Name -->
+            <div class="sm:col-span-5">
+              <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1.5">
+                {{ 'common.fields.aName' | translate }} <span class="text-error-500">*</span>
+              </label>
+              <input type="text" formControlName="aName"
+                class="block w-full rounded-lg border-gray-300 py-2 px-3 shadow-theme-xs focus:border-brand-500 focus:ring-brand-500 sm:text-sm dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:focus:border-brand-400 dark:focus:ring-brand-400"
+                [placeholder]="'unitOfMeasure.builder.derivedNamePlaceholder' | translate" />
+            </div>
+
+            <!-- Conversion Factor -->
+            <div class="sm:col-span-4">
+              <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1.5">
+                {{ 'uom.conversionFactor' | translate }} <span class="text-error-500">*</span>
+              </label>
+              <div class="relative rounded-md shadow-theme-xs">
+                <input type="number" formControlName="conversionFactor" step="any" min="0.00001"
+                  class="block w-full rounded-lg border-gray-300 py-2 pl-3 pr-16 rtl:pr-3 rtl:pl-16 focus:border-brand-500 focus:ring-brand-500 sm:text-sm dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:focus:border-brand-400 dark:focus:ring-brand-400"
+                  placeholder="0.00" />
+                <div
+                  class="pointer-events-none absolute inset-y-0 right-0 rtl:left-0 rtl:right-auto flex items-center pr-3 rtl:pl-3">
+                  <span class="text-gray-500 sm:text-sm dark:text-gray-400 truncate max-w-15"
+                    [title]="baseUnit()?.name">{{ baseUnit()?.name }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Live Sentences -->
+          <div *ngIf="row.get('aName')?.value || row.get('conversionFactor')?.value"
+            class="mt-4 flex flex-col gap-1.5 rounded-lg bg-white p-3 border border-gray-100 dark:bg-gray-800 dark:border-gray-700">
+            <div class="flex items-center text-sm font-medium text-gray-800 dark:text-white/90">
+              <span class="text-brand-600 dark:text-brand-400 mr-2 rtl:ml-2 rtl:mr-0">1</span>
+              <span>{{ row.get('aName')?.value || '...' }}</span>
+              <span class="mx-2 text-gray-400">=</span>
+              <span class="text-brand-600 dark:text-brand-400 mr-2 rtl:ml-2 rtl:mr-0">{{
+                row.get('conversionFactor')?.value || '?' }}</span>
+              <span>{{ baseUnit()?.name }}</span>
+            </div>
+
+            <div *ngIf="row.get('conversionFactor')?.value && row.get('conversionFactor')?.value > 0"
+              class="flex items-center text-xs text-gray-500 dark:text-gray-400">
+              <svg class="w-3.5 h-3.5 mr-1.5 rtl:ml-1.5 rtl:mr-0 text-gray-400" fill="none" stroke="currentColor"
+                viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path>
+              </svg>
+              <span>1</span>
+              <span class="ml-1 rtl:mr-1 rtl:ml-0">{{ baseUnit()?.name }}</span>
+              <span class="mx-1.5">=</span>
+              <span>{{ (1 / row.get('conversionFactor')?.value) | number:'1.2-6' }}</span>
+              <span class="ml-1 rtl:mr-1 rtl:ml-0">{{ row.get('aName')?.value || '...' }}</span>
+            </div>
+          </div>
+
         </div>
       </div>
 
-      <!-- Actions Footer -->
-      <div class="mt-8 pt-5 border-t border-gray-100 dark:border-gray-700 flex items-center justify-end gap-3"
-        *ngIf="!isView">
-        <button type="button" (click)="onCancel()"
-          class="px-5 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 focus:ring-4 focus:outline-none focus:ring-gray-100 dark:focus:ring-gray-700 transition-all shadow-sm">
-          {{ 'common.cancel' | translate }}
-        </button>
-        <button type="submit" [disabled]="form.invalid || isSaving"
-          class="px-5 py-2.5 text-sm font-medium text-white bg-indigo-600 dark:bg-indigo-500 rounded-lg hover:bg-indigo-700 dark:hover:bg-indigo-600 focus:ring-4 focus:outline-none focus:ring-indigo-300 dark:focus:ring-indigo-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-sm flex items-center gap-2">
-          <i class="fas fa-spinner fa-spin" *ngIf="isSaving"></i>
-          <i class="fas fa-save" *ngIf="!isSaving"></i>
-          {{ (isEditMode ? 'common.save' : 'common.add') | translate }}
-        </button>
-      </div>
-
-      <div class="mt-8 pt-5 border-t border-gray-100 dark:border-gray-700 flex items-center justify-end gap-3"
-        *ngIf="isView">
-        <button type="button" (click)="onCancel()"
-          class="px-5 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 focus:ring-4 focus:outline-none focus:ring-gray-100 dark:focus:ring-gray-700 transition-all shadow-sm">
-          {{ 'common.back' | translate }}
-        </button>
-      </div>
-    </div>
-  </form>
-</div>
-
-<!-- Loading Skeleton -->
-<div *ngIf="loading"
-  class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 mt-4 animate-pulse">
-  <div class="flex justify-between items-center mb-8 border-b border-gray-100 dark:border-gray-700 pb-6">
-    <div class="flex items-center gap-4">
-      <div class="w-10 h-10 bg-gray-200 dark:bg-gray-700 rounded-lg"></div>
-      <div>
-        <div class="h-5 bg-gray-200 dark:bg-gray-700 rounded-md w-32 mb-2"></div>
-        <div class="h-3 bg-gray-200 dark:bg-gray-700 rounded-md w-48"></div>
-      </div>
-    </div>
-    <div class="h-10 bg-gray-200 dark:bg-gray-700 rounded-lg w-32"></div>
-  </div>
-
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-    <div>
-      <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-24 mb-3"></div>
-      <div class="h-10 bg-gray-200 dark:bg-gray-700 rounded-lg w-full"></div>
-    </div>
-    <div>
-      <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-24 mb-3"></div>
-      <div class="h-10 bg-gray-200 dark:bg-gray-700 rounded-lg w-full"></div>
-    </div>
-    <div class="col-span-1 md:col-span-2">
-      <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-32 mb-3"></div>
-      <div class="h-10 bg-gray-200 dark:bg-gray-700 rounded-lg w-full"></div>
-    </div>
-    <div class="col-span-1 md:col-span-2">
-      <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-24 mb-3"></div>
-      <div class="h-24 bg-gray-200 dark:bg-gray-700 rounded-lg w-full"></div>
+      <button *ngIf="!isEditMode() && !isView()" type="button" (click)="addDerivedRow()"
+        class="mt-5 inline-flex items-center gap-2 text-sm font-medium text-brand-600 hover:text-brand-700 dark:text-brand-400 dark:hover:text-brand-300 focus:outline-hidden transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+        </svg>
+        {{ 'unitOfMeasure.builder.addRow' | translate }}
+      </button>
     </div>
   </div>
-</div>
+
+</form>

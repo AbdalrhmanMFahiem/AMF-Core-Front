@@ -5,21 +5,21 @@ import { environment } from '../../../environments/environment';
 import { PaginatedList } from '../models/pagination.model';
 import { NextCodeResponse } from '../models/lookup.model';
 import { 
-  PurchaseOrderBasicResponse, 
-  PurchaseOrderResponse, 
-  PurchaseOrderRequest, 
-  PurchaseOrderFilters,
-  OpenPurchaseOrderLineResponse
-} from '../models/purchase-order.model';
+  SalesQuotationBasicResponse, 
+  SalesQuotationResponse, 
+  SalesQuotationRequest, 
+  SalesQuotationFilters,
+  OpenSalesQuotationLineResponse
+} from '../models/sales-quotation.model';
 
 @Injectable({
   providedIn: 'root'
 })
-export class PurchaseOrderService {
+export class SalesQuotationService {
   private http = inject(HttpClient);
-  private apiUrl = `${environment.apiUrl}/api/purchaseOrders`;
+  private apiUrl = `${environment.apiUrl}/api/salesQuotations`;
 
-  private getOptions(filters?: PurchaseOrderFilters) {
+  private getOptions(filters?: SalesQuotationFilters) {
     let params = new HttpParams();
     if (filters) {
       if (filters.pageNumber) params = params.set('pageNumber', filters.pageNumber.toString());
@@ -36,43 +36,41 @@ export class PurchaseOrderService {
     return { params };
   }
 
-  getAll(filters: PurchaseOrderFilters): Observable<PaginatedList<PurchaseOrderBasicResponse>> {
-    return this.http.get<PaginatedList<PurchaseOrderBasicResponse>>(this.apiUrl, this.getOptions(filters));
+  getAll(filters: SalesQuotationFilters): Observable<PaginatedList<SalesQuotationBasicResponse>> {
+    return this.http.get<PaginatedList<SalesQuotationBasicResponse>>(this.apiUrl, this.getOptions(filters));
   }
 
-  get(id: number): Observable<PurchaseOrderResponse> {
-    return this.http.get<PurchaseOrderResponse>(`${this.apiUrl}/${id}`);
+  get(id: number): Observable<SalesQuotationResponse> {
+    return this.http.get<SalesQuotationResponse>(`${this.apiUrl}/${id}`);
   }
 
   getNextCode(): Observable<NextCodeResponse> {
     return this.http.get<NextCodeResponse>(`${this.apiUrl}/next-code`);
   }
 
-  add(request: PurchaseOrderRequest): Observable<PurchaseOrderResponse> {
-    return this.http.post<PurchaseOrderResponse>(this.apiUrl, request);
+  add(request: SalesQuotationRequest): Observable<SalesQuotationResponse> {
+    return this.http.post<SalesQuotationResponse>(this.apiUrl, request);
   }
 
-  update(id: number, request: PurchaseOrderRequest): Observable<void> {
+  update(id: number, request: SalesQuotationRequest): Observable<void> {
     return this.http.put<void>(`${this.apiUrl}/${id}`, request);
   }
 
-  export(filters: PurchaseOrderFilters): Observable<Blob> {
+  export(filters: SalesQuotationFilters): Observable<Blob> {
     return this.http.get(`${this.apiUrl}/export`, {
       ...this.getOptions(filters),
       responseType: 'blob'
     });
   }
 
-  // Confirm API
   confirm(id: number): Observable<void> {
     return this.http.put<void>(`${this.apiUrl}/${id}/confirm`, {});
   }
 
-  getOpenLines(vendorId: number): Observable<OpenPurchaseOrderLineResponse[]> {
-    return this.http.get<OpenPurchaseOrderLineResponse[]>(`${this.apiUrl}/open-lines?vendorId=${vendorId}`);
+  getOpenLines(customerId: number): Observable<OpenSalesQuotationLineResponse[]> {
+    return this.http.get<OpenSalesQuotationLineResponse[]>(`${this.apiUrl}/open-lines?customerId=${customerId}`);
   }
 
-  // Placeholder for Cancel API if backend implements it.
   cancel(id: number): Observable<void> {
     return this.http.put<void>(`${this.apiUrl}/${id}/cancel`, {});
   }

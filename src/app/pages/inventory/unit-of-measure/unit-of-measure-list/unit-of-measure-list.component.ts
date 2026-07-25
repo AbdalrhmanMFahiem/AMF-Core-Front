@@ -41,7 +41,7 @@ export class UnitOfMeasureListComponent implements OnInit {
     pageNumber: 1,
     pageSize: 10,
     searchValue: '',
-    sortColumn: 'Id',
+    sortColumn: '',
     sortDirection: 'DESC'
   };
 
@@ -52,10 +52,10 @@ export class UnitOfMeasureListComponent implements OnInit {
   }
 
   columns: CrudColumn[] = [
-    { field: 'code', header: 'common.code', type: 'code' },
-    { field: 'aName', header: 'common.name', type: 'text' },
-    { field: 'uomType', header: 'uom.uomType', type: 'custom' },
-    { field: 'isBaseUnit', header: 'uom.isBaseUnit', type: 'boolean' },
+    { field: 'code', header: 'common.code', type: 'code', sortable: true },
+    { field: 'name', header: 'common.name', type: 'text', sortable: true },
+    { field: 'uomType', header: 'uom.uomType', type: 'custom', sortable: true },
+    { field: 'isBaseUnit', header: 'uom.isBaseUnit', type: 'boolean', sortable: true },
     { field: 'conversionFactor', header: 'uom.conversionFactor', type: 'number' },
     { field: 'isActive', header: 'common.status', type: 'badge' }
   ];

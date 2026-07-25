@@ -8,10 +8,12 @@ import { ItemLookupResponse, ItemUsageType, ItemLookupsFilters } from '../../../
 import { Subject, Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
+import { UomTypeBadgeComponent } from '../../common/uom-type-badge/uom-type-badge.component';
+
 @Component({
   selector: 'app-item-lookup-modal',
   standalone: true,
-  imports: [CommonModule, FormsModule, TranslateModule, ModalComponent],
+  imports: [CommonModule, FormsModule, TranslateModule, ModalComponent, UomTypeBadgeComponent],
   templateUrl: './item-lookup-modal.component.html',
 })
 export class ItemLookupModalComponent implements OnChanges, OnInit, OnDestroy {

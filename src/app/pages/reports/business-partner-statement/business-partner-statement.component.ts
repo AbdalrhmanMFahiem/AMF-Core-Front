@@ -140,6 +140,10 @@ export class BusinessPartnerStatementComponent implements OnInit {
     };
   }
 
+  getAbs(value: number): number {
+    return Math.abs(value || 0);
+  }
+
   loadLookups(): void {
     this.businessPartnerService.getAll({ pageNumber: 1, pageSize: 1000 }).subscribe({
       next: (res) => {

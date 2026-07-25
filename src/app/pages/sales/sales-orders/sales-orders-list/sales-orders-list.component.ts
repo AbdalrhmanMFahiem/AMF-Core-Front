@@ -2,31 +2,29 @@ import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { PurchaseOrderService } from '../../../../core/services/purchase-order.service';
-import { PurchaseOrderBasicResponse, PurchaseOrderFilters } from '../../../../core/models/purchase-order.model';
+import { SalesOrderService } from '../../../../core/services/sales-order.service';
+import { SalesOrderBasicResponse, SalesOrderFilters } from '../../../../core/models/sales-order.model';
 import { CrudListComponent, CrudColumn } from '../../../../shared/components/common/crud-list/crud-list.component';
 import { PageBreadcrumbComponent } from '../../../../shared/components/common/page-breadcrumb/page-breadcrumb.component';
 import { SearchableSelectComponent, SearchableOption } from '../../../../shared/components/form/searchable-select/searchable-select.component';
 import { DatePickerComponent } from '../../../../shared/components/form/date-picker/date-picker.component';
 import { LookupService } from '../../../../core/services/lookup.service';
 import { FormsModule } from '@angular/forms';
-import { ConfirmationModalComponent } from '../../../../shared/components/common/confirmation-modal/confirmation-modal.component';
-import { ToastrService } from 'ngx-toastr';
 
 @Component({
-  selector: 'app-purchase-orders-list',
+  selector: 'app-sales-orders-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, TranslateModule, CrudListComponent, PageBreadcrumbComponent, SearchableSelectComponent, DatePickerComponent, ConfirmationModalComponent],
+  imports: [CommonModule, FormsModule, TranslateModule, CrudListComponent, PageBreadcrumbComponent, SearchableSelectComponent, DatePickerComponent],
   template: `
-    <app-page-breadcrumb [pageTitle]="'purchaseOrders.title'" />
+    <app-page-breadcrumb [pageTitle]="'salesOrders.title'" />
     <div class="space-y-6">
       <app-crud-list
-        [pageTitle]="'purchaseOrders.list'"
+        [pageTitle]="'salesOrders.list'"
         [columns]="columns"
         [data]="data"
         [isLoading]="loading"
         [searchPlaceholder]="'common.searchPlaceholder'"
-        addBtnText="purchaseOrders.add"
+        addBtnText="salesOrders.add"
         [filters]="filters"
         [showIncludeDisabledToggle]="false"
         [hideBuiltInSearch]="true"
@@ -50,8 +48,8 @@ import { ToastrService } from 'ngx-toastr';
 
         <div advanced-filters class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           <div>
-            <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1.5">{{ 'common.vendor' | translate }}</label>
-            <app-searchable-select [options]="vendorsOptions" placeholder="common.all"
+            <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1.5">{{ 'common.customer' | translate }}</label>
+            <app-searchable-select [options]="customersOptions" placeholder="common.all"
               [(ngModel)]="filters.businessPartnerId" (selectionChange)="loadData()"></app-searchable-select>
           </div>
           <div>
@@ -60,7 +58,7 @@ import { ToastrService } from 'ngx-toastr';
               [(ngModel)]="filters.status" (selectionChange)="loadData()"></app-searchable-select>
           </div>
           <div>
-            <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1.5">{{ 'purchaseOrders.approvalStatus' | translate }}</label>
+            <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1.5">{{ 'salesOrders.approvalStatus' | translate }}</label>
             <app-searchable-select [options]="approvalStatusOptions" placeholder="common.all"
               [(ngModel)]="filters.approvalStatus" (selectionChange)="loadData()"></app-searchable-select>
           </div>
@@ -80,39 +78,16 @@ import { ToastrService } from 'ngx-toastr';
         </div>
 
       </app-crud-list>
-      <!-- Action Confirmation Modal -->
-      <app-confirmation-modal
-        [isOpen]="isActionModalOpen"
-        [isLoading]="isActionLoading"
-        [title]="actionModalTitle"
-        [message]="actionModalMessage"
-        [type]="actionModalType"
-        [confirmText]="actionModalConfirmText"
-        [cancelText]="'common.cancel' | translate"
-        (confirm)="executePendingAction()"
-        (cancel)="isActionModalOpen = false">
-      </app-confirmation-modal>
     </div>
   `
 })
-export class PurchaseOrdersListComponent implements OnInit {
-  private purchaseOrderService = inject(PurchaseOrderService);
+export class SalesOrdersListComponent implements OnInit {
+  private salesOrderService = inject(SalesOrderService);
   private lookupService = inject(LookupService);
   private router = inject(Router);
   private translate = inject(TranslateService);
-  private toastr = inject(ToastrService);
 
-  // Confirmation Modal State
-  isActionModalOpen = false;
-  isActionLoading = false;
-  actionModalTitle = '';
-  actionModalMessage = '';
-  actionModalType: 'warning' | 'danger' | 'info' | 'success' = 'warning';
-  actionModalConfirmText = '';
-  pendingAction: 'confirm' | 'cancel' | 'convert' | null = null;
-  selectedItemId: number | null = null;
-
-  vendorsOptions: SearchableOption[] = [];
+  customersOptions: SearchableOption[] = [];
   statusOptions: SearchableOption[] = [];
   approvalStatusOptions: SearchableOption[] = [];
 
@@ -131,11 +106,33 @@ export class PurchaseOrdersListComponent implements OnInit {
     );
   }
 
-  customActions = [];
+  customActions = [
+    {
+      id: 'confirm',
+      label: 'salesOrders.confirmTitle',
+      icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>',
+      colorClass: 'text-success-600 dark:text-success-400 hover:bg-success-50 dark:hover:bg-success-500/10',
+      visible: (item: any) => item.status === 'Draft' || item.status === 'Open'
+    },
+    {
+      id: 'cancel',
+      label: 'salesOrders.cancelTitle',
+      icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>',
+      colorClass: 'text-error-600 dark:text-error-400 hover:bg-error-50 dark:hover:bg-error-500/10',
+      visible: (item: any) => item.status !== 'Cancelled' && item.status !== 'Closed'
+    },
+    {
+      id: 'convert',
+      label: 'salesOrders.convertToInvoice',
+      icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path></svg>',
+      colorClass: 'text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-500/10',
+      visible: (item: any) => item.approvalStatus === 'Approved' && item.status !== 'Cancelled'
+    }
+  ];
 
   isActionHidden = (item: any) => true;
 
-  filters: PurchaseOrderFilters = {
+  filters: SalesOrderFilters = {
     pageNumber: 1,
     pageSize: 10,
     searchValue: ''
@@ -143,11 +140,11 @@ export class PurchaseOrdersListComponent implements OnInit {
 
   columns: CrudColumn[] = [
     { field: 'code', header: 'common.code', type: 'code' },
-    { field: 'businessPartnerName', header: 'common.vendor', type: 'text' },
+    { field: 'businessPartnerName', header: 'common.customer', type: 'text' },
     { field: 'documentDate', header: 'common.date', type: 'date' },
     { field: 'totalAmountDisplay', header: 'salesInvoices.fields.totalAmount', type: 'text' },
     { field: 'statusDisplay', header: 'common.status', type: 'dynamic-badge' },
-    { field: 'approvalStatusDisplay', header: 'purchaseOrders.approvalStatus', type: 'dynamic-badge' }
+    { field: 'approvalStatusDisplay', header: 'salesOrders.approvalStatus', type: 'dynamic-badge' }
   ];
 
   ngOnInit(): void {
@@ -156,8 +153,8 @@ export class PurchaseOrdersListComponent implements OnInit {
   }
 
   initOptions(): void {
-    this.lookupService.getVendors().subscribe(res => {
-      this.vendorsOptions = (res || []).map(c => ({ value: c.id, label: c.name }));
+    this.lookupService.getCustomers().subscribe((res: any) => {
+      this.customersOptions = (res || []).map((c: any) => ({ value: c.id, label: c.name }));
     });
 
     this.translate.onLangChange.subscribe(() => this.updateStatusOptions());
@@ -172,9 +169,9 @@ export class PurchaseOrdersListComponent implements OnInit {
       { value: 'Cancelled', label: this.translate.instant('common.documentStatus.Cancelled') }
     ];
     this.approvalStatusOptions = [
-      { value: 'Pending', label: this.translate.instant('purchaseOrders.status.Pending') },
-      { value: 'Approved', label: this.translate.instant('purchaseOrders.status.Approved') },
-      { value: 'Rejected', label: this.translate.instant('purchaseOrders.status.Rejected') }
+      { value: 'Pending', label: this.translate.instant('salesOrders.status.Pending') },
+      { value: 'Approved', label: this.translate.instant('salesOrders.status.Approved') },
+      { value: 'Rejected', label: this.translate.instant('salesOrders.status.Rejected') }
     ];
   }
 
@@ -196,8 +193,8 @@ export class PurchaseOrdersListComponent implements OnInit {
 
   loadData(): void {
     this.loading = true;
-    this.purchaseOrderService.getAll(this.filters).subscribe({
-      next: (res) => {
+    this.salesOrderService.getAll(this.filters).subscribe({
+      next: (res: any) => {
         const getStatusColor = (status: string) => {
           switch (status) {
             case 'Draft': return 'warning';
@@ -218,18 +215,18 @@ export class PurchaseOrdersListComponent implements OnInit {
         };
 
         const itemsList = res.items || (res as any).Items || [];
-        const mappedItems = itemsList.map((item: PurchaseOrderBasicResponse) => ({
+        const mappedItems = itemsList.map((item: SalesOrderBasicResponse) => ({
           ...item,
           statusDisplay: this.translate.instant('common.documentStatus.' + item.status),
           statusDisplayColor: getStatusColor(item.status),
-          approvalStatusDisplay: item.approvalStatus ? this.translate.instant('purchaseOrders.status.' + item.approvalStatus) : '-',
+          approvalStatusDisplay: item.approvalStatus ? this.translate.instant('salesOrders.status.' + item.approvalStatus) : '-',
           approvalStatusDisplayColor: getApprovalStatusColor(item.approvalStatus),
           totalAmountDisplay: item.totalAmount ? item.totalAmount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '0.00'
         }));
         this.data = { ...res, items: mappedItems };
         this.loading = false;
       },
-      error: (err) => {
+      error: (err: any) => {
         console.error('Error loading purchase orders', err);
         this.loading = false;
       }
@@ -237,75 +234,80 @@ export class PurchaseOrdersListComponent implements OnInit {
   }
 
   onAdd(): void {
-    this.router.navigate(['/purchases/purchase-orders/add']);
+    this.router.navigate(['/sales/sales-orders/add']);
   }
 
   onView(id: number): void {
-    this.router.navigate(['/purchases/purchase-orders/view', id]);
+    this.router.navigate(['/sales/sales-orders/view', id]);
   }
 
-  onToggleStatus(item: PurchaseOrderBasicResponse): void {
+  onToggleStatus(item: SalesOrderBasicResponse): void {
     // No operation
   }
 
   onCustomAction(event: { actionId: string, item: any }) {
-    this.selectedItemId = event.item.id;
     if (event.actionId === 'confirm') {
-      this.actionModalTitle = this.translate.instant('purchaseOrders.confirmTitle');
-      this.actionModalMessage = this.translate.instant('purchaseOrders.confirmText');
-      this.actionModalType = 'warning';
-      this.actionModalConfirmText = this.translate.instant('stockAdjustments.confirm');
-      this.pendingAction = 'confirm';
-      this.isActionModalOpen = true;
+      import('sweetalert2').then(Swal => {
+        Swal.default.fire({
+          title: this.translate.instant('salesOrders.confirmTitle'),
+          text: this.translate.instant('salesOrders.confirmText'),
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#10b981',
+          cancelButtonColor: '#6b7280',
+          confirmButtonText: this.translate.instant('stockAdjustments.confirm'),
+          cancelButtonText: this.translate.instant('common.cancel')
+        }).then((result) => {
+          if (result.isConfirmed) {
+            this.salesOrderService.confirm(event.item.id).subscribe({
+              next: () => {
+                this.loadData();
+              }
+            });
+          }
+        });
+      });
     } else if (event.actionId === 'cancel') {
-      this.actionModalTitle = this.translate.instant('purchaseOrders.cancelTitle');
-      this.actionModalMessage = this.translate.instant('purchaseOrders.cancelText');
-      this.actionModalType = 'danger';
-      this.actionModalConfirmText = this.translate.instant('stockAdjustments.cancelDocument');
-      this.pendingAction = 'cancel';
-      this.isActionModalOpen = true;
+      import('sweetalert2').then(Swal => {
+        Swal.default.fire({
+          title: this.translate.instant('salesOrders.cancelTitle'),
+          text: this.translate.instant('salesOrders.cancelText'),
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#ef4444',
+          cancelButtonColor: '#6b7280',
+          confirmButtonText: this.translate.instant('stockAdjustments.cancelDocument'),
+          cancelButtonText: this.translate.instant('common.cancel')
+        }).then((result) => {
+          if (result.isConfirmed) {
+            this.salesOrderService.cancel(event.item.id).subscribe({
+              next: () => {
+                this.loadData();
+              }
+            });
+          }
+        });
+      });
     } else if (event.actionId === 'convert') {
-      this.actionModalTitle = this.translate.instant('purchaseOrders.convertTitle');
-      this.actionModalMessage = this.translate.instant('purchaseOrders.convertText');
-      this.actionModalType = 'info';
-      this.actionModalConfirmText = this.translate.instant('purchaseOrders.convertToInvoice');
-      this.pendingAction = 'convert';
-      this.isActionModalOpen = true;
-    }
-  }
-
-  executePendingAction(): void {
-    if (!this.selectedItemId || !this.pendingAction) return;
-    this.isActionLoading = true;
-
-    if (this.pendingAction === 'confirm') {
-      this.purchaseOrderService.confirm(this.selectedItemId).subscribe({
-        next: () => {
-          this.toastr.success(this.translate.instant('purchaseOrders.confirmedSuccess'));
-          this.loadData();
-          this.isActionModalOpen = false;
-          this.isActionLoading = false;
-        },
-        error: () => {
-          this.isActionLoading = false;
-        }
+      import('sweetalert2').then(Swal => {
+        Swal.default.fire({
+          title: this.translate.instant('salesOrders.convertTitle'),
+          text: this.translate.instant('salesOrders.convertText'),
+          icon: 'info',
+          showCancelButton: true,
+          confirmButtonColor: '#3b82f6',
+          cancelButtonColor: '#6b7280',
+          confirmButtonText: this.translate.instant('salesOrders.convertToInvoice'),
+          cancelButtonText: this.translate.instant('common.cancel')
+        }).then((result) => {
+          if (result.isConfirmed) {
+            // Placeholder: Navigate to purchase invoice form with pre-filled details or call API
+            console.log('Convert to invoice functionality placeholder');
+          }
+        });
       });
-    } else if (this.pendingAction === 'cancel') {
-      this.purchaseOrderService.cancel(this.selectedItemId).subscribe({
-        next: () => {
-          this.toastr.success(this.translate.instant('purchaseOrders.cancelledSuccess'));
-          this.loadData();
-          this.isActionModalOpen = false;
-          this.isActionLoading = false;
-        },
-        error: () => {
-          this.isActionLoading = false;
-        }
-      });
-    } else if (this.pendingAction === 'convert') {
-      this.toastr.info('Conversion to Purchase Invoice will be supported soon.');
-      this.isActionModalOpen = false;
-      this.isActionLoading = false;
     }
   }
 }
+
+

@@ -9,6 +9,7 @@
     "errorLoadingData": "حدث خطأ أثناء تحميل البيانات.",
     "all": "الكل",
     "errorTitle": "يرجى إصلاح الأخطاء التالية",
+    "row": "السطر",
     "refresh": "تحديث",
     "view": "عرض",
     "back": "رجوع",
@@ -21,6 +22,7 @@
     "from": "من",
     "to": "إلى",
     "unitOfMeasure": "وحدة القياس",
+    "uom": "وحدة القياس",
     "additionalDetails": "تفاصيل إضافية",
     "currency": "العملة",
     "invoiceDateFrom": "تاريخ الفاتورة من",
@@ -45,6 +47,12 @@
     "error": "خطأ",
     "addNew": "إضافة سجل جديد",
     "confirm": "تأكيد",
+    "fields": {
+      "aName": "الاسم العربي",
+      "aNamePlaceholder": "أدخل الاسم العربي",
+      "eName": "الاسم الإنجليزي",
+      "eNamePlaceholder": "أدخل الاسم الإنجليزي"
+    },
     "options": "خيارات",
     "copyId": "نسخ الId",
     "noResults": "لا توجد نتائج",
@@ -52,6 +60,7 @@
     "clearSelection": "إلغاء التحديد",
     "filter": "تصفية",
     "apply": "تطبيق",
+    "statement": "البيان",
     "reset": "إعادة تعيين",
     "code": "الكود",
     "name": "الاسم",
@@ -70,6 +79,12 @@
     "add": "إضافة",
     "includeDisabled": "تضمين المعطلين",
     "id": "ID",
+    "paymentTerms": "شروط الدفع",
+    "paymentMethod": "طريقة الدفع",
+    "shippingMethod": "طريقة الشحن",
+    "vendorReference": "مرجع المورد",
+    "buyer": "مسؤول الشراء",
+    "contactPerson": "مسؤول التواصل",
     "arabicName": "الاسم بالعربية",
     "arabicNamePlaceholder": "أدخل الاسم بالعربية",
     "englishName": "الاسم بالإنجليزية",
@@ -112,11 +127,18 @@
       "Unpaid": "غير مدفوع",
       "PartiallyPaid": "مدفوع جزئياً",
       "Paid": "مدفوع بالكامل",
-      "FullyPaid": "مدفوع بالكامل",
+      "FullyPaid": "مدفوع بالكامل"
+    },
+    "paymentStatusEnum": {
+      "Pending": "قيد الانتظار",
+      "Completed": "مكتمل",
+      "Cancelled": "ملغي",
       "Bounced": "مرتجع"
     },
     "approvalStatus": "حالة الموافقة",
     "paymentStatus": "حالة الدفع",
+    "confirmTitle": "هل أنت متأكد؟",
+    "confirmWarning": "هل أنت متأكد من أنك تريد تأكيد هذا المستند؟",
     "cancelWarningTitle": "هل أنت متأكد؟",
     "cancelWarningText": "سيؤدي هذا إلى التراجع عن أي تغييرات تمت بواسطة هذا المستند.",
     "defaultExistsTitle": "يوجد سجل افتراضي",
@@ -178,6 +200,8 @@
     "purchaseOrders": "أوامر الشراء",
     "purchaseInvoices": "فواتير المشتريات",
     "purchaseReturns": "مردودات المشتريات",
+    "salesQuotations": "عروض أسعار المبيعات",
+    "salesOrders": "أوامر المبيعات",
     "customers": "العملاء",
     "quotations": "عروض الأسعار",
     "reports": "التقارير",
@@ -322,13 +346,18 @@
       "collapseAll": "طي الكل",
       "expandAll": "توسيع الكل",
       "balance": "الرصيد:",
+      "weOwe": "مستحق للشريك",
+      "owesUs": "مستحق على الشريك",
       "table": {
         "invoiceCode": "رقم الفاتورة",
         "entryType": "نوع الحركة",
         "balance": "الرصيد",
         "emptyTable": "لا توجد تفاصيل لهذا الشريك",
         "amount": "المبلغ",
-        "notes": "ملاحظات"
+        "notes": "ملاحظات",
+        "balanceBefore": "الرصيد السابق",
+        "debit": "مدين (عليه)",
+        "credit": "دائن (له)"
       },
       "entryTypes": {
         "all": "الكل",
@@ -526,10 +555,37 @@
     "aname": "الاسم (عربي)",
     "ename": "الاسم (إنجليزي)"
   },
+  "item": {
+    "title": "صنف",
+    "pluralTitle": "الاصناف",
+    "uomInfo": "وحدات القياس",
+    "baseUomType": "نوع الوحدة",
+    "inventoryUom": "الوحدة المخزنية"
+  },
   "items": {
     "title": "الأصناف",
     "addNew": "إضافة سجل جديد",
     "edit": "تعديل سجل",
+    "uomTypeSelectFirst": "اختر نوع وحدة القياس أولاً للبدء",
+    "uomTypeWarning": "رجاءً اختر نوع وحدة القياس (وزن/عدد/حجم..) لتفعيل باقي تبويبات بيانات الصنف",
+    "uomTypeRequired": "يجب اختيار نوع وحدة القياس قبل الحفظ",
+    "confirmChangeTypeTitle": "تأكيد تغيير نوع وحدة القياس",
+    "confirmChangeTypeText": "تغيير نوع الوحدة سيؤدي إلى تصفية ومسح أسطر وحدات القياس الحالية ورسترتها. هل أنت متأكد من الاستمرار؟",
+    "types": {
+      "Weight": "وزن",
+      "Quantity": "عدد",
+      "Volume": "حجم",
+      "Length": "طول",
+      "Area": "مساحة",
+      "Time": "وقت",
+      "Other": "أخرى"
+    },
+    "suggestions": {
+      "title": "اقتراحات سريعة",
+      "baseUnit": "الوحدة الأساسية",
+      "smallestRetail": "أصغر وحدة تجزئة",
+      "largestWholesale": "أكبر وحدة جملة"
+    },
     "tabs": {
       "basic": "البيانات الأساسية",
       "purchasing": "بيانات الشراء",
@@ -578,7 +634,20 @@
     },
     "errors": {
       "exactlyOneBaseUnit": "يجب تحديد وحدة قياس أساسية واحدة فقط.",
-      "invalidConversionFactor": "معامل التحويل يجب أن يكون أكبر من صفر."
+      "exactlyOneBaseUnitRequired": "يجب تحديد وحدة قياس أساسية واحدة فقط.",
+      "invalidConversionFactor": "معامل التحويل للوحدة غير الأساسية يجب أن يكون أكبر من صفر.",
+      "unitsOfMeasureRequired": "يجب إضافة وحدة قياس واحدة على الأقل للصنف المخزني.",
+      "duplicateUnitsOfMeasure": "ممنوع تكرار نفس وحدة القياس في أكثر من سطر.",
+      "multipleDefaultPurchaseUnits": "ممنوع تحديد أكثر من وحدة شراء افتراضية واحدة.",
+      "multipleDefaultSalesUnits": "ممنوع تحديد أكثر من وحدة بيع افتراضية واحدة.",
+      "salesUomRequired": "يجب اختيار وحدة المبيعات إذا كان الصنف متاحاً للبيع.",
+      "purchaseUomRequired": "يجب اختيار وحدة المشتريات إذا كان الصنف متاحاً للشراء.",
+      "inventoryUomRequired": "يجب اختيار وحدة المخزون إذا كان الصنف مخزنياً.",
+      "defaultWarehouseRequired": "اختيار المخزن الافتراضي إلزامي للأصناف المخزنية.",
+      "itemMustBePurchasedOrSold": "يجب أن يكون الصنف قابلاً للشراء أو البيع أو كليهما.",
+      "minStockExceedsMax": "الحد الأدنى للمخزون لا يمكن أن يتجاوز الحد الأقصى.",
+      "invalidSalesPrice": "سعر البيع الافتراضي لا يمكن أن يكون بالسالب.",
+      "invalidTaxPercent": "نسبة الضريبة الافتراضية يجب أن تكون بين 0 و 100."
     }
   },
   "validation": {
@@ -654,6 +723,7 @@
     "generalDetails": "التفاصيل العامة",
     "invoiceLines": "بنود الفاتورة",
     "addLine": "إضافة بند",
+    "addItem": "إضافة صنف",
     "item": "الصنف",
     "qty": "الكمية",
     "price": "السعر",
@@ -663,6 +733,7 @@
     "noItemsAdded": "لم يتم إضافة بنود. انقر على \u0027+ إضافة بند\u0027 للبدء.",
     "additionalCosts": "التكاليف الإضافية",
     "addCost": "إضافة تكلفة",
+    "percentage": "النسبة",
     "costElement": "عنصر التكلفة",
     "grandTotal": "الإجمالي الكلي",
     "selectItem": "اختر الصنف",
@@ -708,22 +779,107 @@
     "printOrder": "طباعة الأمر",
     "addItems": "إضافة أصناف",
     "addCostElement": "إضافة عنصر تكلفة",
+    "labels": {
+      "paymentTerms": "تحديد المهلة الزمنية للدفع، مثل الدفع نقداً، أو بعد 30 يوماً.",
+      "paymentMethod": "اختيار طريقة الدفع المفضلة، مثل التحويل البنكي أو الدفع نقداً.",
+      "shippingMethod": "تحديد وسيلة الشحن أو التوصيل المتبعة.",
+      "vendorReference": "الرقم المرجعي أو الكود المقدم من المورد.",
+      "buyer": "الموظف أو الوكيل المسؤول عن إتمام عملية الشراء.",
+      "contactPerson": "الشخص المسؤول للتواصل بخصوص هذا الأمر."
+    },
     "approvalStatus": "حالة الاعتماد",
     "status": {
       "Pending": "قيد الانتظار",
       "Approved": "معتمد",
       "Rejected": "مرفوض"
     },
-    "approveTitle": "اعتماد أمر الشراء",
-    "approveText": "هل أنت متأكد من أنك تريد اعتماد أمر الشراء هذا؟",
+    "confirmTitle": "تأكيد أمر الشراء",
+    "confirmText": "هل أنت متأكد من أنك تريد تأكيد أمر الشراء هذا؟",
     "cancelTitle": "إلغاء أمر الشراء",
     "cancelText": "هل أنت متأكد من أنك تريد إلغاء أمر الشراء هذا؟",
     "convertTitle": "تحويل إلى فاتورة",
     "convertText": "هل أنت متأكد من أنك تريد تحويل أمر الشراء هذا إلى فاتورة مشتريات؟",
     "convertToInvoice": "تحويل إلى فاتورة",
-    "approvedSuccess": "تم اعتماد أمر الشراء بنجاح",
+    "confirmedSuccess": "تم تأكيد أمر الشراء بنجاح",
     "cancelledSuccess": "تم إلغاء أمر الشراء بنجاح",
-    "convertedSuccess": "تم تحويل أمر الشراء بنجاح"
+    "convertedSuccess": "تم تحويل أمر الشراء بنجاح",
+    "importLines": "استيراد أصناف من أمر شراء",
+    "importFromPO": "استيراد من أمر شراء",
+    "openQty": "الكمية المتبقية",
+    "noOpenLines": "لا يوجد أصناف معتمدة قيد الانتظار لهذا المورد",
+    "importSelected": "استيراد المحدد"
+  },
+  "salesQuotations": {
+    "title": "عروض أسعار المبيعات",
+    "list": "قائمة عروض الأسعار",
+    "add": "إضافة عرض سعر",
+    "addNew": "إضافة عرض سعر جديد",
+    "view": "عرض عرض السعر",
+    "printOrder": "طباعة العرض",
+    "addItems": "إضافة أصناف",
+    "addCostElement": "إضافة عنصر تكلفة",
+    "labels": {
+      "paymentTerms": "شروط الدفع",
+      "paymentMethod": "طريقة الدفع",
+      "shippingMethod": "طريقة الشحن",
+      "buyer": "المندوب",
+      "contactPerson": "الشخص المسؤول"
+    },
+    "approvalStatus": "حالة الاعتماد",
+    "status": {
+      "Pending": "قيد الانتظار",
+      "Approved": "معتمد",
+      "Rejected": "مرفوض"
+    },
+    "confirmTitle": "تأكيد عرض السعر",
+    "confirmText": "هل أنت متأكد من أنك تريد تأكيد عرض السعر هذا؟",
+    "cancelTitle": "إلغاء عرض السعر",
+    "cancelText": "هل أنت متأكد من أنك تريد إلغاء عرض السعر هذا؟",
+    "convertTitle": "تحويل إلى أمر مبيعات",
+    "convertText": "هل أنت متأكد من تحويل عرض السعر إلى أمر مبيعات؟",
+    "convertToInvoice": "تحويل إلى أمر مبيعات",
+    "confirmedSuccess": "تم تأكيد عرض السعر بنجاح",
+    "cancelledSuccess": "تم إلغاء عرض السعر بنجاح",
+    "convertedSuccess": "تم تحويل عرض السعر بنجاح"
+  },
+  "salesOrders": {
+    "title": "أوامر المبيعات",
+    "list": "قائمة أوامر المبيعات",
+    "add": "إضافة أمر مبيعات",
+    "addNew": "إضافة أمر مبيعات جديد",
+    "view": "عرض أمر المبيعات",
+    "printOrder": "طباعة الأمر",
+    "addItems": "إضافة أصناف",
+    "copyFromSQ": "نسخ من عرض سعر",
+    "addCostElement": "إضافة عنصر تكلفة",
+    "labels": {
+      "paymentTerms": "شروط الدفع",
+      "paymentMethod": "طريقة الدفع",
+      "shippingMethod": "طريقة الشحن",
+      "buyer": "المندوب",
+      "contactPerson": "الشخص المسؤول"
+    },
+    "approvalStatus": "حالة الاعتماد",
+    "status": {
+      "Pending": "قيد الانتظار",
+      "Approved": "معتمد",
+      "Rejected": "مرفوض"
+    },
+    "confirmTitle": "تأكيد أمر المبيعات",
+    "confirmText": "هل أنت متأكد من أنك تريد تأكيد أمر المبيعات هذا؟",
+    "cancelTitle": "إلغاء أمر المبيعات",
+    "cancelText": "هل أنت متأكد من أنك تريد إلغاء أمر المبيعات هذا؟",
+    "convertTitle": "تحويل إلى فاتورة مبيعات",
+    "convertText": "هل أنت متأكد من تحويل أمر المبيعات إلى فاتورة؟",
+    "convertToInvoice": "تحويل إلى فاتورة",
+    "confirmedSuccess": "تم تأكيد أمر المبيعات بنجاح",
+    "cancelledSuccess": "تم إلغاء أمر المبيعات بنجاح",
+    "convertedSuccess": "تم تحويل أمر المبيعات بنجاح",
+    "importLines": "استيراد أصناف من عرض السعر",
+    "importFromPO": "استيراد من عرض سعر",
+    "openQty": "الكمية المتبقية",
+    "noOpenLines": "لا يوجد أصناف معتمدة قيد الانتظار لهذا العميل",
+    "importSelected": "استيراد المحدد"
   },
   "salesInvoices": {
     "title": "فواتير المبيعات",
@@ -800,6 +956,10 @@
       "costElements": "عناصر التكلفة"
     },
     "paymentMethods": {
+      "Cash": "نقدي",
+      "BankTransfer": "تحويل بنكي",
+      "Cheque": "شيك",
+      "CreditCard": "بطاقة ائتمان",
       "cash": "نقدي",
       "bankTransfer": "تحويل بنكي",
       "cheque": "شيك",
@@ -815,7 +975,8 @@
       "duplicateItem": "هذا الصنف مضاف مسبقاً للفاتورة.",
       "duplicateCostElement": "عنصر التكلفة هذا مضاف مسبقاً للفاتورة.",
       "warehouseRequiredFirst": "يجب اختيار المخزن أولاً قبل إضافة الأصناف.",
-      "changeWarehouseWarning": "تغيير المخزن سيؤدي إلى مسح جميع الأصناف المحددة. هل تود الاستمرار؟"
+      "changeWarehouseWarning": "تغيير المخزن سيؤدي إلى مسح جميع الأصناف المحددة. هل تود الاستمرار؟",
+      "vendorRequiredFirst": "يجب اختيار المورد أولاً قبل إضافة الأصناف."
     }
   },
   "overview": {
@@ -1204,6 +1365,33 @@
       "Timing": "توقيت",
       "Quantity": "كمية",
       "Other": "أخرى"
+    }
+  },
+  "unitOfMeasure": {
+    "builder": {
+      "step1": "الخطوة 1: اختيار النوع",
+      "addBaseUnitNow": "إضافة الوحدة الأساسية الآن",
+      "step2": "الخطوة 2: تحديد الوظيفة",
+      "baseUnitCard": "وحدة أساسية",
+      "baseUnitDesc": "الوحدة القياسية المرجعية لهذا النوع",
+      "alreadyExists": "موجودة بالفعل",
+      "derivedUnitCard": "وحدة تحويل (تعبئة)",
+      "derivedUnitDesc": "وحدات تعتمد على الوحدة الأساسية",
+      "needsBaseFirst": "تحتاج وحدة أساسية أولاً",
+      "step3Base": "الخطوة 3: بيانات الوحدة الأساسية",
+      "baseUnitConversionInfo": "معامل التحويل للوحدة الأساسية يكون دائماً 1 بشكل افتراضي.",
+      "step3Derived": "الخطوة 3: بناء وحدات التحويل",
+      "referenceBase": "الوحدة المرجعية",
+      "presets": "مقترحات سريعة",
+      "derivedNamePlaceholder": "مثال: كرتونة، شيكارة، عبوة",
+      "addRow": "+ إضافة وحدة تحويل أخرى",
+      "batchSuccess": "تم حفظ {{count}} وحدة بنجاح",
+      "duplicateNamesInBatch": "لا يمكن تكرار اسم الوحدة في نفس العملية"
+    },
+    "status": {
+      "hasBaseUnit": "توجد وحدة أساسية",
+      "noBaseUnit": "لا توجد وحدة أساسية لهذا النوع",
+      "baseUnitCreated": "تم إنشاء الوحدة الأساسية بنجاح"
     }
   }
 }

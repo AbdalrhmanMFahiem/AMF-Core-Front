@@ -90,7 +90,7 @@ export class PaymentModalComponent implements OnChanges {
     this.loading = true;
     this.errors = [];
 
-    this.invoiceService.addPayment(this.invoice.id, this.model).subscribe({
+    this.invoiceService.addPayment(this.invoice.id, this.model, 'purchases').subscribe({
       next: () => {
         this.loading = false;
         this.paymentAdded.emit();

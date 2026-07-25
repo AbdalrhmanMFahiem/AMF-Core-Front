@@ -205,14 +205,14 @@ export class PurchaseInvoicesListComponent implements OnInit {
       label: 'stockAdjustments.cancelDocument',
       icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>',
       colorClass: 'text-error-600 dark:text-error-400 hover:bg-error-50 dark:hover:bg-error-500/10',
-      visible: (item: any) => item.status !== 'Cancelled' && item.status !== 'FullyPaid'
+      visible: (item: any) => item.status !== 'Cancelled' && item.paymentStatus !== 'FullyPaid'
     },
     {
       id: 'pay',
       label: 'purchaseInvoices.addPayment',
       icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>',
       colorClass: 'text-success-600 dark:text-success-400 hover:bg-success-50 dark:hover:bg-success-500/10',
-      visible: (item: any) => item.status !== 'FullyPaid' && item.status !== 'Cancelled' && item.status !== 'Draft'
+      visible: (item: any) => item.paymentStatus !== 'FullyPaid' && item.status !== 'Cancelled' && item.status !== 'Draft'
     }
   ];
 

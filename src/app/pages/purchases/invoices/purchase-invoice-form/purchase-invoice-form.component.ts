@@ -6,6 +6,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { forkJoin } from 'rxjs';
 import { InvoiceService } from '../../../../core/services/invoice.service';
 import { LookupService } from '../../../../core/services/lookup.service';
+import { ItemService } from '../../../../core/services/item.service';
 import { ComponentCardComponent } from '../../../../shared/components/common/component-card/component-card.component';
 import { PageBreadcrumbComponent } from '../../../../shared/components/common/page-breadcrumb/page-breadcrumb.component';
 import { SuccessRedirectBannerComponent } from '../../../../shared/components/common/success-redirect-banner/success-redirect-banner.component';
@@ -13,6 +14,7 @@ import { ErrorBannerComponent } from '../../../../shared/components/common/error
 import { SearchableSelectComponent, SearchableOption } from '../../../../shared/components/form/searchable-select/searchable-select.component';
 import { DatePickerComponent } from '../../../../shared/components/form/date-picker/date-picker.component';
 import { ItemLookupModalComponent } from '../../../../shared/components/lookups/item-lookup-modal/item-lookup-modal.component';
+import { PoLinesImportModalComponent } from '../../../../shared/components/lookups/po-lines-import-modal/po-lines-import-modal.component';
 import { CostElementLookupModalComponent } from '../../../../shared/components/lookups/cost-element-lookup-modal/cost-element-lookup-modal.component';
 import { PaymentModalComponent } from '../payment-modal/payment-modal.component';
 import { DocumentStatusBadgeComponent } from '../../../../shared/components/common/document-status-badge/document-status-badge.component';
@@ -44,6 +46,7 @@ import { ItemLookupResponse, InvoiceCostElementDropdown } from '../../../../core
     SearchableSelectComponent,
     DatePickerComponent,
     ItemLookupModalComponent,
+    PoLinesImportModalComponent,
     CostElementLookupModalComponent,
     PaymentModalComponent,
     DocumentStatusBadgeComponent,
@@ -55,6 +58,7 @@ export class PurchaseInvoiceFormComponent implements OnInit, HasUnsavedChanges {
   @ViewChild('form') form!: NgForm;
   private invoiceService = inject(InvoiceService);
   private lookupService = inject(LookupService);
+  private itemService = inject(ItemService);
   private translate = inject(TranslateService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
@@ -72,12 +76,13 @@ export class PurchaseInvoiceFormComponent implements OnInit, HasUnsavedChanges {
 
   activeTab: 'items' | 'cost-elements' = 'items';
   isItemModalOpen = false;
+  isPoLinesModalOpen = false;
   isCostElementModalOpen = false;
   isPaymentModalOpen = false;
 
   model: InvoiceRequest = {
     code: '',
-    invoiceType: InvoiceType.Sales,
+    invoiceType: InvoiceType.Purchase,
     businessPartnerId: 0,
     currencyId: undefined,
     branchId: undefined,
@@ -94,6 +99,7 @@ export class PurchaseInvoiceFormComponent implements OnInit, HasUnsavedChanges {
   // Options for Dropdowns
   partnersOptions: SearchableOption[] = [];
   warehousesOptions: SearchableOption[] = [];
+  uomOptions: any[] = [];
 
   // Totals calculated on the fly
   subTotal = 0;
@@ -121,16 +127,19 @@ export class PurchaseInvoiceFormComponent implements OnInit, HasUnsavedChanges {
 
     const customers$ = this.lookupService.getVendors();
     const warehouses$ = this.lookupService.getWarehouses();
-    const action$ = this.id ? this.invoiceService.get(this.id) : this.invoiceService.getNextCode('purchases');
+    const uoms$ = this.lookupService.getUnitOfMeasures();
+    const action$ = this.id ? this.invoiceService.get(this.id, 'purchases') : this.invoiceService.getNextCode('purchases');
 
     forkJoin({
       customers: customers$,
       warehouses: warehouses$,
+      uoms: uoms$,
       actionData: action$
     }).subscribe({
       next: (res: any) => {
         this.partnersOptions = res.customers.map((v: any) => ({ value: v.id, label: `${v.code} - ${v.name}` }));
         this.warehousesOptions = res.warehouses.map((w: any) => ({ value: w.id, label: w.name }));
+        this.uomOptions = res.uoms.map((u: any) => ({ value: u.id, label: u.name, baseUomType: u.baseUomType }));
 
         if (this.id) {
           this.processViewResponse(res.actionData as InvoiceResponse);
@@ -175,6 +184,8 @@ export class PurchaseInvoiceFormComponent implements OnInit, HasUnsavedChanges {
         _itemName: l.itemName,
         _itemCode: l.itemCode,
         _netAmount: l.netAmount,
+        _baseUomType: this.uomOptions.find((u: any) => u.value === l.uomId)?.baseUomType,
+        _isFromPo: !!l.purchaseOrderLineId,
         _discountAmount: 0,
         _taxAmount: 0,
         _discountFixedMode: 'percentage',
@@ -210,6 +221,11 @@ export class PurchaseInvoiceFormComponent implements OnInit, HasUnsavedChanges {
 
   setTab(tab: 'items' | 'cost-elements'): void {
     this.activeTab = tab;
+  }
+
+  getUomOptions(baseUomType?: string): any[] {
+    if (baseUomType === undefined || baseUomType === null) return this.uomOptions;
+    return this.uomOptions.filter((u: any) => u.baseUomType === baseUomType);
   }
 
   onWarehouseChange(newWarehouseId: number): void {
@@ -268,7 +284,7 @@ export class PurchaseInvoiceFormComponent implements OnInit, HasUnsavedChanges {
       return;
     }
 
-    this.model.lines.push({
+    const newLine: any = {
       itemId: item.id,
       quantity: 1,
       unitPrice: item.salesPrice || 0,
@@ -278,14 +294,40 @@ export class PurchaseInvoiceFormComponent implements OnInit, HasUnsavedChanges {
       // Internal properties for UI
       _itemCode: item.code,
       _itemName: item.name,
+      uomId: item.purchaseUomId,
+      _baseUomType: item.baseUomType,
+      _isFromPo: false,
       _netAmount: 0,
       _discountAmount: 0,
       _taxAmount: 0,
       _discountFixedMode: 'percentage',
-      _taxFixedMode: 'percentage'
-    } as any);
+      _taxFixedMode: 'percentage',
+      _isLoading: true
+    };
+    
+    this.model.lines.push(newLine);
     this.form?.form.markAsDirty();
     this.recalculateTotals();
+
+    this.itemService.getPurchasingDetails(item.id).subscribe({
+      next: (details) => {
+        newLine.uomId = details.purchaseUomId || newLine.uomId;
+        newLine._baseUomType = details.baseUomType || newLine._baseUomType;
+        if (details.purchasePrice !== undefined && details.purchasePrice !== null) {
+          newLine.unitPrice = details.purchasePrice;
+        }
+        if (details.availableUoms && details.availableUoms.length > 0) {
+          newLine._availableUomsOptions = details.availableUoms.map((u: any) => ({ value: u.id, label: u.name }));
+        }
+        newLine._isLoading = false;
+        this.recalculateTotals();
+      },
+      error: (err) => {
+        console.error('Error fetching purchasing details', err);
+        newLine._isLoading = false;
+        this.recalculateTotals();
+      }
+    });
   }
 
   onDiscountPercentChange(index: number): void {
@@ -315,6 +357,60 @@ export class PurchaseInvoiceFormComponent implements OnInit, HasUnsavedChanges {
   removeItem(index: number): void {
     if (this.mode === 'view') return;
     this.model.lines.splice(index, 1);
+    this.form?.form.markAsDirty();
+    this.recalculateTotals();
+  }
+
+  // PO Import Actions
+  openPoLinesModal(): void {
+    if (this.mode === 'view') return;
+
+    if (!this.model.businessPartnerId) {
+      this.validationErrors = [this.translate.instant('purchaseInvoices.errors.vendorRequiredFirst')];
+      setTimeout(() => this.validationErrors = [], 4000);
+      return;
+    }
+
+    if (!this.model.warehouseId) {
+      this.validationErrors = [this.translate.instant('purchaseInvoices.errors.warehouseRequiredFirst')];
+      setTimeout(() => this.validationErrors = [], 4000);
+      return;
+    }
+
+    this.isPoLinesModalOpen = true;
+  }
+
+  onPoLinesImported(importedLines: any[]): void {
+    if (!importedLines || importedLines.length === 0) return;
+
+    importedLines.forEach(line => {
+      // Avoid duplicate lines with same PO line id (you can check if exists)
+      const exists = this.model.lines.some((l: any) => l.purchaseOrderLineId === line.purchaseOrderLineId);
+      if (exists) return;
+
+      this.model.lines.push({
+        itemId: line.itemId,
+        purchaseOrderLineId: line.purchaseOrderLineId,
+        quantity: line.openQuantity, // Default to open quantity
+        unitPrice: line.unitPrice,
+        discountPercent: line.discountPercent,
+        taxPercent: line.taxPercent,
+        lineOrder: this.model.lines.length + 1,
+        // Internal properties for UI
+        _itemCode: line.itemCode,
+        _itemName: line.itemName,
+        uomId: line.unitOfMeasureId,
+        _baseUomType: this.uomOptions.find((u: any) => u.value === line.unitOfMeasureId)?.baseUomType,
+        _availableUomsOptions: line.unitOfMeasureId ? [{ value: line.unitOfMeasureId, label: line.unitOfMeasureName }] : undefined,
+        _isFromPo: true,
+        _netAmount: 0,
+        _discountAmount: 0,
+        _taxAmount: 0,
+        _discountFixedMode: 'percentage',
+        _taxFixedMode: 'percentage'
+      } as any);
+    });
+
     this.form?.form.markAsDirty();
     this.recalculateTotals();
   }
@@ -459,17 +555,26 @@ export class PurchaseInvoiceFormComponent implements OnInit, HasUnsavedChanges {
 
     // Clean up internal _ UI properties before sending
     const requestToSend = JSON.parse(JSON.stringify(this.model));
+    
+    if (!requestToSend.dueDate || requestToSend.dueDate.trim() === '') {
+      requestToSend.dueDate = null;
+    }
+
     requestToSend.lines.forEach((l: any) => {
       delete l._itemName;
       delete l._itemCode;
       delete l._netAmount;
+      delete l._baseUomType;
+      delete l._isFromPo;
+      delete l._isLoading;
+      delete l._availableUomsOptions;
     });
     requestToSend.costLines.forEach((c: any) => {
       delete c._name;
       delete c._operationType;
     });
 
-    this.invoiceService.add(requestToSend).subscribe({
+    this.invoiceService.add(requestToSend, 'purchases').subscribe({
       next: (res) => {
         this.saving = false;
         this.saveSuccess = true;

@@ -1,3 +1,87 @@
+import { UomType, UomTypeMeta, UOM_TYPE_CONFIG_MAP, UOM_TYPE_CONFIG_LIST, getUomTypeConfig, UnitOfMeasureBasicResponse } from './uom.model';
+import { RequestFilters } from './pagination.model';
+
+export type { UomTypeMeta, UnitOfMeasureBasicResponse };
+export { UomType, UOM_TYPE_CONFIG_MAP, UOM_TYPE_CONFIG_LIST, getUomTypeConfig };
+
+export interface ItemFilters extends RequestFilters {
+  itemGroupId?: number;
+  itemPropertyId?: number;
+  warehouseId?: number;
+  checkWarehouseExistence?: boolean;
+  usageType?: 'Sales' | 'Purchases';
+}
+
+export interface ItemUnitOfMeasureRequest {
+  id?: number;
+  unitOfMeasureId: number;
+  conversionFactor: number;
+  isBaseUnit: boolean;
+  isDefaultPurchaseUnit: boolean;
+  isDefaultSalesUnit: boolean;
+  barcode?: string;
+}
+
+export interface ItemUnitOfMeasureResponse {
+  id: number;
+  unitOfMeasureId: number;
+  unitOfMeasureCode: string;
+  unitOfMeasureName: string;
+  conversionFactor: number;
+  isBaseUnit: boolean;
+  isDefaultPurchaseUnit: boolean;
+  isDefaultSalesUnit: boolean;
+  barcode?: string;
+}
+
+export interface ItemPurchasingDetailsResponse {
+  itemId: number;
+  itemCode: string;
+  itemName: string;
+  purchasePrice?: number;
+  defaultWarehouseId?: number;
+  purchaseUomId?: number;
+  baseUomType?: UomType;
+  availableUoms: { id: number; code: string; name: string }[];
+}
+
+export interface ItemRequest {
+  id: number;
+  code: string;
+  aName: string;
+  eName?: string;
+  notes?: string;
+  baseUomType?: UomType;
+  itemGroupId?: number;
+  itemPropertyId?: number;
+  dfltWarehouseId?: number;
+  dfltWeight: number;
+  isActive: boolean;
+
+  // Purchasing
+  isPurchased: boolean;
+  purchaseUomId?: number;
+  preferredVendorId?: number;
+
+  // Sales
+  isSold: boolean;
+  salesUomId?: number;
+  salesPrice: number;
+
+  // Inventory
+  isInventoryItem: boolean;
+  inventoryUomId?: number;
+  minStockLevel: number;
+  maxStockLevel: number;
+
+  // Tax & Reference
+  dfltTaxPercent: number;
+  barcode?: string;
+  foreignCode?: string;
+
+  unitsOfMeasure: ItemUnitOfMeasureRequest[];
+}
+
 export interface ItemResponse {
   id: number;
   code: string;
@@ -5,6 +89,7 @@ export interface ItemResponse {
   eName: string;
   isActive: boolean;
   notes?: string;
+  baseUomType?: UomType;
   itemGroupId?: number;
   itemGroupName?: string;
   dfltWarehouseId?: number;
@@ -23,6 +108,7 @@ export interface ItemBasicResponse {
   eName: string;
   isActive: boolean;
   notes?: string;
+  baseUomType?: UomType;
 
   // Group & Property
   itemGroupId?: number;
@@ -60,62 +146,12 @@ export interface ItemBasicResponse {
   dfltTaxPercent: number;
   barcode?: string;
   foreignCode?: string;
-  unitsOfMeasure?: any[];
+  unitsOfMeasure?: ItemUnitOfMeasureResponse[];
 }
 
-export interface ItemRequest {
-  id: number;
-  code: string;
-  aName: string;
-  eName?: string;
-  notes?: string;
-  itemGroupId?: number;
-  dfltWarehouseId?: number;
-  dfltWeight: number;
-  itemPropertyId?: number;
-  isActive: boolean;
-
-  // Purchasing
-  isPurchased: boolean;
-  purchaseUomId?: number;
-  preferredVendorId?: number;
-
-  // Sales
-  isSold: boolean;
-  salesUomId?: number;
-  salesPrice: number;
-
-  // Inventory
-  isInventoryItem: boolean;
-  inventoryUomId?: number;
-  minStockLevel: number;
-  maxStockLevel: number;
-
-  // Tax & Reference
-  dfltTaxPercent: number;
-  barcode?: string;
-  foreignCode?: string;
-  unitsOfMeasure?: any[];
-}
-
-export interface NextCodeResponse {
-  code: string;
-}
-
-export interface ItemUnitOfMeasureRequest {
-  id: number;
-  unitOfMeasureId: number;
-  conversionFactor: number;
-  isBaseUnit: boolean;
-  isDefaultPurchaseUnit: boolean;
-  isDefaultSalesUnit: boolean;
-  barcode?: string;
-}
-
-export interface ItemUnitOfMeasureResponse {
-  id: number;
-  unitOfMeasureId: number;
-  unitOfMeasureName: string;
+export interface UomLineDraft {
+  id?: number;
+  unitOfMeasureId?: number;
   conversionFactor: number;
   isBaseUnit: boolean;
   isDefaultPurchaseUnit: boolean;

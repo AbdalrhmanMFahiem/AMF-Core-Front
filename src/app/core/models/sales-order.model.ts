@@ -2,7 +2,7 @@ import { RequestFilters } from './pagination.model';
 import { DocumentStatus, ApprovalStatus } from './document-status.model';
 export { DocumentStatus, ApprovalStatus };
 
-export interface PurchaseOrderBasicResponse {
+export interface SalesOrderBasicResponse {
   id: number;
   code: string;
   documentNumber: string;
@@ -14,7 +14,7 @@ export interface PurchaseOrderBasicResponse {
   totalAmount: number;
 }
 
-export interface PurchaseOrderLineResponse {
+export interface SalesOrderLineResponse {
   id: number;
   itemId: number;
   itemCode: string;
@@ -24,10 +24,10 @@ export interface PurchaseOrderLineResponse {
   warehouseName: string;
   lineNumber: number;
   description: string;
+  status: DocumentStatus;
   quantity: number;
   openQuantity: number;
-  receivedQuantity: number;
-  returnedQuantity: number;
+  closedQuantity: number;
   remainingQuantity: number;
   unitOfMeasureId?: number;
   unitOfMeasureName?: string;
@@ -41,35 +41,22 @@ export interface PurchaseOrderLineResponse {
   lineTotalBeforeTax: number;
   lineTotal: number;
   lineDueDate?: string;
-  lineStatus: DocumentStatus;
-  mrpRecommendationId?: number;
-  vendorItemCode?: string;
   notes?: string;
   baseUomType?: string;
+  
+  baseDocumentId?: string;
+  baseDocumentStatus?: string;
+  baseDocumentMessage?: string;
+  baseLineId?: string;
+  baseLineStatus?: string;
+  baseDocumentTypeId?: number;
+  targetDocumentId?: string;
+  targetDocumentStatus?: string;
+  targetDocumentMessage?: string;
+  targetDocumentTypeId?: number;
 }
 
-export interface OpenPurchaseOrderLineResponse {
-  purchaseOrderLineId: number;
-  purchaseOrderId: number;
-  purchaseOrderCode: string;
-  itemId: number;
-  itemCode: string;
-  itemName: string;
-  quantity: number;
-  openQuantity: number;
-  unitPrice: number;
-  discountPercent: number;
-  taxPercent: number;
-  warehouseId: number;
-  warehouseName: string;
-  unitOfMeasureId?: number;
-  unitOfMeasureName?: string;
-  baseQuantity: number;
-  baseUnitPrice: number;
-  notes?: string;
-}
-
-export interface PurchaseOrderResponse {
+export interface SalesOrderResponse {
   id: number;
   code: string;
   notes?: string;
@@ -107,19 +94,15 @@ export interface PurchaseOrderResponse {
   freightAmount: number;
   shipToAddress?: string;
   incoterms?: string;
-  vendorReferenceNumber?: string;
   referenceNumber: string;
-  salesQuotationId?: number;
-  mrpRunId?: number;
-  mrpRecommendationId?: number;
   buyerId?: string;
   buyerName?: string;
   internalNotes?: string;
   printedNotes?: string;
-  lines: PurchaseOrderLineResponse[];
+  lines: SalesOrderLineResponse[];
 }
 
-export interface PurchaseOrderLineRequest {
+export interface SalesOrderLineRequest {
   itemId: number;
   warehouseId: number;
   lineNumber: number;
@@ -136,10 +119,13 @@ export interface PurchaseOrderLineRequest {
   lineTotalBeforeTax: number;
   lineTotal: number;
   lineDueDate?: string;
-  lineStatus: DocumentStatus;
-  mrpRecommendationId?: number;
-  vendorItemCode?: string;
+  status: DocumentStatus;
   notes?: string;
+  
+  baseDocumentId?: string;
+  baseLineId?: string;
+  baseDocumentTypeId?: number;
+  
   // UI properties
   _itemName?: string;
   _itemCode?: string;
@@ -149,7 +135,7 @@ export interface PurchaseOrderLineRequest {
   [key: string]: any;
 }
 
-export interface PurchaseOrderRequest {
+export interface SalesOrderRequest {
   id: number;
   code: string;
   notes?: string;
@@ -180,18 +166,14 @@ export interface PurchaseOrderRequest {
   freightAmount: number;
   shipToAddress?: string;
   incoterms?: string;
-  vendorReferenceNumber?: string;
   referenceNumber: string;
-  salesQuotationId?: number;
-  mrpRunId?: number;
-  mrpRecommendationId?: number;
   buyerId?: string;
   internalNotes?: string;
   printedNotes?: string;
-  lines: PurchaseOrderLineRequest[];
+  lines: SalesOrderLineRequest[];
 }
 
-export interface PurchaseOrderFilters extends RequestFilters {
+export interface SalesOrderFilters extends RequestFilters {
   status?: DocumentStatus;
   approvalStatus?: ApprovalStatus;
   businessPartnerId?: number;

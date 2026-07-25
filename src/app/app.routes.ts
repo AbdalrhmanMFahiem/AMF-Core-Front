@@ -419,6 +419,40 @@ export const routes: Routes = [
       },
       // Sales
       {
+        path: 'sales/sales-quotations',
+        loadComponent: () => import('./pages/sales/sales-quotations/sales-quotations-list/sales-quotations-list.component').then(c => c.SalesQuotationsListComponent),
+        title: 'Sales Quotations | AMF Core'
+      },
+      {
+        path: 'sales/sales-quotations/add',
+        loadComponent: () => import('./pages/sales/sales-quotations/sales-quotation-form/sales-quotation-form.component').then(c => c.SalesQuotationFormComponent),
+        canDeactivate: [unsavedChangesGuard],
+        title: 'Add Sales Quotation | AMF Core'
+      },
+      {
+        path: 'sales/sales-quotations/view/:id',
+        loadComponent: () => import('./pages/sales/sales-quotations/sales-quotation-form/sales-quotation-form.component').then(c => c.SalesQuotationFormComponent),
+        canDeactivate: [unsavedChangesGuard],
+        title: 'View Sales Quotation | AMF Core'
+      },
+      {
+        path: 'sales/sales-orders',
+        loadComponent: () => import('./pages/sales/sales-orders/sales-orders-list/sales-orders-list.component').then(c => c.SalesOrdersListComponent),
+        title: 'Sales Orders | AMF Core'
+      },
+      {
+        path: 'sales/sales-orders/add',
+        loadComponent: () => import('./pages/sales/sales-orders/sales-order-form/sales-order-form.component').then(c => c.SalesOrderFormComponent),
+        canDeactivate: [unsavedChangesGuard],
+        title: 'Add Sales Order | AMF Core'
+      },
+      {
+        path: 'sales/sales-orders/view/:id',
+        loadComponent: () => import('./pages/sales/sales-orders/sales-order-form/sales-order-form.component').then(c => c.SalesOrderFormComponent),
+        canDeactivate: [unsavedChangesGuard],
+        title: 'View Sales Order | AMF Core'
+      },
+      {
         path: 'invoices/sales',
         loadComponent: () => import('./pages/sales/invoices/sales-invoices-list/sales-invoices-list.component').then(c => c.SalesInvoicesListComponent),
         title: 'Sales Invoices | AMF Core'

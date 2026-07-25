@@ -46,7 +46,7 @@
     <!-- Table -->
     <div
       class="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/5 dark:bg-gray-800 shadow-sm">
-      <div class="max-h-[450px] overflow-y-auto custom-scrollbar">
+      <div class="max-h-112.5 overflow-y-auto custom-scrollbar">
         <table class="min-w-full text-start border-collapse">
           <thead
             class="sticky top-0 bg-gray-50/95 dark:bg-gray-800/95 backdrop-blur-sm z-10 border-b border-gray-200 dark:border-gray-700">
@@ -60,6 +60,10 @@
                 {{ 'common.name' | translate }}
               </th>
               <th
+                class="px-6 py-4 font-semibold text-gray-600 dark:text-gray-300 text-xs uppercase tracking-wider text-start w-1/4">
+                {{ 'item.uomInfo' | translate }}
+              </th>
+              <th
                 class="px-6 py-4 font-semibold text-gray-600 dark:text-gray-300 text-xs uppercase tracking-wider text-center w-1/4">
                 {{ 'lookups.stock' | translate }}
               </th>
@@ -67,7 +71,7 @@
           </thead>
           <tbody class="divide-y divide-gray-100 dark:divide-gray-700/50">
             <tr *ngIf="loading">
-              <td colspan="3" class="px-6 py-16 text-center bg-white dark:bg-gray-800">
+              <td colspan="4" class="px-6 py-16 text-center bg-white dark:bg-gray-800">
                 <div class="flex flex-col items-center justify-center space-y-4">
                   <div class="animate-spin rounded-full h-10 w-10 border-2 border-gray-200 border-t-brand-500"></div>
                   <span class="text-sm font-medium text-gray-500 dark:text-gray-400">{{ 'common.loading' | translate
@@ -76,7 +80,7 @@
               </td>
             </tr>
             <tr *ngIf="!loading && items.length === 0">
-              <td colspan="3" class="px-6 py-16 text-center bg-white dark:bg-gray-800">
+              <td colspan="4" class="px-6 py-16 text-center bg-white dark:bg-gray-800">
                 <div class="flex flex-col items-center justify-center space-y-4 text-gray-400 dark:text-gray-500">
                   <div class="w-16 h-16 rounded-full bg-gray-50 dark:bg-gray-800/50 flex items-center justify-center">
                     <svg class="h-8 w-8 text-gray-400 dark:text-gray-500" fill="none" viewBox="0 0 24 24"
@@ -110,6 +114,18 @@
               <td class="px-6 py-4 text-sm font-medium text-gray-800 dark:text-white/90 text-start">
                 <span class="group-hover:text-brand-700 dark:group-hover:text-brand-300 transition-colors">{{ item.name
                   }}</span>
+              </td>
+              <td class="px-6 py-4 text-sm text-gray-600 dark:text-gray-400 text-start">
+                <div class="flex flex-col gap-1">
+                  <span *ngIf="item.baseUomType" class="inline-flex items-center gap-1">
+                    <span class="text-xs font-medium text-gray-500 dark:text-gray-500">{{ 'item.baseUomType' | translate }}:</span>
+                    <app-uom-type-badge [type]="item.baseUomType"></app-uom-type-badge>
+                  </span>
+                  <span *ngIf="item.inventoryUomName" class="inline-flex items-center gap-1">
+                    <span class="text-xs font-medium text-gray-500 dark:text-gray-500">{{ 'item.inventoryUom' | translate }}:</span>
+                    <span class="font-medium text-brand-600 dark:text-brand-400">{{ item.inventoryUomName }} (x{{ item.inventoryUomConvFactor }})</span>
+                  </span>
+                </div>
               </td>
               <td class="px-6 py-4 text-center">
                 <span

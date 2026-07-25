@@ -76,8 +76,16 @@
         <thead class="border-b border-gray-100 dark:border-white/5">
           <tr>
             <th *ngFor="let col of columns"
-              class="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400 uppercase">
-              {{ col.header | translate }}
+              class="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400 uppercase transition-colors"
+              [ngClass]="{'cursor-pointer select-none hover:bg-gray-50 dark:hover:bg-white/5': col.sortable}"
+              (click)="onSort(col)">
+              <div class="flex items-center gap-2">
+                <span>{{ col.header | translate }}</span>
+                <span *ngIf="col.sortable" class="flex flex-col opacity-40" [ngClass]="{'opacity-100 text-brand-500': filters.sortColumn === col.field || filters.sortColumn?.toLowerCase() === col.field.toLowerCase()}">
+                  <svg class="w-2.5 h-2.5 -mb-0.5" [ngClass]="{'opacity-100': (filters.sortColumn === col.field || filters.sortColumn?.toLowerCase() === col.field.toLowerCase()) && filters.sortDirection === 'ASC', 'opacity-50': !((filters.sortColumn === col.field || filters.sortColumn?.toLowerCase() === col.field.toLowerCase()) && filters.sortDirection === 'ASC')}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 15l7-7 7 7"></path></svg>
+                  <svg class="w-2.5 h-2.5" [ngClass]="{'opacity-100': (filters.sortColumn === col.field || filters.sortColumn?.toLowerCase() === col.field.toLowerCase()) && filters.sortDirection === 'DESC', 'opacity-50': !((filters.sortColumn === col.field || filters.sortColumn?.toLowerCase() === col.field.toLowerCase()) && filters.sortDirection === 'DESC')}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7"></path></svg>
+                </span>
+              </div>
             </th>
             <th class="px-5 py-3 font-medium text-gray-500 text-center text-theme-xs dark:text-gray-400 uppercase">
               {{ 'common.actions' | translate }}

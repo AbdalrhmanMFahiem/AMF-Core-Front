@@ -9,10 +9,12 @@ import { CrudListComponent, CrudColumn } from '../../../../shared/components/com
 import { PageBreadcrumbComponent } from '../../../../shared/components/common/page-breadcrumb/page-breadcrumb.component';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
+import { UomTypeBadgeComponent } from '../../../../shared/components/common/uom-type-badge/uom-type-badge.component';
+
 @Component({
   selector: 'app-items-list',
   standalone: true,
-  imports: [CommonModule, CrudListComponent, PageBreadcrumbComponent, TranslateModule],
+  imports: [CommonModule, CrudListComponent, PageBreadcrumbComponent, TranslateModule, UomTypeBadgeComponent],
   templateUrl: './items-list.component.html',
   styles: ``
 })
@@ -37,6 +39,7 @@ export class ItemsListComponent implements OnInit {
   columns: CrudColumn[] = [
     { field: 'code', header: 'common.code', type: 'code' },
     { field: 'name', header: 'common.name', type: 'text' },
+    { field: 'baseUomType', header: 'uom.uomType', type: 'custom' },
     { field: 'itemGroupName', header: 'items.fields.itemGroup', type: 'text' },
     { field: 'warehouseName', header: 'items.fields.dfltWarehouse', type: 'text' },
     { field: 'isActive', header: 'common.status', type: 'badge' }

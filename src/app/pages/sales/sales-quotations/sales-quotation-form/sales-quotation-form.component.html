@@ -1,12 +1,12 @@
-<app-page-breadcrumb [pageTitle]="(mode === 'view' ? 'common.view' : 'purchaseOrders.addNew')"
-  parentPageTitle="purchaseOrders.title" parentPageUrl="/purchases/purchase-orders" />
+<app-page-breadcrumb [pageTitle]="(mode === 'view' ? 'common.view' : 'SalesQuotations.addNew')"
+  parentPageTitle="SalesQuotations.title" parentPageUrl="/sales/sales-quotations" />
 
 <div class="space-y-6">
   <app-success-redirect-banner [isVisible]="saveSuccess" [message]="'common.savedSuccessfully'"
-    [redirectUrl]="'/purchases/purchase-orders'" [countdownSeconds]="5" (stay)="saveSuccess = false">
+    [redirectUrl]="'/sales/sales-quotations'" [countdownSeconds]="5" (stay)="saveSuccess = false">
   </app-success-redirect-banner>
 
-  <app-component-card [title]="(mode === 'view' ? 'common.view' : 'purchaseOrders.addNew') | translate"
+  <app-component-card [title]="(mode === 'view' ? 'common.view' : 'SalesQuotations.addNew') | translate"
     [className]="'p-6'">
 
     <div *ngIf="loading" class="flex justify-center p-8">
@@ -40,20 +40,20 @@
           <ng-container *ngIf="mode === 'view' && viewResponse">
             <app-document-status-badge [status]="viewResponse.status"></app-document-status-badge>
             <app-status-badge *ngIf="viewResponse.approvalStatus" [status]="viewResponse.approvalStatus"
-              [translationPrefix]="'purchaseOrders.status'"></app-status-badge>
+              [translationPrefix]="'SalesQuotations.status'"></app-status-badge>
           </ng-container>
         </div>
 
         <!-- Action Buttons -->
         <div class="flex items-center gap-3">
           <button
-            *ngIf="mode === 'view' && ($any(viewResponse?.status) === 'Draft' || $any(viewResponse?.status) === 'Open') && $any(viewResponse?.approvalStatus) !== 'Approved'"
+            *ngIf="mode === 'view' && ($any(viewResponse?.status) === 'Draft' || $any(viewResponse?.status) === 'Open')"
             type="button" (click)="onConfirm()"
             class="flex items-center gap-2 px-5 py-2.5 text-sm font-medium text-white bg-success-500 rounded-lg shadow-theme-xs hover:bg-success-600 transition-colors">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
             </svg>
-            {{ 'purchaseOrders.confirmTitle' | translate }}
+            {{ 'SalesQuotations.confirmTitle' | translate }}
           </button>
 
           <button
@@ -74,7 +74,7 @@
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                 d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path>
             </svg>
-            {{ 'purchaseOrders.convertToInvoice' | translate }}
+            {{ 'SalesQuotations.convertToInvoice' | translate }}
           </button>
 
           <!-- Print Button -->
@@ -85,7 +85,7 @@
                 d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z">
               </path>
             </svg>
-            {{ 'purchaseOrders.printOrder' | translate }}
+            {{ 'SalesQuotations.printOrder' | translate }}
           </button>
 
           <button type="button" (click)="onCancel()"
@@ -122,13 +122,13 @@
             </app-date-picker>
           </div>
 
-          <!-- Vendor (Business Partner) -->
+          <!-- customer (Business Partner) -->
           <div>
             <label class="mb-2.5 block text-sm font-medium text-gray-800 dark:text-white/90">
-              {{ 'common.vendor' | translate }} <span class="text-error-500">*</span>
+              {{ 'common.customer' | translate }} <span class="text-error-500">*</span>
             </label>
             <app-searchable-select [(ngModel)]="model.businessPartnerId" name="businessPartnerId" required
-              [options]="vendorsOptions" [disabled]="mode === 'view'" placeholder="common.select">
+              [options]="customersOptions" [disabled]="mode === 'view'" placeholder="common.select">
             </app-searchable-select>
           </div>
 
@@ -220,7 +220,7 @@
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
             </svg>
-            {{ 'purchaseOrders.addItems' | translate }}
+            {{ 'SalesQuotations.addItems' | translate }}
           </button>
         </div>
 
@@ -239,12 +239,14 @@
                     {{ 'invoices.qty' | translate }}</th>
                   <th class="px-4 py-3 font-medium text-gray-500 text-start text-xs dark:text-gray-400 uppercase w-32">
                     {{ 'invoices.price' | translate }}</th>
-                  <!-- <th class="px-4 py-3 font-medium text-gray-500 text-start text-xs dark:text-gray-400 uppercase w-32">
-                    {{ 'salesInvoices.fields.warehouse' | translate }}</th> -->
+                  <th class="px-4 py-3 font-medium text-gray-500 text-start text-xs dark:text-gray-400 uppercase w-32">
+                    {{ 'salesInvoices.fields.warehouse' | translate }}</th>
                   <th class="px-4 py-3 font-medium text-gray-500 text-start text-xs dark:text-gray-400 uppercase w-32">
                     {{ 'common.unitOfMeasure' | translate }}</th>
                   <!-- <th class="px-4 py-3 font-medium text-gray-500 text-start text-xs dark:text-gray-400 uppercase w-32">
                     {{ 'salesInvoices.fields.dueDate' | translate }}</th> -->
+                  <th class="px-4 py-3 font-medium text-gray-500 text-start text-xs dark:text-gray-400 uppercase w-32">
+                    {{ 'common.notes' | translate }}</th>
                   <th class="px-4 py-3 font-medium text-gray-500 text-start text-xs dark:text-gray-400 uppercase w-32">
                     <div class="flex flex-col gap-1">
                       <span>{{ 'invoices.discount' | translate }}</span>
@@ -260,8 +262,6 @@
                   <th class="px-4 py-3 font-medium text-gray-500 text-end text-xs dark:text-gray-400 uppercase w-32">{{
                     'invoices.netAmount' | translate }}
                   </th>
-                  <th class="px-4 py-3 font-medium text-gray-500 text-center text-xs dark:text-gray-400 uppercase w-32">
-                    {{ 'common.notes' | translate }}</th>
                   <th *ngIf="mode !== 'view'"
                     class="px-4 py-3 font-medium text-gray-500 text-center text-xs dark:text-gray-400 uppercase w-20">
                   </th>
@@ -269,7 +269,7 @@
               </thead>
               <tbody class="divide-y divide-gray-100 dark:divide-white/5">
                 <tr *ngIf="model.lines.length === 0">
-                  <td [attr.colspan]="mode !== 'view' ? 10 : 9"
+                  <td [attr.colspan]="mode !== 'view' ? 11 : 10"
                     class="px-4 py-8 text-center text-gray-500 dark:text-gray-400">
                     {{ 'salesInvoices.errors.atLeastOneItem' | translate }}
                   </td>
@@ -321,16 +321,15 @@
                   </td>
 
                   <!-- Line Warehouse -->
-                  <!-- <td class="px-4 py-2 min-w-40">
+                  <td class="px-4 py-2 min-w-40">
                     <app-searchable-select [options]="warehousesOptions" [(ngModel)]="line.warehouseId"
                       name="line_wh_{{i}}" [disabled]="mode === 'view'" [required]="true">
                     </app-searchable-select>
-                  </td> -->
+                  </td>
 
                   <!-- UOM -->
                   <td class="px-4 py-2 min-w-32.5">
-                    <app-searchable-select
-                      [options]="line['_availableUomsOptions'] || getUomOptions(line['_baseUomType'])"
+                    <app-searchable-select [options]="line['_availableUomsOptions'] || getUomOptions(line['_baseUomType'])"
                       [(ngModel)]="line.unitOfMeasureId" name="uom_{{i}}" [disabled]="mode === 'view'"
                       [placeholder]="'common.select' | translate">
                     </app-searchable-select>
@@ -341,6 +340,22 @@
                     <app-date-picker [(ngModel)]="line.lineDueDate" name="line_due_date_{{i}}" [disabled]="mode === 'view'">
                     </app-date-picker>
                   </td> -->
+
+
+                  <!-- Notes -->
+                  <td class="px-4 py-2 text-center">
+                    <button type="button" (click)="openLineNotesModal(i)"
+                      [ngClass]="line.notes ? 'text-brand-600 bg-brand-50 dark:bg-brand-500/20 ring-1 ring-brand-500/50' : 'text-gray-500 hover:text-brand-500 hover:bg-gray-50 dark:hover:bg-white/5'"
+                      class="p-1.5 rounded-lg transition-all relative"
+                      [title]="'common.notes' | translate">
+                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                      </svg>
+                      <span *ngIf="line.notes"
+                        class="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-brand-500 rounded-full border-2 border-white dark:border-dark-900"></span>
+                    </button>
+                  </td>
 
                   <!-- Discount -->
                   <td class="px-4 py-1.5 min-w-27.5">
@@ -387,21 +402,6 @@
                     {{ line.lineTotal | number:'1.2-2' }}
                   </td>
 
-
-                  <!-- Notes -->
-                  <td class="px-4 py-2 text-center">
-                    <button type="button" (click)="openLineNotesModal(i)"
-                      [ngClass]="line.notes ? 'text-brand-600 bg-brand-50 dark:bg-brand-500/20 ring-1 ring-brand-500/50' : 'text-gray-500 hover:text-brand-500 hover:bg-gray-50 dark:hover:bg-white/5'"
-                      class="p-1.5 rounded-lg transition-all relative" [title]="'common.notes' | translate">
-                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                      </svg>
-                      <span *ngIf="line.notes"
-                        class="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-brand-500 rounded-full border-2 border-white dark:border-dark-900"></span>
-                    </button>
-                  </td>
-
                   <!-- Actions -->
                   <td *ngIf="mode !== 'view'" class="px-4 py-3 text-center">
                     <button type="button" (click)="removeItem(i)"
@@ -427,7 +427,7 @@
               {{ 'common.paymentTerms' | translate }}
             </label>
             <p class="mb-2.5 text-xs text-gray-500 dark:text-gray-400">
-              {{ 'purchaseOrders.labels.paymentTerms' | translate }}
+              {{ 'SalesQuotations.labels.paymentTerms' | translate }}
             </p>
             <input type="text" [(ngModel)]="model.paymentTerms" name="paymentTerms" [disabled]="mode === 'view'"
               class="w-full rounded-md border border-gray-200 px-3 py-2 text-sm dark:bg-dark-900 dark:border-gray-700 dark:text-white" />
@@ -437,7 +437,7 @@
               {{ 'common.paymentMethod' | translate }}
             </label>
             <p class="mb-2.5 text-xs text-gray-500 dark:text-gray-400">
-              {{ 'purchaseOrders.labels.paymentMethod' | translate }}
+              {{ 'SalesQuotations.labels.paymentMethod' | translate }}
             </p>
             <input type="text" [(ngModel)]="model.paymentMethod" name="paymentMethod" [disabled]="mode === 'view'"
               class="w-full rounded-md border border-gray-200 px-3 py-2 text-sm dark:bg-dark-900 dark:border-gray-700 dark:text-white" />
@@ -447,19 +447,19 @@
               {{ 'common.shippingMethod' | translate }}
             </label>
             <p class="mb-2.5 text-xs text-gray-500 dark:text-gray-400">
-              {{ 'purchaseOrders.labels.shippingMethod' | translate }}
+              {{ 'SalesQuotations.labels.shippingMethod' | translate }}
             </p>
             <input type="text" [(ngModel)]="model.shippingMethod" name="shippingMethod" [disabled]="mode === 'view'"
               class="w-full rounded-md border border-gray-200 px-3 py-2 text-sm dark:bg-dark-900 dark:border-gray-700 dark:text-white" />
           </div>
           <div>
             <label class="mb-1.5 block text-sm font-medium text-gray-800 dark:text-white/90">
-              {{ 'common.vendorReference' | translate }}
+              {{ 'common.customerReference' | translate }}
             </label>
             <p class="mb-2.5 text-xs text-gray-500 dark:text-gray-400">
-              {{ 'purchaseOrders.labels.vendorReference' | translate }}
+              {{ 'SalesQuotations.labels.customerReference' | translate }}
             </p>
-            <input type="text" [(ngModel)]="model.vendorReferenceNumber" name="vendorReferenceNumber"
+            <input type="text" [(ngModel)]="model.referenceNumber" name="referenceNumber"
               [disabled]="mode === 'view'"
               class="w-full rounded-md border border-gray-200 px-3 py-2 text-sm dark:bg-dark-900 dark:border-gray-700 dark:text-white" />
           </div>
@@ -468,7 +468,7 @@
               {{ 'common.buyer' | translate }}
             </label>
             <p class="mb-2.5 text-xs text-gray-500 dark:text-gray-400">
-              {{ 'purchaseOrders.labels.buyer' | translate }}
+              {{ 'SalesQuotations.labels.buyer' | translate }}
             </p>
             <input type="text" [(ngModel)]="model.buyerId" name="buyerId" [disabled]="mode === 'view'"
               class="w-full rounded-md border border-gray-200 px-3 py-2 text-sm dark:bg-dark-900 dark:border-gray-700 dark:text-white" />
@@ -478,7 +478,7 @@
               {{ 'common.contactPerson' | translate }}
             </label>
             <p class="mb-2.5 text-xs text-gray-500 dark:text-gray-400">
-              {{ 'purchaseOrders.labels.contactPerson' | translate }}
+              {{ 'SalesQuotations.labels.contactPerson' | translate }}
             </p>
             <input type="text" [(ngModel)]="model.contactPersonName" name="contactPersonName"
               [disabled]="mode === 'view'"

@@ -1,50 +1,63 @@
 <app-page-breadcrumb
-  [pageTitle]="(mode === 'edit' ? 'items.edit' : mode === 'view' ? 'common.view' : 'items.addNew') | translate"
-  parentPageTitle="items.title"
-  parentPageUrl="/inventory/items" />
+  [pageTitle]="(mode === 'edit' ? 'items.edit' : mode === 'view' ? 'Common.view' : 'items.addNew') | translate"
+  parentPageTitle="pages.items"
+  parentPageUrl="/inventory/items">
+</app-page-breadcrumb>
 
 <div class="space-y-6">
-  <app-success-redirect-banner [isVisible]="saveSuccess" [message]="'common.savedSuccessfully'"
-    [redirectUrl]="'/inventory/items'" [countdownSeconds]="5">
+  <app-success-redirect-banner
+    [isVisible]="saveSuccess"
+    [message]="'common.savedSuccessfully' | translate"
+    [redirectUrl]="'/inventory/items'"
+    [countdownSeconds]="5">
   </app-success-redirect-banner>
 
   <app-component-card
-    [title]="(mode === 'edit' ? 'items.edit' : mode === 'view' ? 'common.view' : 'items.addNew') | translate"
+    [title]="(mode === 'edit' ? 'items.edit' : mode === 'view' ? 'Common.view' : 'items.addNew') | translate"
     [className]="'p-6'">
 
-    <div *ngIf="loading" class="flex justify-center p-8">
-      <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-500"></div>
+    <div *ngIf="loading" class="flex items-center justify-center p-12">
+      <div class="h-10 w-10 animate-spin rounded-full border-4 border-brand-500 border-t-transparent"></div>
     </div>
 
     <form *ngIf="!loading" (ngSubmit)="onSubmit()" #form="ngForm" class="space-y-6">
 
-      <!-- Header and Action Buttons -->
-      <div class="flex flex-wrap items-center justify-between gap-4 border-b border-gray-100 dark:border-white/5 pb-5">
-        
-        <!-- Code Input -->
-        <div class="flex items-center gap-2 px-3 py-2 bg-brand-50 dark:bg-brand-500/10 border border-brand-100 dark:border-brand-500/20 rounded-lg shadow-theme-xs">
-          <svg class="w-4 h-4 text-brand-600 dark:text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <!-- Header with Code Badge & Action Buttons -->
+      <div class="flex flex-wrap items-center justify-between gap-4 border-b border-gray-100 pb-5 dark:border-white/5">
+        <!-- Code Badge -->
+        <div class="flex items-center gap-2 rounded-lg border border-brand-100 bg-brand-50 px-3 py-2 shadow-theme-xs dark:border-brand-500/20 dark:bg-brand-500/10">
+          <svg class="h-4 w-4 text-brand-600 dark:text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
           </svg>
-          <span class="text-xs font-semibold text-brand-600 dark:text-brand-400 uppercase tracking-wider whitespace-nowrap">
+          <span class="whitespace-nowrap text-xs font-semibold uppercase tracking-wider text-brand-600 dark:text-brand-400">
             {{ 'common.code' | translate }}
           </span>
-          <div class="w-px h-4 bg-brand-200 dark:bg-brand-500/30 mx-1"></div>
-          <input type="text" [(ngModel)]="model.code" name="code" required [disabled]="mode === 'view'"
-            class="font-mono text-sm font-bold text-gray-900 dark:text-white bg-transparent border-none outline-none focus:ring-0 p-0 w-32 placeholder:text-gray-400 dark:placeholder:text-gray-500 disabled:opacity-70"
+          <div class="mx-1 h-4 w-px bg-brand-200 dark:bg-brand-500/30"></div>
+          <input
+            type="text"
+            [(ngModel)]="model.code"
+            name="code"
+            required
+            [disabled]="mode === 'view'"
+            class="w-32 bg-transparent p-0 font-mono text-sm font-bold text-gray-900 outline-none placeholder:text-gray-400 disabled:opacity-70 dark:text-white dark:placeholder:text-gray-500"
             placeholder="---" />
         </div>
 
         <!-- Action Buttons -->
         <div class="flex items-center gap-3">
-          <button type="button" (click)="onCancel()"
-            class="px-5 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg shadow-theme-xs hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700 dark:hover:bg-gray-700 transition-colors">
+          <button
+            type="button"
+            (click)="onCancel()"
+            class="rounded-lg border border-gray-300 bg-white px-5 py-2.5 text-sm font-medium text-gray-700 shadow-theme-xs transition-colors hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700">
             {{ (mode === 'view' ? 'common.back' : 'common.cancel') | translate }}
           </button>
 
-          <button *ngIf="mode !== 'view'" type="submit" [disabled]="saving"
-            class="flex items-center gap-2 px-5 py-2.5 text-sm font-medium text-white bg-brand-500 rounded-lg shadow-theme-xs hover:bg-brand-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
-            <svg *ngIf="saving" class="h-4 w-4 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <button
+            *ngIf="mode !== 'view'"
+            type="submit"
+            [disabled]="saving || !form.valid"
+            class="flex items-center gap-2 rounded-lg bg-brand-500 px-5 py-2.5 text-sm font-medium text-white shadow-theme-xs transition-colors hover:bg-brand-600 disabled:cursor-not-allowed disabled:opacity-50">
+            <svg *ngIf="saving" class="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
               <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
               <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
             </svg>
@@ -53,246 +66,676 @@
         </div>
       </div>
 
-      <!-- Tabs Navigation -->
-      <div class="border-b border-gray-200 dark:border-gray-800">
-        <nav class="-mb-px flex space-x-6 overflow-x-auto" aria-label="Tabs">
-          <button type="button" (click)="setTab('basic')" [class.border-brand-500]="activeTab === 'basic'"
-            [class.text-brand-600]="activeTab === 'basic'" [class.border-transparent]="activeTab !== 'basic'"
-            [class.text-gray-500]="activeTab !== 'basic'" [class.hover:text-gray-700]="activeTab !== 'basic'"
-            [class.hover:border-gray-300]="activeTab !== 'basic'"
-            class="whitespace-nowrap pb-4 px-1 border-b-2 font-medium text-sm transition-colors flex items-center">
-            {{ 'items.tabs.basic' | translate }}
-            <span *ngIf="tabsWithErrors.includes('basic')" class="ml-2 w-2 h-2 rounded-full bg-error-500"></span>
+      <!-- Navigation Tabs -->
+      <div class="border-b border-gray-200 dark:border-gray-700">
+        <nav class="-mb-px flex flex-wrap gap-2 sm:gap-6" aria-label="Tabs">
+          <!-- Basic Data Tab -->
+          <button
+            type="button"
+            (click)="setTab('basic')"
+            [class.border-brand-500]="activeTab === 'basic'"
+            [class.text-brand-600]="activeTab === 'basic'"
+            [class.dark:text-brand-400]="activeTab === 'basic'"
+            [class.border-transparent]="activeTab !== 'basic'"
+            [class.text-gray-500]="activeTab !== 'basic'"
+            [class.dark:text-gray-400]="activeTab !== 'basic'"
+            class="inline-flex items-center gap-2 whitespace-nowrap border-b-2 px-1 py-3 text-sm font-medium transition-colors hover:text-brand-500">
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span>{{ 'items.tabs.basic' | translate }}</span>
           </button>
 
-          <button type="button" (click)="setTab('purchasing')" [class.border-brand-500]="activeTab === 'purchasing'"
-            [class.text-brand-600]="activeTab === 'purchasing'" [class.border-transparent]="activeTab !== 'purchasing'"
-            [class.text-gray-500]="activeTab !== 'purchasing'"
-            class="whitespace-nowrap pb-4 px-1 border-b-2 font-medium text-sm transition-colors flex items-center hover:text-gray-700 hover:border-gray-300">
-            {{ 'items.tabs.purchasing' | translate }}
-            <span *ngIf="tabsWithErrors.includes('purchasing')" class="ml-2 w-2 h-2 rounded-full bg-error-500"></span>
-          </button>
-
-          <button type="button" (click)="setTab('sales')" [class.border-brand-500]="activeTab === 'sales'"
-            [class.text-brand-600]="activeTab === 'sales'" [class.border-transparent]="activeTab !== 'sales'"
-            [class.text-gray-500]="activeTab !== 'sales'"
-            class="whitespace-nowrap pb-4 px-1 border-b-2 font-medium text-sm transition-colors flex items-center hover:text-gray-700 hover:border-gray-300">
-            {{ 'items.tabs.sales' | translate }}
-            <span *ngIf="tabsWithErrors.includes('sales')" class="ml-2 w-2 h-2 rounded-full bg-error-500"></span>
-          </button>
-
-          <button type="button" (click)="setTab('inventory')" [class.border-brand-500]="activeTab === 'inventory'"
-            [class.text-brand-600]="activeTab === 'inventory'" [class.border-transparent]="activeTab !== 'inventory'"
-            [class.text-gray-500]="activeTab !== 'inventory'"
-            class="whitespace-nowrap pb-4 px-1 border-b-2 font-medium text-sm transition-colors flex items-center hover:text-gray-700 hover:border-gray-300">
-            {{ 'items.tabs.inventory' | translate }}
-            <span *ngIf="tabsWithErrors.includes('inventory')" class="ml-2 w-2 h-2 rounded-full bg-error-500"></span>
-          </button>
-
-          <button type="button" (click)="setTab('additional')" [class.border-brand-500]="activeTab === 'additional'"
-            [class.text-brand-600]="activeTab === 'additional'" [class.border-transparent]="activeTab !== 'additional'"
-            [class.text-gray-500]="activeTab !== 'additional'"
-            class="whitespace-nowrap pb-4 px-1 border-b-2 font-medium text-sm transition-colors flex items-center hover:text-gray-700 hover:border-gray-300">
-            {{ 'items.tabs.additional' | translate }}
-          </button>
-          
-          <button type="button" (click)="setTab('uoms')" [class.border-brand-500]="activeTab === 'uoms'"
-            [class.text-brand-600]="activeTab === 'uoms'" [class.border-transparent]="activeTab !== 'uoms'"
+          <!-- Units of Measure Tab (Hidden Temporarily) -->
+          <!--
+          <button
+            type="button"
+            (click)="setTab('uoms')"
+            [disabled]="!selectedUomType"
+            [class.border-brand-500]="activeTab === 'uoms'"
+            [class.text-brand-600]="activeTab === 'uoms'"
+            [class.dark:text-brand-400]="activeTab === 'uoms'"
+            [class.border-transparent]="activeTab !== 'uoms'"
             [class.text-gray-500]="activeTab !== 'uoms'"
-            class="whitespace-nowrap pb-4 px-1 border-b-2 font-medium text-sm transition-colors flex items-center hover:text-gray-700 hover:border-gray-300">
-            {{ 'items.tabs.uoms' | translate }}
-            <span *ngIf="tabsWithErrors.includes('uoms')" class="ml-2 w-2 h-2 rounded-full bg-error-500"></span>
+            [class.dark:text-gray-400]="activeTab !== 'uoms'"
+            [class.opacity-50]="!selectedUomType"
+            [class.cursor-not-allowed]="!selectedUomType"
+            class="inline-flex items-center gap-2 whitespace-nowrap border-b-2 px-1 py-3 text-sm font-medium transition-colors hover:text-brand-500">
+            <svg *ngIf="!selectedUomType" class="h-4 w-4 text-warning-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+            </svg>
+            <svg *ngIf="selectedUomType" class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6l3 1m0 0l-3 9a50.002 50.002 0 006 0l-3-9zm0 0h7.5m0 0l3 9a50.002 50.002 0 006 0l-3-9zm0 0H21" />
+            </svg>
+            <span>{{ 'items.tabs.uoms' | translate }}</span>
+          </button>
+          -->
+
+          <!-- Inventory Tab -->
+          <button
+            type="button"
+            (click)="setTab('inventory')"
+            [disabled]="!selectedUomType"
+            [class.border-brand-500]="activeTab === 'inventory'"
+            [class.text-brand-600]="activeTab === 'inventory'"
+            [class.dark:text-brand-400]="activeTab === 'inventory'"
+            [class.border-transparent]="activeTab !== 'inventory'"
+            [class.text-gray-500]="activeTab !== 'inventory'"
+            [class.dark:text-gray-400]="activeTab !== 'inventory'"
+            [class.opacity-50]="!selectedUomType"
+            [class.cursor-not-allowed]="!selectedUomType"
+            class="inline-flex items-center gap-2 whitespace-nowrap border-b-2 px-1 py-3 text-sm font-medium transition-colors hover:text-brand-500">
+            <svg *ngIf="!selectedUomType" class="h-4 w-4 text-warning-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+            </svg>
+            <svg *ngIf="selectedUomType" class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+            </svg>
+            <span>{{ 'items.tabs.inventory' | translate }}</span>
+          </button>
+
+          <!-- Sales Tab -->
+          <button
+            type="button"
+            (click)="setTab('sales')"
+            [disabled]="!selectedUomType"
+            [class.border-brand-500]="activeTab === 'sales'"
+            [class.text-brand-600]="activeTab === 'sales'"
+            [class.dark:text-brand-400]="activeTab === 'sales'"
+            [class.border-transparent]="activeTab !== 'sales'"
+            [class.text-gray-500]="activeTab !== 'sales'"
+            [class.dark:text-gray-400]="activeTab !== 'sales'"
+            [class.opacity-50]="!selectedUomType"
+            [class.cursor-not-allowed]="!selectedUomType"
+            class="inline-flex items-center gap-2 whitespace-nowrap border-b-2 px-1 py-3 text-sm font-medium transition-colors hover:text-brand-500">
+            <svg *ngIf="!selectedUomType" class="h-4 w-4 text-warning-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+            </svg>
+            <svg *ngIf="selectedUomType" class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span>{{ 'items.tabs.sales' | translate }}</span>
+          </button>
+
+          <!-- Purchasing Tab -->
+          <button
+            type="button"
+            (click)="setTab('purchasing')"
+            [disabled]="!selectedUomType"
+            [class.border-brand-500]="activeTab === 'purchasing'"
+            [class.text-brand-600]="activeTab === 'purchasing'"
+            [class.dark:text-brand-400]="activeTab === 'purchasing'"
+            [class.border-transparent]="activeTab !== 'purchasing'"
+            [class.text-gray-500]="activeTab !== 'purchasing'"
+            [class.dark:text-gray-400]="activeTab !== 'purchasing'"
+            [class.opacity-50]="!selectedUomType"
+            [class.cursor-not-allowed]="!selectedUomType"
+            class="inline-flex items-center gap-2 whitespace-nowrap border-b-2 px-1 py-3 text-sm font-medium transition-colors hover:text-brand-500">
+            <svg *ngIf="!selectedUomType" class="h-4 w-4 text-warning-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+            </svg>
+            <svg *ngIf="selectedUomType" class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+            </svg>
+            <span>{{ 'items.tabs.purchasing' | translate }}</span>
+          </button>
+
+          <!-- Additional Tab -->
+          <button
+            type="button"
+            (click)="setTab('additional')"
+            [class.border-brand-500]="activeTab === 'additional'"
+            [class.text-brand-600]="activeTab === 'additional'"
+            [class.dark:text-brand-400]="activeTab === 'additional'"
+            [class.border-transparent]="activeTab !== 'additional'"
+            [class.text-gray-500]="activeTab !== 'additional'"
+            [class.dark:text-gray-400]="activeTab !== 'additional'"
+            class="inline-flex items-center gap-2 whitespace-nowrap border-b-2 px-1 py-3 text-sm font-medium transition-colors hover:text-brand-500">
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+            <span>{{ 'items.tabs.additional' | translate }}</span>
           </button>
         </nav>
       </div>
 
-      <!-- Tab Content: Basic -->
-      <div *ngIf="activeTab === 'basic'" class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+      <!-- Tab Content Area -->
 
-        <!-- AName -->
-        <div>
-          <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-            {{ 'items.fields.aName' | translate }} <span class="text-error-500">*</span>
-          </label>
-          <input type="text" [(ngModel)]="model.aName" name="aName" required [disabled]="mode === 'view'"
-            class="w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm outline-none focus:border-brand-500 dark:border-gray-800 dark:focus:border-brand-500" />
+      <!-- TAB 1: BASIC DATA -->
+      <div *ngIf="activeTab === 'basic'" class="space-y-6 pt-2">
+
+        <!-- MANDATORY STEP: UOM TYPE CHIPS SELECTION -->
+        <div class="rounded-xl border border-brand-200 bg-brand-50/50 p-5 dark:border-brand-500/20 dark:bg-brand-500/5">
+          <div class="mb-3 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="flex h-7 w-7 items-center justify-center rounded-full bg-brand-500 text-xs font-bold text-white shadow-sm">1</span>
+              <h4 class="text-base font-bold text-gray-900 dark:text-white">
+                {{ 'items.uomTypeSelectFirst' | translate }} <span class="text-error-500">*</span>
+              </h4>
+            </div>
+            <span *ngIf="selectedUomType" class="inline-flex items-center gap-1.5 rounded-full bg-success-50 px-3 py-1 text-xs font-semibold text-success-700 dark:bg-success-500/10 dark:text-success-400">
+              <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+              </svg>
+              {{ 'items.types.' + selectedUomType | translate }}
+            </span>
+          </div>
+
+          <!-- Warning Banner if not selected -->
+          <div *ngIf="!selectedUomType" class="mb-4 flex items-center gap-3 rounded-lg border border-warning-200 bg-warning-50 px-4 py-3 text-sm text-warning-800 dark:border-warning-500/20 dark:bg-warning-500/10 dark:text-warning-300">
+            <svg class="h-5 w-5 shrink-0 text-warning-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+            <span>{{ 'items.uomTypeWarning' | translate }}</span>
+          </div>
+
+          <!-- Chips Grid -->
+          <div class="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-7">
+            <button
+              *ngFor="let opt of uomTypeOptions"
+              type="button"
+              (click)="onSelectUomType(opt.type)"
+              [disabled]="mode === 'view'"
+              [class.bg-brand-500]="selectedUomType === opt.type"
+              [class.text-white]="selectedUomType === opt.type"
+              [class.shadow-md]="selectedUomType === opt.type"
+              [class.shadow-brand-500\/20]="selectedUomType === opt.type"
+              [class.bg-white]="selectedUomType !== opt.type"
+              [class.dark:bg-gray-800]="selectedUomType !== opt.type"
+              [class.text-gray-700]="selectedUomType !== opt.type"
+              [class.dark:text-gray-300]="selectedUomType !== opt.type"
+              [class.border-gray-200]="selectedUomType !== opt.type"
+              [class.dark:border-gray-700]="selectedUomType !== opt.type"
+              [class.hover:border-brand-300]="selectedUomType !== opt.type"
+              class="flex flex-col items-center justify-center gap-2 rounded-xl border p-3.5 text-center transition-all duration-200 hover:scale-[1.02] disabled:cursor-not-allowed disabled:opacity-70">
+              
+              <svg class="h-6 w-6 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" [attr.d]="opt.svgPath" />
+              </svg>
+
+              <span class="text-xs font-bold">{{ opt.translationKey | translate }}</span>
+            </button>
+          </div>
         </div>
 
-        <!-- EName -->
-        <div>
-          <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-            {{ 'items.fields.eName' | translate }}
-          </label>
-          <input type="text" [(ngModel)]="model.eName" name="eName" [disabled]="mode === 'view'"
-            class="w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm outline-none focus:border-brand-500 dark:border-gray-800 dark:focus:border-brand-500" />
-        </div>
+        <!-- Basic Input Fields -->
+        <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+          <!-- Arabic Name -->
+          <div>
+            <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+              {{ 'items.fields.aName' | translate }} <span class="text-error-500">*</span>
+            </label>
+            <input
+              type="text"
+              [(ngModel)]="model.aName"
+              name="aName"
+              required
+              [disabled]="mode === 'view'"
+              class="w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm outline-none focus:border-brand-500 dark:border-gray-800 dark:focus:border-brand-500" />
+          </div>
 
-        <!-- Item Group -->
-        <div>
-          <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-            {{ 'items.fields.itemGroup' | translate }}
-          </label>
-          <app-searchable-select [(ngModel)]="model.itemGroupId" name="itemGroupId" [options]="itemGroupsOptions"
-            [disabled]="mode === 'view'" placeholder="common.select">
-          </app-searchable-select>
-        </div>
+          <!-- English Name -->
+          <div>
+            <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+              {{ 'items.fields.eName' | translate }}
+            </label>
+            <input
+              type="text"
+              [(ngModel)]="model.eName"
+              name="eName"
+              [disabled]="mode === 'view'"
+              class="w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm outline-none focus:border-brand-500 dark:border-gray-800 dark:focus:border-brand-500" />
+          </div>
 
-        <!-- Item Property -->
-        <div>
-          <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-            {{ 'items.fields.itemProperty' | translate }}
-          </label>
-          <app-searchable-select [(ngModel)]="model.itemPropertyId" name="itemPropertyId"
-            [options]="itemPropertiesOptions" [disabled]="mode === 'view'" placeholder="common.select">
-          </app-searchable-select>
-        </div>
+          <!-- Item Group -->
+          <div>
+            <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+              {{ 'items.fields.itemGroup' | translate }} <span class="text-error-500">*</span>
+            </label>
+            <app-searchable-select
+              [(ngModel)]="model.itemGroupId"
+              name="itemGroupId"
+              [options]="itemGroupsOptions"
+              [disabled]="mode === 'view'"
+              placeholder="common.select">
+            </app-searchable-select>
+          </div>
 
-        <!-- Notes -->
-        <div class="sm:col-span-2">
-          <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-            {{ 'common.notes' | translate }}
-          </label>
-          <textarea [(ngModel)]="model.notes" name="notes" rows="3" [disabled]="mode === 'view'"
-            class="w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm outline-none focus:border-brand-500 dark:border-gray-800 dark:focus:border-brand-500"></textarea>
+          <!-- Item Property -->
+          <div>
+            <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+              {{ 'items.fields.itemProperty' | translate }}
+            </label>
+            <app-searchable-select
+              [(ngModel)]="model.itemPropertyId"
+              name="itemPropertyId"
+              [options]="itemPropertiesOptions"
+              [disabled]="mode === 'view'"
+              placeholder="common.select">
+            </app-searchable-select>
+          </div>
+
+          <!-- Is Active Toggle -->
+          <div class="sm:col-span-2">
+            <label class="inline-flex items-center gap-3 cursor-pointer">
+              <input
+                type="checkbox"
+                [(ngModel)]="model.isActive"
+                name="isActive"
+                [disabled]="mode === 'view'"
+                class="h-5 w-5 rounded border-gray-300 text-brand-500 focus:ring-brand-500 dark:border-gray-700 dark:bg-gray-800" />
+              <span class="text-sm font-medium text-gray-700 dark:text-gray-300">
+                {{ 'common.active' | translate }}
+              </span>
+            </label>
+          </div>
         </div>
       </div>
 
-      <!-- Tab Content: Purchasing -->
-      <div *ngIf="activeTab === 'purchasing'" class="grid grid-cols-1 gap-6 sm:grid-cols-2">
-        <!-- Is Purchased Checkbox -->
-        <div class="sm:col-span-2 flex items-center">
-          <input type="checkbox" [(ngModel)]="model.isPurchased" name="isPurchased" id="isPurchased"
+      <!-- TAB 2: UNITS OF MEASURE (uoms) - Hidden Temporarily -->
+      <div *ngIf="false && activeTab === 'uoms'" class="space-y-6 pt-2">
+        <div class="flex items-center justify-between">
+          <div>
+            <h3 class="text-lg font-bold text-gray-900 dark:text-white">
+              {{ 'items.tabs.uoms' | translate }}
+            </h3>
+            <p class="text-xs text-gray-500 dark:text-gray-400">
+              {{ 'items.uomTypeSelectFirst' | translate }}:
+              <strong class="text-brand-600 dark:text-brand-400">{{ 'items.types.' + selectedUomType | translate }}</strong>
+            </p>
+          </div>
+
+          <button
+            *ngIf="mode !== 'view'"
+            type="button"
+            (click)="addUomRow()"
+            class="flex items-center gap-2 rounded-lg bg-brand-500 px-4 py-2 text-sm font-medium text-white shadow-theme-xs hover:bg-brand-600 transition-colors">
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+            </svg>
+            <span>{{ 'common.add' | translate }}</span>
+          </button>
+        </div>
+
+        <!-- UOM Lines Table -->
+        <div class="overflow-x-auto rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900">
+          <table class="w-full text-right text-sm">
+            <thead class="bg-gray-50 text-xs font-semibold text-gray-700 dark:bg-gray-800/50 dark:text-gray-300">
+              <tr>
+                <th class="px-4 py-3 min-w-55">{{ 'common.unitOfMeasure' | translate }} <span class="text-error-500">*</span></th>
+                <th class="px-4 py-3 min-w-35">{{ 'items.uomGrid.conversionFactor' | translate }} <span class="text-error-500">*</span></th>
+                <th class="px-4 py-3 text-center min-w-30">{{ 'items.uomGrid.isBaseUnit' | translate }}</th>
+                <th class="px-4 py-3 text-center min-w-32.5">{{ 'items.uomGrid.isDefaultSales' | translate }}</th>
+                <th class="px-4 py-3 text-center min-w-32.5">{{ 'items.uomGrid.isDefaultPurchase' | translate }}</th>
+                <th class="px-4 py-3 min-w-40">{{ 'items.uomGrid.barcode' | translate }}</th>
+                <th *ngIf="mode !== 'view'" class="px-4 py-3 text-center w-16">{{ 'common.actions' | translate }}</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100 dark:divide-gray-800">
+              <tr *ngFor="let row of model.unitsOfMeasure; let i = index; trackBy: trackByIndex" class="hover:bg-gray-50/50 dark:hover:bg-gray-800/30">
+                
+                <!-- UOM Select (Filtered by selected type) -->
+                <td class="px-4 py-2.5">
+                  <app-searchable-select
+                    [ngModel]="row.unitOfMeasureId"
+                    (ngModelChange)="onUomSelectionChange(i, $event)"
+                    [name]="'uom_' + i"
+                    [options]="uomOptions"
+                    [disabled]="mode === 'view'"
+                    placeholder="common.select">
+                  </app-searchable-select>
+                </td>
+
+                <!-- Conversion Factor -->
+                <td class="px-4 py-2.5">
+                  <input
+                    type="number"
+                    step="0.0001"
+                    min="0.0001"
+                    [(ngModel)]="row.conversionFactor"
+                    [name]="'factor_' + i"
+                    [disabled]="mode === 'view' || row.isBaseUnit"
+                    (ngModelChange)="syncUoms()"
+                    class="w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm outline-none focus:border-brand-500 disabled:opacity-60 dark:border-gray-800 dark:focus:border-brand-500" />
+                </td>
+
+                <!-- Base Unit Checkbox -->
+                <td class="px-4 py-2.5 text-center">
+                  <input
+                    type="checkbox"
+                    [ngModel]="row.isBaseUnit"
+                    (ngModelChange)="onBaseUnitChange(i, $event)"
+                    [name]="'base_' + i"
+                    [disabled]="mode === 'view'"
+                    class="h-4 w-4 rounded border-gray-300 text-brand-500 focus:ring-brand-500 dark:border-gray-700 dark:bg-gray-800" />
+                </td>
+
+                <!-- Default Sales Unit Checkbox -->
+                <td class="px-4 py-2.5 text-center">
+                  <input
+                    type="checkbox"
+                    [ngModel]="row.isDefaultSalesUnit"
+                    (ngModelChange)="onDefaultSalesChange(i, $event)"
+                    [name]="'sales_' + i"
+                    [disabled]="mode === 'view'"
+                    class="h-4 w-4 rounded border-gray-300 text-brand-500 focus:ring-brand-500 dark:border-gray-700 dark:bg-gray-800" />
+                </td>
+
+                <!-- Default Purchase Unit Checkbox -->
+                <td class="px-4 py-2.5 text-center">
+                  <input
+                    type="checkbox"
+                    [ngModel]="row.isDefaultPurchaseUnit"
+                    (ngModelChange)="onDefaultPurchaseChange(i, $event)"
+                    [name]="'purchase_' + i"
+                    [disabled]="mode === 'view'"
+                    class="h-4 w-4 rounded border-gray-300 text-brand-500 focus:ring-brand-500 dark:border-gray-700 dark:bg-gray-800" />
+                </td>
+
+                <!-- Barcode -->
+                <td class="px-4 py-2.5">
+                  <input
+                    type="text"
+                    [(ngModel)]="row.barcode"
+                    [name]="'barcode_' + i"
+                    [disabled]="mode === 'view'"
+                    class="w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm outline-none focus:border-brand-500 dark:border-gray-800 dark:focus:border-brand-500" />
+                </td>
+
+                <!-- Delete Action -->
+                <td *ngIf="mode !== 'view'" class="px-4 py-2.5 text-center">
+                  <button
+                    type="button"
+                    (click)="removeUomRow(i)"
+                    class="p-1 text-gray-400 hover:text-error-500 transition-colors">
+                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                  </button>
+                </td>
+              </tr>
+
+              <tr *ngIf="!model.unitsOfMeasure || model.unitsOfMeasure.length === 0">
+                <td colspan="7" class="py-8 text-center text-gray-500 dark:text-gray-400">
+                  {{ 'common.noRecordsFound' | translate }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- TAB 3: INVENTORY DATA -->
+      <div *ngIf="activeTab === 'inventory'" class="space-y-6 pt-2">
+        <!-- Quick Suggestion Chips for Inventory -->
+        <div *ngIf="baseUnitName" class="flex flex-wrap items-center gap-3 rounded-xl border border-gray-200 bg-gray-50 p-4 dark:border-gray-800 dark:bg-gray-800/40">
+          <span class="text-xs font-bold text-gray-700 dark:text-gray-300">{{ 'items.suggestions.title' | translate }}:</span>
+          <button
+            type="button"
+            (click)="selectSuggestionChip('inventory', baseUnitLine!.unitOfMeasureId)"
             [disabled]="mode === 'view'"
-            class="w-5 h-5 rounded border-gray-300 text-brand-500 focus:ring-brand-500 bg-gray-100 dark:border-gray-700 dark:bg-gray-800" />
-          <label for="isPurchased" class="ml-3 text-sm font-medium text-gray-700 dark:text-gray-400">
-            {{ 'items.fields.isPurchased' | translate }}
-          </label>
+            class="inline-flex items-center gap-1.5 rounded-full border border-brand-200 bg-brand-50 px-3 py-1 text-xs font-semibold text-brand-700 transition-all hover:bg-brand-100 dark:border-brand-500/20 dark:bg-brand-500/10 dark:text-brand-300">
+            <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+            <span>{{ 'items.suggestions.baseUnit' | translate }}: {{ baseUnitName }}</span>
+          </button>
         </div>
 
-        <!-- Purchase UOM -->
-        <div>
-          <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-            {{ 'items.fields.purchaseUom' | translate }}
-          </label>
-          <app-searchable-select [(ngModel)]="model.purchaseUomId" name="purchaseUomId" [options]="uomsOptions"
-            [disabled]="mode === 'view' || !model.isPurchased" placeholder="common.select">
-          </app-searchable-select>
-        </div>
+        <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+          <!-- Is Inventory Item Checkbox -->
+          <div class="sm:col-span-2">
+            <label class="inline-flex items-center gap-3 cursor-pointer">
+              <input
+                type="checkbox"
+                [(ngModel)]="model.isInventoryItem"
+                name="isInventoryItem"
+                (ngModelChange)="syncUoms()"
+                [disabled]="mode === 'view'"
+                class="h-5 w-5 rounded border-gray-300 text-brand-500 focus:ring-brand-500 dark:border-gray-700 dark:bg-gray-800" />
+              <span class="text-sm font-medium text-gray-700 dark:text-gray-300">
+                {{ 'items.fields.isInventoryItem' | translate }}
+              </span>
+            </label>
+          </div>
 
-        <!-- Preferred Vendor -->
-        <div>
-          <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-            {{ 'items.fields.preferredVendor' | translate }}
-          </label>
-          <app-searchable-select [(ngModel)]="model.preferredVendorId" name="preferredVendorId"
-            [options]="vendorsOptions" [disabled]="mode === 'view' || !model.isPurchased" placeholder="common.select">
-          </app-searchable-select>
+          <!-- Inventory UOM Select (Filtered by type) -->
+          <div>
+            <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+              {{ 'items.fields.inventoryUom' | translate }}
+            </label>
+            <app-searchable-select
+              [ngModel]="model.inventoryUomId"
+              (ngModelChange)="onInventoryUomDropdownChange($event)"
+              name="inventoryUomId"
+              [options]="uomOptions"
+              [disabled]="mode === 'view' || !model.isInventoryItem"
+              placeholder="common.select">
+            </app-searchable-select>
+          </div>
+
+          <!-- Default Warehouse -->
+          <div>
+            <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+              {{ 'items.fields.dfltWarehouse' | translate }} <span *ngIf="model.isInventoryItem" class="text-error-500">*</span>
+            </label>
+            <app-searchable-select
+              [(ngModel)]="model.dfltWarehouseId"
+              name="dfltWarehouseId"
+              [options]="warehousesOptions"
+              [disabled]="mode === 'view' || !model.isInventoryItem"
+              placeholder="common.select">
+            </app-searchable-select>
+          </div>
+
+          <!-- Min Stock Level -->
+          <div>
+            <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+              {{ 'items.fields.minStockLevel' | translate }}
+            </label>
+            <input
+              type="number"
+              min="0"
+              [(ngModel)]="model.minStockLevel"
+              name="minStockLevel"
+              [disabled]="mode === 'view' || !model.isInventoryItem"
+              class="w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm outline-none focus:border-brand-500 dark:border-gray-800 dark:focus:border-brand-500" />
+          </div>
+
+          <!-- Max Stock Level -->
+          <div>
+            <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+              {{ 'items.fields.maxStockLevel' | translate }}
+            </label>
+            <input
+              type="number"
+              min="0"
+              [(ngModel)]="model.maxStockLevel"
+              name="maxStockLevel"
+              [disabled]="mode === 'view' || !model.isInventoryItem"
+              class="w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm outline-none focus:border-brand-500 dark:border-gray-800 dark:focus:border-brand-500" />
+          </div>
+
+          <!-- Default Weight -->
+          <div>
+            <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+              {{ 'items.fields.dfltWeight' | translate }}
+            </label>
+            <input
+              type="number"
+              min="0"
+              step="0.01"
+              [(ngModel)]="model.dfltWeight"
+              name="dfltWeight"
+              [disabled]="mode === 'view'"
+              class="w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm outline-none focus:border-brand-500 dark:border-gray-800 dark:focus:border-brand-500" />
+          </div>
         </div>
       </div>
 
-      <!-- Tab Content: Sales -->
-      <div *ngIf="activeTab === 'sales'" class="grid grid-cols-1 gap-6 sm:grid-cols-2">
-        <!-- Is Sold Checkbox -->
-        <div class="sm:col-span-2 flex items-center">
-          <input type="checkbox" [(ngModel)]="model.isSold" name="isSold" id="isSold" [disabled]="mode === 'view'"
-            class="w-5 h-5 rounded border-gray-300 text-brand-500 focus:ring-brand-500 bg-gray-100 dark:border-gray-700 dark:bg-gray-800" />
-          <label for="isSold" class="ml-3 text-sm font-medium text-gray-700 dark:text-gray-400">
-            {{ 'items.fields.isSold' | translate }}
-          </label>
-        </div>
-
-        <!-- Sales UOM -->
-        <div>
-          <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-            {{ 'items.fields.salesUom' | translate }}
-          </label>
-          <app-searchable-select [(ngModel)]="model.salesUomId" name="salesUomId" [options]="uomsOptions"
-            [disabled]="mode === 'view' || !model.isSold" placeholder="common.select">
-          </app-searchable-select>
-        </div>
-
-        <!-- Sales Price -->
-        <div>
-          <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-            {{ 'items.fields.salesPrice' | translate }}
-          </label>
-          <input type="number" [(ngModel)]="model.salesPrice" name="salesPrice"
-            [disabled]="mode === 'view' || !model.isSold"
-            class="w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm outline-none focus:border-brand-500 dark:border-gray-800 dark:focus:border-brand-500 disabled:opacity-50" />
-        </div>
-      </div>
-
-      <!-- Tab Content: Inventory -->
-      <div *ngIf="activeTab === 'inventory'" class="grid grid-cols-1 gap-6 sm:grid-cols-2">
-        <!-- Is Inventory Item Checkbox -->
-        <div class="sm:col-span-2 flex items-center">
-          <input type="checkbox" [(ngModel)]="model.isInventoryItem" name="isInventoryItem" id="isInventoryItem"
+      <!-- TAB 4: SALES DATA -->
+      <div *ngIf="activeTab === 'sales'" class="space-y-6 pt-2">
+        <!-- Quick Suggestion Chips for Sales -->
+        <div *ngIf="baseUnitName || smallestRetailName" class="flex flex-wrap items-center gap-3 rounded-xl border border-gray-200 bg-gray-50 p-4 dark:border-gray-800 dark:bg-gray-800/40">
+          <span class="text-xs font-bold text-gray-700 dark:text-gray-300">{{ 'items.suggestions.title' | translate }}:</span>
+          
+          <button
+            *ngIf="baseUnitName"
+            type="button"
+            (click)="selectSuggestionChip('sales', baseUnitLine!.unitOfMeasureId)"
             [disabled]="mode === 'view'"
-            class="w-5 h-5 rounded border-gray-300 text-brand-500 focus:ring-brand-500 bg-gray-100 dark:border-gray-700 dark:bg-gray-800" />
-          <label for="isInventoryItem" class="ml-3 text-sm font-medium text-gray-700 dark:text-gray-400">
-            {{ 'items.fields.isInventoryItem' | translate }}
-          </label>
+            class="inline-flex items-center gap-1.5 rounded-full border border-brand-200 bg-brand-50 px-3 py-1 text-xs font-semibold text-brand-700 transition-all hover:bg-brand-100 dark:border-brand-500/20 dark:bg-brand-500/10 dark:text-brand-300">
+            <span>{{ 'items.suggestions.baseUnit' | translate }}: {{ baseUnitName }}</span>
+          </button>
+
+          <button
+            *ngIf="smallestRetailName && smallestRetailLine?.unitOfMeasureId !== baseUnitLine?.unitOfMeasureId"
+            type="button"
+            (click)="selectSuggestionChip('sales', smallestRetailLine!.unitOfMeasureId!)"
+            [disabled]="mode === 'view'"
+            class="inline-flex items-center gap-1.5 rounded-full border border-success-200 bg-success-50 px-3 py-1 text-xs font-semibold text-success-700 transition-all hover:bg-success-100 dark:border-success-500/20 dark:bg-success-500/10 dark:text-success-300">
+            <span>{{ 'items.suggestions.smallestRetail' | translate }}: {{ smallestRetailName }}</span>
+          </button>
         </div>
 
-        <!-- Inventory UOM -->
-        <div>
-          <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-            {{ 'items.fields.inventoryUom' | translate }}
-          </label>
-          <app-searchable-select [(ngModel)]="model.inventoryUomId" name="inventoryUomId" [options]="uomsOptions"
-            [disabled]="mode === 'view' || !model.isInventoryItem" placeholder="common.select">
-          </app-searchable-select>
-        </div>
+        <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+          <!-- Is Sold Checkbox -->
+          <div class="sm:col-span-2">
+            <label class="inline-flex items-center gap-3 cursor-pointer">
+              <input
+                type="checkbox"
+                [(ngModel)]="model.isSold"
+                name="isSold"
+                (ngModelChange)="syncUoms()"
+                [disabled]="mode === 'view'"
+                class="h-5 w-5 rounded border-gray-300 text-brand-500 focus:ring-brand-500 dark:border-gray-700 dark:bg-gray-800" />
+              <span class="text-sm font-medium text-gray-700 dark:text-gray-300">
+                {{ 'items.fields.isSold' | translate }}
+              </span>
+            </label>
+          </div>
 
-        <!-- Dflt Warehouse -->
-        <div>
-          <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-            {{ 'items.fields.dfltWarehouse' | translate }}
-          </label>
-          <app-searchable-select [(ngModel)]="model.dfltWarehouseId" name="dfltWarehouseId"
-            [options]="warehousesOptions" [disabled]="mode === 'view' || !model.isInventoryItem"
-            placeholder="common.select">
-          </app-searchable-select>
-        </div>
+          <!-- Default Sales UOM Select (Filtered by type) -->
+          <div>
+            <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+              {{ 'items.fields.salesUom' | translate }}
+            </label>
+            <app-searchable-select
+              [ngModel]="model.salesUomId"
+              (ngModelChange)="onSalesUomDropdownChange($event)"
+              name="salesUomId"
+              [options]="uomOptions"
+              [disabled]="mode === 'view' || !model.isSold"
+              placeholder="common.select">
+            </app-searchable-select>
+          </div>
 
-        <!-- Min Stock Level -->
-        <div>
-          <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-            {{ 'items.fields.minStockLevel' | translate }}
-          </label>
-          <input type="number" [(ngModel)]="model.minStockLevel" name="minStockLevel"
-            [disabled]="mode === 'view' || !model.isInventoryItem"
-            class="w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm outline-none focus:border-brand-500 dark:border-gray-800 dark:focus:border-brand-500 disabled:opacity-50" />
-        </div>
-
-        <!-- Max Stock Level -->
-        <div>
-          <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-            {{ 'items.fields.maxStockLevel' | translate }}
-          </label>
-          <input type="number" [(ngModel)]="model.maxStockLevel" name="maxStockLevel"
-            [disabled]="mode === 'view' || !model.isInventoryItem"
-            class="w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm outline-none focus:border-brand-500 dark:border-gray-800 dark:focus:border-brand-500 disabled:opacity-50" />
+          <!-- Sales Price -->
+          <div>
+            <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+              {{ 'items.fields.salesPrice' | translate }}
+            </label>
+            <input
+              type="number"
+              min="0"
+              step="0.01"
+              [(ngModel)]="model.salesPrice"
+              name="salesPrice"
+              [disabled]="mode === 'view' || !model.isSold"
+              class="w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm outline-none focus:border-brand-500 dark:border-gray-800 dark:focus:border-brand-500" />
+          </div>
         </div>
       </div>
 
-      <!-- Tab Content: Additional -->
-      <div *ngIf="activeTab === 'additional'" class="grid grid-cols-1 gap-6 sm:grid-cols-2">
-        <!-- Dflt Weight -->
-        <div>
-          <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-            {{ 'items.fields.dfltWeight' | translate }}
-          </label>
-          <input type="number" [(ngModel)]="model.dfltWeight" name="dfltWeight" [disabled]="mode === 'view'"
-            class="w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm outline-none focus:border-brand-500 dark:border-gray-800 dark:focus:border-brand-500" />
+      <!-- TAB 5: PURCHASING DATA -->
+      <div *ngIf="activeTab === 'purchasing'" class="space-y-6 pt-2">
+        <!-- Quick Suggestion Chips for Purchasing -->
+        <div *ngIf="largestWholesaleName || baseUnitName" class="flex flex-wrap items-center gap-3 rounded-xl border border-gray-200 bg-gray-50 p-4 dark:border-gray-800 dark:bg-gray-800/40">
+          <span class="text-xs font-bold text-gray-700 dark:text-gray-300">{{ 'items.suggestions.title' | translate }}:</span>
+
+          <button
+            *ngIf="largestWholesaleName"
+            type="button"
+            (click)="selectSuggestionChip('purchasing', largestWholesaleLine!.unitOfMeasureId!)"
+            [disabled]="mode === 'view'"
+            class="inline-flex items-center gap-1.5 rounded-full border border-brand-200 bg-brand-50 px-3 py-1 text-xs font-semibold text-brand-700 transition-all hover:bg-brand-100 dark:border-brand-500/20 dark:bg-brand-500/10 dark:text-brand-300">
+            <span>{{ 'items.suggestions.largestWholesale' | translate }}: {{ largestWholesaleName }}</span>
+          </button>
+
+          <button
+            *ngIf="baseUnitName && baseUnitLine?.unitOfMeasureId !== largestWholesaleLine?.unitOfMeasureId"
+            type="button"
+            (click)="selectSuggestionChip('purchasing', baseUnitLine!.unitOfMeasureId)"
+            [disabled]="mode === 'view'"
+            class="inline-flex items-center gap-1.5 rounded-full border border-gray-300 bg-white px-3 py-1 text-xs font-semibold text-gray-700 transition-all hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300">
+            <span>{{ 'items.suggestions.baseUnit' | translate }}: {{ baseUnitName }}</span>
+          </button>
         </div>
 
-        <!-- Dflt Tax Percent -->
+        <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+          <!-- Is Purchased Checkbox -->
+          <div class="sm:col-span-2">
+            <label class="inline-flex items-center gap-3 cursor-pointer">
+              <input
+                type="checkbox"
+                [(ngModel)]="model.isPurchased"
+                name="isPurchased"
+                (ngModelChange)="syncUoms()"
+                [disabled]="mode === 'view'"
+                class="h-5 w-5 rounded border-gray-300 text-brand-500 focus:ring-brand-500 dark:border-gray-700 dark:bg-gray-800" />
+              <span class="text-sm font-medium text-gray-700 dark:text-gray-300">
+                {{ 'items.fields.isPurchased' | translate }}
+              </span>
+            </label>
+          </div>
+
+          <!-- Default Purchase UOM Select (Filtered by type) -->
+          <div>
+            <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+              {{ 'items.fields.purchaseUom' | translate }}
+            </label>
+            <app-searchable-select
+              [ngModel]="model.purchaseUomId"
+              (ngModelChange)="onPurchaseUomDropdownChange($event)"
+              name="purchaseUomId"
+              [options]="uomOptions"
+              [disabled]="mode === 'view' || !model.isPurchased"
+              placeholder="common.select">
+            </app-searchable-select>
+          </div>
+
+          <!-- Preferred Vendor -->
+          <div>
+            <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+              {{ 'items.fields.preferredVendor' | translate }}
+            </label>
+            <app-searchable-select
+              [(ngModel)]="model.preferredVendorId"
+              name="preferredVendorId"
+              [options]="vendorsOptions"
+              [disabled]="mode === 'view' || !model.isPurchased"
+              placeholder="common.select">
+            </app-searchable-select>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 6: ADDITIONAL DATA -->
+      <div *ngIf="activeTab === 'additional'" class="grid grid-cols-1 gap-6 sm:grid-cols-2 pt-2">
+        <!-- Default Tax Percent -->
         <div>
           <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
             {{ 'items.fields.dfltTaxPercent' | translate }}
           </label>
-          <input type="number" [(ngModel)]="model.dfltTaxPercent" name="dfltTaxPercent" [disabled]="mode === 'view'"
+          <input
+            type="number"
+            min="0"
+            max="100"
+            step="0.1"
+            [(ngModel)]="model.dfltTaxPercent"
+            name="dfltTaxPercent"
+            [disabled]="mode === 'view'"
             class="w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm outline-none focus:border-brand-500 dark:border-gray-800 dark:focus:border-brand-500" />
         </div>
 
@@ -301,7 +744,11 @@
           <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
             {{ 'items.fields.barcode' | translate }}
           </label>
-          <input type="text" [(ngModel)]="model.barcode" name="barcode" [disabled]="mode === 'view'"
+          <input
+            type="text"
+            [(ngModel)]="model.barcode"
+            name="barcode"
+            [disabled]="mode === 'view'"
             class="w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm outline-none focus:border-brand-500 dark:border-gray-800 dark:focus:border-brand-500" />
         </div>
 
@@ -310,104 +757,34 @@
           <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
             {{ 'items.fields.foreignCode' | translate }}
           </label>
-          <input type="text" [(ngModel)]="model.foreignCode" name="foreignCode" [disabled]="mode === 'view'"
+          <input
+            type="text"
+            [(ngModel)]="model.foreignCode"
+            name="foreignCode"
+            [disabled]="mode === 'view'"
             class="w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm outline-none focus:border-brand-500 dark:border-gray-800 dark:focus:border-brand-500" />
         </div>
-      </div>
 
-      <!-- Tab Content: Units of Measure -->
-      <div *ngIf="activeTab === 'uoms'">
-        <div class="flex justify-between items-center mb-4">
-          <h3 class="text-sm font-medium text-gray-900 dark:text-white">{{ 'items.tabs.uoms' | translate }}</h3>
-          <button *ngIf="mode !== 'view'" type="button" (click)="addUomRow()"
-            class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-brand-600 bg-brand-50 rounded hover:bg-brand-100 dark:bg-brand-500/10 dark:text-brand-400 dark:hover:bg-brand-500/20 transition-colors">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-            </svg>
-            {{ 'common.add' | translate }}
-          </button>
-        </div>
-
-        <div class="overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-800">
-          <table class="w-full text-left text-sm whitespace-nowrap">
-            <thead class="bg-gray-50 dark:bg-gray-800/50 text-gray-700 dark:text-gray-300">
-              <tr>
-                <th class="px-4 py-3 font-medium">{{ 'common.unitOfMeasure' | translate }}</th>
-                <th class="px-4 py-3 font-medium text-center">{{ 'items.uomGrid.isBaseUnit' | translate }}</th>
-                <th class="px-4 py-3 font-medium">{{ 'items.uomGrid.conversionFactor' | translate }}</th>
-                <th class="px-4 py-3 font-medium text-center">{{ 'items.uomGrid.isDefaultPurchase' | translate }}</th>
-                <th class="px-4 py-3 font-medium text-center">{{ 'items.uomGrid.isDefaultSales' | translate }}</th>
-                <th class="px-4 py-3 font-medium">{{ 'items.uomGrid.barcode' | translate }}</th>
-                <th *ngIf="mode !== 'view'" class="px-4 py-3 font-medium text-right w-16"></th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-gray-200 dark:divide-gray-800 text-gray-700 dark:text-gray-300">
-              <tr *ngFor="let uom of model.unitsOfMeasure; let i = index">
-                <td class="px-4 py-2 min-w-[200px]">
-                  <app-searchable-select [(ngModel)]="uom.unitOfMeasureId" [name]="'uom_id_' + i"
-                    [options]="uomsOptions" [disabled]="mode === 'view'" placeholder="common.select">
-                  </app-searchable-select>
-                </td>
-                <td class="px-4 py-2 text-center">
-                  <input type="checkbox" [(ngModel)]="uom.isBaseUnit" [name]="'uom_base_' + i"
-                    [disabled]="mode === 'view'" (ngModelChange)="onBaseUnitChange(i, $event)"
-                    class="w-4 h-4 rounded border-gray-300 text-brand-500 focus:ring-brand-500 bg-gray-100 dark:border-gray-700 dark:bg-gray-800" />
-                </td>
-                <td class="px-4 py-2 w-32">
-                  <input type="number" [(ngModel)]="uom.conversionFactor" [name]="'uom_conv_' + i"
-                    [disabled]="mode === 'view' || uom.isBaseUnit"
-                    class="w-full rounded-md border border-gray-300 bg-transparent px-3 py-1.5 text-sm outline-none focus:border-brand-500 dark:border-gray-800 dark:focus:border-brand-500 disabled:opacity-50" />
-                </td>
-                <td class="px-4 py-2 text-center">
-                  <input type="checkbox" [(ngModel)]="uom.isDefaultPurchaseUnit" [name]="'uom_pur_' + i"
-                    [disabled]="mode === 'view'"
-                    class="w-4 h-4 rounded border-gray-300 text-brand-500 focus:ring-brand-500 bg-gray-100 dark:border-gray-700 dark:bg-gray-800" />
-                </td>
-                <td class="px-4 py-2 text-center">
-                  <input type="checkbox" [(ngModel)]="uom.isDefaultSalesUnit" [name]="'uom_sal_' + i"
-                    [disabled]="mode === 'view'"
-                    class="w-4 h-4 rounded border-gray-300 text-brand-500 focus:ring-brand-500 bg-gray-100 dark:border-gray-700 dark:bg-gray-800" />
-                </td>
-                <td class="px-4 py-2 min-w-[150px]">
-                  <input type="text" [(ngModel)]="uom.barcode" [name]="'uom_bar_' + i"
-                    [disabled]="mode === 'view'"
-                    class="w-full rounded-md border border-gray-300 bg-transparent px-3 py-1.5 text-sm outline-none focus:border-brand-500 dark:border-gray-800 dark:focus:border-brand-500" />
-                </td>
-                <td *ngIf="mode !== 'view'" class="px-4 py-2 text-right">
-                  <button type="button" (click)="removeUomRow(i)"
-                    class="p-1 text-gray-400 hover:text-error-500 transition-colors">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                    </svg>
-                  </button>
-                </td>
-              </tr>
-            </tbody>
-            <tfoot *ngIf="!model.unitsOfMeasure || model.unitsOfMeasure.length === 0">
-              <tr>
-                <td colspan="7" class="px-4 py-8 text-center text-sm text-gray-500 dark:text-gray-400">
-                  {{ 'common.noRecordsFound' | translate }}
-                </td>
-              </tr>
-            </tfoot>
-          </table>
+        <!-- Notes -->
+        <div class="sm:col-span-2">
+          <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+            {{ 'common.notes' | translate }}
+          </label>
+          <textarea
+            [(ngModel)]="model.notes"
+            name="notes"
+            rows="3"
+            [disabled]="mode === 'view'"
+            class="w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm outline-none focus:border-brand-500 dark:border-gray-800 dark:focus:border-brand-500"></textarea>
         </div>
       </div>
-
-
-      <!-- Status Validation Error Messages -->
-      <!-- <div *ngIf="tabsWithErrors.length > 0 && form.submitted" class="rounded-lg bg-error-50 p-4 text-sm text-error-600 dark:bg-error-500/10 dark:text-error-500">
-      <div class="flex items-center gap-2">
-        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
-        </svg>
-        <span>{{ 'validation.invalid' | translate }}. Please check the tabs with the red indicator.</span>
-      </div>
-    </div> -->
 
     </form>
   </app-component-card>
 </div>
 
-<app-error-banner [isVisible]="validationErrors.length > 0" [errors]="validationErrors"
-  (close)="validationErrors = []"></app-error-banner>
+<app-error-banner
+  [isVisible]="validationErrors.length > 0"
+  [errors]="validationErrors"
+  (close)="validationErrors = []">
+</app-error-banner>

@@ -6,6 +6,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { forkJoin } from 'rxjs';
 import { PurchaseOrderService } from '../../../../core/services/purchase-order.service';
 import { LookupService } from '../../../../core/services/lookup.service';
+import { ItemService } from '../../../../core/services/item.service';
 import { ComponentCardComponent } from '../../../../shared/components/common/component-card/component-card.component';
 import { PageBreadcrumbComponent } from '../../../../shared/components/common/page-breadcrumb/page-breadcrumb.component';
 import { SuccessRedirectBannerComponent } from '../../../../shared/components/common/success-redirect-banner/success-redirect-banner.component';
@@ -16,6 +17,8 @@ import { ItemLookupModalComponent } from '../../../../shared/components/lookups/
 import { DocumentStatusBadgeComponent } from '../../../../shared/components/common/document-status-badge/document-status-badge.component';
 import { StatusBadgeComponent } from '../../../../shared/components/ui/status-badge/status-badge.component';
 import { PrintPreviewModalComponent } from '../../../../shared/components/common/print-preview-modal/print-preview-modal.component';
+import { ModalComponent } from '../../../../shared/components/ui/modal/modal.component';
+import { ConfirmationModalComponent } from '../../../../shared/components/common/confirmation-modal/confirmation-modal.component';
 import { HasUnsavedChanges } from '../../../../core/guards/unsaved-changes.guard';
 import {
   PurchaseOrderRequest,
@@ -43,7 +46,9 @@ import { ToastrService } from 'ngx-toastr';
     ItemLookupModalComponent,
     DocumentStatusBadgeComponent,
     StatusBadgeComponent,
-    PrintPreviewModalComponent
+    PrintPreviewModalComponent,
+    ModalComponent,
+    ConfirmationModalComponent
   ],
   templateUrl: './purchase-order-form.component.html',
 })
@@ -52,6 +57,7 @@ export class PurchaseOrderFormComponent implements OnInit, HasUnsavedChanges {
 
   private purchaseOrderService = inject(PurchaseOrderService);
   private lookupService = inject(LookupService);
+  private itemService = inject(ItemService);
   private translate = inject(TranslateService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
@@ -65,11 +71,25 @@ export class PurchaseOrderFormComponent implements OnInit, HasUnsavedChanges {
   validationErrors: string[] = [];
   previousWarehouseId?: number;
 
+  // Confirmation Modal
+  isActionModalOpen = false;
+  isActionLoading = false;
+  actionModalTitle = '';
+  actionModalMessage = '';
+  actionModalType: 'warning' | 'danger' | 'info' | 'success' = 'warning';
+  actionModalConfirmText = '';
+  pendingAction: 'confirm' | 'cancel' | 'convert' | null = null;
+
   showLeaveConfirmation = false;
   private leaveConfirmationResolver: ((value: boolean) => void) | null = null;
 
   activeTab: 'items' | 'additional' = 'items';
   isItemModalOpen = false;
+
+  // Line Notes Modal
+  isLineNotesModalOpen = false;
+  currentLineNotesIndex = -1;
+  currentLineNotes = '';
   
   isPrintModalOpen = false;
   pdfBlobUrl: string | null = null;
@@ -110,7 +130,7 @@ export class PurchaseOrderFormComponent implements OnInit, HasUnsavedChanges {
   warehousesOptions: SearchableOption[] = [];
   branchesOptions: SearchableOption[] = [];
   currenciesOptions: SearchableOption[] = [];
-  uomOptions: SearchableOption[] = [];
+  uomOptions: any[] = [];
 
   // Totals calculated on the fly
   subTotal = 0;
@@ -157,7 +177,7 @@ export class PurchaseOrderFormComponent implements OnInit, HasUnsavedChanges {
         this.warehousesOptions = res.warehouses.map((w: any) => ({ value: w.id, label: w.name }));
         this.branchesOptions = res.branches.map((b: any) => ({ value: b.id, label: b.name }));
         this.currenciesOptions = res.currencies.map((c: any) => ({ value: c.id, label: c.name }));
-        this.uomOptions = res.uoms.map((u: any) => ({ value: u.id, label: u.name }));
+        this.uomOptions = res.uoms.map((u: any) => ({ value: u.id, label: u.name, baseUomType: u.baseUomType }));
 
         if (this.id) {
           this.processViewResponse(res.actionData as PurchaseOrderResponse);
@@ -208,6 +228,7 @@ export class PurchaseOrderFormComponent implements OnInit, HasUnsavedChanges {
         // Add extra fields just for UI display
         _itemName: l.itemName,
         _itemCode: l.itemCode,
+        _baseUomType: l.baseUomType,
         _discountFixedMode: 'percentage',
         _taxFixedMode: 'percentage'
       } as any))
@@ -231,6 +252,11 @@ export class PurchaseOrderFormComponent implements OnInit, HasUnsavedChanges {
 
   setTab(tab: 'items' | 'additional'): void {
     this.activeTab = tab;
+  }
+
+  getUomOptions(baseUomType?: string): any[] {
+    if (baseUomType === undefined || baseUomType === null) return this.uomOptions;
+    return this.uomOptions.filter(u => u.baseUomType === baseUomType);
   }
 
   onWarehouseChange(newWarehouseId: number): void {
@@ -287,7 +313,7 @@ export class PurchaseOrderFormComponent implements OnInit, HasUnsavedChanges {
       return;
     }
 
-    this.model.lines.push({
+    const newLine: any = {
       id: 0,
       itemId: item.id,
       warehouseId: this.model.warehouseId!,
@@ -299,6 +325,7 @@ export class PurchaseOrderFormComponent implements OnInit, HasUnsavedChanges {
       taxAmount: 0,
       lineNumber: this.model.lines.length + 1,
       uomConversionFactor: 1,
+      unitOfMeasureId: item.purchaseUomId || undefined,
       description: item.name,
       lineTotalBeforeDiscount: 0,
       lineTotalBeforeTax: 0,
@@ -307,12 +334,35 @@ export class PurchaseOrderFormComponent implements OnInit, HasUnsavedChanges {
       // Internal properties for UI
       _itemCode: item.code,
       _itemName: item.name,
+      _baseUomType: item.baseUomType,
       _discountFixedMode: 'percentage',
       _taxFixedMode: 'percentage',
+      _isLoading: true,
       notes: ''
-    } as any);
+    };
+    this.model.lines.push(newLine);
     this.form?.form.markAsDirty();
     this.recalculateTotals();
+
+    this.itemService.getPurchasingDetails(item.id).subscribe({
+      next: (details) => {
+        newLine.unitOfMeasureId = details.purchaseUomId || newLine.unitOfMeasureId;
+        newLine._baseUomType = details.baseUomType || newLine._baseUomType;
+        if (details.purchasePrice !== undefined && details.purchasePrice !== null) {
+          newLine.unitPrice = details.purchasePrice;
+        }
+        if (details.availableUoms && details.availableUoms.length > 0) {
+          newLine._availableUomsOptions = details.availableUoms.map((u: any) => ({ value: u.id, label: u.name }));
+        }
+        newLine._isLoading = false;
+        this.recalculateTotals();
+      },
+      error: (err) => {
+        console.error('Error fetching purchasing details', err);
+        newLine._isLoading = false;
+        this.recalculateTotals();
+      }
+    });
   }
 
   onDiscountPercentChange(index: number): void {
@@ -344,6 +394,21 @@ export class PurchaseOrderFormComponent implements OnInit, HasUnsavedChanges {
     this.model.lines.splice(index, 1);
     this.form?.form.markAsDirty();
     this.recalculateTotals();
+  }
+
+  // Notes Modal Actions
+  openLineNotesModal(index: number): void {
+    this.currentLineNotesIndex = index;
+    this.currentLineNotes = this.model.lines[index].notes || '';
+    this.isLineNotesModalOpen = true;
+  }
+
+  saveLineNotes(): void {
+    if (this.currentLineNotesIndex > -1) {
+      this.model.lines[this.currentLineNotesIndex].notes = this.currentLineNotes;
+      this.form?.form.markAsDirty();
+    }
+    this.isLineNotesModalOpen = false;
   }
 
   recalculateTotals(): void {
@@ -406,14 +471,25 @@ export class PurchaseOrderFormComponent implements OnInit, HasUnsavedChanges {
     if (!this.model.lines || this.model.lines.length === 0) {
       this.validationErrors.push(this.translate.instant('salesInvoices.errors.atLeastOneItem'));
     } else {
-      const invalidQuantity = this.model.lines.some((l: any) => l.quantity <= 0);
-      if (invalidQuantity) {
-        this.validationErrors.push(this.translate.instant('salesInvoices.errors.invalidQuantity'));
-      }
-      const invalidPrice = this.model.lines.some((l: any) => l.unitPrice <= 0);
-      if (invalidPrice) {
-        this.validationErrors.push(this.translate.instant('salesInvoices.errors.invalidPrice'));
-      }
+      const itemIds = new Set<number>();
+      this.model.lines.forEach((l: any, index: number) => {
+        const rowNum = index + 1;
+        // Duplicate check
+        if (itemIds.has(l.itemId)) {
+           this.validationErrors.push(`${this.translate.instant('common.row')} ${rowNum}: ${this.translate.instant('salesInvoices.errors.duplicateItem')}`);
+        }
+        itemIds.add(l.itemId);
+
+        if (l.quantity <= 0) {
+          this.validationErrors.push(`${this.translate.instant('common.row')} ${rowNum}: ${this.translate.instant('salesInvoices.errors.invalidQuantity')}`);
+        }
+        if (l.unitPrice <= 0) {
+          this.validationErrors.push(`${this.translate.instant('common.row')} ${rowNum}: ${this.translate.instant('salesInvoices.errors.invalidPrice')}`);
+        }
+        if (!l.unitOfMeasureId) {
+          this.validationErrors.push(`${this.translate.instant('common.row')} ${rowNum}: ${this.translate.instant('common.unitOfMeasure')} ${this.translate.instant('validation.required')}`);
+        }
+      });
     }
     return this.validationErrors.length === 0;
   }
@@ -429,8 +505,11 @@ export class PurchaseOrderFormComponent implements OnInit, HasUnsavedChanges {
     requestToSend.lines.forEach((l: any) => {
       delete l._itemName;
       delete l._itemCode;
+      delete l._baseUomType;
       delete l._discountFixedMode;
       delete l._taxFixedMode;
+      delete l._isLoading;
+      delete l._availableUomsOptions;
     });
 
     const obs$: any = this.id 
@@ -457,84 +536,65 @@ export class PurchaseOrderFormComponent implements OnInit, HasUnsavedChanges {
     });
   }
 
-  onApprove(): void {
+  onConfirm(): void {
     if (!this.id) return;
-    import('sweetalert2').then(Swal => {
-      const isDark = document.documentElement.classList.contains('dark');
-      Swal.default.fire({
-        title: this.translate.instant('purchaseOrders.approveTitle'),
-        text: this.translate.instant('purchaseOrders.approveText'),
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#10b981',
-        cancelButtonColor: '#6b7280',
-        confirmButtonText: this.translate.instant('stockAdjustments.confirm'),
-        cancelButtonText: this.translate.instant('common.cancel'),
-        background: isDark ? '#1f2937' : '#ffffff',
-        color: isDark ? '#ffffff' : '#545454'
-      }).then((result) => {
-        if (result.isConfirmed) {
-          this.purchaseOrderService.approve(this.id!).subscribe({
-            next: () => {
-              this.toastr.success(this.translate.instant('purchaseOrders.approvedSuccess'));
-              this.loadRecord(this.id!);
-            }
-          });
-        }
-      });
-    });
+    this.actionModalTitle = this.translate.instant('purchaseOrders.confirmTitle');
+    this.actionModalMessage = this.translate.instant('purchaseOrders.confirmText');
+    this.actionModalType = 'warning';
+    this.actionModalConfirmText = this.translate.instant('stockAdjustments.confirm');
+    this.pendingAction = 'confirm';
+    this.isActionModalOpen = true;
   }
 
   onCancelDocument(): void {
     if (!this.id) return;
-    import('sweetalert2').then(Swal => {
-      const isDark = document.documentElement.classList.contains('dark');
-      Swal.default.fire({
-        title: this.translate.instant('purchaseOrders.cancelTitle'),
-        text: this.translate.instant('purchaseOrders.cancelText'),
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#ef4444',
-        cancelButtonColor: '#6b7280',
-        confirmButtonText: this.translate.instant('common.delete'),
-        cancelButtonText: this.translate.instant('common.cancel'),
-        background: isDark ? '#1f2937' : '#ffffff',
-        color: isDark ? '#ffffff' : '#545454'
-      }).then((result) => {
-        if (result.isConfirmed) {
-          this.purchaseOrderService.cancel(this.id!).subscribe({
-            next: () => {
-              this.toastr.success(this.translate.instant('purchaseOrders.cancelledSuccess'));
-              this.loadRecord(this.id!);
-            }
-          });
-        }
-      });
-    });
+    this.actionModalTitle = this.translate.instant('purchaseOrders.cancelTitle');
+    this.actionModalMessage = this.translate.instant('purchaseOrders.cancelText');
+    this.actionModalType = 'danger';
+    this.actionModalConfirmText = this.translate.instant('common.delete');
+    this.pendingAction = 'cancel';
+    this.isActionModalOpen = true;
   }
 
   onConvertToInvoice(): void {
     if (!this.id) return;
-    import('sweetalert2').then(Swal => {
-      const isDark = document.documentElement.classList.contains('dark');
-      Swal.default.fire({
-        title: this.translate.instant('purchaseOrders.convertTitle'),
-        text: this.translate.instant('purchaseOrders.convertText'),
-        icon: 'info',
-        showCancelButton: true,
-        confirmButtonColor: '#3b82f6',
-        cancelButtonColor: '#6b7280',
-        confirmButtonText: this.translate.instant('purchaseOrders.convertToInvoice'),
-        cancelButtonText: this.translate.instant('common.cancel'),
-        background: isDark ? '#1f2937' : '#ffffff',
-        color: isDark ? '#ffffff' : '#545454'
-      }).then((result) => {
-        if (result.isConfirmed) {
-          // Placeholder action
-          this.toastr.info('Conversion to Purchase Invoice will be supported soon.');
-        }
+    this.actionModalTitle = this.translate.instant('purchaseOrders.convertTitle');
+    this.actionModalMessage = this.translate.instant('purchaseOrders.convertText');
+    this.actionModalType = 'info';
+    this.actionModalConfirmText = this.translate.instant('purchaseOrders.convertToInvoice');
+    this.pendingAction = 'convert';
+    this.isActionModalOpen = true;
+  }
+
+  executePendingAction(): void {
+    if (!this.id || !this.pendingAction) return;
+    this.isActionLoading = true;
+
+    if (this.pendingAction === 'confirm') {
+      this.purchaseOrderService.confirm(this.id).subscribe({
+        next: () => {
+          this.toastr.success(this.translate.instant('purchaseOrders.confirmedSuccess'));
+          this.loadRecord(this.id!);
+          this.isActionModalOpen = false;
+          this.isActionLoading = false;
+        },
+        error: () => this.isActionLoading = false
       });
-    });
+    } else if (this.pendingAction === 'cancel') {
+      this.purchaseOrderService.cancel(this.id).subscribe({
+        next: () => {
+          this.toastr.success(this.translate.instant('purchaseOrders.cancelledSuccess'));
+          this.loadRecord(this.id!);
+          this.isActionModalOpen = false;
+          this.isActionLoading = false;
+        },
+        error: () => this.isActionLoading = false
+      });
+    } else if (this.pendingAction === 'convert') {
+      this.toastr.info('Conversion to Purchase Invoice will be supported soon.');
+      this.isActionModalOpen = false;
+      this.isActionLoading = false;
+    }
   }
 
   onCancel(): void {

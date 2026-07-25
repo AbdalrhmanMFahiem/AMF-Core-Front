@@ -3,6 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { LookupsFilters, IdNameResponse, IntIdCodeNameResponse, InvoiceCostElementDropdown, ItemLookupResponse, ItemLookupsFilters } from '../models/lookup.model';
+import { UnitOfMeasureBasicResponse, UomType } from '../models/uom.model';
 import { PaginatedList } from '../models/pagination.model';
 import { environment } from '../../../environments/environment';
 
@@ -32,6 +33,12 @@ export class LookupService {
 
   getUnitOfMeasures(filters?: LookupsFilters): Observable<IdNameResponse[]> {
     return this.http.get<IdNameResponse[]>(`${this.apiUrl}/unit-of-measures`, this.getOptions(filters));
+  }
+
+  getUnitOfMeasureByType(uomType: UomType | string): Observable<UnitOfMeasureBasicResponse[]> {
+    let params = new HttpParams();
+    if (uomType) params = params.set('uomType', uomType.toString());
+    return this.http.get<UnitOfMeasureBasicResponse[]>(`${this.apiUrl}/unit-of-measure-by-type`, { params });
   }
 
   getWarehouses(filters?: LookupsFilters): Observable<IdNameResponse[]> {

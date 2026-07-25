@@ -327,3 +327,4 @@ export class SalesReturnsListComponent implements OnInit {
     this.loadData();
   }
 }
+
