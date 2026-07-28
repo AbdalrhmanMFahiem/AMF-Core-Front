@@ -1,5 +1,6 @@
 {
   "common": {
+    "readOnly": "للقراءة فقط",
     "saving": "جاري الحفظ...",
     "confirmStatusChange": "هل أنت متأكد من تغيير الحالة؟",
     "confirmTransaction": "هل أنت متأكد من الموافقه و ترحيل المعاملة؟",
@@ -43,6 +44,10 @@
     "search": "بحث",
     "status": "الحالة",
     "active": "نشط",
+    "remove": "إزالة",
+    "upload": "رفع",
+    "selectRoles": "اختر الصلاحيات",
+    "additionalInfo": "معلومات إضافية",
     "success": "نجاح",
     "error": "خطأ",
     "addNew": "إضافة سجل جديد",
@@ -1240,17 +1245,39 @@
     "edit": "تعديل المستخدم",
     "view": "عرض المستخدم",
     "fields": {
+      "firstAName": "الاسم الأول (عربي)",
+      "lastAName": "الاسم الأخير (عربي)",
+      "firstEName": "الاسم الأول (إنجليزي)",
+      "lastEName": "الاسم الأخير (إنجليزي)",
       "firstPrimaryName": "الاسم الأول (أساسي)",
       "lastPrimaryName": "الاسم الأخير (أساسي)",
       "firstForeignName": "الاسم الأول (أجنبي)",
       "lastForeignName": "الاسم الأخير (أجنبي)",
       "email": "البريد الإلكتروني",
       "password": "كلمة المرور",
+      "confirmPassword": "تأكيد كلمة المرور",
       "isActive": "نشط",
-      "changePassword": "تغيير كلمة المرور",
+      "changePassword": "تغيير كلمة المرور عند تسجيل الدخول القادم",
       "lockAccess": "قفل الوصول",
       "roles": "الصلاحيات",
+      "branches": "الفروع المتاحة",
+      "warehouses": "المخازن المتاحة",
       "photo": "الصورة الشخصية"
+    },
+    "placeholders": {
+      "selectBranches": "اختر الفروع المتاحة",
+      "selectWarehouses": "اختر المخازن المتاحة",
+      "selectBranchFirst": "اختر فرعاً أولاً لإظهار المخازن المتاحة"
+    },
+    "hints": {
+      "changePasswordDesc": "إجبار المستخدم على تعيين كلمة مرور جديدة فور أداء تسجيل الدخول بنجاح للمرة القادمة.",
+      "lockAccessDesc": "حظر وإيقاف وصول المستخدم للمنظومة ومنع إصدار أي رموز دخول له."
+    },
+    "errors": {
+      "passwordMismatch": "كلمتي المرور غير متطابقين.",
+      "rolesRequired": "يجب اختيار صلاحية واحدة على الأقل.",
+      "branchesRequired": "يجب اختيار فرع واحد على الأقل.",
+      "warehousesRequired": "يجب اختيار مخزن واحد على الأقل."
     },
     "tabs": {
       "basicInfo": "المعلومات الأساسية",
@@ -1284,24 +1311,53 @@
       "location": "الموقع",
       "isDeployed": "مُعين",
       "additionalInfo": "معلومات إضافية",
+      "managerId": "المدير المباشر",
+      "jobTitleId": "المسمى الوظيفي",
+      "nationalityId": "الجنسية",
+      "bankId": "البنك",
+      "sectorId": "القطاع",
+      "departmentId": "الإدارة",
+      "sectionId": "القسم",
+      "locationId": "الموقع",
+      "insuranceAndBank": "التأمينات والبنك",
+      "organization": "المنظمة",
       "male": "ذكر",
       "female": "أنثى"
     }
   },
   "roles": {
-    "title": "الصلاحيات",
+    "title": "الصلاحيات والأدوار",
     "list": "قائمة الصلاحيات",
-    "add": "إضافة صلاحية",
+    "add": "إضافة دور وصلاحيات",
     "addNew": "إضافة صلاحية جديدة",
-    "edit": "تعديل الصلاحية",
-    "view": "عرض الصلاحية",
+    "edit": "تعديل الدور والصلاحيات",
+    "view": "عرض الصلاحيات",
     "permissions": "الأذونات والصلاحيات",
     "expandAll": "توسيع الكل",
     "collapseAll": "طي الكل",
+    "selectAll": "تحديد الكل",
+    "deselectAll": "إلغاء تحديد الكل",
+    "searchPermissions": "ابحث باسم الصلاحية، الوحدة، أو القسم...",
+    "selectedCount": "الصلاحيات المحددة",
+    "module": "الوحدة",
+    "noPermissionsFound": "لم يتم العثور على أذونات مطابقة لبحثك.",
+    "accessControlDesc": "تحديد وتخصيص الأذونات عبر مختلف الوحدات وأقسام النظام بالهيكل التنظيمي الشجري.",
     "fields": {
       "aName": "الاسم العربي",
-      "eName": "الاسم الإنجليزي"
-    }
+      "eName": "الاسم الإنجليزي",
+      "notes": "الملاحظات / الوصف"
+    },
+    "errors": {
+      "aNameRequired": "الاسم العربي مطلوب.",
+      "permissionsRequired": "يجب تحديد صلاحية واحدة على الأقل."
+    },
+    "hints": {
+      "codeReadOnly": "يتم إنشاء الكود تلقائياً بواسطة النظام ولا يمكن التعديل عليه."
+    },
+    "resetAdminPermissions": "إعادة تعيين صلاحيات المدير",
+    "confirmResetTitle": "إعادة تعيين الصلاحيات",
+    "confirmResetMessage": "هل أنت متأكد من إعادة تعيين جميع الصلاحيات لدور المدير (Admin) لتشمل كافة صلاحيات وأذونات النظام؟",
+    "resetSuccess": "تمت إعادة تعيين صلاحيات المدير بنجاح."
   },
   "stockVouchers": {
     "issues": {
@@ -1393,5 +1449,86 @@
       "noBaseUnit": "لا توجد وحدة أساسية لهذا النوع",
       "baseUnitCreated": "تم إنشاء الوحدة الأساسية بنجاح"
     }
+  },
+  "dashboard": {
+    "title": "لوحة التحكم",
+    "erpDashboard": "لوحة تحكم النظام (ERP Dashboard)",
+    "subtitle": "إحصائيات المبيعات، المشتريات، والتحليلات المخزنية",
+    "totalSales": "إجمالي المبيعات",
+    "totalPurchases": "إجمالي المشتريات",
+    "activeReturns": "المرتجعات النشطة",
+    "lowStock": "تنبيهات المخزون المنخفض",
+    "noTransactions": "لا توجد معاملات حديثة",
+    "purchasesReport": "تقرير المشتريات",
+    "inventoryValuation": "تقييم المخزون",
+    "allSections": "الشاشة الشاملة",
+    "salesAndCustomers": "المبيعات والعملاء",
+    "purchasesAndSuppliers": "المشتريات والموردين",
+    "inventoryAndWarehouses": "المخزون والمخازن",
+    "topStockItems": "الأصناف بأعلى أرصدة بالمخازن (Top 10)",
+    "topStockItemsSub": "إجمالي الكميات الرصيدية عبر كافة المخازن",
+    "topPurchasedItems": "أكثر الأصناف شراءً",
+    "topPurchasedItemsSub": "إجمالي التوريدات وحجم المشتريات",
+    "topSoldItems": "أكثر الأصناف مبيعاً (كميات)",
+    "topSoldItemsSub": "حجم حركة المبيعات حسب الكميات المبيعة فقط",
+    "topPartners": "أبرز شركاء العمل",
+    "topPartnersSub": "أكثر العملاء تفاعلاً وأكثر الموردين تعاملاً",
+    "activeCustomers": "العملاء الأنشط",
+    "activeSuppliers": "الموردين الأنشط",
+    "stockImpact": "تأثير المخزون",
+    "purchases": "المشتريات",
+    "quantitiesOnly": "بالكمية فقط",
+    "noStockData": "لا توجد بيانات أرصدة مخزنية متاحة حالياً",
+    "noPurchaseData": "لا توجد مشتريات مسجلة حتى الآن",
+    "noSalesData": "لا توجد حركة مبيعات مسجلة حالياً",
+    "noCustomerData": "لا توجد بيانات عملاء مسجلة حالياً",
+    "noSupplierData": "لا توجد بيانات موردين مسجلة حالياً",
+    "salesInvoicesCount": "فواتير مبيعات",
+    "purchaseOrdersCount": "توريدات مشتريات",
+    "inWarehouses": "في {{count}} مخازن",
+    "noPhone": "بدون هاتف",
+    "quickActions": {
+      "salesInvoice": "فاتورة مبيعات",
+      "newSalesInvoice": "إنشاء فاتورة جديدة",
+      "purchaseInvoice": "فاتورة مشتريات",
+      "newPurchaseInvoice": "تسجيل أمر توريد",
+      "addItem": "إضافة صنف",
+      "newItem": "صنف مخزني جديد",
+      "stockTransfer": "تحويل مخزني",
+      "newStockTransfer": "نقل بين المخازن"
+    }
+  },
+  "profile": {
+    "title": "الملف الشخصي",
+    "preferencesTitle": "تفضيلات حساب المستخدم",
+    "preferencesSubtitle": "تحديد الإعدادات الشخصية وصفحة التوجيه الافتراضية بعد تسجيل الدخول",
+    "landingPageLabel": "صفحة البداية بعد تسجيل الدخول (Default Landing Page)",
+    "landingDashboardDesc": "الوصول المباشر للوحة التحكم والتحليلات",
+    "landingHomeDesc": "الوصول المباشر للبوابة والصفحة الرئيسية",
+    "preferenceSaved": "تم حفظ تفضيلات صفحة البداية بنجاح"
+  },
+  "invoice": {
+    "recentTransactions": "المعاملات والفواتير الأخيرة",
+    "recentTransactionsSub": "أحدث حركة فواتير المبيعات والمشتريات المسجلة",
+    "code": "كود المعاملة",
+    "date": "التاريخ",
+    "totalAmount": "المبلغ الإجمالي",
+    "type": {
+      "label": "نوع المعاملة",
+      "Purchase": "فاتورة مشتريات",
+      "Sales": "فاتورة مبيعات",
+      "SalesReturn": "مرتجع مبيعات",
+      "PurchaseReturn": "مرتجع مشتريات"
+    },
+    "status": {
+      "label": "الحالة",
+      "Closed": "مكتملة / مغلقة",
+      "Confirmed": "مؤكدة",
+      "Draft": "مسودة",
+      "Open": "مفتوحة",
+      "Cancelled": "ملغاة"
+    }
   }
 }
+
+

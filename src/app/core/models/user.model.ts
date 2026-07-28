@@ -14,10 +14,10 @@ export interface UserBasicResponse {
 export interface UserResponse {
   id: string;
   code: string;
-  firstPrimaryName: string;
-  lastPrimaryName: string;
-  firstForeignName?: string;
-  lastForeignName?: string;
+  firstAName: string;
+  lastAName: string;
+  firstEName?: string;
+  lastEName?: string;
   isActive: boolean;
   changePassword: boolean;
   lockAccess: boolean;
@@ -26,6 +26,10 @@ export interface UserResponse {
   email: string;
   isDisabled: boolean;
   roles: string[];
+  branchIds?: number[];
+  defaultBranchId?: number;
+  warehouseIds?: number[];
+  defaultWarehouseId?: number;
   userEmploymentInfo?: UserEmploymentInfoResponse;
 }
 
@@ -38,11 +42,11 @@ export interface UserEmploymentInfoResponse {
   hardAnnualLeave: number;
   balanceDueDate?: string; // Date string
   haveBalance: boolean;
-  birthDate: string; // Date string
-  gender: number; // Enum: Male=1, Female=2
-  nationalityId: number;
-  nationalityName: string;
-  nationalId: string;
+  birthDate?: string; // Date string
+  gender?: string; // Enum: 'Male', 'Female'
+  nationalityId?: number;
+  nationalityName?: string;
+  nationalId?: string;
   passportNumber?: string;
   addressLine1?: string;
   addressLine2?: string;
@@ -66,13 +70,12 @@ export interface UserEmploymentInfoResponse {
   additionalInfo?: string;
 }
 
-export interface CreateUserRequest {
+export interface UserRequest {
   code: string;
-  firstPrimaryName: string;
-  lastPrimaryName: string;
-  firstForeignName: string;
-  lastForeignName: string;
-  isActive: boolean;
+  firstAName: string;
+  lastAName: string;
+  firstEName?: string;
+  lastEName?: string;
   changePassword: boolean;
   lockAccess: boolean;
   photo?: File;
@@ -81,38 +84,24 @@ export interface CreateUserRequest {
   email: string;
   password?: string;
   roles: string[];
-  userEmploymentInfo: UserEmploymentInfoRequest;
-}
-
-export interface UpdateUserRequest {
-  code: string;
-  firstPrimaryName: string;
-  lastPrimaryName: string;
-  firstForeignName: string;
-  lastForeignName: string;
-  isActive: boolean;
-  changePassword: boolean;
-  lockAccess: boolean;
-  photo?: File;
-  deletedPhoto?: string;
-  notes?: string;
-  email: string;
-  password?: string;
-  roles: string[];
+  branchIds: number[];
+  defaultBranchId?: number;
+  warehouseIds: number[];
+  defaultWarehouseId?: number;
   userEmploymentInfo: UserEmploymentInfoRequest;
 }
 
 export interface UserEmploymentInfoRequest {
-  userId: string;
+  userId?: string;
   managerId?: string;
   jobTitleId?: number;
   hardAnnualLeave: number;
   balanceDueDate?: string;
   haveBalance: boolean;
-  birthDate: string;
-  gender: number;
-  nationalityId: number;
-  nationalId: string;
+  birthDate?: string;
+  gender?: string;
+  nationalityId?: number;
+  nationalId?: string;
   passportNumber?: string;
   addressLine1?: string;
   addressLine2?: string;

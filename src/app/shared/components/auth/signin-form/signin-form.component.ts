@@ -146,9 +146,21 @@ export class SigninFormComponent {
         this.isLoading = false;
         if (res && res.token) {
           this.authService.setAuthResponse(res);
-          const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
-          this.router.navigateByUrl(returnUrl);
+          const returnUrl = this.route.snapshot.queryParams['returnUrl'];
+          if (returnUrl && returnUrl !== '/') {
+            this.router.navigateByUrl(returnUrl);
+          } else {
+            const landingPref = this.authService.getLandingPagePreference();
+            const hasDashboardPermission = this.authService.hasDashboardPermission();
+
+            if (landingPref === 'dashboard' && hasDashboardPermission) {
+              this.router.navigate(['/dashboard']);
+            } else {
+              this.router.navigate(['/']);
+            }
+          }
         }
+
       },
       error: (err) => {
         this.isLoading = false;

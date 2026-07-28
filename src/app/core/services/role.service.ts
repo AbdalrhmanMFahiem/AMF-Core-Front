@@ -2,6 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { RoleResponse, RoleWithPermissionsResponse, RoleRequest, AllPermissionsResponse } from '../models/role.model';
+import { NextCodeResponse } from '../models/lookup.model';
 import { PaginatedList, RequestFilters } from '../models/pagination.model';
 import { environment } from '../../../environments/environment';
 
@@ -39,6 +40,10 @@ export class RoleService {
     return this.http.get<AllPermissionsResponse>(`${this.apiUrl}/permissions`);
   }
 
+  getNextCode(): Observable<NextCodeResponse> {
+    return this.http.get<NextCodeResponse>(`${this.apiUrl}/next-code`);
+  }
+
   create(data: RoleRequest): Observable<RoleWithPermissionsResponse> {
     return this.http.post<RoleWithPermissionsResponse>(this.apiUrl, data);
   }
@@ -49,5 +54,9 @@ export class RoleService {
 
   toggleStatus(id: string): Observable<void> {
     return this.http.put<void>(`${this.apiUrl}/${id}/toggle-status`, {});
+  }
+
+  resetAdminPermissions(): Observable<void> {
+    return this.http.post<void>(`${this.apiUrl}/reset-admin-permissions`, {});
   }
 }

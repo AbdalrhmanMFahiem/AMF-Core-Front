@@ -1,42 +1,93 @@
-import { Component } from '@angular/core';
-import { ModalService } from '../../../services/modal.service';
-
-import { InputFieldComponent } from '../../form/input/input-field.component';
-import { ButtonComponent } from '../../ui/button/button.component';
-import { LabelComponent } from '../../form/label/label.component';
-import { ModalComponent } from '../../ui/modal/modal.component';
+import { Component, Input, Output, EventEmitter, inject, OnChanges, SimpleChanges } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { TranslateModule } from '@ngx-translate/core';
+import { ProfileService, UserProfileData } from '../../../../core/services/profile.service';
 
 @Component({
   selector: 'app-user-address-card',
-  imports: [
-    InputFieldComponent,
-    ButtonComponent,
-    LabelComponent,
-    ModalComponent,
-    FormsModule
-],
-  templateUrl: './user-address-card.component.html',
-  styles: ``
+  standalone: true,
+  imports: [CommonModule, FormsModule, TranslateModule],
+  templateUrl: './user-address-card.component.html'
 })
-export class UserAddressCardComponent {
+export class UserAddressCardComponent implements OnChanges {
+  private profileService = inject(ProfileService);
 
-  constructor(public modal: ModalService) {}
+  @Input() profile: UserProfileData | null = null;
+  @Output() profileUpdated = new EventEmitter<void>();
 
   isOpen = false;
-  openModal() { this.isOpen = true; }
-  closeModal() { this.isOpen = false; }
+  isSaving = false;
+  successMessage: string | null = null;
+  errorMessage: string | null = null;
 
-  address = {
-    country: 'United States.',
-    cityState: 'Phoenix, Arizona, United States.',
-    postalCode: 'ERT 2489',
-    taxId: 'AS4568384',
+  form = {
+    addressLine1: '',
+    addressLine2: '',
+    city: '',
+    governorate: '',
+    country: '',
+    postalCode: ''
   };
 
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['profile'] && this.profile) {
+      this.populateForm();
+    }
+  }
+
+  populateForm() {
+    if (!this.profile) return;
+    this.form = {
+      addressLine1: this.profile.addressLine1 || '',
+      addressLine2: this.profile.addressLine2 || '',
+      city: this.profile.city || '',
+      governorate: this.profile.governorate || '',
+      country: this.profile.country || 'مصر',
+      postalCode: this.profile.postalCode || ''
+    };
+  }
+
+  openModal() {
+    this.populateForm();
+    this.isOpen = true;
+    this.errorMessage = null;
+  }
+
+  closeModal() {
+    this.isOpen = false;
+  }
+
   handleSave() {
-    // Handle save logic here
-    console.log('Saving changes...');
-    this.modal.closeModal();
+    this.isSaving = true;
+    this.errorMessage = null;
+
+    const payload = {
+      firstAName: this.profile?.firstAName || '',
+      lastAName: this.profile?.lastAName || '',
+      firstEName: this.profile?.firstEName,
+      lastEName: this.profile?.lastEName,
+      addressLine1: this.form.addressLine1,
+      addressLine2: this.form.addressLine2,
+      city: this.form.city,
+      governorate: this.form.governorate,
+      country: this.form.country,
+      postalCode: this.form.postalCode
+    };
+
+    this.profileService.updateProfile(payload).subscribe({
+      next: () => {
+        this.isSaving = false;
+        this.successMessage = 'تم تحديث بيانات العنوان بنجاح';
+        this.closeModal();
+        this.profileUpdated.emit();
+        setTimeout(() => this.successMessage = null, 3000);
+      },
+      error: (err) => {
+        this.isSaving = false;
+        console.error('Failed to update address', err);
+        this.errorMessage = 'حدث خطأ أثناء حفظ العنوان';
+      }
+    });
   }
 }

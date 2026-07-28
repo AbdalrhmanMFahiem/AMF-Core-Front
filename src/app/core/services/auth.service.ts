@@ -51,6 +51,44 @@ export class AuthService {
     return data ? JSON.parse(data) : null;
   }
 
+  setLandingPagePreference(page: 'dashboard' | 'home') {
+    localStorage.setItem('userLandingPage', page);
+    const authData = this.getAuthResponse();
+    if (authData) {
+      authData.defaultLandingPage = page;
+      localStorage.setItem('authResponse', JSON.stringify(authData));
+    }
+  }
+
+  getLandingPagePreference(): 'dashboard' | 'home' {
+    const authData = this.getAuthResponse();
+    const serverPref = authData?.defaultLandingPage?.trim().toLowerCase();
+
+    // Only if server specifies 'dashboard' explicitly, return 'dashboard'
+    if (serverPref === 'dashboard') {
+      return 'dashboard';
+    }
+
+    // If empty (""), null, undefined, 'home', or anything else -> default to 'home'
+    return 'home';
+  }
+
+
+  updateLandingPageOnServer(page: 'dashboard' | 'home'): Observable<void> {
+    this.setLandingPagePreference(page);
+    return this.http.put<void>(`${environment.apiUrl}/me/landing-page`, { landingPage: page });
+  }
+
+  hasDashboardPermission(): boolean {
+    const authData = this.getAuthResponse();
+    if (!authData || !authData.token) return false;
+    
+    const isRestricted = localStorage.getItem('restrictDashboard') === 'true';
+    return !isRestricted;
+  }
+
+
+
   revokeRefreshToken(request: { token: string, refreshToken: string }): Observable<void> {
     return this.http.post<void>(`${this.apiUrl}/revoke-refresh-token`, request);
   }

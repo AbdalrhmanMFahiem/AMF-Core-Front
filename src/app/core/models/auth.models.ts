@@ -44,7 +44,9 @@ export interface AuthResponse {
   branchName?: string;
   companyCode?: string;
   branchCode?: string;
+  defaultLandingPage?: string;
 }
+
 
 export interface SetupCompanyRequest {
   companyName: string;

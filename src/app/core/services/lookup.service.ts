@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { tap } from 'rxjs/operators';
-import { LookupsFilters, IdNameResponse, IntIdCodeNameResponse, InvoiceCostElementDropdown, ItemLookupResponse, ItemLookupsFilters } from '../models/lookup.model';
+import { LookupsFilters, IdNameResponse, IntIdCodeNameResponse, InvoiceCostElementDropdown, ItemLookupResponse, ItemLookupsFilters, StringIdNameResponse, StringIdCodeNameResponse } from '../models/lookup.model';
 import { UnitOfMeasureBasicResponse, UomType } from '../models/uom.model';
 import { PaginatedList } from '../models/pagination.model';
 import { environment } from '../../../environments/environment';
@@ -21,7 +21,7 @@ export class LookupService {
       if (filters.searchValue) params = params.set('searchValue', filters.searchValue);
       if (filters.pageNumber) params = params.set('pageNumber', filters.pageNumber.toString());
       if (filters.pageSize) params = params.set('pageSize', filters.pageSize.toString());
-      
+
       // Additional properties from ItemLookupsFilters
       const itemFilters = filters as ItemLookupsFilters;
       if (itemFilters.warehouseId) params = params.set('warehouseId', itemFilters.warehouseId.toString());
@@ -43,6 +43,15 @@ export class LookupService {
 
   getWarehouses(filters?: LookupsFilters): Observable<IdNameResponse[]> {
     return this.http.get<IdNameResponse[]>(`${this.apiUrl}/warehouses`, this.getOptions(filters));
+  }
+
+  getWarehousesByBranches(branchIds: number[]): Observable<IdNameResponse[]> {
+    if (!branchIds || branchIds.length === 0) return of([]);
+    let params = new HttpParams();
+    branchIds.forEach(id => {
+      params = params.append('branchIds', id.toString());
+    });
+    return this.http.get<IdNameResponse[]>(`${this.apiUrl}/warehouses-by-branches`, { params });
   }
 
   getVendors(filters?: LookupsFilters): Observable<IntIdCodeNameResponse[]> {
@@ -96,5 +105,41 @@ export class LookupService {
 
   getItemsLookup(filters?: ItemLookupsFilters): Observable<PaginatedList<ItemLookupResponse>> {
     return this.http.get<PaginatedList<ItemLookupResponse>>(`${environment.apiUrl}/api/inventory/lookups/items`, this.getOptions(filters));
+  }
+
+  getRoles(filters?: LookupsFilters): Observable<StringIdCodeNameResponse[]> {
+    return this.http.get<StringIdCodeNameResponse[]>(`${environment.apiUrl}/api/roles/lookups/role`, this.getOptions(filters));
+  }
+
+  getUsers(filters?: LookupsFilters): Observable<StringIdNameResponse[]> {
+    return this.http.get<StringIdNameResponse[]>(`${environment.apiUrl}/api/users/lookups/users`, this.getOptions(filters));
+  }
+
+  getCountries(filters?: LookupsFilters): Observable<IdNameResponse[]> {
+    return this.http.get<IdNameResponse[]>(`${this.apiUrl}/country`, this.getOptions(filters));
+  }
+
+  getBanks(filters?: LookupsFilters): Observable<IdNameResponse[]> {
+    return this.http.get<IdNameResponse[]>(`${this.apiUrl}/banks`, this.getOptions(filters));
+  }
+
+  getSectors(filters?: LookupsFilters): Observable<IdNameResponse[]> {
+    return this.http.get<IdNameResponse[]>(`${this.apiUrl}/sectors`, this.getOptions(filters));
+  }
+
+  getDepartments(filters?: LookupsFilters): Observable<IdNameResponse[]> {
+    return this.http.get<IdNameResponse[]>(`${this.apiUrl}/departments`, this.getOptions(filters));
+  }
+
+  getSections(filters?: LookupsFilters): Observable<IdNameResponse[]> {
+    return this.http.get<IdNameResponse[]>(`${this.apiUrl}/sections`, this.getOptions(filters));
+  }
+
+  getJobTitles(filters?: LookupsFilters): Observable<IdNameResponse[]> {
+    return this.http.get<IdNameResponse[]>(`${this.apiUrl}/jobtitles`, this.getOptions(filters));
+  }
+
+  getLocations(filters?: LookupsFilters): Observable<IdNameResponse[]> {
+    return this.http.get<IdNameResponse[]>(`${this.apiUrl}/locations`, this.getOptions(filters));
   }
 }

@@ -3,6 +3,7 @@ import { HomePageComponent } from './pages/home-page/home-page.component';
 import { unsavedChangesGuard } from './core/guards/unsaved-changes.guard';
 import { authGuard } from './core/guards/auth.guard';
 import { setupGuard } from './core/guards/setup.guard';
+import { dashboardGuard } from './core/guards/dashboard.guard';
 import { EcommerceComponent } from './pages/dashboard/ecommerce/ecommerce.component';
 import { ProfileComponent } from './pages/profile/profile.component';
 import { FormElementsComponent } from './pages/forms/form-elements/form-elements.component';
@@ -37,9 +38,11 @@ export const routes: Routes = [
       {
         path: 'dashboard',
         component: EcommerceComponent,
+        canActivate: [dashboardGuard],
         title:
-          'Angular Ecommerce Dashboard | TailAdmin - Angular Admin Dashboard Template',
+          'Dashboard | AMF Core',
       },
+
       {
         path: 'profile',
         component: ProfileComponent,

@@ -1,11 +1,37 @@
-﻿<app-page-breadcrumb pageTitle="Profile" />
-<div class="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] lg:p-6">
-  <h3 class="mb-5 text-lg font-semibold text-gray-800 dark:text-white/90 lg:mb-7">
-    Profile
-  </h3>
-  <div class="space-y-6">
-    <div><app-user-meta-card/></div>
-    <div><app-user-info-card/></div>
-    <div><app-user-address-card/></div>
+<app-page-breadcrumb pageTitle="الملف الشخصي" />
+
+<div class="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] lg:p-6 space-y-6">
+  <div class="flex items-center justify-between pb-3 border-b border-gray-100 dark:border-gray-800">
+    <div>
+      <h3 class="text-xl font-extrabold text-gray-900 dark:text-white">
+        الملف الشخصي وإعدادات الحساب (User Profile & Account)
+      </h3>
+      <p class="text-xs text-gray-500 dark:text-gray-400">
+        تحديث الصورة الشخصية، الأسماء، تفاصيل العنوان، كلمة المرور، وتفضيلات النظام
+      </p>
+    </div>
+  </div>
+
+  <!-- Loading State Spinner -->
+  <div *ngIf="isLoading" class="py-12 flex flex-col items-center justify-center text-gray-400">
+    <svg class="animate-spin h-8 w-8 text-brand-500 mb-2" fill="none" viewBox="0 0 24 24">
+      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+    </svg>
+    <span class="text-xs font-bold">جاري تحميل بيانات الملف الشخصي...</span>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error && !isLoading" class="p-4 bg-rose-50 border border-rose-200 text-rose-700 text-xs rounded-xl font-bold flex items-center justify-between">
+    <span>{{ error }}</span>
+    <button (click)="loadProfile()" class="px-3 py-1 bg-rose-600 text-white rounded-lg hover:bg-rose-700">إعادة المحاولة</button>
+  </div>
+
+  <!-- Profile Sections -->
+  <div *ngIf="!isLoading && profileData" class="space-y-6">
+    <div><app-user-meta-card [profile]="profileData" (profileUpdated)="loadProfile()" /></div>
+    <div><app-user-preferences-card [profile]="profileData" (profileUpdated)="loadProfile()" /></div>
+    <div><app-user-info-card [profile]="profileData" (profileUpdated)="loadProfile()" /></div>
+    <div><app-user-address-card [profile]="profileData" (profileUpdated)="loadProfile()" /></div>
   </div>
 </div>

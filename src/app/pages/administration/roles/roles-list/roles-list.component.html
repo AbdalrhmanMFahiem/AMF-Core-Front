@@ -1,4 +1,4 @@
-﻿<app-page-breadcrumb [pageTitle]="'roles.list' | translate"></app-page-breadcrumb>
+<app-page-breadcrumb [pageTitle]="'roles.list' | translate"></app-page-breadcrumb>
 
 <app-crud-list
   [data]="data"
@@ -6,8 +6,12 @@
   [isLoading]="loading"
   [filters]="filters"
   [includeDisabled]="includeDisabled"
-  [title]="'roles.list' | translate"
-  [hideToggleStatus]="false"
+  [pageTitle]="'roles.list'"
+  [addBtnText]="'roles.addNew'"
+  [searchPlaceholder]="'common.search'"
+  [hideToggleStatus]="hideToggleStatusFn"
+  [hideEdit]="hideEditFn"
+  [customActions]="customActions"
   (search)="onSearch()"
   (pageChange)="onPageChange($event)"
   (includeDisabledChange)="onIncludeDisabledChanged($event)"
@@ -15,4 +19,30 @@
   (edit)="onEdit($event)"
   (view)="onView($event)"
   (toggleStatus)="onToggleStatus($event)"
+  (customAction)="onCustomAction($event)"
 ></app-crud-list>
+
+<!-- Confirmation Modal for Resetting Admin Permissions -->
+<app-confirmation-modal
+  [isOpen]="showConfirmationModal"
+  [isLoading]="isConfirming"
+  title="roles.confirmResetTitle"
+  message="roles.confirmResetMessage"
+  confirmText="roles.resetAdminPermissions"
+  cancelText="common.cancel"
+  type="info"
+  (confirm)="onProceedConfirm()"
+  (cancel)="onCancelConfirm()">
+
+  <span *ngIf="itemToConfirm" class="font-bold text-gray-800 dark:text-white mt-4 block text-lg bg-gray-50 dark:bg-gray-700/50 p-3.5 rounded-xl border border-gray-100 dark:border-gray-600 shadow-inner">
+    <span class="block text-xs font-semibold uppercase tracking-wider text-brand-600 dark:text-brand-400 mb-1">
+      {{ 'roles.title' | translate }}
+    </span>
+    <span class="block text-base font-bold text-gray-900 dark:text-white">
+      {{ itemToConfirm.name || itemToConfirm.aName || itemToConfirm.eName }}
+    </span>
+    <span class="inline-block mt-2 font-mono text-xs px-2 py-0.5 rounded bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300">
+      {{ itemToConfirm.code || ('common.id' | translate) + ': ' + itemToConfirm.id }}
+    </span>
+  </span>
+</app-confirmation-modal>

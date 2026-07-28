@@ -1,7 +1,8 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { UserBasicResponse, UserResponse, CreateUserRequest, UpdateUserRequest } from '../models/user.model';
+import { UserBasicResponse, UserResponse, UserRequest } from '../models/user.model';
+import { NextCodeResponse } from '../models/lookup.model';
 import { PaginatedList, RequestFilters } from '../models/pagination.model';
 import { environment } from '../../../environments/environment';
 
@@ -35,6 +36,10 @@ export class UserService {
     return this.http.get<UserResponse>(`${this.apiUrl}/${id}`);
   }
 
+  getNextCode(): Observable<NextCodeResponse> {
+    return this.http.get<NextCodeResponse>(`${this.apiUrl}/next-code`);
+  }
+
   private buildFormData(data: any): FormData {
     const formData = new FormData();
     Object.keys(data).forEach(key => {
@@ -48,7 +53,7 @@ export class UserService {
           // Serialize nested object properties for ASP.NET Core model binding
           Object.keys(value).forEach(subKey => {
             const subValue = value[subKey];
-            if (subValue !== null && subValue !== undefined) {
+            if (subValue !== null && subValue !== undefined && subValue !== '') {
               formData.append(`userEmploymentInfo.${subKey}`, String(subValue));
             }
           });
@@ -60,12 +65,12 @@ export class UserService {
     return formData;
   }
 
-  create(data: CreateUserRequest): Observable<UserResponse> {
+  create(data: UserRequest): Observable<UserResponse> {
     const formData = this.buildFormData(data);
     return this.http.post<UserResponse>(this.apiUrl, formData);
   }
 
-  update(id: string, data: UpdateUserRequest): Observable<void> {
+  update(id: string, data: UserRequest): Observable<void> {
     const formData = this.buildFormData(data);
     return this.http.put<void>(`${this.apiUrl}/${id}`, formData);
   }

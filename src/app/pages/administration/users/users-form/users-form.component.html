@@ -1,4 +1,5 @@
-﻿<app-page-breadcrumb [pageTitle]="(isViewMode ? 'users.view' : (id ? 'users.edit' : 'users.add')) | translate"
+<!-- Template for Users Form Component -->
+<app-page-breadcrumb [pageTitle]="(isViewMode ? 'users.view' : (id ? 'users.edit' : 'users.add')) | translate"
   parentPageTitle="users.title" parentPageUrl="/administration/users" />
 
 <div class="space-y-6">
@@ -66,10 +67,8 @@
             {{ 'users.tabs.basicInfo' | translate }}
           </button>
 
-          <button type="button" (click)="activeTab = 'employment'"
-            [class.border-brand-500]="activeTab === 'employment'"
-            [class.text-brand-600]="activeTab === 'employment'"
-            [class.border-transparent]="activeTab !== 'employment'"
+          <button type="button" (click)="activeTab = 'employment'" [class.border-brand-500]="activeTab === 'employment'"
+            [class.text-brand-600]="activeTab === 'employment'" [class.border-transparent]="activeTab !== 'employment'"
             [class.text-gray-500]="activeTab !== 'employment'"
             class="whitespace-nowrap pb-4 px-1 border-b-2 font-medium text-sm transition-colors flex items-center hover:text-gray-700 hover:border-gray-300">
             {{ 'users.tabs.employmentInfo' | translate }}
@@ -80,27 +79,35 @@
       <!-- Basic Info Tab -->
       <div *ngIf="activeTab === 'basic'" formGroupName="basic" class="space-y-6">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          
+
           <!-- Photo Upload -->
           <div class="col-span-full mb-2">
             <label class="mb-2.5 block text-sm font-medium text-gray-800 dark:text-white/90">
               {{ 'users.fields.photo' | translate }}
             </label>
             <div class="flex items-center gap-4">
-              <div class="h-24 w-24 rounded-full overflow-hidden border border-gray-200 dark:border-gray-700 flex items-center justify-center bg-gray-50 dark:bg-gray-800/50 shadow-theme-xs">
+              <div
+                class="h-24 w-24 rounded-full overflow-hidden border border-gray-200 dark:border-gray-700 flex items-center justify-center bg-gray-50 dark:bg-gray-800/50 shadow-theme-xs">
                 <img *ngIf="photoPreview" [src]="photoPreview" alt="Profile" class="h-full w-full object-cover">
-                <svg *ngIf="!photoPreview" class="h-10 w-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                <svg *ngIf="!photoPreview" class="h-10 w-10 text-gray-400" fill="none" stroke="currentColor"
+                  viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                    d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
               </div>
               <div *ngIf="!isViewMode" class="flex flex-col gap-2">
-                <label class="cursor-pointer flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg shadow-theme-xs hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700 dark:hover:bg-gray-700 transition-colors">
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
-                  Upload
+                <label
+                  class="cursor-pointer flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg shadow-theme-xs hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700 dark:hover:bg-gray-700 transition-colors">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                  </svg>
+                  {{ 'common.upload' | translate }}
                   <input type="file" accept="image/*" class="hidden" (change)="onFileChange($event)">
                 </label>
-                <button *ngIf="photoPreview" type="button" (click)="removePhoto()" class="flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-error-600 bg-error-50 border border-error-200 rounded-lg shadow-theme-xs hover:bg-error-100 dark:bg-error-500/10 dark:border-error-500/20 dark:hover:bg-error-500/20 transition-colors">
-                  Remove
+                <button *ngIf="photoPreview" type="button" (click)="removePhoto()"
+                  class="flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-error-600 bg-error-50 border border-error-200 rounded-lg shadow-theme-xs hover:bg-error-100 dark:bg-error-500/10 dark:border-error-500/20 dark:hover:bg-error-500/20 transition-colors">
+                  {{ 'common.remove' | translate }}
                 </button>
               </div>
             </div>
@@ -116,33 +123,33 @@
 
           <div>
             <label class="mb-2.5 block text-sm font-medium text-gray-800 dark:text-white/90">
-              {{ 'users.fields.firstPrimaryName' | translate }} <span class="text-error-500">*</span>
+              {{ 'users.fields.firstAName' | translate }} <span class="text-error-500">*</span>
             </label>
-            <input formControlName="firstPrimaryName" type="text"
-              class="dark:bg-dark-900 w-full rounded-lg border border-gray-200 bg-transparent py-2 px-4 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-800 dark:bg-white/3 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800 disabled:opacity-60 disabled:cursor-not-allowed" />
-          </div>
-          
-          <div>
-            <label class="mb-2.5 block text-sm font-medium text-gray-800 dark:text-white/90">
-              {{ 'users.fields.lastPrimaryName' | translate }} <span class="text-error-500">*</span>
-            </label>
-            <input formControlName="lastPrimaryName" type="text"
+            <input formControlName="firstAName" type="text"
               class="dark:bg-dark-900 w-full rounded-lg border border-gray-200 bg-transparent py-2 px-4 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-800 dark:bg-white/3 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800 disabled:opacity-60 disabled:cursor-not-allowed" />
           </div>
 
           <div>
             <label class="mb-2.5 block text-sm font-medium text-gray-800 dark:text-white/90">
-              {{ 'users.fields.firstForeignName' | translate }}
+              {{ 'users.fields.lastAName' | translate }} <span class="text-error-500">*</span>
             </label>
-            <input formControlName="firstForeignName" type="text"
+            <input formControlName="lastAName" type="text"
               class="dark:bg-dark-900 w-full rounded-lg border border-gray-200 bg-transparent py-2 px-4 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-800 dark:bg-white/3 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800 disabled:opacity-60 disabled:cursor-not-allowed" />
           </div>
 
           <div>
             <label class="mb-2.5 block text-sm font-medium text-gray-800 dark:text-white/90">
-              {{ 'users.fields.lastForeignName' | translate }}
+              {{ 'users.fields.firstEName' | translate }}
             </label>
-            <input formControlName="lastForeignName" type="text"
+            <input formControlName="firstEName" type="text"
+              class="dark:bg-dark-900 w-full rounded-lg border border-gray-200 bg-transparent py-2 px-4 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-800 dark:bg-white/3 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800 disabled:opacity-60 disabled:cursor-not-allowed" />
+          </div>
+
+          <div>
+            <label class="mb-2.5 block text-sm font-medium text-gray-800 dark:text-white/90">
+              {{ 'users.fields.lastEName' | translate }}
+            </label>
+            <input formControlName="lastEName" type="text"
               class="dark:bg-dark-900 w-full rounded-lg border border-gray-200 bg-transparent py-2 px-4 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-800 dark:bg-white/3 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800 disabled:opacity-60 disabled:cursor-not-allowed" />
           </div>
 
@@ -154,12 +161,116 @@
               class="dark:bg-dark-900 w-full rounded-lg border border-gray-200 bg-transparent py-2 px-4 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-800 dark:bg-white/3 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800 disabled:opacity-60 disabled:cursor-not-allowed" />
           </div>
 
+          <!-- Password Field -->
           <div *ngIf="!isViewMode">
             <label class="mb-2.5 block text-sm font-medium text-gray-800 dark:text-white/90">
-              {{ 'users.fields.password' | translate }}
+              {{ 'users.fields.password' | translate }} <span *ngIf="!id" class="text-error-500">*</span>
             </label>
-            <input formControlName="password" type="password"
-              class="dark:bg-dark-900 w-full rounded-lg border border-gray-200 bg-transparent py-2 px-4 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-800 dark:bg-white/3 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800 disabled:opacity-60 disabled:cursor-not-allowed" />
+            <div class="relative">
+              <input formControlName="password" [type]="showPassword ? 'text' : 'password'"
+                class="dark:bg-dark-900 w-full rounded-lg border border-gray-200 bg-transparent py-2 pe-11 ps-4 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-800 dark:bg-white/3 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800 disabled:opacity-60 disabled:cursor-not-allowed" />
+              <button type="button" (click)="togglePasswordVisibility('password')"
+                class="absolute inset-e-0 top-0 h-full px-3.5 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 flex items-center justify-center transition-colors focus:outline-hidden"
+                [title]="showPassword ? ('common.hide' | translate) : ('common.show' | translate)">
+                <svg *ngIf="!showPassword" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8"
+                  viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                <svg *ngIf="showPassword" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8"
+                  viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88" />
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- Confirm Password Field -->
+          <div *ngIf="!isViewMode">
+            <label class="mb-2.5 block text-sm font-medium text-gray-800 dark:text-white/90">
+              {{ 'users.fields.confirmPassword' | translate }} <span *ngIf="!id" class="text-error-500">*</span>
+            </label>
+            <div class="relative">
+              <input formControlName="confirmPassword" [type]="showConfirmPassword ? 'text' : 'password'"
+                class="dark:bg-dark-900 w-full rounded-lg border border-gray-200 bg-transparent py-2 pe-11 ps-4 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-800 dark:bg-white/3 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800 disabled:opacity-60 disabled:cursor-not-allowed" />
+              <button type="button" (click)="togglePasswordVisibility('confirmPassword')"
+                class="absolute inset-e-0 top-0 h-full px-3.5 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 flex items-center justify-center transition-colors focus:outline-hidden"
+                [title]="showConfirmPassword ? ('common.hide' | translate) : ('common.show' | translate)">
+                <svg *ngIf="!showConfirmPassword" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8"
+                  viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                <svg *ngIf="showConfirmPassword" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8"
+                  viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88" />
+                </svg>
+              </button>
+            </div>
+            <!-- Password Mismatch Error Indicator -->
+            <p *ngIf="basicForm.hasError('passwordMismatch') && (basicForm.get('confirmPassword')?.touched || basicForm.get('password')?.touched)"
+              class="mt-1.5 text-xs text-error-500 dark:text-error-400 flex items-center gap-1">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+              {{ 'users.errors.passwordMismatch' | translate }}
+            </p>
+          </div>
+
+          <!-- Roles Select (using app-multi-select) -->
+          <div class="col-span-full md:col-span-2 lg:col-span-3">
+            <label class="mb-2.5 block text-sm font-medium text-gray-800 dark:text-white/90">
+              {{ 'users.fields.roles' | translate }} <span class="text-error-500">*</span>
+            </label>
+            <app-multi-select [options]="rolesOptions" [defaultSelected]="basicForm.get('roles')?.value || []"
+              (selectionChange)="basicForm.get('roles')?.setValue($event); basicForm.get('roles')?.markAsTouched()" [disabled]="isViewMode"
+              [placeholder]="'common.selectRoles' | translate"></app-multi-select>
+            <p *ngIf="basicForm.get('roles')?.invalid && basicForm.get('roles')?.touched"
+               class="mt-1.5 text-xs text-error-500 dark:text-error-400 flex items-center gap-1">
+              <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+              {{ 'users.errors.rolesRequired' | translate }}
+            </p>
+          </div>
+
+          <!-- Branches Select (using app-multi-select) -->
+          <div class="col-span-full md:col-span-2 lg:col-span-3">
+            <label class="mb-2.5 block text-sm font-medium text-gray-800 dark:text-white/90">
+              {{ 'users.fields.branches' | translate }} <span class="text-error-500">*</span>
+            </label>
+            <app-multi-select [options]="branchesOptions" [defaultSelected]="toStringArray(basicForm.get('branchIds')?.value)"
+              (selectionChange)="basicForm.get('branchIds')?.setValue($event); basicForm.get('branchIds')?.markAsTouched()" [disabled]="isViewMode"
+              [placeholder]="'users.placeholders.selectBranches' | translate"></app-multi-select>
+            <p *ngIf="basicForm.get('branchIds')?.invalid && basicForm.get('branchIds')?.touched"
+               class="mt-1.5 text-xs text-error-500 dark:text-error-400 flex items-center gap-1">
+              <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+              {{ 'users.errors.branchesRequired' | translate }}
+            </p>
+          </div>
+
+          <!-- Warehouses Select (using app-multi-select) -->
+          <div class="col-span-full md:col-span-2 lg:col-span-3">
+            <label class="mb-2.5 block text-sm font-medium text-gray-800 dark:text-white/90">
+              {{ 'users.fields.warehouses' | translate }} <span class="text-error-500">*</span>
+            </label>
+            <app-multi-select [options]="warehousesOptions" [defaultSelected]="toStringArray(basicForm.get('warehouseIds')?.value)"
+              (selectionChange)="basicForm.get('warehouseIds')?.setValue($event); basicForm.get('warehouseIds')?.markAsTouched()" [disabled]="isViewMode || warehousesOptions.length === 0"
+              [placeholder]="(warehousesOptions.length === 0 ? 'users.placeholders.selectBranchFirst' : 'users.placeholders.selectWarehouses') | translate"></app-multi-select>
+            <p *ngIf="basicForm.get('warehouseIds')?.invalid && basicForm.get('warehouseIds')?.touched"
+               class="mt-1.5 text-xs text-error-500 dark:text-error-400 flex items-center gap-1">
+              <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+              {{ 'users.errors.warehousesRequired' | translate }}
+            </p>
           </div>
         </div>
 
@@ -172,62 +283,124 @@
             class="dark:bg-dark-900 w-full rounded-lg border border-gray-200 bg-transparent py-2.5 px-4 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-800 dark:bg-white/3 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800 disabled:opacity-60 disabled:cursor-not-allowed"></textarea>
         </div>
 
-        <!-- Checkboxes -->
-        <div class="flex flex-wrap items-center gap-6 mt-4 pt-4 border-t border-gray-100 dark:border-gray-800">
-          <div class="flex items-center">
-            <input formControlName="isActive" type="checkbox" id="isActive" class="w-4 h-4 text-brand-600 bg-gray-100 border-gray-300 rounded focus:ring-brand-500 dark:focus:ring-brand-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600 disabled:opacity-60">
-            <label for="isActive" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">{{ 'users.fields.isActive' | translate }}</label>
-          </div>
-          
-          <div class="flex items-center">
-            <input formControlName="changePassword" type="checkbox" id="changePassword" class="w-4 h-4 text-brand-600 bg-gray-100 border-gray-300 rounded focus:ring-brand-500 dark:focus:ring-brand-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600 disabled:opacity-60">
-            <label for="changePassword" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">{{ 'users.fields.changePassword' | translate }}</label>
-          </div>
+        <!-- Security & Access Control Toggles -->
+        <div class="mt-8 pt-6 border-t border-gray-100 dark:border-gray-800">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 
-          <div class="flex items-center">
-            <input formControlName="lockAccess" type="checkbox" id="lockAccess" class="w-4 h-4 text-brand-600 bg-gray-100 border-gray-300 rounded focus:ring-brand-500 dark:focus:ring-brand-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600 disabled:opacity-60">
-            <label for="lockAccess" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">{{ 'users.fields.lockAccess' | translate }}</label>
+            <!-- Change Password Card Toggle -->
+            <label for="changePassword"
+              class="group relative flex items-center justify-between p-4 rounded-xl border border-gray-200 dark:border-gray-800 bg-gray-50/50 dark:bg-white/3 hover:bg-white dark:hover:bg-white/5 hover:border-brand-300 dark:hover:border-brand-800/60 hover:shadow-theme-sm transition-all duration-200 cursor-pointer select-none">
+              <div class="flex items-start gap-3.5 pe-4">
+                <div
+                  class="flex items-center justify-center w-11 h-11 rounded-xl bg-brand-50 text-brand-600 dark:bg-brand-500/10 dark:text-brand-400 shrink-0 group-hover:scale-105 transition-transform duration-200 shadow-xs">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                      d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 14v2" />
+                  </svg>
+                </div>
+                <div class="space-y-1">
+                  <div
+                    class="font-semibold text-sm text-gray-800 dark:text-white/90 group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors">
+                    {{ 'users.fields.changePassword' | translate }}
+                  </div>
+                  <p class="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
+                    {{ 'users.hints.changePasswordDesc' | translate }}
+                  </p>
+                </div>
+              </div>
+
+              <!-- Toggle Switch -->
+              <div class="relative inline-flex items-center shrink-0">
+                <input formControlName="changePassword" type="checkbox" id="changePassword" class="sr-only peer">
+                <div
+                  class="w-11 h-6 bg-gray-200 peer-focus:outline-hidden rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:inset-s-0.5 after:left-0.5 rtl:after:left-auto rtl:after:right-0.5 after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-brand-600 shadow-inner">
+                </div>
+              </div>
+            </label>
+
+            <!-- Lock Access Card Toggle -->
+            <label for="lockAccess"
+              class="group relative flex items-center justify-between p-4 rounded-xl border border-gray-200 dark:border-gray-800 bg-gray-50/50 dark:bg-white/3 hover:bg-white dark:hover:bg-white/5 hover:border-error-300 dark:hover:border-error-800/60 hover:shadow-theme-sm transition-all duration-200 cursor-pointer select-none">
+              <div class="flex items-start gap-3.5 pe-4">
+                <div
+                  class="flex items-center justify-center w-11 h-11 rounded-xl bg-error-50 text-error-600 dark:bg-error-500/10 dark:text-error-400 shrink-0 group-hover:scale-105 transition-transform duration-200 shadow-xs">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                      d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 14.25l4.5 4.5m0-4.5l-4.5 4.5" />
+                  </svg>
+                </div>
+                <div class="space-y-1">
+                  <div
+                    class="font-semibold text-sm text-gray-800 dark:text-white/90 group-hover:text-error-600 dark:group-hover:text-error-400 transition-colors">
+                    {{ 'users.fields.lockAccess' | translate }}
+                  </div>
+                  <p class="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
+                    {{ 'users.hints.lockAccessDesc' | translate }}
+                  </p>
+                </div>
+              </div>
+
+              <!-- Toggle Switch -->
+              <div class="relative inline-flex items-center shrink-0">
+                <input formControlName="lockAccess" type="checkbox" id="lockAccess" class="sr-only peer">
+                <div
+                  class="w-11 h-6 bg-gray-200 peer-focus:outline-hidden rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:inset-s-0.5 after:left-0.5 rtl:after:left-auto rtl:after:right-0.5 after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-error-600 shadow-inner">
+                </div>
+              </div>
+            </label>
+
           </div>
         </div>
       </div>
 
       <!-- Employment Info Tab -->
       <div *ngIf="activeTab === 'employment'" formGroupName="employment" class="space-y-6">
-        
+
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          
+
           <div>
             <label class="mb-2.5 block text-sm font-medium text-gray-800 dark:text-white/90">
-              {{ 'users.employment.birthDate' | translate }} <span class="text-error-500">*</span>
+              {{ 'users.employment.birthDate' | translate }}
             </label>
-            <app-date-picker id="birthDate" formControlName="birthDate" [placeholder]="'common.selectDate' | translate"></app-date-picker>
+            <app-date-picker id="birthDate" formControlName="birthDate"
+              [placeholder]="'common.selectDate' | translate"></app-date-picker>
           </div>
-          
+
           <div>
             <label class="mb-2.5 block text-sm font-medium text-gray-800 dark:text-white/90">
-              {{ 'users.employment.gender' | translate }} <span class="text-error-500">*</span>
+              {{ 'users.employment.gender' | translate }}
             </label>
             <div class="flex flex-wrap items-center gap-4">
               <!-- Male Option -->
-              <label class="group relative flex items-center p-2.5 rounded-xl border border-gray-200 bg-white/50 dark:border-gray-800 dark:bg-gray-900/50 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 has-checked:border-brand-500/50 has-checked:bg-brand-50 dark:has-checked:bg-brand-500/10 dark:has-checked:border-brand-500/30 transition-all flex-1 sm:flex-none justify-center sm:justify-start shadow-theme-xs">
-                <input type="radio" formControlName="gender" [value]="1" class="sr-only">
-                <div class="w-5 h-5 rounded-full border-2 border-gray-300 dark:border-gray-600 group-has-checked:border-brand-500 group-has-checked:border-[6px] mr-3 ml-3 rtl:mr-0 rtl:ml-3 shrink-0 transition-all shadow-sm"></div>
-                <span class="text-sm font-medium text-gray-700 dark:text-gray-300 group-has-checked:text-brand-700 dark:group-has-checked:text-brand-300 pr-3 rtl:pr-0 rtl:pl-3 transition-colors">
+              <label
+                class="group relative flex items-center p-2.5 rounded-xl border border-gray-200 bg-white/50 dark:border-gray-800 dark:bg-gray-900/50 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 has-checked:border-brand-500/50 has-checked:bg-brand-50 dark:has-checked:bg-brand-500/10 dark:has-checked:border-brand-500/30 transition-all flex-1 sm:flex-none justify-center sm:justify-start shadow-theme-xs">
+                <input type="radio" formControlName="gender" [value]="'Male'" class="sr-only">
+                <div
+                  class="w-5 h-5 rounded-full border-2 border-gray-300 dark:border-gray-600 group-has-checked:border-brand-500 group-has-checked:border-[6px] mr-3 ml-3 rtl:mr-0 rtl:ml-3 shrink-0 transition-all shadow-sm">
+                </div>
+                <span
+                  class="text-sm font-medium text-gray-700 dark:text-gray-300 group-has-checked:text-brand-700 dark:group-has-checked:text-brand-300 pr-3 rtl:pr-0 rtl:pl-3 transition-colors">
                   {{ 'users.employment.male' | translate }}
                 </span>
               </label>
 
               <!-- Female Option -->
-              <label class="group relative flex items-center p-2.5 rounded-xl border border-gray-200 bg-white/50 dark:border-gray-800 dark:bg-gray-900/50 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 has-checked:border-pink-500/50 has-checked:bg-pink-50 dark:has-checked:bg-pink-500/10 dark:has-checked:border-pink-500/30 transition-all flex-1 sm:flex-none justify-center sm:justify-start shadow-theme-xs">
-                <input type="radio" formControlName="gender" [value]="2" class="sr-only">
-                <div class="w-5 h-5 rounded-full border-2 border-gray-300 dark:border-gray-600 group-has-checked:border-pink-500 group-has-checked:border-[6px] mr-3 ml-3 rtl:mr-0 rtl:ml-3 shrink-0 transition-all shadow-sm"></div>
-                <span class="text-sm font-medium text-gray-700 dark:text-gray-300 group-has-checked:text-pink-700 dark:group-has-checked:text-pink-300 pr-3 rtl:pr-0 rtl:pl-3 transition-colors">
+              <label
+                class="group relative flex items-center p-2.5 rounded-xl border border-gray-200 bg-white/50 dark:border-gray-800 dark:bg-gray-900/50 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 has-checked:border-pink-500/50 has-checked:bg-pink-50 dark:has-checked:bg-pink-500/10 dark:has-checked:border-pink-500/30 transition-all flex-1 sm:flex-none justify-center sm:justify-start shadow-theme-xs">
+                <input type="radio" formControlName="gender" [value]="'Female'" class="sr-only">
+                <div
+                  class="w-5 h-5 rounded-full border-2 border-gray-300 dark:border-gray-600 group-has-checked:border-pink-500 group-has-checked:border-[6px] mr-3 ml-3 rtl:mr-0 rtl:ml-3 shrink-0 transition-all shadow-sm">
+                </div>
+                <span
+                  class="text-sm font-medium text-gray-700 dark:text-gray-300 group-has-checked:text-pink-700 dark:group-has-checked:text-pink-300 pr-3 rtl:pr-0 rtl:pl-3 transition-colors">
                   {{ 'users.employment.female' | translate }}
                 </span>
               </label>
             </div>
           </div>
-          
+
           <div>
             <label class="mb-2.5 block text-sm font-medium text-gray-800 dark:text-white/90">
               {{ 'users.employment.nationalId' | translate }}
@@ -238,36 +411,134 @@
 
           <div>
             <label class="mb-2.5 block text-sm font-medium text-gray-800 dark:text-white/90">
-              {{ 'users.employment.hardAnnualLeave' | translate }} <span class="text-error-500">*</span>
+              {{ 'users.employment.passportNumber' | translate }}
+            </label>
+            <input formControlName="passportNumber" type="text"
+              class="dark:bg-dark-900 w-full rounded-lg border border-gray-200 bg-transparent py-2 px-4 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-800 dark:bg-white/3 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800 disabled:opacity-60 disabled:cursor-not-allowed" />
+          </div>
+
+          <div>
+            <label class="mb-2.5 block text-sm font-medium text-gray-800 dark:text-white/90">
+              {{ 'users.employment.nationalityId' | translate }}
+            </label>
+            <app-searchable-select formControlName="nationalityId" [options]="countriesOptions" [disabled]="isViewMode"
+              [placeholder]="'common.select' | translate"></app-searchable-select>
+          </div>
+
+          <div>
+            <label class="mb-2.5 block text-sm font-medium text-gray-800 dark:text-white/90">
+              {{ 'users.employment.managerId' | translate }}
+            </label>
+            <app-searchable-select formControlName="managerId" [options]="managersOptions" [disabled]="isViewMode"
+              [placeholder]="'common.select' | translate"></app-searchable-select>
+          </div>
+
+          <div>
+            <label class="mb-2.5 block text-sm font-medium text-gray-800 dark:text-white/90">
+              {{ 'users.employment.jobTitleId' | translate }}
+            </label>
+            <app-searchable-select formControlName="jobTitleId" [options]="jobTitlesOptions" [disabled]="isViewMode"
+              [placeholder]="'common.select' | translate"></app-searchable-select>
+          </div>
+
+          <div>
+            <label class="mb-2.5 block text-sm font-medium text-gray-800 dark:text-white/90">
+              {{ 'users.employment.hardAnnualLeave' | translate }}
             </label>
             <input formControlName="hardAnnualLeave" type="number"
               class="dark:bg-dark-900 w-full rounded-lg border border-gray-200 bg-transparent py-2 px-4 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-800 dark:bg-white/3 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800 disabled:opacity-60 disabled:cursor-not-allowed" />
           </div>
-          
+
           <div>
             <label class="mb-2.5 block text-sm font-medium text-gray-800 dark:text-white/90">
               {{ 'users.employment.balanceDueDate' | translate }}
             </label>
-            <app-date-picker id="balanceDueDate" formControlName="balanceDueDate" [placeholder]="'common.selectDate' | translate"></app-date-picker>
-          </div>
-
-          <div class="flex flex-col justify-end pb-2 gap-4">
-            <div class="flex items-center">
-              <input formControlName="haveBalance" type="checkbox" id="haveBalance" class="w-4 h-4 text-brand-600 bg-gray-100 border-gray-300 rounded focus:ring-brand-500 dark:focus:ring-brand-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600 disabled:opacity-60">
-              <label for="haveBalance" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">{{ 'users.employment.haveBalance' | translate }}</label>
-            </div>
-            
-            <div class="flex items-center">
-              <input formControlName="isDeployed" type="checkbox" id="isDeployed" class="w-4 h-4 text-brand-600 bg-gray-100 border-gray-300 rounded focus:ring-brand-500 dark:focus:ring-brand-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600 disabled:opacity-60">
-              <label for="isDeployed" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">{{ 'users.employment.isDeployed' | translate }}</label>
-            </div>
+            <app-date-picker id="balanceDueDate" formControlName="balanceDueDate"
+              [placeholder]="'common.selectDate' | translate"></app-date-picker>
           </div>
 
           <div class="col-span-full mt-4">
-            <h4 class="text-lg font-semibold text-gray-900 dark:text-white">{{ 'users.employment.address' | translate }}</h4>
+            <h4 class="text-lg font-semibold text-gray-900 dark:text-white">{{ 'users.employment.insuranceAndBank' |
+              translate }}</h4>
             <div class="h-px w-full bg-gray-200 dark:bg-gray-700 mt-2"></div>
           </div>
-          
+
+          <div>
+            <label class="mb-2.5 block text-sm font-medium text-gray-800 dark:text-white/90">
+              {{ 'users.employment.bankId' | translate }}
+            </label>
+            <app-searchable-select formControlName="bankId" [options]="banksOptions" [disabled]="isViewMode"
+              [placeholder]="'common.select' | translate"></app-searchable-select>
+          </div>
+
+          <div>
+            <label class="mb-2.5 block text-sm font-medium text-gray-800 dark:text-white/90">
+              {{ 'users.employment.bankAccount' | translate }}
+            </label>
+            <input formControlName="bankAccount" type="text"
+              class="dark:bg-dark-900 w-full rounded-lg border border-gray-200 bg-transparent py-2 px-4 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-800 dark:bg-white/3 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800 disabled:opacity-60 disabled:cursor-not-allowed" />
+          </div>
+
+          <div>
+            <label class="mb-2.5 block text-sm font-medium text-gray-800 dark:text-white/90">
+              {{ 'users.employment.socialInsurance' | translate }}
+            </label>
+            <input formControlName="socialInsurance" type="text"
+              class="dark:bg-dark-900 w-full rounded-lg border border-gray-200 bg-transparent py-2 px-4 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-800 dark:bg-white/3 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800 disabled:opacity-60 disabled:cursor-not-allowed" />
+          </div>
+
+          <div>
+            <label class="mb-2.5 block text-sm font-medium text-gray-800 dark:text-white/90">
+              {{ 'users.employment.medicalInsurance' | translate }}
+            </label>
+            <input formControlName="medicalInsurance" type="text"
+              class="dark:bg-dark-900 w-full rounded-lg border border-gray-200 bg-transparent py-2 px-4 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-800 dark:bg-white/3 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800 disabled:opacity-60 disabled:cursor-not-allowed" />
+          </div>
+
+          <div class="col-span-full mt-4">
+            <h4 class="text-lg font-semibold text-gray-900 dark:text-white">{{ 'users.employment.organization' |
+              translate }}</h4>
+            <div class="h-px w-full bg-gray-200 dark:bg-gray-700 mt-2"></div>
+          </div>
+
+          <div>
+            <label class="mb-2.5 block text-sm font-medium text-gray-800 dark:text-white/90">
+              {{ 'users.employment.sectorId' | translate }}
+            </label>
+            <app-searchable-select formControlName="sectorId" [options]="sectorsOptions" [disabled]="isViewMode"
+              [placeholder]="'common.select' | translate"></app-searchable-select>
+          </div>
+
+          <div>
+            <label class="mb-2.5 block text-sm font-medium text-gray-800 dark:text-white/90">
+              {{ 'users.employment.departmentId' | translate }}
+            </label>
+            <app-searchable-select formControlName="departmentId" [options]="departmentsOptions" [disabled]="isViewMode"
+              [placeholder]="'common.select' | translate"></app-searchable-select>
+          </div>
+
+          <div>
+            <label class="mb-2.5 block text-sm font-medium text-gray-800 dark:text-white/90">
+              {{ 'users.employment.sectionId' | translate }}
+            </label>
+            <app-searchable-select formControlName="sectionId" [options]="sectionsOptions" [disabled]="isViewMode"
+              [placeholder]="'common.select' | translate"></app-searchable-select>
+          </div>
+
+          <div>
+            <label class="mb-2.5 block text-sm font-medium text-gray-800 dark:text-white/90">
+              {{ 'users.employment.locationId' | translate }}
+            </label>
+            <app-searchable-select formControlName="locationId" [options]="locationsOptions" [disabled]="isViewMode"
+              [placeholder]="'common.select' | translate"></app-searchable-select>
+          </div>
+
+          <div class="col-span-full mt-4">
+            <h4 class="text-lg font-semibold text-gray-900 dark:text-white">{{ 'users.employment.address' | translate }}
+            </h4>
+            <div class="h-px w-full bg-gray-200 dark:bg-gray-700 mt-2"></div>
+          </div>
+
           <div>
             <label class="mb-2.5 block text-sm font-medium text-gray-800 dark:text-white/90">
               {{ 'users.employment.addressLine1' | translate }}
@@ -275,7 +546,15 @@
             <input formControlName="addressLine1" type="text"
               class="dark:bg-dark-900 w-full rounded-lg border border-gray-200 bg-transparent py-2 px-4 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-800 dark:bg-white/3 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800 disabled:opacity-60 disabled:cursor-not-allowed" />
           </div>
-          
+
+          <div>
+            <label class="mb-2.5 block text-sm font-medium text-gray-800 dark:text-white/90">
+              {{ 'users.employment.addressLine2' | translate }}
+            </label>
+            <input formControlName="addressLine2" type="text"
+              class="dark:bg-dark-900 w-full rounded-lg border border-gray-200 bg-transparent py-2 px-4 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-800 dark:bg-white/3 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800 disabled:opacity-60 disabled:cursor-not-allowed" />
+          </div>
+
           <div>
             <label class="mb-2.5 block text-sm font-medium text-gray-800 dark:text-white/90">
               {{ 'users.employment.city' | translate }}
@@ -286,10 +565,57 @@
 
           <div>
             <label class="mb-2.5 block text-sm font-medium text-gray-800 dark:text-white/90">
+              {{ 'users.employment.governorate' | translate }}
+            </label>
+            <input formControlName="governorate" type="text"
+              class="dark:bg-dark-900 w-full rounded-lg border border-gray-200 bg-transparent py-2 px-4 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-800 dark:bg-white/3 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800 disabled:opacity-60 disabled:cursor-not-allowed" />
+          </div>
+
+          <div>
+            <label class="mb-2.5 block text-sm font-medium text-gray-800 dark:text-white/90">
+              {{ 'users.employment.postalCode' | translate }}
+            </label>
+            <input formControlName="postalCode" type="text"
+              class="dark:bg-dark-900 w-full rounded-lg border border-gray-200 bg-transparent py-2 px-4 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-800 dark:bg-white/3 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800 disabled:opacity-60 disabled:cursor-not-allowed" />
+          </div>
+
+          <div>
+            <label class="mb-2.5 block text-sm font-medium text-gray-800 dark:text-white/90">
               {{ 'users.employment.country' | translate }}
             </label>
             <input formControlName="country" type="text"
               class="dark:bg-dark-900 w-full rounded-lg border border-gray-200 bg-transparent py-2 px-4 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-800 dark:bg-white/3 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800 disabled:opacity-60 disabled:cursor-not-allowed" />
+          </div>
+
+          <div class="col-span-full mt-4">
+            <h4 class="text-lg font-semibold text-gray-900 dark:text-white">{{ 'common.additionalInfo' | translate }}
+            </h4>
+            <div class="h-px w-full bg-gray-200 dark:bg-gray-700 mt-2"></div>
+          </div>
+
+          <div class="col-span-full">
+            <label class="mb-2.5 block text-sm font-medium text-gray-800 dark:text-white/90">
+              {{ 'common.additionalInfo' | translate }}
+            </label>
+            <textarea formControlName="additionalInfo" rows="2"
+              class="dark:bg-dark-900 w-full rounded-lg border border-gray-200 bg-transparent py-2.5 px-4 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-800 dark:bg-white/3 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800 disabled:opacity-60 disabled:cursor-not-allowed"></textarea>
+          </div>
+
+          <div
+            class="col-span-full flex flex-wrap items-center gap-6 mt-4 pt-4 border-t border-gray-100 dark:border-gray-800">
+            <div class="flex items-center">
+              <input formControlName="haveBalance" type="checkbox" id="haveBalance"
+                class="w-4 h-4 text-brand-600 bg-gray-100 border-gray-300 rounded focus:ring-brand-500 dark:focus:ring-brand-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600 disabled:opacity-60">
+              <label for="haveBalance" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">{{
+                'users.employment.haveBalance' | translate }}</label>
+            </div>
+
+            <div class="flex items-center">
+              <input formControlName="isDeployed" type="checkbox" id="isDeployed"
+                class="w-4 h-4 text-brand-600 bg-gray-100 border-gray-300 rounded focus:ring-brand-500 dark:focus:ring-brand-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600 disabled:opacity-60">
+              <label for="isDeployed" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">{{
+                'users.employment.isDeployed' | translate }}</label>
+            </div>
           </div>
         </div>
       </div>

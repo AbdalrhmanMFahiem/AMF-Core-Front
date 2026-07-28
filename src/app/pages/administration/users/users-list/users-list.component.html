@@ -1,4 +1,4 @@
-﻿<app-page-breadcrumb [pageTitle]="'users.list' | translate"></app-page-breadcrumb>
+<app-page-breadcrumb [pageTitle]="'users.list' | translate"></app-page-breadcrumb>
 
 <app-crud-list
   [data]="data"
@@ -6,7 +6,9 @@
   [isLoading]="loading"
   [filters]="filters"
   [includeDisabled]="includeDisabled"
-  [title]="'users.list' | translate"
+  [pageTitle]="'users.list'"
+  [addBtnText]="'users.addNew'"
+  [searchPlaceholder]="'common.search'"
   [hideToggleStatus]="false"
   (search)="onSearch()"
   (pageChange)="onPageChange($event)"

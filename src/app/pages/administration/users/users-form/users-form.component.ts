@@ -1,9 +1,9 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { UserService } from '../../../../core/services/user.service';
-import { UserResponse, CreateUserRequest, UpdateUserRequest, UserEmploymentInfoRequest } from '../../../../core/models/user.model';
+import { UserResponse, UserRequest, UserEmploymentInfoRequest } from '../../../../core/models/user.model';
 import { HasUnsavedChanges } from '../../../../core/guards/unsaved-changes.guard';
 import { PageBreadcrumbComponent } from '../../../../shared/components/common/page-breadcrumb/page-breadcrumb.component';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
@@ -13,13 +13,15 @@ import { SuccessRedirectBannerComponent } from '../../../../shared/components/co
 import { ErrorBannerComponent } from '../../../../shared/components/common/error-banner/error-banner.component';
 import { ComponentCardComponent } from '../../../../shared/components/common/component-card/component-card.component';
 import { DatePickerComponent } from '../../../../shared/components/form/date-picker/date-picker.component';
-import { SearchableOption } from '../../../../shared/components/form/searchable-select/searchable-select.component';
+import { SearchableOption, SearchableSelectComponent } from '../../../../shared/components/form/searchable-select/searchable-select.component';
+import { MultiSelectComponent, Option as MultiSelectOption } from '../../../../shared/components/form/multi-select/multi-select.component';
 import { LookupService } from '../../../../core/services/lookup.service';
+import { environment } from '../../../../../environments/environment';
 
 @Component({
   selector: 'app-users-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, PageBreadcrumbComponent, TranslateModule, SuccessRedirectBannerComponent, DatePickerComponent, ErrorBannerComponent, ComponentCardComponent],
+  imports: [CommonModule, ReactiveFormsModule, PageBreadcrumbComponent, TranslateModule, SuccessRedirectBannerComponent, DatePickerComponent, ErrorBannerComponent, ComponentCardComponent, SearchableSelectComponent, MultiSelectComponent],
   templateUrl: './users-form.component.html'
 })
 export class UsersFormComponent implements OnInit, HasUnsavedChanges {
@@ -39,23 +41,41 @@ export class UsersFormComponent implements OnInit, HasUnsavedChanges {
   successMode = false;
   validationErrors: string[] = [];
   activeTab: 'basic' | 'employment' = 'basic';
-  
+  showPassword = false;
+  showConfirmPassword = false;
+
   genderOptions: SearchableOption[] = [];
-  
+  rolesOptions: MultiSelectOption[] = [];
+  branchesOptions: MultiSelectOption[] = [];
+  warehousesOptions: MultiSelectOption[] = [];
+  managersOptions: SearchableOption[] = [];
+  countriesOptions: SearchableOption[] = [];
+  banksOptions: SearchableOption[] = [];
+  sectorsOptions: SearchableOption[] = [];
+  departmentsOptions: SearchableOption[] = [];
+  sectionsOptions: SearchableOption[] = [];
+  jobTitlesOptions: SearchableOption[] = [];
+  locationsOptions: SearchableOption[] = [];
+
   selectedPhoto: File | null = null;
   photoPreview: string | null = null;
   deletedPhoto: string | null = null;
 
   ngOnInit(): void {
     this.id = this.route.snapshot.paramMap.get('id');
-    this.isViewMode = this.route.snapshot.url[0].path === 'view';
+    this.isViewMode = this.route.snapshot.url.some(segment => segment.path === 'view') || this.router.url.includes('/view/');
 
     this.initForm();
 
     if (this.id) {
       this.loadUser();
+    } else {
+      this.userService.getNextCode().subscribe(res => {
+        this.basicForm.patchValue({ code: res.nextCode });
+      });
     }
 
+    this.loadLookups();
     this.updateGenderOptions();
     this.translate.onLangChange.subscribe(() => {
       this.updateGenderOptions();
@@ -64,35 +84,77 @@ export class UsersFormComponent implements OnInit, HasUnsavedChanges {
 
   private updateGenderOptions(): void {
     this.genderOptions = [
-      { value: 1, label: this.translate.instant('users.employment.male') },
-      { value: 2, label: this.translate.instant('users.employment.female') }
+      { value: 'Male', label: this.translate.instant('users.employment.male') },
+      { value: 'Female', label: this.translate.instant('users.employment.female') }
     ];
+  }
+
+  toStringArray(values: any): string[] {
+    if (!values) return [];
+    const arr = Array.isArray(values) ? values : [values];
+    return arr.map(v => v?.toString() ?? '');
+  }
+
+  private loadLookups(): void {
+    this.lookupService.getRoles().subscribe(res => {
+      this.rolesOptions = res.map(r => ({ value: r.id, text: `[${r.code}] ${r.name}` }));
+    });
+    this.lookupService.getBranches().subscribe(res => {
+      this.branchesOptions = res.map(b => ({ value: b.id.toString(), text: b.name }));
+    });
+    this.lookupService.getUsers().subscribe(res => {
+      this.managersOptions = res.map(r => ({ value: r.id, label: r.name }));
+    });
+    this.lookupService.getCountries().subscribe(res => {
+      this.countriesOptions = res.map(r => ({ value: r.id, label: r.name }));
+    });
+    this.lookupService.getBanks().subscribe(res => {
+      this.banksOptions = res.map(r => ({ value: r.id, label: r.name }));
+    });
+    this.lookupService.getSectors().subscribe(res => {
+      this.sectorsOptions = res.map(r => ({ value: r.id, label: r.name }));
+    });
+    this.lookupService.getDepartments().subscribe(res => {
+      this.departmentsOptions = res.map(r => ({ value: r.id, label: r.name }));
+    });
+    this.lookupService.getSections().subscribe(res => {
+      this.sectionsOptions = res.map(r => ({ value: r.id, label: r.name }));
+    });
+    this.lookupService.getJobTitles().subscribe(res => {
+      this.jobTitlesOptions = res.map(r => ({ value: r.id, label: r.name }));
+    });
+    this.lookupService.getLocations().subscribe(res => {
+      this.locationsOptions = res.map(r => ({ value: r.id, label: r.name }));
+    });
   }
 
   initForm(): void {
     this.form = this.fb.group({
       basic: this.fb.group({
         code: [{ value: '', disabled: this.isViewMode }, [Validators.required]],
-        firstPrimaryName: [{ value: '', disabled: this.isViewMode }, [Validators.required]],
-        lastPrimaryName: [{ value: '', disabled: this.isViewMode }, [Validators.required]],
-        firstForeignName: [{ value: '', disabled: this.isViewMode }],
-        lastForeignName: [{ value: '', disabled: this.isViewMode }],
+        firstAName: [{ value: '', disabled: this.isViewMode }, [Validators.required]],
+        lastAName: [{ value: '', disabled: this.isViewMode }, [Validators.required]],
+        firstEName: [{ value: '', disabled: this.isViewMode }],
+        lastEName: [{ value: '', disabled: this.isViewMode }],
         email: [{ value: '', disabled: this.isViewMode }, [Validators.required, Validators.email]],
-        password: [{ value: '', disabled: this.isViewMode }],
+        password: [{ value: '', disabled: this.isViewMode }, !this.id ? [Validators.required] : []],
+        confirmPassword: [{ value: '', disabled: this.isViewMode }, !this.id ? [Validators.required] : []],
         isActive: [{ value: true, disabled: this.isViewMode }],
         changePassword: [{ value: false, disabled: this.isViewMode }],
         lockAccess: [{ value: false, disabled: this.isViewMode }],
         notes: [{ value: '', disabled: this.isViewMode }],
-        roles: [{ value: [], disabled: this.isViewMode }]
-      }),
+        roles: [{ value: [], disabled: this.isViewMode }, [Validators.required, Validators.minLength(1)]],
+        branchIds: [{ value: [], disabled: this.isViewMode }, [Validators.required, Validators.minLength(1)]],
+        warehouseIds: [{ value: [], disabled: this.isViewMode }, [Validators.required, Validators.minLength(1)]]
+      }, { validators: this.passwordMatchValidator }),
       employment: this.fb.group({
         managerId: [{ value: null, disabled: this.isViewMode }],
         jobTitleId: [{ value: null, disabled: this.isViewMode }],
-        hardAnnualLeave: [{ value: 0, disabled: this.isViewMode }, [Validators.required, Validators.min(0)]],
+        hardAnnualLeave: [{ value: 0, disabled: this.isViewMode }, [Validators.min(0)]],
         balanceDueDate: [{ value: '', disabled: this.isViewMode }],
         haveBalance: [{ value: false, disabled: this.isViewMode }],
-        birthDate: [{ value: '', disabled: this.isViewMode }, [Validators.required]],
-        gender: [{ value: 1, disabled: this.isViewMode }, [Validators.required]],
+        birthDate: [{ value: '', disabled: this.isViewMode }],
+        gender: [{ value: 'Male', disabled: this.isViewMode }],
         nationalityId: [{ value: null, disabled: this.isViewMode }],
         nationalId: [{ value: '', disabled: this.isViewMode }],
         passportNumber: [{ value: '', disabled: this.isViewMode }],
@@ -114,16 +176,50 @@ export class UsersFormComponent implements OnInit, HasUnsavedChanges {
         additionalInfo: [{ value: '', disabled: this.isViewMode }]
       })
     });
-    
+
+    // Reactive branch change listener to dynamically filter available warehouses
+    this.basicForm.get('branchIds')?.valueChanges.subscribe((selectedBranchIds: any[]) => {
+      const rawBranchIds = selectedBranchIds ? (Array.isArray(selectedBranchIds) ? selectedBranchIds : [selectedBranchIds]) : [];
+      const branchIds = rawBranchIds.map(id => Number(id)).filter(id => !isNaN(id) && id > 0);
+      if (branchIds.length > 0) {
+        this.lookupService.getWarehousesByBranches(branchIds).subscribe(res => {
+          this.warehousesOptions = res.map(w => ({ value: w.id.toString(), text: w.name }));
+          const validWarehouseIds = res.map(w => w.id);
+          const currentWarehouseIds: any[] = this.basicForm.get('warehouseIds')?.value || [];
+          const filteredWarehouseIds = currentWarehouseIds.filter(id => validWarehouseIds.includes(Number(id)));
+          if (filteredWarehouseIds.length !== currentWarehouseIds.length) {
+            this.basicForm.patchValue({ warehouseIds: filteredWarehouseIds }, { emitEvent: false });
+          }
+        });
+      } else {
+        this.warehousesOptions = [];
+        this.basicForm.patchValue({ warehouseIds: [] }, { emitEvent: false });
+      }
+    });
+
     if (this.isViewMode) {
       this.form.disable();
     }
   }
-  
+
+  passwordMatchValidator(group: AbstractControl): ValidationErrors | null {
+    const pass = group.get('password')?.value;
+    const confirmPass = group.get('confirmPassword')?.value;
+    if (pass || confirmPass) {
+      return pass === confirmPass ? null : { passwordMismatch: true };
+    }
+    return null;
+  }
+
+  togglePasswordVisibility(field: 'password' | 'confirmPassword'): void {
+    if (field === 'password') this.showPassword = !this.showPassword;
+    else this.showConfirmPassword = !this.showConfirmPassword;
+  }
+
   get basicForm(): FormGroup {
     return this.form.get('basic') as FormGroup;
   }
-  
+
   get employmentForm(): FormGroup {
     return this.form.get('employment') as FormGroup;
   }
@@ -134,20 +230,30 @@ export class UsersFormComponent implements OnInit, HasUnsavedChanges {
       next: (user: UserResponse) => {
         this.basicForm.patchValue({
           code: user.code,
-          firstPrimaryName: user.firstPrimaryName,
-          lastPrimaryName: user.lastPrimaryName,
-          firstForeignName: user.firstForeignName,
-          lastForeignName: user.lastForeignName,
+          firstAName: user.firstAName,
+          lastAName: user.lastAName,
+          firstEName: user.firstEName,
+          lastEName: user.lastEName,
           email: user.email,
           isActive: user.isActive,
           changePassword: user.changePassword,
           lockAccess: user.lockAccess,
           notes: user.notes,
-          roles: user.roles
+          roles: user.roles,
+          branchIds: user.branchIds || [],
+          warehouseIds: user.warehouseIds || []
         });
-        
+
+        if (user.branchIds && user.branchIds.length > 0) {
+          this.lookupService.getWarehousesByBranches(user.branchIds).subscribe(res => {
+            this.warehousesOptions = res.map(w => ({ value: w.id.toString(), text: w.name }));
+          });
+        }
+
         if (user.photoPath) {
-          this.photoPreview = user.photoPath;
+          this.photoPreview = user.photoPath.startsWith('http')
+            ? user.photoPath
+            : `${environment.apiUrl}${user.photoPath.startsWith('/') ? '' : '/'}${user.photoPath}`;
         }
 
         if (user.userEmploymentInfo) {
@@ -263,18 +369,25 @@ export class UsersFormComponent implements OnInit, HasUnsavedChanges {
       additionalInfo: eValue.additionalInfo
     };
 
+    // Ensure arrays are properly extracted and converted
+    const rolesArray = bValue.roles ? (Array.isArray(bValue.roles) ? bValue.roles : [bValue.roles]) : [];
+    const branchIdsArray = bValue.branchIds ? (Array.isArray(bValue.branchIds) ? bValue.branchIds.map(Number) : [Number(bValue.branchIds)]) : [];
+    const warehouseIdsArray = bValue.warehouseIds ? (Array.isArray(bValue.warehouseIds) ? bValue.warehouseIds.map(Number) : [Number(bValue.warehouseIds)]) : [];
+
     let requestData: any = {
       code: bValue.code,
-      firstPrimaryName: bValue.firstPrimaryName,
-      lastPrimaryName: bValue.lastPrimaryName,
-      firstForeignName: bValue.firstForeignName,
-      lastForeignName: bValue.lastForeignName,
+      firstAName: bValue.firstAName,
+      lastAName: bValue.lastAName,
+      firstEName: bValue.firstEName || '',
+      lastEName: bValue.lastEName || '',
       email: bValue.email,
       isActive: bValue.isActive,
       changePassword: bValue.changePassword,
       lockAccess: bValue.lockAccess,
       notes: bValue.notes,
-      roles: bValue.roles,
+      roles: rolesArray,
+      branchIds: branchIdsArray,
+      warehouseIds: warehouseIdsArray,
       userEmploymentInfo: empInfo
     };
 
@@ -285,13 +398,13 @@ export class UsersFormComponent implements OnInit, HasUnsavedChanges {
     if (this.selectedPhoto) {
       requestData.photo = this.selectedPhoto;
     }
-    
+
     if (this.deletedPhoto) {
       requestData.deletedPhoto = this.deletedPhoto;
     }
 
     if (this.id) {
-      this.userService.update(this.id, requestData as UpdateUserRequest).subscribe({
+      this.userService.update(this.id, requestData as UserRequest).subscribe({
         next: () => {
           this.successMode = true;
           this.saving = false;
@@ -311,7 +424,7 @@ export class UsersFormComponent implements OnInit, HasUnsavedChanges {
         }
       });
     } else {
-      this.userService.create(requestData as CreateUserRequest).subscribe({
+      this.userService.create(requestData as UserRequest).subscribe({
         next: () => {
           this.successMode = true;
           this.saving = false;
@@ -340,15 +453,21 @@ export class UsersFormComponent implements OnInit, HasUnsavedChanges {
   private getFormValidationErrors(): string[] {
     const errors: string[] = [];
     const controls = { ...this.basicForm.controls, ...this.employmentForm.controls } as any;
-    
+
     Object.keys(controls).forEach(key => {
       const controlErrors = controls[key].errors;
       if (controlErrors != null) {
         let fieldName = '';
         if (this.basicForm.contains(key)) fieldName = this.translate.instant(`users.fields.${key}`);
         else fieldName = this.translate.instant(`users.employment.${key}`);
-        
-        if (controlErrors['required']) {
+
+        if (key === 'roles' && (controlErrors['required'] || controlErrors['minlength'])) {
+          errors.push(this.translate.instant('users.errors.rolesRequired') || 'At least one role must be selected');
+        } else if (key === 'branchIds' && (controlErrors['required'] || controlErrors['minlength'])) {
+          errors.push(this.translate.instant('users.errors.branchesRequired') || 'At least one branch must be selected');
+        } else if (key === 'warehouseIds' && (controlErrors['required'] || controlErrors['minlength'])) {
+          errors.push(this.translate.instant('users.errors.warehousesRequired') || 'At least one warehouse must be selected');
+        } else if (controlErrors['required']) {
           errors.push(this.translate.instant('common.fieldRequired', { field: fieldName }) || `The ${fieldName} field is required`);
         } else if (controlErrors['email']) {
           errors.push(this.translate.instant('common.invalidEmail', { field: fieldName }) || `The ${fieldName} field has an invalid email format`);
@@ -357,6 +476,11 @@ export class UsersFormComponent implements OnInit, HasUnsavedChanges {
         }
       }
     });
+
+    if (this.basicForm.hasError('passwordMismatch')) {
+      errors.push(this.translate.instant('users.errors.passwordMismatch') || 'Passwords do not match');
+    }
+
     return errors;
   }
 }

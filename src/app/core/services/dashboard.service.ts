@@ -27,6 +27,42 @@ export interface RecentTransactionResponse {
   status: string;
 }
 
+export interface TopStockItemResponse {
+  itemId: number;
+  itemCode: string;
+  itemName: string;
+  totalStockQuantity: number;
+  unitName: string;
+  warehousesCount: number;
+}
+
+export interface TopPurchasedItemResponse {
+  itemId: number;
+  itemCode: string;
+  itemName: string;
+  purchasedQuantity: number;
+  totalPurchaseAmount: number;
+  unitName: string;
+}
+
+export interface TopSoldItemResponse {
+  itemId: number;
+  itemCode: string;
+  itemName: string;
+  soldQuantity: number;
+  unitName: string;
+}
+
+export interface TopPartnerResponse {
+  partnerId: number;
+  partnerCode: string;
+  partnerName: string;
+  totalInvoices: number;
+  totalAmount: number;
+  phone: string;
+  isCustomer: boolean;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -50,4 +86,30 @@ export class DashboardService {
     const params = new HttpParams().set('count', count.toString());
     return this.http.get<RecentTransactionResponse[]>(`${this.apiUrl}/recent-transactions`, { params });
   }
+
+  getTopStockItems(count: number = 10): Observable<TopStockItemResponse[]> {
+    const params = new HttpParams().set('count', count.toString());
+    return this.http.get<TopStockItemResponse[]>(`${this.apiUrl}/top-stock-items`, { params });
+  }
+
+  getTopPurchasedItems(count: number = 5): Observable<TopPurchasedItemResponse[]> {
+    const params = new HttpParams().set('count', count.toString());
+    return this.http.get<TopPurchasedItemResponse[]>(`${this.apiUrl}/top-purchased-items`, { params });
+  }
+
+  getTopSoldItems(count: number = 5): Observable<TopSoldItemResponse[]> {
+    const params = new HttpParams().set('count', count.toString());
+    return this.http.get<TopSoldItemResponse[]>(`${this.apiUrl}/top-sold-items`, { params });
+  }
+
+  getTopCustomers(count: number = 5): Observable<TopPartnerResponse[]> {
+    const params = new HttpParams().set('count', count.toString());
+    return this.http.get<TopPartnerResponse[]>(`${this.apiUrl}/top-customers`, { params });
+  }
+
+  getTopSuppliers(count: number = 5): Observable<TopPartnerResponse[]> {
+    const params = new HttpParams().set('count', count.toString());
+    return this.http.get<TopPartnerResponse[]>(`${this.apiUrl}/top-suppliers`, { params });
+  }
 }
+

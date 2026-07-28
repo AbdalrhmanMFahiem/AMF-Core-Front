@@ -1,15 +1,18 @@
 export interface RoleResponse {
   id: string;
+  code: string;
   name: string;
   aName: string;
   eName?: string;
   isActive: boolean;
   notes?: string;
   isDeleted: boolean;
+  isAdminRole?: boolean;
 }
 
 export interface RoleWithPermissionsResponse {
   id: string;
+  code: string;
   name: string;
   aName: string;
   eName?: string;
@@ -39,6 +42,7 @@ export interface AllPermissionsResponse {
 }
 
 export interface RoleRequest {
+  code: string;
   aName: string;
   eName?: string;
   notes?: string;

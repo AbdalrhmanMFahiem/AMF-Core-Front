@@ -1,5 +1,6 @@
 {
   "common": {
+    "readOnly": "Read Only",
     "saving": "Saving...",
     "confirmStatusChange": "Are you sure you want to change the status?",
     "confirmTransaction": "Are you sure you want to confirm and post the transaction?",
@@ -43,6 +44,10 @@
     "status": "Status",
     "active": "Active",
     "success": "Success",
+    "remove": "Remove",
+    "upload": "Upload",
+    "selectRoles": "Select Roles",
+    "additionalInfo": "Additional Information",
     "error": "Error",
     "addNew": "Add New Record",
     "confirm": "Confirm",
@@ -1225,26 +1230,45 @@
     "edit": "Edit User",
     "view": "View User",
     "fields": {
+      "firstAName": "First Name (Arabic / Primary)",
+      "lastAName": "Last Name (Arabic / Primary)",
+      "firstEName": "First Name (English / Foreign)",
+      "lastEName": "Last Name (English / Foreign)",
       "firstPrimaryName": "First Primary Name",
       "lastPrimaryName": "Last Primary Name",
       "firstForeignName": "First Foreign Name",
       "lastForeignName": "Last Foreign Name",
       "email": "Email",
       "password": "Password",
+      "confirmPassword": "Confirm Password",
       "isActive": "Active",
-      "changePassword": "Change Password",
+      "changePassword": "Change Password On Next Login",
       "lockAccess": "Lock Access",
       "roles": "Roles",
+      "branches": "Available Branches",
+      "warehouses": "Available Warehouses",
       "photo": "Profile Photo"
+    },
+    "placeholders": {
+      "selectBranches": "Select Branches",
+      "selectWarehouses": "Select Warehouses",
+      "selectBranchFirst": "Select a branch first to show available warehouses"
+    },
+    "hints": {
+      "changePasswordDesc": "Forces the user to create a new password upon their next successful login.",
+      "lockAccessDesc": "Blocks token issuance and restricts user from accessing the application."
+    },
+    "errors": {
+      "passwordMismatch": "Passwords do not match.",
+      "rolesRequired": "At least one role must be selected.",
+      "branchesRequired": "At least one branch must be selected.",
+      "warehousesRequired": "At least one warehouse must be selected."
     },
     "tabs": {
       "basicInfo": "Basic Information",
       "employmentInfo": "Employment Info"
     },
     "employment": {
-      "manager": "Manager",
-      "jobTitle": "Job Title",
-      "hardAnnualLeave": "Annual Leave",
       "balanceDueDate": "Balance Due Date",
       "haveBalance": "Have Balance",
       "birthDate": "Birth Date",
@@ -1269,6 +1293,17 @@
       "location": "Location",
       "isDeployed": "Deployed",
       "additionalInfo": "Additional Info",
+      "managerId": "Manager",
+      "jobTitleId": "Job Title",
+      "hardAnnualLeave": "Hard Annual Leave",
+      "nationalityId": "Nationality",
+      "bankId": "Bank",
+      "sectorId": "Sector",
+      "departmentId": "Department",
+      "sectionId": "Section",
+      "locationId": "Location",
+      "insuranceAndBank": "Insurance & Bank",
+      "organization": "Organization",
       "male": "Male",
       "female": "Female"
     }
@@ -1280,13 +1315,32 @@
     "addNew": "Add New Role",
     "edit": "Edit Role",
     "view": "View Role",
-    "permissions": "Permissions",
+    "permissions": "Permissions & Access Rights",
     "expandAll": "Expand All",
     "collapseAll": "Collapse All",
+    "selectAll": "Select All",
+    "deselectAll": "Deselect All",
+    "searchPermissions": "Search permissions, modules, or sections...",
+    "selectedCount": "Selected Permissions",
+    "module": "Module",
+    "noPermissionsFound": "No matching permissions found.",
+    "accessControlDesc": "Configure granular role permissions across modules and operational sections in a structured hierarchy.",
     "fields": {
       "aName": "Arabic Name",
-      "eName": "English Name"
-    }
+      "eName": "English Name",
+      "notes": "Notes / Description"
+    },
+    "errors": {
+      "aNameRequired": "Arabic Name is required.",
+      "permissionsRequired": "At least one permission must be selected."
+    },
+    "hints": {
+      "codeReadOnly": "Code is generated automatically by the system and cannot be modified."
+    },
+    "resetAdminPermissions": "Reset Admin Permissions",
+    "confirmResetTitle": "Reset Admin Permissions",
+    "confirmResetMessage": "Are you sure you want to reset all permissions for the Admin Role to include all available system permissions?",
+    "resetSuccess": "Admin role permissions reset successfully."
   },
   "stockVouchers": {
     "issues": {
@@ -1378,5 +1432,86 @@
       "noBaseUnit": "No base unit for this type",
       "baseUnitCreated": "Base unit created successfully"
     }
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "erpDashboard": "ERP Dashboard",
+    "subtitle": "Sales, Purchases, and Inventory Analytics",
+    "totalSales": "Total Sales",
+    "totalPurchases": "Total Purchases",
+    "activeReturns": "Active Returns",
+    "lowStock": "Low Stock Alerts",
+    "noTransactions": "No recent transactions found",
+    "purchasesReport": "Purchases Report",
+    "inventoryValuation": "Inventory Valuation",
+    "allSections": "All Sections",
+    "salesAndCustomers": "Sales & Customers",
+    "purchasesAndSuppliers": "Purchases & Suppliers",
+    "inventoryAndWarehouses": "Inventory & Warehouses",
+    "topStockItems": "Top 10 Stock Items Across Warehouses",
+    "topStockItemsSub": "Total on-hand stock quantities across all warehouses",
+    "topPurchasedItems": "Top Purchased Items",
+    "topPurchasedItemsSub": "Total supply volumes & purchase amounts",
+    "topSoldItems": "Top Sold Items (Quantities)",
+    "topSoldItemsSub": "Sales volume movement by sold quantities only",
+    "topPartners": "Top Business Partners",
+    "topPartnersSub": "Most active customers & top interacted suppliers",
+    "activeCustomers": "Active Customers",
+    "activeSuppliers": "Active Suppliers",
+    "stockImpact": "Stock Impact",
+    "purchases": "Purchases",
+    "quantitiesOnly": "Quantities Only",
+    "noStockData": "No inventory stock data available",
+    "noPurchaseData": "No purchase records registered yet",
+    "noSalesData": "No sales movement recorded yet",
+    "noCustomerData": "No customer records registered yet",
+    "noSupplierData": "No supplier records registered yet",
+    "salesInvoicesCount": "Sales Invoices",
+    "purchaseOrdersCount": "Purchase Orders",
+    "inWarehouses": "in {{count}} warehouses",
+    "noPhone": "No Phone",
+    "quickActions": {
+      "salesInvoice": "Sales Invoice",
+      "newSalesInvoice": "Create New Invoice",
+      "purchaseInvoice": "Purchase Invoice",
+      "newPurchaseInvoice": "Record Supply Order",
+      "addItem": "Add Item",
+      "newItem": "New Inventory Item",
+      "stockTransfer": "Stock Transfer",
+      "newStockTransfer": "Transfer Between Warehouses"
+    }
+  },
+  "profile": {
+    "title": "User Profile",
+    "preferencesTitle": "User Account Preferences",
+    "preferencesSubtitle": "Set personal preferences and default landing page after sign in",
+    "landingPageLabel": "Default Landing Page After Sign In",
+    "landingDashboardDesc": "Direct access to ERP Dashboard & analytics",
+    "landingHomeDesc": "Direct access to portal & homepage",
+    "preferenceSaved": "Landing page preferences saved successfully"
+  },
+  "invoice": {
+    "recentTransactions": "Recent Transactions & Invoices",
+    "recentTransactionsSub": "Latest sales & purchase invoices registered",
+    "code": "Transaction Code",
+    "date": "Date",
+    "totalAmount": "Total Amount",
+    "type": {
+      "label": "Type",
+      "Purchase": "Purchase Invoice",
+      "Sales": "Sales Invoice",
+      "SalesReturn": "Sales Return",
+      "PurchaseReturn": "Purchase Return"
+    },
+    "status": {
+      "label": "Status",
+      "Closed": "Closed / Completed",
+      "Confirmed": "Confirmed",
+      "Draft": "Draft",
+      "Open": "Open",
+      "Cancelled": "Cancelled"
+    }
   }
 }
+
+

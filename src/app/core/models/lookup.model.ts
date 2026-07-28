@@ -21,6 +21,11 @@ export interface IdNameResponse {
   name: string;
 }
 
+export interface StringIdNameResponse {
+  id: string;
+  name: string;
+}
+
 export interface CodeNameResponse {
   code: string;
   name: string;

@@ -1,108 +1,130 @@
-<div class="p-5 border border-gray-200 rounded-2xl dark:border-gray-800 lg:p-6">
-  <div class="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
+<div class="p-5 border border-gray-200 rounded-2xl bg-white dark:border-gray-800 dark:bg-white/[0.03] lg:p-6 shadow-sm">
+  <div class="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between mb-4 pb-3 border-b border-gray-100 dark:border-gray-800">
     <div>
-      <h4 class="text-lg font-semibold text-gray-800 dark:text-white/90 lg:mb-6">
-        Address
+      <h4 class="text-base font-bold text-gray-900 dark:text-white">
+        تفاصيل العنوان والسكن (Address Details)
       </h4>
-      <div class="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-7 2xl:gap-x-32">
-        <div>
-          <p class="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
-            Country
-          </p>
-          <p class="text-sm font-medium text-gray-800 dark:text-white/90">
-            {{ address.country }}
-          </p>
-        </div>
-        <div>
-          <p class="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
-            City/State
-          </p>
-          <p class="text-sm font-medium text-gray-800 dark:text-white/90">
-            {{ address.cityState }}
-          </p>
-        </div>
-        <div>
-          <p class="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
-            Postal Code
-          </p>
-          <p class="text-sm font-medium text-gray-800 dark:text-white/90">
-            {{ address.postalCode }}
-          </p>
-        </div>
-        <div>
-          <p class="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
-            TAX ID
-          </p>
-          <p class="text-sm font-medium text-gray-800 dark:text-white/90">
-            {{ address.taxId }}
-          </p>
-        </div>
-      </div>
+      <p class="text-xs text-gray-500 dark:text-gray-400">
+        تحديث وسجل عنوان إقامة وتواصل المستخدم
+      </p>
     </div>
     <button
       (click)="openModal()"
-      class="flex w-full items-center justify-center gap-2 rounded-full border border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200 lg:inline-flex lg:w-auto"
+      class="inline-flex items-center justify-center gap-2 rounded-xl border border-gray-300 bg-white px-4 py-2 text-xs font-bold text-gray-700 shadow-sm hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700 transition-colors"
     >
-      <svg
-        class="fill-current"
-        width="18"
-        height="18"
-        viewBox="0 0 18 18"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          fill-rule="evenodd"
-          clip-rule="evenodd"
-          d="M15.0911 2.78206C14.2125 1.90338 12.7878 1.90338 11.9092 2.78206L4.57524 10.116C4.26682 10.4244 4.0547 10.8158 3.96468 11.2426L3.31231 14.3352C3.25997 14.5833 3.33653 14.841 3.51583 15.0203C3.69512 15.1996 3.95286 15.2761 4.20096 15.2238L7.29355 14.5714C7.72031 14.4814 8.11172 14.2693 8.42013 13.9609L15.7541 6.62695C16.6327 5.74827 16.6327 4.32365 15.7541 3.44497L15.0911 2.78206ZM12.9698 3.84272C13.2627 3.54982 13.7376 3.54982 14.0305 3.84272L14.6934 4.50563C14.9863 4.79852 14.9863 5.2734 14.6934 5.56629L14.044 6.21573L12.3204 4.49215L12.9698 3.84272ZM11.2597 5.55281L5.6359 11.1766C5.53309 11.2794 5.46238 11.4099 5.43238 11.5522L5.01758 13.5185L6.98394 13.1037C7.1262 13.0737 7.25666 13.003 7.35947 12.9002L12.9833 7.27639L11.2597 5.55281Z"
-          fill=""
-        />
+      <svg class="w-4 h-4 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
       </svg>
-      Edit
+      تعديل العنوان
     </button>
   </div>
 
-  <!-- Modal -->
-  <app-modal
-    [isOpen]="isOpen"
-    (close)="closeModal()"
-    className="max-w-[700px] m-4"
-  >
-    <div class="relative w-full p-4 overflow-y-auto bg-white no-scrollbar rounded-3xl dark:bg-gray-900 lg:p-11">
-      <div class="px-2 pr-14">
-        <h4 class="mb-2 text-2xl font-semibold text-gray-800 dark:text-white/90">
-          Edit Address
-        </h4>
-        <p class="mb-6 text-sm text-gray-500 dark:text-gray-400 lg:mb-7">
-          Update your details to keep your profile up-to-date.
-        </p>
-      </div>
-      <form class="flex flex-col" (ngSubmit)="handleSave()">
-        <div class="px-2 overflow-y-auto custom-scrollbar">
-          <div class="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
-            <div>
-              <app-label>Country</app-label>
-              <app-input-field type="text" [value]="address.country" />
-            </div>
-            <div>
-              <app-label>City/State</app-label>
-              <app-input-field type="text" [value]="address.cityState" />
-            </div>
-            <div>
-              <app-label>Postal Code</app-label>
-              <app-input-field type="text" [value]="address.postalCode" />
-            </div>
-            <div>
-              <app-label>TAX ID</app-label>
-              <app-input-field type="text" [value]="address.taxId" />
-            </div>
-          </div>
-        </div>
-        <div class="flex items-center gap-3 px-2 mt-6 lg:justify-end">
-          <app-button size="sm" variant="outline" (btnClick)="closeModal()">Close</app-button>
-          <app-button size="sm" (btnClick)="handleSave()">Save Changes</app-button>
-        </div>
-      </form>
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+    <!-- Country -->
+    <div class="p-3 rounded-xl bg-gray-50 dark:bg-gray-800/40 border border-gray-100 dark:border-gray-800">
+      <span class="block text-xs font-medium text-gray-400 mb-1">الدولة / Country</span>
+      <span class="text-sm font-bold text-gray-800 dark:text-white">
+        {{ profile?.country || 'مصر' }}
+      </span>
     </div>
-  </app-modal>
+
+    <!-- Governorate -->
+    <div class="p-3 rounded-xl bg-gray-50 dark:bg-gray-800/40 border border-gray-100 dark:border-gray-800">
+      <span class="block text-xs font-medium text-gray-400 mb-1">المحافظة / State</span>
+      <span class="text-sm font-bold text-gray-800 dark:text-white">
+        {{ profile?.governorate || '-' }}
+      </span>
+    </div>
+
+    <!-- City -->
+    <div class="p-3 rounded-xl bg-gray-50 dark:bg-gray-800/40 border border-gray-100 dark:border-gray-800">
+      <span class="block text-xs font-medium text-gray-400 mb-1">المدينة / City</span>
+      <span class="text-sm font-bold text-gray-800 dark:text-white">
+        {{ profile?.city || '-' }}
+      </span>
+    </div>
+
+    <!-- Address Line 1 -->
+    <div class="col-span-1 sm:col-span-2 p-3 rounded-xl bg-gray-50 dark:bg-gray-800/40 border border-gray-100 dark:border-gray-800">
+      <span class="block text-xs font-medium text-gray-400 mb-1">العنوان بالتفصيل / Address</span>
+      <span class="text-sm font-bold text-gray-800 dark:text-white">
+        {{ profile?.addressLine1 || '-' }} {{ profile?.addressLine2 ? '(' + profile?.addressLine2 + ')' : '' }}
+      </span>
+    </div>
+
+    <!-- Postal Code -->
+    <div class="p-3 rounded-xl bg-gray-50 dark:bg-gray-800/40 border border-gray-100 dark:border-gray-800">
+      <span class="block text-xs font-medium text-gray-400 mb-1">الرمز البريدي / Postal Code</span>
+      <span class="text-sm font-bold text-gray-800 dark:text-white font-mono">
+        {{ profile?.postalCode || '-' }}
+      </span>
+    </div>
+  </div>
+
+  <!-- Alert Message -->
+  <div *ngIf="successMessage" class="mt-4 p-3 bg-emerald-50 text-emerald-700 text-xs rounded-xl font-bold border border-emerald-200">
+    {{ successMessage }}
+  </div>
+</div>
+
+<!-- Edit Address Modal -->
+<div *ngIf="isOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+  <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl w-full max-w-lg p-6 shadow-2xl animate-fade-in">
+    <div class="flex items-center justify-between pb-3 mb-4 border-b border-gray-100 dark:border-gray-800">
+      <h3 class="text-base font-bold text-gray-900 dark:text-white">تعديل بيانات العنوان</h3>
+      <button (click)="closeModal()" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">✕</button>
+    </div>
+
+    <form (ngSubmit)="handleSave()" class="space-y-4">
+      <div *ngIf="errorMessage" class="p-3 bg-rose-50 text-rose-600 text-xs rounded-xl font-bold border border-rose-200">
+        {{ errorMessage }}
+      </div>
+
+      <!-- Country & Governorate -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div>
+          <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">الدولة</label>
+          <input type="text" [(ngModel)]="form.country" name="country" class="w-full px-3 py-2 text-sm rounded-xl border border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-white focus:outline-none focus:border-brand-500">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">المحافظة</label>
+          <input type="text" [(ngModel)]="form.governorate" name="governorate" class="w-full px-3 py-2 text-sm rounded-xl border border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-white focus:outline-none focus:border-brand-500">
+        </div>
+      </div>
+
+      <!-- City & Postal Code -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div>
+          <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">المدينة / الحي</label>
+          <input type="text" [(ngModel)]="form.city" name="city" class="w-full px-3 py-2 text-sm rounded-xl border border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-white focus:outline-none focus:border-brand-500">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">الرمز البريدي</label>
+          <input type="text" [(ngModel)]="form.postalCode" name="postalCode" class="w-full px-3 py-2 text-sm rounded-xl border border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-white focus:outline-none focus:border-brand-500">
+        </div>
+      </div>
+
+      <!-- Address Line 1 -->
+      <div>
+        <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">العنوان الرئيسي (الشارع / رقم المبنى)</label>
+        <input type="text" [(ngModel)]="form.addressLine1" name="addressLine1" class="w-full px-3 py-2 text-sm rounded-xl border border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-white focus:outline-none focus:border-brand-500">
+      </div>
+
+      <!-- Address Line 2 -->
+      <div>
+        <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">تفاصيل إضافية (الدور / الشقة)</label>
+        <input type="text" [(ngModel)]="form.addressLine2" name="addressLine2" class="w-full px-3 py-2 text-sm rounded-xl border border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-white focus:outline-none focus:border-brand-500">
+      </div>
+
+      <div class="flex items-center justify-end gap-3 pt-3 border-t border-gray-100 dark:border-gray-800">
+        <button type="button" (click)="closeModal()" class="px-4 py-2 text-xs font-bold rounded-xl border border-gray-200 text-gray-600 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300">
+          إلغاء
+        </button>
+        <button type="submit" [disabled]="isSaving" class="px-5 py-2 text-xs font-bold rounded-xl bg-brand-500 text-white hover:bg-brand-600 disabled:opacity-50">
+          {{ isSaving ? 'جاري الحفظ...' : 'حفظ العنوان' }}
+        </button>
+      </div>
+    </form>
+  </div>
 </div>
