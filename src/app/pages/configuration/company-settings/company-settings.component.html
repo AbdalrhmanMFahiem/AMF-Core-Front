@@ -1,94 +1,271 @@
-﻿<app-page-breadcrumb [pageTitle]="'companySettings.title'" />
+<app-page-breadcrumb [pageTitle]="'companySettings.title'" />
 
-<div class="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/3 lg:p-6">
-  <div class="w-full">
-    <h4 class="text-lg font-semibold text-gray-800 dark:text-white/90 lg:mb-6">
+<div class="space-y-6">
+  <!-- Top Action Bar -->
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <h4 class="text-xl font-semibold text-gray-800 dark:text-white/90">
       {{ 'companySettings.title' | translate }}
     </h4>
-    
-    <div *ngIf="isLoading" class="flex justify-center p-4">
-      <div class="h-6 w-6 animate-spin rounded-full border-4 border-solid border-brand-500 border-t-transparent"></div>
+    <button (click)="openModal()"
+      class="inline-flex items-center justify-center gap-2 rounded-full border border-gray-300 bg-white px-5 py-2.5 text-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/3 dark:hover:text-gray-200 transition-colors">
+      <svg class="fill-current" width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M15.0911 2.78206C14.2125 1.90338 12.7878 1.90338 11.9092 2.78206L4.57524 10.116C4.26682 10.4244 4.0547 10.8158 3.96468 11.2426L3.31231 14.3352C3.25997 14.5833 3.33653 14.841 3.51583 15.0203C3.69512 15.1996 3.95286 15.2761 4.20096 15.2238L7.29355 14.5714C7.72031 14.4814 8.11172 14.2693 8.42013 13.9609L15.7541 6.62695C16.6327 5.74827 16.6327 4.32365 15.7541 3.44497L15.0911 2.78206ZM12.9698 3.84272C13.2627 3.54982 13.7376 3.54982 14.0305 3.84272L14.6934 4.50563C14.9863 4.79852 14.9863 5.2734 14.6934 5.56629L14.044 6.21573L12.3204 4.49215L12.9698 3.84272ZM11.2597 5.55281L5.6359 11.1766C5.53309 11.2794 5.46238 11.4099 5.43238 11.5522L5.01758 13.5185L6.98394 13.1037C7.1262 13.0737 7.25666 13.003 7.35947 12.9002L12.9833 7.27639L11.2597 5.55281Z" fill="" />
+      </svg>
+      {{ 'common.edit' | translate }}
+    </button>
+  </div>
+
+  <div *ngIf="isLoading" class="flex justify-center p-12">
+    <div class="h-8 w-8 animate-spin rounded-full border-4 border-solid border-brand-500 border-t-transparent"></div>
+  </div>
+
+  <div *ngIf="!isLoading" class="flex flex-col gap-6">
+    <!-- General Information Card -->
+    <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-theme-sm dark:border-gray-800 dark:bg-white/3 lg:p-6">
+      <div class="mb-6 flex flex-col gap-1 border-b border-gray-100 pb-4 dark:border-gray-800">
+        <h4 class="text-lg font-semibold text-gray-800 dark:text-white/90">
+          {{ 'companySettings.generalInfo' | translate }}
+        </h4>
+        <p class="text-sm text-gray-500 dark:text-gray-400">
+          {{ 'companySettings.generalInfoDesc' | translate }}
+        </p>
+      </div>
+      <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div>
+          <p class="mb-2 text-xs text-gray-500 dark:text-gray-400">{{ 'companySettings.companyCode' | translate }}</p>
+          <p class="text-sm font-medium text-gray-800 dark:text-white/90">{{ settings.companyCode || '-' }}</p>
+        </div>
+        <div>
+          <p class="mb-2 text-xs text-gray-500 dark:text-gray-400">{{ 'companySettings.companyAName' | translate }}</p>
+          <p class="text-sm font-medium text-gray-800 dark:text-white/90">{{ settings.companyAName || '-' }}</p>
+        </div>
+        <div>
+          <p class="mb-2 text-xs text-gray-500 dark:text-gray-400">{{ 'companySettings.companyEName' | translate }}</p>
+          <p class="text-sm font-medium text-gray-800 dark:text-white/90">{{ settings.companyEName || '-' }}</p>
+        </div>
+        <div>
+          <p class="mb-2 text-xs text-gray-500 dark:text-gray-400">{{ 'companySettings.registrationNumber' | translate }}</p>
+          <p class="text-sm font-medium text-gray-800 dark:text-white/90">{{ settings.registrationNumber || '-' }}</p>
+        </div>
+        <div>
+          <p class="mb-2 text-xs text-gray-500 dark:text-gray-400">{{ 'companySettings.taxNumber' | translate }}</p>
+          <p class="text-sm font-medium text-gray-800 dark:text-white/90">{{ settings.taxNumber || '-' }}</p>
+        </div>
+      </div>
     </div>
 
-    <form *ngIf="!isLoading" class="flex flex-col gap-6" [formGroup]="form" (ngSubmit)="onSubmit()">
-      
-      <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+    <!-- Contact Information Card -->
+    <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-theme-sm dark:border-gray-800 dark:bg-white/3 lg:p-6">
+      <div class="mb-6 flex flex-col gap-1 border-b border-gray-100 pb-4 dark:border-gray-800">
+        <h4 class="text-lg font-semibold text-gray-800 dark:text-white/90">
+          {{ 'companySettings.contactInfo' | translate }}
+        </h4>
+        <p class="text-sm text-gray-500 dark:text-gray-400">
+          {{ 'companySettings.contactInfoDesc' | translate }}
+        </p>
+      </div>
+      <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
         <div>
-          <app-label>{{ 'companySettings.companyCode' | translate }}</app-label>
-          <app-input-field formControlName="companyCode" [placeholder]="'companySettings.companyCodePlaceholder' | translate"></app-input-field>
+          <p class="mb-2 text-xs text-gray-500 dark:text-gray-400">{{ 'companySettings.phoneNumber' | translate }}</p>
+          <p class="text-sm font-medium text-gray-800 dark:text-white/90">{{ settings.phoneNumber || '-' }}</p>
         </div>
         <div>
-          <app-label>{{ 'companySettings.companyAName' | translate }} <span class="text-error-500">*</span></app-label>
-          <app-input-field formControlName="companyAName" [placeholder]="'companySettings.companyANamePlaceholder' | translate"></app-input-field>
+          <p class="mb-2 text-xs text-gray-500 dark:text-gray-400">{{ 'companySettings.email' | translate }}</p>
+          <p class="text-sm font-medium text-gray-800 dark:text-white/90">{{ settings.email || '-' }}</p>
         </div>
         <div>
-          <app-label>{{ 'companySettings.companyEName' | translate }}</app-label>
-          <app-input-field formControlName="companyEName" [placeholder]="'companySettings.companyENamePlaceholder' | translate"></app-input-field>
+          <p class="mb-2 text-xs text-gray-500 dark:text-gray-400">{{ 'companySettings.website' | translate }}</p>
+          <p class="text-sm font-medium text-gray-800 dark:text-white/90">{{ settings.website || '-' }}</p>
         </div>
         <div>
-          <app-label>{{ 'companySettings.registrationNumber' | translate }}</app-label>
-          <app-input-field formControlName="registrationNumber" [placeholder]="'companySettings.registrationNumberPlaceholder' | translate"></app-input-field>
+          <p class="mb-2 text-xs text-gray-500 dark:text-gray-400">{{ 'companySettings.country' | translate }}</p>
+          <p class="text-sm font-medium text-gray-800 dark:text-white/90">{{ settings.country || '-' }}</p>
         </div>
-        <div>
-          <app-label>{{ 'companySettings.taxNumber' | translate }}</app-label>
-          <app-input-field formControlName="taxNumber" [placeholder]="'companySettings.taxNumberPlaceholder' | translate"></app-input-field>
-        </div>
-        <div>
-          <app-label>{{ 'companySettings.phoneNumber' | translate }}</app-label>
-          <app-input-field type="tel" formControlName="phoneNumber" [placeholder]="'companySettings.phoneNumberPlaceholder' | translate"></app-input-field>
-        </div>
-        <div>
-          <app-label>{{ 'companySettings.email' | translate }}</app-label>
-          <app-input-field type="email" formControlName="email" [placeholder]="'companySettings.emailPlaceholder' | translate"></app-input-field>
-        </div>
-        <div>
-          <app-label>{{ 'companySettings.website' | translate }}</app-label>
-          <app-input-field type="url" formControlName="website" [placeholder]="'companySettings.websitePlaceholder' | translate"></app-input-field>
-        </div>
-        <div>
-          <app-label>{{ 'companySettings.country' | translate }}</app-label>
-          <app-input-field formControlName="country" [placeholder]="'companySettings.countryPlaceholder' | translate"></app-input-field>
-        </div>
-        <div class="lg:col-span-2">
-          <app-label>{{ 'companySettings.address' | translate }}</app-label>
-          <app-input-field formControlName="address" [placeholder]="'companySettings.addressPlaceholder' | translate"></app-input-field>
+        <div class="sm:col-span-2 lg:col-span-3">
+          <p class="mb-2 text-xs text-gray-500 dark:text-gray-400">{{ 'companySettings.address' | translate }}</p>
+          <p class="text-sm font-medium text-gray-800 dark:text-white/90">{{ settings.address || '-' }}</p>
         </div>
       </div>
+    </div>
 
-      <div class="grid grid-cols-1 gap-6 lg:grid-cols-2 mt-4">
-        <!-- Logo Upload -->
-        <div class="flex flex-col gap-2">
-          <app-label>{{ 'companySettings.logo' | translate }}</app-label>
-          <div class="flex items-center gap-4">
-            <div *ngIf="currentLogoUrl" class="h-16 w-16 overflow-hidden rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 flex items-center justify-center">
-              <img [src]="currentLogoUrl" alt="Logo" class="h-full w-full object-contain" />
+    <!-- Branding Card -->
+    <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-theme-sm dark:border-gray-800 dark:bg-white/3 lg:p-6">
+      <div class="mb-6 flex flex-col gap-1 border-b border-gray-100 pb-4 dark:border-gray-800">
+        <h4 class="text-lg font-semibold text-gray-800 dark:text-white/90">
+          {{ 'companySettings.branding' | translate }}
+        </h4>
+        <p class="text-sm text-gray-500 dark:text-gray-400">
+          {{ 'companySettings.brandingDesc' | translate }}
+        </p>
+      </div>
+      <div class="grid grid-cols-1 gap-8 sm:grid-cols-2">
+        <div class="flex flex-col gap-3">
+          <p class="text-xs text-gray-500 dark:text-gray-400">{{ 'companySettings.logo' | translate }}</p>
+          <div class="flex h-24 w-24 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-gray-200 bg-white shadow-theme-xs dark:border-gray-700 dark:bg-gray-800">
+            <img *ngIf="currentLogoUrl" [src]="currentLogoUrl" alt="Logo" class="h-full w-full object-contain p-2" />
+            <span *ngIf="!currentLogoUrl" class="text-xs text-gray-400">No Logo</span>
+          </div>
+        </div>
+        <div class="flex flex-col gap-3">
+          <p class="text-xs text-gray-500 dark:text-gray-400">{{ 'companySettings.icon' | translate }}</p>
+          <div class="flex h-24 w-24 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-gray-200 bg-white shadow-theme-xs dark:border-gray-700 dark:bg-gray-800">
+            <img *ngIf="currentIconUrl" [src]="currentIconUrl" alt="Icon" class="h-full w-full object-contain p-2" />
+            <span *ngIf="!currentIconUrl" class="text-xs text-gray-400">No Icon</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Modal -->
+<app-modal [isOpen]="isOpen" (close)="closeModal()" className="max-w-225 m-4">
+  <div class="no-scrollbar relative w-full max-w-225 overflow-y-auto rounded-3xl bg-white p-4 dark:bg-gray-900 lg:p-11">
+    <div class="px-2 pr-14">
+      <h4 class="mb-2 text-2xl font-semibold text-gray-800 dark:text-white/90">
+        {{ 'companySettings.editTitle' | translate }}
+      </h4>
+      <p class="mb-6 text-sm text-gray-500 dark:text-gray-400 lg:mb-7">
+        {{ 'companySettings.generalInfoDesc' | translate }}
+      </p>
+    </div>
+
+    <form class="flex flex-col" [formGroup]="form" (ngSubmit)="onSubmit()">
+      <div class="custom-scrollbar overflow-y-auto px-2 pb-3" style="max-height: 65vh;">
+        
+        <!-- General Information -->
+        <h5 class="mb-4 text-md font-medium text-gray-800 dark:text-white/90 border-b border-gray-100 pb-2 dark:border-gray-800">
+          {{ 'companySettings.generalInfo' | translate }}
+        </h5>
+        <div class="grid grid-cols-1 gap-6 lg:grid-cols-2 mb-8">
+          <div>
+            <app-label>{{ 'companySettings.companyCode' | translate }}</app-label>
+            <app-input-field formControlName="companyCode"
+              [placeholder]="'companySettings.companyCodePlaceholder' | translate"></app-input-field>
+          </div>
+          <div>
+            <app-label>{{ 'companySettings.companyAName' | translate }} <span class="text-error-500">*</span></app-label>
+            <app-input-field formControlName="companyAName"
+              [placeholder]="'companySettings.companyANamePlaceholder' | translate"></app-input-field>
+          </div>
+          <div>
+            <app-label>{{ 'companySettings.companyEName' | translate }}</app-label>
+            <app-input-field formControlName="companyEName"
+              [placeholder]="'companySettings.companyENamePlaceholder' | translate"></app-input-field>
+          </div>
+          <div>
+            <app-label>{{ 'companySettings.registrationNumber' | translate }}</app-label>
+            <app-input-field formControlName="registrationNumber"
+              [placeholder]="'companySettings.registrationNumberPlaceholder' | translate"></app-input-field>
+          </div>
+          <div>
+            <app-label>{{ 'companySettings.taxNumber' | translate }}</app-label>
+            <app-input-field formControlName="taxNumber"
+              [placeholder]="'companySettings.taxNumberPlaceholder' | translate"></app-input-field>
+          </div>
+        </div>
+
+        <!-- Contact Information -->
+        <h5 class="mb-4 text-md font-medium text-gray-800 dark:text-white/90 border-b border-gray-100 pb-2 dark:border-gray-800">
+          {{ 'companySettings.contactInfo' | translate }}
+        </h5>
+        <div class="grid grid-cols-1 gap-6 lg:grid-cols-2 mb-8">
+          <div>
+            <app-label>{{ 'companySettings.phoneNumber' | translate }}</app-label>
+            <app-input-field type="tel" formControlName="phoneNumber"
+              [placeholder]="'companySettings.phoneNumberPlaceholder' | translate"></app-input-field>
+          </div>
+          <div>
+            <app-label>{{ 'companySettings.email' | translate }}</app-label>
+            <app-input-field type="email" formControlName="email"
+              [placeholder]="'companySettings.emailPlaceholder' | translate"></app-input-field>
+          </div>
+          <div>
+            <app-label>{{ 'companySettings.website' | translate }}</app-label>
+            <app-input-field type="url" formControlName="website"
+              [placeholder]="'companySettings.websitePlaceholder' | translate"></app-input-field>
+          </div>
+          <div>
+            <app-label>{{ 'companySettings.country' | translate }}</app-label>
+            <app-input-field formControlName="country"
+              [placeholder]="'companySettings.countryPlaceholder' | translate"></app-input-field>
+          </div>
+          <div class="lg:col-span-2">
+            <app-label>{{ 'companySettings.address' | translate }}</app-label>
+            <app-input-field formControlName="address"
+              [placeholder]="'companySettings.addressPlaceholder' | translate"></app-input-field>
+          </div>
+        </div>
+
+        <!-- Branding -->
+        <h5 class="mb-4 text-md font-medium text-gray-800 dark:text-white/90 border-b border-gray-100 pb-2 dark:border-gray-800">
+          {{ 'companySettings.branding' | translate }}
+        </h5>
+        <div class="grid grid-cols-1 gap-8 lg:grid-cols-2">
+          <!-- Logo Upload -->
+          <div class="flex flex-col gap-4">
+            <app-label>{{ 'companySettings.logo' | translate }}</app-label>
+            <div class="flex items-center gap-5">
+              <div
+                class="relative flex h-24 w-24 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-dashed border-gray-300 bg-gray-50 dark:border-gray-700 dark:bg-gray-800/50">
+                <ng-container *ngIf="currentLogoUrl; else noLogo">
+                  <img [src]="currentLogoUrl" alt="Logo" class="h-full w-full object-contain p-2" />
+                </ng-container>
+                <ng-template #noLogo>
+                  <svg class="h-8 w-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                </ng-template>
+              </div>
+              <div class="flex flex-col gap-2">
+                <span class="text-sm text-gray-500 dark:text-gray-400">Upload a high-res image (PNG, JPG).</span>
+                <label
+                  class="cursor-pointer inline-flex items-center justify-center gap-2 rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 dark:border-gray-800 dark:bg-white/5 dark:text-gray-300 dark:hover:bg-white/10 transition-colors">
+                  <span>{{ 'common.upload' | translate }}</span>
+                  <input type="file" (change)="onLogoChange($event)" accept="image/*" class="hidden" />
+                </label>
+              </div>
             </div>
-            <div class="flex-1">
-              <input type="file" (change)="onLogoChange($event)" accept="image/*" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-brand-50 file:text-brand-700 hover:file:bg-brand-100" />
+          </div>
+
+          <!-- Icon Upload -->
+          <div class="flex flex-col gap-4">
+            <app-label>{{ 'companySettings.icon' | translate }}</app-label>
+            <div class="flex items-center gap-5">
+              <div
+                class="relative flex h-24 w-24 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-dashed border-gray-300 bg-gray-50 dark:border-gray-700 dark:bg-gray-800/50">
+                <ng-container *ngIf="currentIconUrl; else noIcon">
+                  <img [src]="currentIconUrl" alt="Icon" class="h-full w-full object-contain p-2" />
+                </ng-container>
+                <ng-template #noIcon>
+                  <svg class="h-8 w-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                  </svg>
+                </ng-template>
+              </div>
+              <div class="flex flex-col gap-2">
+                <span class="text-sm text-gray-500 dark:text-gray-400">Square image for favicons.</span>
+                <label
+                  class="cursor-pointer inline-flex items-center justify-center gap-2 rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 dark:border-gray-800 dark:bg-white/5 dark:text-gray-300 dark:hover:bg-white/10 transition-colors">
+                  <span>{{ 'common.upload' | translate }}</span>
+                  <input type="file" (change)="onIconChange($event)" accept="image/*" class="hidden" />
+                </label>
+              </div>
             </div>
           </div>
         </div>
 
-        <!-- Icon Upload -->
-        <div class="flex flex-col gap-2">
-          <app-label>{{ 'companySettings.icon' | translate }}</app-label>
-          <div class="flex items-center gap-4">
-            <div *ngIf="currentIconUrl" class="h-16 w-16 overflow-hidden rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 flex items-center justify-center">
-              <img [src]="currentIconUrl" alt="Icon" class="h-full w-full object-contain" />
-            </div>
-            <div class="flex-1">
-              <input type="file" (change)="onIconChange($event)" accept="image/*" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-brand-50 file:text-brand-700 hover:file:bg-brand-100" />
-            </div>
-          </div>
-        </div>
       </div>
 
-      <div class="flex items-center gap-3 mt-6 justify-end border-t border-gray-100 pt-6 dark:border-gray-800">
-        <app-button size="md" [disabled]="isSaving || form.invalid" type="submit">
+      <!-- Actions -->
+      <div class="flex items-center gap-3 px-2 mt-6 lg:justify-end">
+        <app-button size="sm" variant="outline" (btnClick)="closeModal()" type="button">{{ 'common.cancel' | translate }}</app-button>
+        <app-button size="sm" [disabled]="isSaving" type="submit">
           {{ isSaving ? ('common.saving' | translate) : ('common.save' | translate) }}
         </app-button>
       </div>
-
     </form>
   </div>
-</div>
+</app-modal>

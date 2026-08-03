@@ -1,6 +1,7 @@
 {
   "common": {
     "address": "Address",
+    "print": "Print",
     "email": "Email",
     "phone": "Phone",
     "quickAdd": "Quick Add",
@@ -158,6 +159,8 @@
     }
   },
   "pages": {
+    "definitions": "Definitions",
+    "transactions": "Transactions",
     "invoiceCostElements": "Invoice Cost Elements",
     "configuration": "System Configuration",
     "inventorySettings": "Inventory Settings",
@@ -485,6 +488,12 @@
   "companySettings": {
     "title": "Company Configuration",
     "subtitle": "Global Company Identity \u0026 Registration",
+    "generalInfo": "General Information",
+    "generalInfoDesc": "Basic details and identifiers for your company.",
+    "contactInfo": "Contact Information",
+    "contactInfoDesc": "Where and how to reach the company.",
+    "branding": "Branding \u0026 Assets",
+    "brandingDesc": "Upload the company logo and icon.",
     "companyCode": "Company Code",
     "companyCodePlaceholder": "Enter unique company code",
     "companyAName": "Company Name (Arabic)",
@@ -940,6 +949,7 @@
   },
   "salesInvoices": {
     "title": "Sales Invoices",
+    "cancelHint": "To cancel a closed/paid invoice, create a return invoice",
     "list": "Sales Invoices List",
     "add": "Add Sales Invoice",
     "addNew": "Add New Invoice",
@@ -1181,6 +1191,12 @@
     },
     "errors": {
       "atLeastOneItem": "At least one item is required in the return."
+    },
+    "stats": {
+      "totalReturns": "Total Returns",
+      "totalRefunds": "Total Refunds",
+      "outstanding": "Outstanding",
+      "fullyRefunded": "Fully Refunded"
     }
   },
   "purchaseReturns": {

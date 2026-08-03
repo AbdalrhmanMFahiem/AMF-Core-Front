@@ -471,8 +471,13 @@ export class SalesReturnFormComponent implements OnInit, HasUnsavedChanges {
     this.saving = true;
     this.validationErrors = [];
 
-    // Clean up internal _ UI properties before sending
     const requestToSend = JSON.parse(JSON.stringify(this.model));
+    
+    // Fix empty strings for optional dates to avoid .NET JSON parse errors
+    if (!requestToSend.dueDate) {
+      delete requestToSend.dueDate;
+    }
+
     requestToSend.lines.forEach((l: any) => {
       delete l._itemName;
       delete l._itemCode;

@@ -221,7 +221,14 @@ export class SalesInvoicesListComponent implements OnInit {
       label: 'stockAdjustments.cancelDocument',
       icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>',
       colorClass: 'text-error-600 dark:text-error-400 hover:bg-error-50 dark:hover:bg-error-500/10',
-      visible: (item: any) => item.status !== 'Cancelled' && item.paymentStatus !== 'FullyPaid'
+      visible: (item: any) => item.status !== 'Cancelled' && item.status !== 'Closed' && item.paymentStatus !== 'FullyPaid'
+    },
+    {
+      id: 'return_hint',
+      label: 'salesInvoices.cancelHint',
+      icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>',
+      colorClass: 'text-gray-500 dark:text-gray-400 text-xs cursor-default hover:bg-transparent dark:hover:bg-transparent pointer-events-none whitespace-normal leading-tight italic',
+      visible: (item: any) => item.status === 'Closed' || item.paymentStatus === 'FullyPaid'
     },
     {
       id: 'pay',

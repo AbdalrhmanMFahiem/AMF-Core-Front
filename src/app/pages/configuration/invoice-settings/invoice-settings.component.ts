@@ -67,12 +67,13 @@ export class InvoiceSettingsComponent implements OnInit {
     this.configInvoiceService.getSettings().subscribe({
       next: (res) => {
         if (res) {
+          const data = (res as any).value || res;
           this.settings = {
-            allowSaveInvoiceWithoutPayment: res.allowSaveInvoiceWithoutPayment,
-            requireCostElementPercentage: res.requireCostElementPercentage,
-            notes: res.notes || ''
+            allowSaveInvoiceWithoutPayment: data.allowSaveInvoiceWithoutPayment || false,
+            requireCostElementPercentage: data.requireCostElementPercentage || false,
+            notes: data.notes || ''
           };
-          this.form.patchValue(res);
+          this.form.patchValue(this.settings);
         }
         this.isLoading = false;
       },

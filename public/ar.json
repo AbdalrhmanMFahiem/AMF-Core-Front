@@ -1,6 +1,7 @@
 {
   "common": {
     "address": "العنوان",
+    "print": "طباعة",
     "email": "البريد الإلكتروني",
     "phone": "رقم الهاتف",
     "quickAdd": "إضافة سريعة",
@@ -171,6 +172,8 @@
     }
   },
   "pages": {
+    "definitions": "التعريفات",
+    "transactions": "العمليات",
     "invoiceCostElements": "عناصر تكلفة الفاتورة",
     "configuration": "إعدادات النظام",
     "inventorySettings": "إعدادات المخازن",
@@ -498,8 +501,14 @@
     "emailLabel": "البريد الإلكتروني (مغلق)"
   },
   "companySettings": {
-    "title": "تهيئة الشركة",
-    "subtitle": "إعدادات الهوية والبيانات الرسمية للمؤسسة",
+    "title": "إعدادات الشركة",
+    "subtitle": "بيانات الشركة العالمية",
+    "generalInfo": "المعلومات الأساسية",
+    "generalInfoDesc": "البيانات والمعرفات الأساسية لشركتك.",
+    "contactInfo": "معلومات الاتصال",
+    "contactInfoDesc": "طرق التواصل مع الشركة.",
+    "branding": "الهوية البصرية",
+    "brandingDesc": "رفع شعار وأيقونة الشركة.",
     "companyCode": "كود الشركة",
     "companyCodePlaceholder": "أدخل كود الشركة",
     "companyAName": "اسم الشركة (بالعربية)",
@@ -955,6 +964,7 @@
   },
   "salesInvoices": {
     "title": "فواتير المبيعات",
+    "cancelHint": "لإلغاء فاتورة مغلقة أو مدفوعة، قم بعمل مرتجع للفاتورة",
     "list": "قائمة فواتير المبيعات",
     "add": "إضافة فاتورة مبيعات",
     "addNew": "إضافة فاتورة جديدة",
@@ -1196,6 +1206,12 @@
     },
     "errors": {
       "atLeastOneItem": "يجب إضافة صنف واحد على الأقل في المردود."
+    },
+    "stats": {
+      "totalReturns": "إجمالي المردودات",
+      "totalRefunds": "إجمالي المسترد",
+      "outstanding": "متبقي للاسترداد",
+      "fullyRefunded": "مسترد بالكامل"
     }
   },
   "purchaseReturns": {

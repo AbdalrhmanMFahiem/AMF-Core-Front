@@ -47,7 +47,7 @@
     <!-- Table -->
     <div
       class="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/5 dark:bg-gray-800 shadow-sm">
-      <div class="max-h-[450px] overflow-y-auto custom-scrollbar">
+      <div class="max-h-112.5 overflow-y-auto custom-scrollbar">
         <table class="min-w-full text-left border-collapse">
           <thead
             class="sticky top-0 bg-gray-50/95 dark:bg-gray-800/95 backdrop-blur-sm z-10 border-b border-gray-200 dark:border-gray-700">
@@ -95,44 +95,46 @@
                 </div>
               </td>
             </tr>
-            <tr *ngFor="let element of filteredElements"
-              class="group cursor-pointer hover:bg-brand-50/50 dark:hover:bg-brand-500/10 transition-all duration-200"
-              (click)="onSelect(element)">
-              <td class="px-6 py-4 text-sm font-mono text-gray-600 dark:text-gray-300">
-                <div class="flex items-center gap-3">
-                  <div
-                    class="w-8 h-8 rounded-lg bg-gray-100 dark:bg-gray-700 flex items-center justify-center text-gray-500 dark:text-gray-400 group-hover:bg-brand-100 group-hover:text-brand-600 dark:group-hover:bg-brand-500/20 dark:group-hover:text-brand-400 transition-colors">
-                    <!-- Addition Icon -->
-                    <svg *ngIf="element.operationType === 'Addition'" class="w-4 h-4" fill="none" stroke="currentColor"
-                      viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                    </svg>
-                    <!-- Discount Icon -->
-                    <svg *ngIf="element.operationType === 'Discount'" class="w-4 h-4" fill="none" stroke="currentColor"
-                      viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4" />
-                    </svg>
+            <ng-container *ngIf="!loading">
+              <tr *ngFor="let element of filteredElements"
+                class="group cursor-pointer hover:bg-brand-50/50 dark:hover:bg-brand-500/10 transition-all duration-200"
+                (click)="onSelect(element)">
+                <td class="px-6 py-4 text-sm font-mono text-gray-600 dark:text-gray-300">
+                  <div class="flex items-center gap-3">
+                    <div
+                      class="w-8 h-8 rounded-lg bg-gray-100 dark:bg-gray-700 flex items-center justify-center text-gray-500 dark:text-gray-400 group-hover:bg-brand-100 group-hover:text-brand-600 dark:group-hover:bg-brand-500/20 dark:group-hover:text-brand-400 transition-colors">
+                      <!-- Addition Icon -->
+                      <svg *ngIf="element.operationType === 'Addition'" class="w-4 h-4" fill="none" stroke="currentColor"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                      </svg>
+                      <!-- Discount Icon -->
+                      <svg *ngIf="element.operationType === 'Discount'" class="w-4 h-4" fill="none" stroke="currentColor"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4" />
+                      </svg>
+                    </div>
+                    <span
+                      class="group-hover:text-brand-600 dark:group-hover:text-brand-400 font-medium transition-colors">{{
+                      element.code }}</span>
                   </div>
-                  <span
-                    class="group-hover:text-brand-600 dark:group-hover:text-brand-400 font-medium transition-colors">{{
-                    element.code }}</span>
-                </div>
-              </td>
-              <td class="px-6 py-4 text-sm font-medium text-gray-800 dark:text-white/90 text-start">
-                <span class="group-hover:text-brand-700 dark:group-hover:text-brand-300 transition-colors">{{
-                  element.name }}</span>
-              </td>
-              <td class="px-6 py-4 text-center">
-                <span class="inline-flex items-center justify-center px-3 py-1 rounded-full text-xs font-bold"
-                  [ngClass]="element.operationType === 'Addition' ? 'bg-error-50 text-error-700 border border-error-200 dark:border-error-500/30 dark:bg-error-500/10 dark:text-error-400 group-hover:bg-error-100 dark:group-hover:bg-error-500/20' : 'bg-success-50 text-success-700 border border-success-200 dark:border-success-500/30 dark:bg-success-500/10 dark:text-success-400 group-hover:bg-success-100 dark:group-hover:bg-success-500/20'">
-                  {{ ('invoiceCostElements.operationType.' + element.operationType) | translate }}
-                </span>
-              </td>
-              <td class="px-6 py-4 text-center text-sm font-medium text-gray-800 dark:text-white/90">
-                <span class="group-hover:text-brand-700 dark:group-hover:text-brand-300 transition-colors">{{
-                  element.defaultPercentage || 0 }}%</span>
-              </td>
-            </tr>
+                </td>
+                <td class="px-6 py-4 text-sm font-medium text-gray-800 dark:text-white/90 text-start">
+                  <span class="group-hover:text-brand-700 dark:group-hover:text-brand-300 transition-colors">{{
+                    element.name }}</span>
+                </td>
+                <td class="px-6 py-4 text-center">
+                  <span class="inline-flex items-center justify-center px-3 py-1 rounded-full text-xs font-bold"
+                    [ngClass]="element.operationType === 'Addition' ? 'bg-error-50 text-error-700 border border-error-200 dark:border-error-500/30 dark:bg-error-500/10 dark:text-error-400 group-hover:bg-error-100 dark:group-hover:bg-error-500/20' : 'bg-success-50 text-success-700 border border-success-200 dark:border-success-500/30 dark:bg-success-500/10 dark:text-success-400 group-hover:bg-success-100 dark:group-hover:bg-success-500/20'">
+                    {{ ('invoiceCostElements.operationType.' + element.operationType) | translate }}
+                  </span>
+                </td>
+                <td class="px-6 py-4 text-center text-sm font-medium text-gray-800 dark:text-white/90">
+                  <span class="group-hover:text-brand-700 dark:group-hover:text-brand-300 transition-colors">{{
+                    element.defaultPercentage || 0 }}%</span>
+                </td>
+              </tr>
+            </ng-container>
           </tbody>
         </table>
       </div>

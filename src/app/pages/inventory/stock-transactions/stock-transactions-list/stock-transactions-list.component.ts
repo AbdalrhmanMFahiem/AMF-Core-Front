@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
@@ -10,6 +10,9 @@ import { StockTransactionService } from '../../../../core/services/stock-transac
 import { LookupService } from '../../../../core/services/lookup.service';
 import { StockTransactionResponse, StockTransactionFilters, StockTransactionType } from '../../../../core/models/inventory.model';
 import { ToastrService } from 'ngx-toastr';
+import { PrintPreviewModalComponent } from '../../../../shared/components/common/print-preview-modal/print-preview-modal.component';
+import { InvoiceService } from '../../../../core/services/invoice.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-stock-transactions-list',
@@ -21,7 +24,8 @@ import { ToastrService } from 'ngx-toastr';
     PageBreadcrumbComponent,
     CrudListComponent,
     SearchableSelectComponent,
-    DatePickerComponent
+    DatePickerComponent,
+    PrintPreviewModalComponent
   ],
   templateUrl: './stock-transactions-list.component.html'
 })
@@ -30,9 +34,17 @@ export class StockTransactionsListComponent implements OnInit {
   private readonly stockTransactionService = inject(StockTransactionService);
   private readonly lookupService = inject(LookupService);
   private readonly toastr = inject(ToastrService);
+  private readonly invoiceService = inject(InvoiceService);
 
   data: any = null;
   loading: boolean = false;
+  exportingPdf: boolean = false;
+  exportingExcel: boolean = false;
+
+  isPrintModalOpen = false;
+  pdfBlobUrl: string | null = null;
+  pdfLoading = false;
+  selectedTransactionForPrint: any = null;
 
   warehousesOptions: SearchableOption[] = [];
   transactionTypeOptions: SearchableOption[] = [];
@@ -67,7 +79,108 @@ export class StockTransactionsListComponent implements OnInit {
     );
   }
 
-  isActionHidden = () => true;
+  isActionHidden = () => false;
+
+  customActions = [
+    {
+      id: 'print',
+      label: 'common.print',
+      icon: '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>',
+      colorClass: 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-500/10',
+      visible: (item: any) => true
+    }
+  ];
+
+  onCustomAction(event: { actionId: string, item: any }) {
+    if (event.actionId === 'print') {
+      this.printDocument(event.item);
+    }
+  }
+
+  printDocument(row: any): void {
+    const salesTypes = [1, 2]; // SalesOut, SalesReturnIn
+    const purchaseTypes = [3, 4]; // PurchaseIn, PurchaseReturnOut
+    const unsupportedTypes = [5, 6, 7, 8, 9, 10, 11]; // Transfers, Adjustments, Vouchers, Opening Balance
+
+    if (salesTypes.includes(row.transactionType) && row.invoiceId) {
+      this.doPrint(row.invoiceId, 'sales', row.referenceCode);
+    } else if (purchaseTypes.includes(row.transactionType) && row.invoiceId) {
+      this.doPrint(row.invoiceId, 'purchases', row.referenceCode);
+    } else if (unsupportedTypes.includes(row.transactionType)) {
+      Swal.fire({
+        icon: 'info',
+        title: this.translate.instant('common.info'),
+        text: this.translate.instant('stockTransactions.printNotImplementedYet'),
+        confirmButtonColor: '#3085d6'
+      });
+    }
+  }
+
+  private doPrint(id: number, type: 'sales' | 'purchases', refCode: string): void {
+    this.selectedTransactionForPrint = { referenceCode: refCode };
+    this.isPrintModalOpen = true;
+    this.pdfLoading = true;
+
+    this.invoiceService.printPdf(id, type).subscribe({
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+        this.pdfBlobUrl = url;
+        this.pdfLoading = false;
+      },
+      error: () => {
+        this.pdfLoading = false;
+        this.isPrintModalOpen = false;
+        this.toastr.error('Failed to generate PDF');
+      }
+    });
+  }
+
+  closePrintModal() {
+    this.isPrintModalOpen = false;
+    if (this.pdfBlobUrl) {
+      window.URL.revokeObjectURL(this.pdfBlobUrl);
+      this.pdfBlobUrl = null;
+    }
+    this.selectedTransactionForPrint = null;
+  }
+
+  exportExcel(): void {
+    this.exportingExcel = true;
+    this.stockTransactionService.exportToExcel(this.filters).subscribe({
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `StockTransactions_${new Date().getTime()}.xlsx`;
+        a.click();
+        window.URL.revokeObjectURL(url);
+        this.exportingExcel = false;
+      },
+      error: () => {
+        this.toastr.error('Failed to export Excel');
+        this.exportingExcel = false;
+      }
+    });
+  }
+
+  exportPdf(): void {
+    this.exportingPdf = true;
+    this.stockTransactionService.exportToPdf(this.filters).subscribe({
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `StockTransactions_${new Date().getTime()}.pdf`;
+        a.click();
+        window.URL.revokeObjectURL(url);
+        this.exportingPdf = false;
+      },
+      error: () => {
+        this.toastr.error('Failed to export PDF');
+        this.exportingPdf = false;
+      }
+    });
+  }
 
   ngOnInit(): void {
     this.initOptions();

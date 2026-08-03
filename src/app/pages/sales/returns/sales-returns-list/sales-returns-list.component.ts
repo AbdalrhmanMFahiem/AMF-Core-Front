@@ -11,11 +11,12 @@ import { SearchableSelectComponent, SearchableOption } from '../../../../shared/
 import { DatePickerComponent } from '../../../../shared/components/form/date-picker/date-picker.component';
 import { LookupService } from '../../../../core/services/lookup.service';
 import { FormsModule } from '@angular/forms';
+import { PrintPreviewModalComponent } from '../../../../shared/components/common/print-preview-modal/print-preview-modal.component';
 
 @Component({
   selector: 'app-sales-returns-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, TranslateModule, CrudListComponent, PageBreadcrumbComponent, PaymentModalComponent, SearchableSelectComponent, DatePickerComponent],
+  imports: [CommonModule, FormsModule, TranslateModule, CrudListComponent, PageBreadcrumbComponent, PaymentModalComponent, SearchableSelectComponent, DatePickerComponent, PrintPreviewModalComponent],
   template: `
     <app-page-breadcrumb [pageTitle]="'salesReturns.title'" />
     <div class="space-y-6">
@@ -42,7 +43,7 @@ import { FormsModule } from '@angular/forms';
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
             </div>
             <div>
-              <p class="text-[11px] font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-0.5">{{ 'invoices.totalInvoices' | translate }}</p>
+              <p class="text-[11px] font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-0.5">{{ 'salesReturns.stats.totalReturns' | translate }}</p>
               <h3 class="text-xl font-bold text-gray-900 dark:text-white tracking-tight">{{ stats.totalInvoices | number }}</h3>
             </div>
           </div>
@@ -56,7 +57,7 @@ import { FormsModule } from '@angular/forms';
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
             </div>
             <div>
-              <p class="text-[11px] font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-0.5">{{ 'invoices.totalRevenue' | translate }}</p>
+              <p class="text-[11px] font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-0.5">{{ 'salesReturns.stats.totalRefunds' | translate }}</p>
               <h3 class="text-xl font-bold text-gray-900 dark:text-white tracking-tight">{{ stats.totalRevenue | number:'1.2-2' }}</h3>
             </div>
           </div>
@@ -70,7 +71,7 @@ import { FormsModule } from '@angular/forms';
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
             </div>
             <div>
-              <p class="text-[11px] font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-0.5">{{ 'invoices.outstanding' | translate }}</p>
+              <p class="text-[11px] font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-0.5">{{ 'salesReturns.stats.outstanding' | translate }}</p>
               <h3 class="text-xl font-bold text-gray-900 dark:text-white tracking-tight">{{ stats.outstanding | number:'1.2-2' }}</h3>
             </div>
           </div>
@@ -84,7 +85,7 @@ import { FormsModule } from '@angular/forms';
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path></svg>
             </div>
             <div>
-              <p class="text-[11px] font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-0.5">{{ 'invoices.fullyPaid' | translate }}</p>
+              <p class="text-[11px] font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-0.5">{{ 'salesReturns.stats.fullyRefunded' | translate }}</p>
               <h3 class="text-xl font-bold text-gray-900 dark:text-white tracking-tight">{{ stats.fullyPaidCount | number }}</h3>
             </div>
           </div>
@@ -162,6 +163,16 @@ import { FormsModule } from '@angular/forms';
       (close)="isPaymentModalOpen = false"
       (paymentAdded)="onPaymentSaved()">
     </app-payment-modal>
+
+    <!-- Print Preview Modal -->
+    <app-print-preview-modal 
+      *ngIf="isPrintModalOpen"
+      [isOpen]="isPrintModalOpen" 
+      [pdfBlobUrl]="pdfBlobUrl" 
+      [loading]="pdfLoading"
+      [title]="'Sales Return ' + (selectedInvoiceForPrint?.code || '')"
+      (close)="closePrintModal()">
+    </app-print-preview-modal>
   `
 })
 export class SalesReturnsListComponent implements OnInit {
@@ -192,17 +203,43 @@ export class SalesReturnsListComponent implements OnInit {
     );
   }
 
+  isPrintModalOpen = false;
+  pdfBlobUrl: string | null = null;
+  pdfLoading = false;
+  selectedInvoiceForPrint: InvoiceBasicResponse | null = null;
+
   customActions = [
+    {
+      id: 'confirm',
+      label: 'stockAdjustments.confirm',
+      icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>',
+      colorClass: 'text-success-600 dark:text-success-400 hover:bg-success-50 dark:hover:bg-success-500/10',
+      visible: (item: any) => item.status === 'Draft'
+    },
+    {
+      id: 'cancel',
+      label: 'stockAdjustments.cancelDocument',
+      icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>',
+      colorClass: 'text-error-600 dark:text-error-400 hover:bg-error-50 dark:hover:bg-error-500/10',
+      visible: (item: any) => item.status !== 'Cancelled' && item.status !== 'Closed' && item.paymentStatus !== 'FullyPaid'
+    },
     {
       id: 'pay',
       label: 'salesReturns.addPayment',
-      icon: `<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>`,
+      icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>',
       colorClass: 'text-success-600 dark:text-success-400 hover:bg-success-50 dark:hover:bg-success-500/10',
-      visible: (item: any) => item.status !== 'FullyPaid'
+      visible: (item: any) => item.paymentStatus !== 'FullyPaid' && item.status !== 'Cancelled' && item.status !== 'Draft'
+    },
+    {
+      id: 'print',
+      label: 'salesInvoices.printInvoice',
+      icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>',
+      colorClass: 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-500/10',
+      visible: (item: any) => true
     }
   ];
 
-  isActionHidden = (item: any) => item.status === 'FullyPaid';
+  isActionHidden = (item: any) => true;
 
   filters: InvoiceFilters = {
     pageNumber: 1,
@@ -319,7 +356,74 @@ export class SalesReturnsListComponent implements OnInit {
     if (event.actionId === 'pay') {
       this.selectedInvoiceForPayment = event.item;
       this.isPaymentModalOpen = true;
+    } else if (event.actionId === 'confirm') {
+      import('sweetalert2').then(Swal => {
+        Swal.default.fire({
+          title: this.translate.instant('common.confirmTitle'),
+          text: this.translate.instant('common.confirmWarning'),
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#10b981',
+          cancelButtonColor: '#ef4444',
+          confirmButtonText: this.translate.instant('stockAdjustments.confirm'),
+          cancelButtonText: this.translate.instant('login.cancel')
+        }).then((result) => {
+          if (result.isConfirmed) {
+            this.invoiceService.confirm(event.item.id).subscribe({
+              next: () => {
+                this.loadData();
+              }
+            });
+          }
+        });
+      });
+    } else if (event.actionId === 'cancel') {
+      import('sweetalert2').then(Swal => {
+        Swal.default.fire({
+          title: this.translate.instant('common.cancelWarningTitle'),
+          text: this.translate.instant('common.cancelWarningText'),
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#ef4444',
+          cancelButtonColor: '#6b7280',
+          confirmButtonText: this.translate.instant('common.delete'),
+          cancelButtonText: this.translate.instant('login.cancel')
+        }).then((result) => {
+          if (result.isConfirmed) {
+            this.invoiceService.cancel(event.item.id).subscribe({
+              next: () => {
+                this.loadData();
+              }
+            });
+          }
+        });
+      });
+    } else if (event.actionId === 'print') {
+      this.selectedInvoiceForPrint = event.item;
+      this.isPrintModalOpen = true;
+      this.pdfLoading = true;
+
+      this.invoiceService.printPdf(event.item.id).subscribe({
+        next: (blob) => {
+          const url = window.URL.createObjectURL(blob);
+          this.pdfBlobUrl = url;
+          this.pdfLoading = false;
+        },
+        error: () => {
+          this.pdfLoading = false;
+          this.isPrintModalOpen = false;
+        }
+      });
     }
+  }
+
+  closePrintModal() {
+    this.isPrintModalOpen = false;
+    if (this.pdfBlobUrl) {
+      window.URL.revokeObjectURL(this.pdfBlobUrl);
+      this.pdfBlobUrl = null;
+    }
+    this.selectedInvoiceForPrint = null;
   }
 
   onPaymentSaved() {

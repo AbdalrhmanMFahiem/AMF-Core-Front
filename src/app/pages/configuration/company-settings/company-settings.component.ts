@@ -9,11 +9,12 @@ import { PageBreadcrumbComponent } from '../../../shared/components/common/page-
 import { ButtonComponent } from '../../../shared/components/ui/button/button.component';
 import { LabelComponent } from '../../../shared/components/form/label/label.component';
 import { InputFieldComponent } from '../../../shared/components/form/input/input-field.component';
+import { ModalComponent } from '../../../shared/components/ui/modal/modal.component';
 
 @Component({
   selector: 'app-company-settings',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, TranslateModule, PageBreadcrumbComponent, ButtonComponent, LabelComponent, InputFieldComponent],
+  imports: [CommonModule, ReactiveFormsModule, TranslateModule, PageBreadcrumbComponent, ButtonComponent, LabelComponent, InputFieldComponent, ModalComponent],
   templateUrl: './company-settings.component.html'
 })
 export class CompanySettingsComponent implements OnInit {
@@ -24,6 +25,9 @@ export class CompanySettingsComponent implements OnInit {
   iconFile: File | null = null;
   currentLogoUrl: string | null = null;
   currentIconUrl: string | null = null;
+  isOpen = false;
+  
+  settings: any = {};
 
   constructor(
     private fb: FormBuilder,
@@ -37,10 +41,21 @@ export class CompanySettingsComponent implements OnInit {
     this.loadSettings();
   }
 
+  openModal(): void {
+    this.form.patchValue(this.settings);
+    this.isOpen = true;
+  }
+
+  closeModal(): void {
+    this.isOpen = false;
+    this.logoFile = null;
+    this.iconFile = null;
+  }
+
   initForm(): void {
     this.form = this.fb.group({
       id: [0],
-      companyCode: [''],
+      companyCode: [{ value: '', disabled: true }],
       companyAName: ['', Validators.required],
       companyEName: [''],
       registrationNumber: [''],
@@ -59,26 +74,29 @@ export class CompanySettingsComponent implements OnInit {
     this.companySettingService.getSettings().subscribe({
       next: (res) => {
         if (res) {
+          const data = (res as any).value || res;
+          this.settings = { ...data };
+          
           this.form.patchValue({
-            id: res.id,
-            companyCode: res.companyCode,
-            companyAName: res.companyAName,
-            companyEName: res.companyEName,
-            registrationNumber: res.registrationNumber,
-            taxNumber: res.taxNumber,
-            address: res.address,
-            country: res.country,
-            phoneNumber: res.phoneNumber,
-            email: res.email,
-            website: res.website,
-            logoPath: res.logoPath
+            id: data.id,
+            companyCode: data.companyCode,
+            companyAName: data.companyAName,
+            companyEName: data.companyEName,
+            registrationNumber: data.registrationNumber,
+            taxNumber: data.taxNumber,
+            address: data.address,
+            country: data.country,
+            phoneNumber: data.phoneNumber,
+            email: data.email,
+            website: data.website,
+            logoPath: data.logoPath
           });
 
-          if (res.logoBinary) {
-            this.currentLogoUrl = 'data:image/png;base64,' + res.logoBinary;
+          if (data.logoBinary) {
+            this.currentLogoUrl = 'data:image/png;base64,' + data.logoBinary;
           }
-          if (res.iconBinary) {
-            this.currentIconUrl = 'data:image/png;base64,' + res.iconBinary;
+          if (data.iconBinary) {
+            this.currentIconUrl = 'data:image/png;base64,' + data.iconBinary;
           }
         }
         this.isLoading = false;
@@ -133,6 +151,7 @@ export class CompanySettingsComponent implements OnInit {
         this.isSaving = false;
         this.logoFile = null;
         this.iconFile = null;
+        this.closeModal();
         this.loadSettings();
       },
       error: (err) => {

@@ -26,6 +26,30 @@ export class StockTransactionService {
     return this.http.get<PaginatedList<StockTransactionResponse>>(this.apiUrl, { params });
   }
 
+  exportToExcel(filters: StockTransactionFilters): Observable<Blob> {
+    let params = new HttpParams();
+    if (filters.searchValue) params = params.set('searchValue', filters.searchValue);
+    if (filters.itemId) params = params.set('itemId', filters.itemId.toString());
+    if (filters.warehouseId) params = params.set('warehouseId', filters.warehouseId.toString());
+    if (filters.transactionType) params = params.set('transactionType', filters.transactionType.toString());
+    if (filters.dateFrom) params = params.set('dateFrom', filters.dateFrom);
+    if (filters.dateTo) params = params.set('dateTo', filters.dateTo);
+
+    return this.http.get(`${this.apiUrl}/export-excel`, { params, responseType: 'blob' });
+  }
+
+  exportToPdf(filters: StockTransactionFilters): Observable<Blob> {
+    let params = new HttpParams();
+    if (filters.searchValue) params = params.set('searchValue', filters.searchValue);
+    if (filters.itemId) params = params.set('itemId', filters.itemId.toString());
+    if (filters.warehouseId) params = params.set('warehouseId', filters.warehouseId.toString());
+    if (filters.transactionType) params = params.set('transactionType', filters.transactionType.toString());
+    if (filters.dateFrom) params = params.set('dateFrom', filters.dateFrom);
+    if (filters.dateTo) params = params.set('dateTo', filters.dateTo);
+
+    return this.http.get(`${this.apiUrl}/export-pdf`, { params, responseType: 'blob' });
+  }
+
   getByItem(itemId: number): Observable<StockTransactionResponse[]> {
     return this.http.get<StockTransactionResponse[]>(`${this.apiUrl}/item/${itemId}`);
   }

@@ -12,8 +12,8 @@ import { LabelComponent } from '../../../shared/components/form/label/label.comp
   selector: 'app-inventory-settings',
   standalone: true,
   imports: [
-    CommonModule, 
-    ReactiveFormsModule, 
+    CommonModule,
+    ReactiveFormsModule,
     TranslateModule,
     PageBreadcrumbComponent,
     ModalComponent,
@@ -31,13 +31,13 @@ export class InventorySettingsComponent implements OnInit {
   isLoading = false;
   isSaving = false;
   successMessage = '';
-  
+
   isOpen = false;
-  
+
   settings = {
     allowNegativeStock: false,
     requireStockBeforeConfirm: true,
-    valuationMethod: 1, // 1 = Weighted Average, 2 = FIFO
+    valuationMethod: 'WeightedAverage',
     autoPostInventoryOnSave: false,
     invoicesDirectlyAffectInventory: false,
     notes: ''
@@ -47,7 +47,7 @@ export class InventorySettingsComponent implements OnInit {
     this.form = this.fb.group({
       allowNegativeStock: [false],
       requireStockBeforeConfirm: [true],
-      valuationMethod: [1],
+      valuationMethod: ['WeightedAverage'],
       autoPostInventoryOnSave: [false],
       invoicesDirectlyAffectInventory: [false],
       notes: ['']
@@ -58,13 +58,13 @@ export class InventorySettingsComponent implements OnInit {
     this.loadSettings();
   }
 
-  openModal() { 
+  openModal() {
     this.form.patchValue(this.settings);
-    this.isOpen = true; 
+    this.isOpen = true;
   }
-  
-  closeModal() { 
-    this.isOpen = false; 
+
+  closeModal() {
+    this.isOpen = false;
     this.successMessage = '';
   }
 
@@ -73,15 +73,16 @@ export class InventorySettingsComponent implements OnInit {
     this.configInventoryService.getSettings().subscribe({
       next: (res) => {
         if (res) {
+          const data = (res as any).value || res;
           this.settings = {
-            allowNegativeStock: res.allowNegativeStock,
-            requireStockBeforeConfirm: res.requireStockBeforeConfirm,
-            valuationMethod: res.valuationMethod ?? 1,
-            autoPostInventoryOnSave: res.autoPostInventoryOnSave ?? false,
-            invoicesDirectlyAffectInventory: res.invoicesDirectlyAffectInventory ?? false,
-            notes: res.notes || ''
+            allowNegativeStock: data.allowNegativeStock || false,
+            requireStockBeforeConfirm: data.requireStockBeforeConfirm || false,
+            valuationMethod: data.valuationMethod || 'WeightedAverage',
+            autoPostInventoryOnSave: data.autoPostInventoryOnSave || false,
+            invoicesDirectlyAffectInventory: data.invoicesDirectlyAffectInventory || false,
+            notes: data.notes || ''
           };
-          this.form.patchValue(res);
+          this.form.patchValue(this.settings);
         }
         this.isLoading = false;
       },
@@ -97,7 +98,7 @@ export class InventorySettingsComponent implements OnInit {
 
     this.isSaving = true;
     this.successMessage = '';
-    
+
     this.configInventoryService.updateSettings(this.form.value).subscribe({
       next: () => {
         this.settings = { ...this.settings, ...this.form.value };

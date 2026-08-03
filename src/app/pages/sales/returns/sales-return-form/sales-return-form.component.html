@@ -70,23 +70,35 @@
 
         <!-- Left Side: Form Fields -->
         <div class="lg:col-span-3 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          <!-- Linked Return Toggle -->
-          <div class="sm:col-span-2 lg:col-span-3 flex items-center gap-3">
-            <label class="relative inline-flex items-center cursor-pointer">
-              <input type="checkbox" [(ngModel)]="isLinkedReturn" name="isLinkedReturn" (ngModelChange)="onLinkedReturnChange()" [disabled]="mode === 'view'" class="sr-only peer">
-              <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:inset-s-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-brand-600"></div>
-              <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">{{ 'salesReturns.linkedReturn' | translate }}</span>
-            </label>
-          </div>
+          <!-- Linked Return & Original Invoice Row -->
+          <div class="sm:col-span-2 lg:col-span-3 bg-gray-50 dark:bg-gray-800/50 p-4 rounded-xl border border-gray-100 dark:border-gray-700/50 flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-8 transition-all">
+            
+            <!-- Toggle -->
+            <div class="shrink-0 flex items-center">
+              <label class="relative inline-flex items-center cursor-pointer">
+                <input type="checkbox" [(ngModel)]="isLinkedReturn" name="isLinkedReturn"
+                  (ngModelChange)="onLinkedReturnChange()" [disabled]="mode === 'view'" class="peer sr-only" />
+                <div class="block h-6 w-11 rounded-full bg-gray-200 dark:bg-gray-700 shadow-inner 
+                            after:absolute after:top-0.5 after:inset-s-0.5 after:h-5 after:w-5 after:rounded-full after:bg-white after:shadow-sm after:transition-all after:content-[''] 
+                            peer-checked:bg-brand-500 peer-checked:dark:bg-brand-500 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full 
+                            peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-brand-500/20 dark:peer-focus:ring-brand-500/10 peer-disabled:opacity-50">
+                </div>
+                <span class="ms-3 text-sm font-semibold text-gray-800 dark:text-gray-200">
+                  {{ 'salesReturns.linkedReturn' | translate }}
+                </span>
+              </label>
+            </div>
 
-          <!-- Original Invoice (If linked) -->
-          <div *ngIf="isLinkedReturn" class="sm:col-span-2 lg:col-span-3">
-            <label class="mb-2.5 block text-sm font-medium text-gray-800 dark:text-white/90">
-              {{ 'salesReturns.fields.originalInvoice' | translate }} <span class="text-error-500">*</span>
-            </label>
-            <app-searchable-select [(ngModel)]="model.originalInvoiceId" name="originalInvoiceId" required
-              [options]="originalInvoicesOptions" (ngModelChange)="onOriginalInvoiceChange()" [disabled]="mode === 'view'" placeholder="common.select">
-            </app-searchable-select>
+            <!-- Original Invoice (If linked) -->
+            <div *ngIf="isLinkedReturn" class="flex-1 min-w-62.5 animate-fade-in">
+              <label class="mb-2 block text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+                {{ 'salesReturns.fields.originalInvoice' | translate }} <span class="text-error-500">*</span>
+              </label>
+              <app-searchable-select [(ngModel)]="model.originalInvoiceId" name="originalInvoiceId" required
+                [options]="originalInvoicesOptions" (ngModelChange)="onOriginalInvoiceChange()"
+                [disabled]="mode === 'view'" placeholder="common.select">
+              </app-searchable-select>
+            </div>
           </div>
 
           <!-- Invoice Date -->
@@ -240,7 +252,7 @@
                     {{ i + 1 }}
                   </td>
                   <!-- Item Info -->
-                  <td class="px-4 py-3 align-top  min-w-[200px]">
+                  <td class="px-4 py-3 align-top min-w-50">
                     <div class="flex flex-col items-start gap-1.5">
                       <div
                         class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-xs font-mono font-medium bg-gray-100 text-gray-600 border border-gray-200 shadow-sm dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700">
@@ -260,9 +272,10 @@
                   <!-- Quantity -->
                   <td class="px-4 py-2">
                     <input type="number" [(ngModel)]="line.quantity" name="qty_{{i}}"
-                      (ngModelChange)="recalculateTotals()" [disabled]="mode === 'view'" min="1" [max]="isLinkedReturn ? line['_availableToReturn'] : 999999"
-                      class="w-full min-w-[100px] rounded-md border border-gray-200 px-3 py-1.5 text-sm dark:bg-dark-900 dark:border-gray-700" />
-                    <div *ngIf="isLinkedReturn" class="text-[10px] text-gray-500 mt-1">
+                      (ngModelChange)="recalculateTotals()" [disabled]="mode === 'view'" min="1"
+                      [max]="isLinkedReturn ? line['_availableToReturn'] : null"
+                      class="w-full min-w-25 rounded-md border border-gray-200 px-3 py-1.5 text-sm dark:bg-dark-900 dark:border-gray-700 dark:text-white" />
+                    <div *ngIf="isLinkedReturn" class="text-[10px] text-gray-400 mt-1 whitespace-nowrap">
                       {{ 'salesReturns.available' | translate }}: {{ line['_availableToReturn'] }}
                     </div>
                   </td>
@@ -270,45 +283,48 @@
                   <!-- Price -->
                   <td class="px-4 py-2">
                     <input type="number" [(ngModel)]="line.unitPrice" name="price_{{i}}"
-                      (ngModelChange)="recalculateTotals()" [disabled]="mode === 'view'" min="0"
-                      class="w-full min-w-[100px] rounded-md border border-gray-200 px-3 py-1.5 text-sm dark:bg-dark-900 dark:border-gray-700" />
+                      (ngModelChange)="recalculateTotals()" [disabled]="mode === 'view' || isLinkedReturn" min="0"
+                      class="w-full min-w-25 rounded-md border border-gray-200 px-3 py-1.5 text-sm dark:bg-dark-900 dark:border-gray-700 dark:text-white" />
                   </td>
 
                   <!-- Discount -->
-                  <td class="px-4 py-1.5 min-w-[110px]">
+                  <td class="px-4 py-1.5 min-w-27.5">
                     <div class="flex flex-col -space-y-px">
                       <div class="relative w-full">
                         <input type="number" [(ngModel)]="line.discountPercent" name="disc_perc_{{i}}"
-                          (ngModelChange)="onDiscountPercentChange(i)" [disabled]="mode === 'view'" min="0" max="100"
-                          class="w-full min-w-[60px] rounded-t-md rounded-b-none border border-gray-200 pl-2 pr-6 py-1 text-xs h-7 dark:bg-dark-900 dark:border-gray-700 ltr:pr-6 rtl:pl-6 rtl:pr-2 focus:z-10 relative"
+                          (ngModelChange)="onDiscountPercentChange(i)" [disabled]="mode === 'view' || isLinkedReturn"
+                          min="0" max="100"
+                          class="w-full min-w-15 rounded-t-md rounded-b-none border border-gray-200 pl-2 pr-6 py-1 text-xs h-7 dark:bg-dark-900 dark:border-gray-700 dark:text-white ltr:pr-6 rtl:pl-6 rtl:pr-2 focus:z-10 relative"
                           placeholder="%" />
                         <span
                           class="absolute inset-y-0 inset-e-0 flex items-center pe-2 text-gray-400 text-[11px] font-medium z-20">%</span>
                       </div>
                       <div class="relative w-full">
                         <input type="number" [(ngModel)]="line._discountAmount" name="disc_amt_{{i}}"
-                          (ngModelChange)="onDiscountAmountChange(i)" [disabled]="mode === 'view'" min="0"
-                          class="w-full min-w-[60px] rounded-b-md rounded-t-none border border-gray-200 px-2 py-1 text-xs h-7 dark:bg-dark-900 dark:border-gray-700 focus:z-10 relative"
+                          (ngModelChange)="onDiscountAmountChange(i)" [disabled]="mode === 'view' || isLinkedReturn"
+                          min="0"
+                          class="w-full min-w-15 rounded-b-md rounded-t-none border border-gray-200 px-2 py-1 text-xs h-7 dark:bg-dark-900 dark:border-gray-700 dark:text-white focus:z-10 relative"
                           [placeholder]="'invoices.amount' | translate" />
                       </div>
                     </div>
                   </td>
 
                   <!-- Tax -->
-                  <td class="px-4 py-1.5 min-w-[110px]">
+                  <td class="px-4 py-1.5 min-w-27.5">
                     <div class="flex flex-col -space-y-px">
                       <div class="relative w-full">
                         <input type="number" [(ngModel)]="line.taxPercent" name="tax_perc_{{i}}"
-                          (ngModelChange)="onTaxPercentChange(i)" [disabled]="mode === 'view'" min="0" max="100"
-                          class="w-full min-w-[60px] rounded-t-md rounded-b-none border border-gray-200 pl-2 pr-6 py-1 text-xs h-7 dark:bg-dark-900 dark:border-gray-700 ltr:pr-6 rtl:pl-6 rtl:pr-2 focus:z-10 relative"
+                          (ngModelChange)="onTaxPercentChange(i)" [disabled]="mode === 'view' || isLinkedReturn" min="0"
+                          max="100"
+                          class="w-full min-w-15 rounded-t-md rounded-b-none border border-gray-200 pl-2 pr-6 py-1 text-xs h-7 dark:bg-dark-900 dark:border-gray-700 dark:text-white ltr:pr-6 rtl:pl-6 rtl:pr-2 focus:z-10 relative"
                           placeholder="%" />
                         <span
                           class="absolute inset-y-0 inset-e-0 flex items-center pe-2 text-gray-400 text-[11px] font-medium z-20">%</span>
                       </div>
                       <div class="relative w-full">
                         <input type="number" [(ngModel)]="line._taxAmount" name="tax_amt_{{i}}"
-                          (ngModelChange)="onTaxAmountChange(i)" [disabled]="mode === 'view'" min="0"
-                          class="w-full min-w-[60px] rounded-b-md rounded-t-none border border-gray-200 px-2 py-1 text-xs h-7 dark:bg-dark-900 dark:border-gray-700 focus:z-10 relative"
+                          (ngModelChange)="onTaxAmountChange(i)" [disabled]="mode === 'view' || isLinkedReturn" min="0"
+                          class="w-full min-w-15 rounded-b-md rounded-t-none border border-gray-200 px-2 py-1 text-xs h-7 dark:bg-dark-900 dark:border-gray-700 dark:text-white focus:z-10 relative"
                           [placeholder]="'invoices.amount' | translate" />
                       </div>
                     </div>
@@ -438,13 +454,8 @@
   (close)="validationErrors = []"></app-error-banner>
 
 <!-- Modals -->
-<app-item-lookup-modal 
-  [isOpen]="isItemModalOpen" 
-  (close)="isItemModalOpen = false"
-  [usageType]="1"
-  [warehouseId]="model.warehouseId"
-  [checkWarehouseExistence]="false"
-  (selectItem)="onItemSelected($event)">
+<app-item-lookup-modal [isOpen]="isItemModalOpen" (close)="isItemModalOpen = false" [usageType]="1"
+  [warehouseId]="model.warehouseId" [checkWarehouseExistence]="false" (selectItem)="onItemSelected($event)">
 </app-item-lookup-modal>
 <app-cost-element-lookup-modal [isOpen]="isCostElementModalOpen" [type]="'sales'"
   (close)="isCostElementModalOpen = false"
