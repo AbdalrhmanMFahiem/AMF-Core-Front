@@ -8,8 +8,9 @@ export interface ItemFilters extends RequestFilters {
   itemGroupId?: number;
   itemPropertyId?: number;
   warehouseId?: number;
+  baseUomType?: string;
   checkWarehouseExistence?: boolean;
-  usageType?: 'Sales' | 'Purchases';
+  usageType?: 'Sales' | 'Purchases' | 'Inventory';
 }
 
 export interface ItemUnitOfMeasureRequest {
@@ -41,6 +42,17 @@ export interface ItemPurchasingDetailsResponse {
   purchasePrice?: number;
   defaultWarehouseId?: number;
   purchaseUomId?: number;
+  baseUomType?: UomType;
+  availableUoms: { id: number; code: string; name: string }[];
+}
+
+export interface ItemSalesDetailsResponse {
+  itemId: number;
+  itemCode: string;
+  itemName: string;
+  salesPrice?: number;
+  defaultWarehouseId?: number;
+  salesUomId?: number;
   baseUomType?: UomType;
   availableUoms: { id: number; code: string; name: string }[];
 }

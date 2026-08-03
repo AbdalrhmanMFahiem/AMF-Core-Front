@@ -1,17 +1,9 @@
 <app-page-breadcrumb [pageTitle]="mode === 'add' ? 'stockAdjustments.add' : 'stockAdjustments.view'" />
 
-<app-success-redirect-banner
-  *ngIf="saveSuccess"
-  [message]="'stockAdjustments.saveSuccess'"
-  [redirectUrl]="'/inventory/stock-adjustments'">
-</app-success-redirect-banner>
-
-<app-error-banner
-  *ngIf="validationErrors.length > 0"
-  [errors]="validationErrors">
-</app-error-banner>
-
-<div class="space-y-6" *ngIf="!saveSuccess">
+<div class="space-y-6">
+  <app-success-redirect-banner [isVisible]="saveSuccess" [message]="'common.savedSuccessfully'"
+    [redirectUrl]="'/inventory/stock-adjustments'" [countdownSeconds]="5" (stay)="saveSuccess = false">
+  </app-success-redirect-banner>
   <!-- Status Badge for View Mode -->
   <div *ngIf="mode === 'view' && viewResponse" class="flex justify-between items-center bg-white dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm">
     <div class="flex items-center gap-3">
@@ -106,59 +98,72 @@
         </button>
       </div>
 
-      <div class="overflow-x-auto">
-        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700 text-sm text-left rtl:text-right">
-          <thead class="bg-gray-50 dark:bg-gray-800/50 text-gray-700 dark:text-gray-300">
-            <tr>
-              <th scope="col" class="px-4 py-3">{{ 'common.code' | translate }}</th>
-              <th scope="col" class="px-4 py-3">{{ 'common.name' | translate }}</th>
-              <th scope="col" class="px-4 py-3 w-32">{{ 'stockAdjustments.systemQuantity' | translate }}</th>
-              <th scope="col" class="px-4 py-3 w-32">{{ 'stockAdjustments.countedQuantity' | translate }}</th>
-              <th scope="col" class="px-4 py-3 w-32">{{ 'stockAdjustments.difference' | translate }}</th>
-              <th scope="col" class="px-4 py-3 text-center" *ngIf="mode !== 'view'">{{ 'common.actions' | translate }}</th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-800">
-            <tr *ngFor="let line of model.lines; let i = index">
-              <td class="px-4 py-3 font-medium text-gray-900 dark:text-gray-100">{{ line._itemCode }}</td>
-              <td class="px-4 py-3 text-gray-700 dark:text-gray-300">{{ line._itemName }}</td>
-              <td class="px-4 py-3">
-                <input type="number" 
-                       [(ngModel)]="line.systemQuantity" 
-                       name="sys_qty_{{i}}" 
-                       class="w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-1.5 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100"
-                       [disabled]="true">
-              </td>
-              <td class="px-4 py-3">
-                <input type="number" 
-                       [(ngModel)]="line.countedQuantity" 
-                       name="count_qty_{{i}}" 
-                       class="w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-1.5 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 disabled:bg-gray-100 dark:disabled:bg-gray-700 disabled:text-gray-500 dark:disabled:text-gray-400"
-                       [disabled]="mode === 'view'"
-                       (ngModelChange)="onQuantityChange(i)"
-                       required>
-              </td>
-              <td class="px-4 py-3">
-                <input type="number" 
-                       [(ngModel)]="line._difference" 
-                       name="diff_qty_{{i}}" 
-                       class="w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-1.5 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none bg-gray-50 dark:bg-gray-700 font-medium"
-                       [ngClass]="{'text-red-600 dark:text-red-400': (line._difference || 0) < 0, 'text-green-600 dark:text-green-400': (line._difference || 0) > 0, 'text-gray-900 dark:text-gray-100': (line._difference || 0) === 0}"
-                       [disabled]="true">
-              </td>
-              <td class="px-4 py-3 text-center" *ngIf="mode !== 'view'">
-                <button type="button" (click)="removeItem(i)" class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300" title="{{ 'common.delete' | translate }}">
-                  <i class="fas fa-trash"></i>
-                </button>
-              </td>
-            </tr>
-            <tr *ngIf="model.lines.length === 0">
-              <td colspan="6" class="px-4 py-8 text-center text-gray-500 dark:text-gray-400">
-                {{ 'common.noData' | translate }}
-              </td>
-            </tr>
-          </tbody>
-        </table>
+      <div class="w-full min-w-0 overflow-visible rounded-xl border border-gray-200 bg-white dark:border-white/5 dark:bg-white/3">
+        <div class="w-full overflow-visible">
+          <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700 text-sm text-left rtl:text-right">
+            <thead class="bg-gray-50 dark:bg-gray-800/50 text-gray-700 dark:text-gray-300">
+              <tr>
+                <th scope="col" class="px-4 py-3">{{ 'common.code' | translate }}</th>
+                <th scope="col" class="px-4 py-3">{{ 'common.name' | translate }}</th>
+                <th scope="col" class="px-4 py-3 w-36">{{ 'common.unitOfMeasure' | translate }} <span class="text-red-500">*</span></th>
+                <th scope="col" class="px-4 py-3 w-32">{{ 'stockAdjustments.systemQuantity' | translate }}</th>
+                <th scope="col" class="px-4 py-3 w-32">{{ 'stockAdjustments.countedQuantity' | translate }}</th>
+                <th scope="col" class="px-4 py-3 w-32">{{ 'stockAdjustments.difference' | translate }}</th>
+                <th scope="col" class="px-4 py-3 text-center" *ngIf="mode !== 'view'">{{ 'common.actions' | translate }}</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-800">
+              <tr *ngFor="let line of model.lines; let i = index">
+                <td class="px-4 py-3 font-medium text-gray-900 dark:text-gray-100">{{ line._itemCode }}</td>
+                <td class="px-4 py-3 text-gray-700 dark:text-gray-300">{{ line._itemName }}</td>
+                <td class="px-4 py-3 min-w-36">
+                  <app-searchable-select
+                    [options]="$any(line)['_availableUomsOptions'] || getUomOptions($any(line)['_baseUomType'])"
+                    [(ngModel)]="line.uomId"
+                    name="uom_{{i}}"
+                    [disabled]="mode === 'view'"
+                    [placeholder]="'common.select' | translate"
+                    [required]="true">
+                  </app-searchable-select>
+                </td>
+                <td class="px-4 py-3">
+                  <input type="number" 
+                         [(ngModel)]="line.systemQuantity" 
+                         name="sys_qty_{{i}}" 
+                         class="w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-1.5 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                         [disabled]="true">
+                </td>
+                <td class="px-4 py-3">
+                  <input type="number" 
+                         [(ngModel)]="line.countedQuantity" 
+                         name="count_qty_{{i}}" 
+                         class="w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-1.5 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 disabled:bg-gray-100 dark:disabled:bg-gray-700 disabled:text-gray-500 dark:disabled:text-gray-400"
+                         [disabled]="mode === 'view'"
+                         (ngModelChange)="onQuantityChange(i)"
+                         required>
+                </td>
+                <td class="px-4 py-3">
+                  <input type="number" 
+                         [(ngModel)]="line._difference" 
+                         name="diff_qty_{{i}}" 
+                         class="w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-1.5 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 outline-none bg-gray-50 dark:bg-gray-700 font-medium"
+                         [ngClass]="{'text-red-600 dark:text-red-400': (line._difference || 0) < 0, 'text-green-600 dark:text-green-400': (line._difference || 0) > 0, 'text-gray-900 dark:text-gray-100': (line._difference || 0) === 0}"
+                         [disabled]="true">
+                </td>
+                <td class="px-4 py-3 text-center" *ngIf="mode !== 'view'">
+                  <button type="button" (click)="removeItem(i)" class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300" title="{{ 'common.delete' | translate }}">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </td>
+              </tr>
+              <tr *ngIf="model.lines.length === 0">
+                <td [attr.colspan]="mode !== 'view' ? 7 : 6" class="px-4 py-8 text-center text-gray-500 dark:text-gray-400">
+                  {{ 'common.noData' | translate }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </app-component-card>
 
@@ -222,5 +227,8 @@
   (confirm)="onProceedConfirm()"
   (cancel)="onCancelConfirmModal()">
 </app-confirmation-modal>
+
+<app-error-banner [isVisible]="validationErrors.length > 0" [errors]="validationErrors"
+  (close)="validationErrors = []"></app-error-banner>
 
 

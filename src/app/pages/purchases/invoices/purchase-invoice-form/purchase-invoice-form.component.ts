@@ -19,6 +19,7 @@ import { CostElementLookupModalComponent } from '../../../../shared/components/l
 import { PaymentModalComponent } from '../payment-modal/payment-modal.component';
 import { DocumentStatusBadgeComponent } from '../../../../shared/components/common/document-status-badge/document-status-badge.component';
 import { StatusBadgeComponent } from '../../../../shared/components/ui/status-badge/status-badge.component';
+import { QuickVendorModalComponent } from '../../../../shared/components/quick-vendor-modal/quick-vendor-modal.component';
 import { HasUnsavedChanges } from '../../../../core/guards/unsaved-changes.guard';
 import {
   InvoiceRequest,
@@ -50,7 +51,8 @@ import { ItemLookupResponse, InvoiceCostElementDropdown } from '../../../../core
     CostElementLookupModalComponent,
     PaymentModalComponent,
     DocumentStatusBadgeComponent,
-    StatusBadgeComponent
+    StatusBadgeComponent,
+    QuickVendorModalComponent
   ],
   templateUrl: './purchase-invoice-form.component.html',
 })
@@ -79,6 +81,21 @@ export class PurchaseInvoiceFormComponent implements OnInit, HasUnsavedChanges {
   isPoLinesModalOpen = false;
   isCostElementModalOpen = false;
   isPaymentModalOpen = false;
+
+  isQuickVendorModalOpen = false;
+
+  openQuickVendorModal(): void {
+    if (this.mode === 'view') return;
+    this.isQuickVendorModalOpen = true;
+  }
+
+  onVendorCreated(newVendor: any): void {
+    this.lookupService.getVendors().subscribe((vendors: any[]) => {
+      this.partnersOptions = vendors.map((v: any) => ({ value: v.id, label: `${v.code} - ${v.name}` }));
+      this.model.businessPartnerId = newVendor.id;
+      this.form?.form.markAsDirty();
+    });
+  }
 
   model: InvoiceRequest = {
     code: '',
@@ -527,22 +544,28 @@ export class PurchaseInvoiceFormComponent implements OnInit, HasUnsavedChanges {
   validate(): boolean {
     this.validationErrors = [];
     if (!this.model.businessPartnerId) {
-      this.validationErrors.push(`${this.translate.instant('purchaseInvoices.fields.businessPartner')}: ${this.translate.instant('validation.required')}`);
+      this.validationErrors.push(`${this.translate.instant('purchaseInvoices.fields.businessPartner')}: ${this.translate.instant('common.pleaseFillRequiredFields')}`);
     }
     if (!this.model.warehouseId) {
-      this.validationErrors.push(`${this.translate.instant('purchaseInvoices.fields.warehouse')}: ${this.translate.instant('validation.required')}`);
+      this.validationErrors.push(`${this.translate.instant('purchaseInvoices.fields.warehouse')}: ${this.translate.instant('common.pleaseFillRequiredFields')}`);
     }
     if (!this.model.lines || this.model.lines.length === 0) {
       this.validationErrors.push(this.translate.instant('purchaseInvoices.errors.atLeastOneItem'));
     } else {
-      const invalidQuantity = this.model.lines.some((l: any) => l.quantity <= 0);
-      if (invalidQuantity) {
-        this.validationErrors.push(this.translate.instant('purchaseInvoices.errors.invalidQuantity'));
-      }
-      const invalidPrice = this.model.lines.some((l: any) => l.unitPrice <= 0);
-      if (invalidPrice) {
-        this.validationErrors.push(this.translate.instant('purchaseInvoices.errors.invalidPrice'));
-      }
+      this.model.lines.forEach((l: any, idx: number) => {
+        const lineNum = idx + 1;
+        const rowPrefix = `${this.translate.instant('common.row')} ${lineNum}`;
+
+        if (!l.uomId && !l.unitOfMeasureId) {
+          this.validationErrors.push(`${rowPrefix}: ${this.translate.instant('common.unitOfMeasure')} ${this.translate.instant('common.uomRequired')}`);
+        }
+        if (l.quantity === undefined || l.quantity === null || l.quantity <= 0) {
+          this.validationErrors.push(`${rowPrefix}: ${this.translate.instant('purchaseInvoices.errors.invalidQuantity')}`);
+        }
+        if (l.unitPrice === undefined || l.unitPrice === null || l.unitPrice <= 0) {
+          this.validationErrors.push(`${rowPrefix}: ${this.translate.instant('purchaseInvoices.errors.invalidPrice')}`);
+        }
+      });
     }
     return this.validationErrors.length === 0;
   }

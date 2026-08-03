@@ -80,7 +80,7 @@
         <div *ngIf="isAdmin" class="mb-5">
           <div class="flex items-center justify-between mb-1.5">
             <app-label class="mb-0!">{{ 'login.company' | translate }} <span class="text-error-500">*</span></app-label>
-            <button type="button" (click)="openSetupModal()"
+            <button type="button" (click)="navigateToSetupWizard()"
               class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-brand-600 bg-brand-50 hover:bg-brand-100 transition-colors dark:bg-brand-500/10 dark:text-brand-400 dark:hover:bg-brand-500/20 border border-brand-100 dark:border-brand-500/20">
               <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                 xmlns="http://www.w3.org/2000/svg">
@@ -172,43 +172,3 @@
 
   </div>
 </div>
-
-<!-- Setup Company Modal -->
-<app-modal [isOpen]="isSetupModalOpen" (close)="closeSetupModal()" className="max-w-md w-full p-6">
-  <div class="mb-5 ltr:pr-8 rtl:pl-8">
-    <h3 class="text-lg font-semibold text-gray-800 dark:text-white/90">
-      {{ 'login.registerNewCompany' | translate }}
-    </h3>
-    <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
-      {{ 'login.registerCompanyDesc' | translate }}
-    </p>
-  </div>
-
-  <div *ngIf="setupError"
-    class="p-3 mb-4 text-sm text-error-700 bg-error-50 rounded-lg dark:bg-error-900/20 dark:text-error-400">
-    {{ setupError }}
-  </div>
-
-  <form (ngSubmit)="onSetupCompany()" class="space-y-4">
-    <div>
-      <app-label>{{ 'login.companyName' | translate }} <span class="text-error-500">*</span></app-label>
-      <app-input-field type="text" [placeholder]="'login.companyName' | translate"
-        [(value)]="setupCompanyData.companyName" name="setupCompanyName" required />
-    </div>
-
-    <div>
-      <app-label>{{ 'login.mainBranchName' | translate }} <span class="text-error-500">*</span></app-label>
-      <app-input-field type="text" [placeholder]="'login.egMainBranch' | translate"
-        [(value)]="setupCompanyData.mainBranchName" name="setupBranchName" required />
-    </div>
-
-    <div class="flex justify-end gap-3 mt-6 pt-2">
-      <app-button type="button" variant="outline" size="sm" (click)="closeSetupModal()">
-        {{ 'login.cancel' | translate }}
-      </app-button>
-      <app-button type="submit" size="sm" [isLoading]="isSettingUpCompany">
-        {{ 'login.registerBtn' | translate }}
-      </app-button>
-    </div>
-  </form>
-</app-modal>

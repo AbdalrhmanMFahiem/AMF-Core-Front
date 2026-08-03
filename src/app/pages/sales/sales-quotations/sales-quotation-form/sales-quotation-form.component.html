@@ -36,18 +36,34 @@
             </span>
           </div>
 
-          <!-- Status Badges -->
+          <!-- Status Badges & Remarks Tooltip -->
           <ng-container *ngIf="mode === 'view' && viewResponse">
-            <app-document-status-badge [status]="viewResponse.status"></app-document-status-badge>
-            <app-status-badge *ngIf="viewResponse.approvalStatus" [status]="viewResponse.approvalStatus"
-              [translationPrefix]="'salesQuotations.status'"></app-status-badge>
+            <div class="flex items-center gap-2">
+              <div class="relative group" *ngIf="viewResponse.remarks">
+                <div [title]="viewResponse.remarks"
+                  class="cursor-pointer inline-flex items-center justify-center p-1.5 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:text-brand-500 dark:hover:text-brand-400 hover:bg-brand-50 dark:hover:bg-brand-500/10 border border-gray-200 dark:border-gray-700 transition-colors">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                  </svg>
+                </div>
+                <!-- Tooltip Popup -->
+                <div class="absolute bottom-full mb-2.5 left-1/2 -translate-x-1/2 hidden group-hover:block z-50 w-64 p-3 bg-gray-900 dark:bg-gray-800 text-white text-xs font-normal rounded-xl shadow-xl border border-gray-700 pointer-events-none transition-all">
+                  <span class="whitespace-pre-line leading-relaxed block">{{ viewResponse.remarks }}</span>
+                  <div class="absolute top-full left-1/2 -translate-x-1/2 -mt-1 border-4 border-transparent border-t-gray-900 dark:border-t-gray-800"></div>
+                </div>
+              </div>
+
+              <app-document-status-badge [status]="viewResponse.status"></app-document-status-badge>
+              <app-status-badge *ngIf="viewResponse.approvalStatus" [status]="viewResponse.approvalStatus"
+                [translationPrefix]="'salesQuotations.status'"></app-status-badge>
+            </div>
           </ng-container>
         </div>
 
         <!-- Action Buttons -->
         <div class="flex items-center gap-3">
           <button
-            *ngIf="mode === 'view' && ($any(viewResponse?.status) === 'Draft' || $any(viewResponse?.status) === 'Open')"
+            *ngIf="mode === 'view' && $any(viewResponse?.status) === 'Draft'"
             type="button" (click)="onConfirm()"
             class="flex items-center gap-2 px-5 py-2.5 text-sm font-medium text-white bg-success-500 rounded-lg shadow-theme-xs hover:bg-success-600 transition-colors">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -57,13 +73,23 @@
           </button>
 
           <button
-            *ngIf="mode === 'view' && $any(viewResponse?.status) !== 'Cancelled' && $any(viewResponse?.status) !== 'Closed'"
+            *ngIf="mode === 'view' && $any(viewResponse?.status) !== 'Cancelled' && $any(viewResponse?.status) !== 'Closed' && $any(viewResponse?.status) !== 'Open'"
             type="button" (click)="onCancelDocument()"
             class="flex items-center gap-2 px-5 py-2.5 text-sm font-medium text-white bg-error-500 rounded-lg shadow-theme-xs hover:bg-error-600 transition-colors">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
             </svg>
             {{ 'stockAdjustments.cancelDocument' | translate }}
+          </button>
+
+          <button
+            *ngIf="mode === 'view' && $any(viewResponse?.status) === 'Open'"
+            type="button" (click)="onCloseDocument()"
+            class="flex items-center gap-2 px-5 py-2.5 text-sm font-medium text-white bg-warning-500 rounded-lg shadow-theme-xs hover:bg-warning-600 transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+            {{ 'salesQuotations.closeDocument' | translate }}
           </button>
 
           <button
@@ -124,9 +150,18 @@
 
           <!-- customer (Business Partner) -->
           <div>
-            <label class="mb-2.5 block text-sm font-medium text-gray-800 dark:text-white/90">
-              {{ 'common.customer' | translate }} <span class="text-error-500">*</span>
-            </label>
+            <div class="flex items-center justify-between mb-2.5">
+              <label class="block text-sm font-medium text-gray-800 dark:text-white/90">
+                {{ 'common.customer' | translate }} <span class="text-error-500">*</span>
+              </label>
+              <button *ngIf="mode !== 'view'" type="button" (click)="openQuickCustomerModal()"
+                class="inline-flex items-center gap-1 text-xs font-medium text-brand-600 hover:text-brand-700 dark:text-brand-400">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                </svg>
+                {{ 'common.quickAdd' | translate }}
+              </button>
+            </div>
             <app-searchable-select [(ngModel)]="model.businessPartnerId" name="businessPartnerId" required
               [options]="customersOptions" [disabled]="mode === 'view'" placeholder="common.select">
             </app-searchable-select>
@@ -202,6 +237,16 @@
             class="whitespace-nowrap pb-4 px-1 border-b-2 font-medium text-sm transition-colors flex items-center">
             {{ 'salesInvoices.tabs.items' | translate }}
           </button>
+          <button type="button" (click)="setTab('cost-elements')"
+            [class.border-brand-500]="activeTab === 'cost-elements'"
+            [class.text-brand-600]="activeTab === 'cost-elements'"
+            [class.border-transparent]="activeTab !== 'cost-elements'"
+            [class.text-gray-500]="activeTab !== 'cost-elements'"
+            [class.hover:text-gray-700]="activeTab !== 'cost-elements'"
+            [class.hover:border-gray-300]="activeTab !== 'cost-elements'"
+            class="whitespace-nowrap pb-4 px-1 border-b-2 font-medium text-sm transition-colors flex items-center">
+            {{ 'invoices.costElementTitle' | translate }}
+          </button>
           <button type="button" (click)="setTab('additional')" [class.border-brand-500]="activeTab === 'additional'"
             [class.text-brand-600]="activeTab === 'additional'" [class.border-transparent]="activeTab !== 'additional'"
             [class.text-gray-500]="activeTab !== 'additional'" [class.hover:text-gray-700]="activeTab !== 'additional'"
@@ -239,14 +284,12 @@
                     {{ 'invoices.qty' | translate }}</th>
                   <th class="px-4 py-3 font-medium text-gray-500 text-start text-xs dark:text-gray-400 uppercase w-32">
                     {{ 'invoices.price' | translate }}</th>
-                  <th class="px-4 py-3 font-medium text-gray-500 text-start text-xs dark:text-gray-400 uppercase w-32">
-                    {{ 'salesInvoices.fields.warehouse' | translate }}</th>
+                  <!-- <th class="px-4 py-3 font-medium text-gray-500 text-start text-xs dark:text-gray-400 uppercase w-32">
+                    {{ 'salesInvoices.fields.warehouse' | translate }}</th> -->
                   <th class="px-4 py-3 font-medium text-gray-500 text-start text-xs dark:text-gray-400 uppercase w-32">
                     {{ 'common.unitOfMeasure' | translate }}</th>
                   <!-- <th class="px-4 py-3 font-medium text-gray-500 text-start text-xs dark:text-gray-400 uppercase w-32">
                     {{ 'salesInvoices.fields.dueDate' | translate }}</th> -->
-                  <th class="px-4 py-3 font-medium text-gray-500 text-start text-xs dark:text-gray-400 uppercase w-32">
-                    {{ 'common.notes' | translate }}</th>
                   <th class="px-4 py-3 font-medium text-gray-500 text-start text-xs dark:text-gray-400 uppercase w-32">
                     <div class="flex flex-col gap-1">
                       <span>{{ 'invoices.discount' | translate }}</span>
@@ -262,6 +305,8 @@
                   <th class="px-4 py-3 font-medium text-gray-500 text-end text-xs dark:text-gray-400 uppercase w-32">{{
                     'invoices.netAmount' | translate }}
                   </th>
+                  <th class="px-4 py-3 font-medium text-gray-500 text-center text-xs dark:text-gray-400 uppercase w-32">
+                    {{ 'common.notes' | translate }}</th>
                   <th *ngIf="mode !== 'view'"
                     class="px-4 py-3 font-medium text-gray-500 text-center text-xs dark:text-gray-400 uppercase w-20">
                   </th>
@@ -269,7 +314,7 @@
               </thead>
               <tbody class="divide-y divide-gray-100 dark:divide-white/5">
                 <tr *ngIf="model.lines.length === 0">
-                  <td [attr.colspan]="mode !== 'view' ? 11 : 10"
+                  <td [attr.colspan]="mode !== 'view' ? 10 : 9"
                     class="px-4 py-8 text-center text-gray-500 dark:text-gray-400">
                     {{ 'salesInvoices.errors.atLeastOneItem' | translate }}
                   </td>
@@ -321,11 +366,11 @@
                   </td>
 
                   <!-- Line Warehouse -->
-                  <td class="px-4 py-2 min-w-40">
+                  <!-- <td class="px-4 py-2 min-w-40">
                     <app-searchable-select [options]="warehousesOptions" [(ngModel)]="line.warehouseId"
                       name="line_wh_{{i}}" [disabled]="mode === 'view'" [required]="true">
                     </app-searchable-select>
-                  </td>
+                  </td> -->
 
                   <!-- UOM -->
                   <td class="px-4 py-2 min-w-32.5">
@@ -341,21 +386,6 @@
                     <app-date-picker [(ngModel)]="line.lineDueDate" name="line_due_date_{{i}}" [disabled]="mode === 'view'">
                     </app-date-picker>
                   </td> -->
-
-
-                  <!-- Notes -->
-                  <td class="px-4 py-2 text-center">
-                    <button type="button" (click)="openLineNotesModal(i)"
-                      [ngClass]="line.notes ? 'text-brand-600 bg-brand-50 dark:bg-brand-500/20 ring-1 ring-brand-500/50' : 'text-gray-500 hover:text-brand-500 hover:bg-gray-50 dark:hover:bg-white/5'"
-                      class="p-1.5 rounded-lg transition-all relative" [title]="'common.notes' | translate">
-                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                      </svg>
-                      <span *ngIf="line.notes"
-                        class="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-brand-500 rounded-full border-2 border-white dark:border-dark-900"></span>
-                    </button>
-                  </td>
 
                   <!-- Discount -->
                   <td class="px-4 py-1.5 min-w-27.5">
@@ -402,9 +432,111 @@
                     {{ line.lineTotal | number:'1.2-2' }}
                   </td>
 
+                  <!-- Notes -->
+                  <td class="px-4 py-2 text-center">
+                    <button type="button" (click)="openLineNotesModal(i)"
+                      [ngClass]="line.notes ? 'text-brand-600 bg-brand-50 dark:bg-brand-500/20 ring-1 ring-brand-500/50' : 'text-gray-500 hover:text-brand-500 hover:bg-gray-50 dark:hover:bg-white/5'"
+                      class="p-1.5 rounded-lg transition-all relative" [title]="'common.notes' | translate">
+                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                      </svg>
+                      <span *ngIf="line.notes"
+                        class="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-brand-500 rounded-full border-2 border-white dark:border-dark-900"></span>
+                    </button>
+                  </td>
+
                   <!-- Actions -->
                   <td *ngIf="mode !== 'view'" class="px-4 py-3 text-center">
                     <button type="button" (click)="removeItem(i)"
+                      class="text-error-500 hover:text-error-600 transition-colors">
+                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                      </svg>
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cost Elements Tab -->
+      <div *ngIf="activeTab === 'cost-elements'" class="space-y-4">
+        <div class="flex justify-end" *ngIf="mode !== 'view'">
+          <button type="button" (click)="openCostElementModal()"
+            class="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-brand-500 rounded-lg shadow-theme-xs hover:bg-brand-600 transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+            </svg>
+            {{ 'salesInvoices.addCostElement' | translate }}
+          </button>
+        </div>
+
+        <div class="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/5 dark:bg-white/3">
+          <div class="max-w-full overflow-x-auto">
+            <table class="min-w-full text-start">
+              <thead class="border-b border-gray-100 dark:border-white/5 bg-gray-50 dark:bg-gray-800/50">
+                <tr>
+                  <th class="px-4 py-3 font-medium text-gray-500 text-center text-xs dark:text-gray-400 uppercase w-12">
+                    #</th>
+                  <th class="px-4 py-3 font-medium text-gray-500 text-start text-xs dark:text-gray-400 uppercase">
+                    {{ 'invoices.costElement' | translate }}
+                  </th>
+                  <th class="px-4 py-3 font-medium text-gray-500 text-start text-xs dark:text-gray-400 uppercase w-32">
+                    {{ 'common.type' | translate }}
+                  </th>
+                  <th class="px-4 py-3 font-medium text-gray-500 text-start text-xs dark:text-gray-400 uppercase w-40">
+                    {{ 'invoices.percentage' | translate }} (%)
+                  </th>
+                  <th class="px-4 py-3 font-medium text-gray-500 text-start text-xs dark:text-gray-400 uppercase w-40">
+                    {{ 'invoices.amount' | translate }}
+                  </th>
+                  <th *ngIf="mode !== 'view'"
+                    class="px-4 py-3 font-medium text-gray-500 text-center text-xs dark:text-gray-400 uppercase w-20">
+                  </th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-100 dark:divide-white/5">
+                <tr *ngIf="!model.costLines || model.costLines.length === 0">
+                  <td [attr.colspan]="mode !== 'view' ? 6 : 5"
+                    class="px-4 py-8 text-center text-gray-500 dark:text-gray-400">
+                    {{ 'invoices.noCostElements' | translate }}
+                  </td>
+                </tr>
+                <tr *ngFor="let cost of model.costLines; let i = index">
+                  <td class="px-4 py-3 text-center text-sm font-medium text-gray-500 dark:text-gray-400">
+                    {{ i + 1 }}
+                  </td>
+                  <td class="px-4 py-3 text-sm font-medium text-gray-900 dark:text-white">
+                    {{ cost['_name'] }}
+                  </td>
+                  <td class="px-4 py-3 text-sm">
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium" [ngClass]="{
+                        'bg-success-50 text-success-700 dark:bg-success-500/10 dark:text-success-400': cost['_operationType'] === 'Addition',
+                        'bg-error-50 text-error-700 dark:bg-error-500/10 dark:text-error-400': cost['_operationType'] === 'Discount' || cost['_operationType'] === 'Deduction'
+                      }">
+                      {{ (cost['_operationType'] === 'Addition' ? 'invoices.addition' :
+                      'invoices.discount') | translate }}
+                    </span>
+                  </td>
+                  <td class="px-4 py-2">
+                    <div class="relative w-full">
+                      <input type="number" [(ngModel)]="cost.percentage" name="cost_perc_{{i}}"
+                        (ngModelChange)="onCostPercentageChange(i)" [disabled]="mode === 'view'" min="0" max="100"
+                        class="w-full rounded-md border border-gray-200 px-3 py-1.5 text-sm dark:bg-dark-900 dark:border-gray-700 dark:text-white pr-7" />
+                      <span class="absolute inset-y-0 inset-e-0 flex items-center pe-2 text-gray-400 text-xs">%</span>
+                    </div>
+                  </td>
+                  <td class="px-4 py-2">
+                    <input type="number" [(ngModel)]="cost.amount" name="cost_amt_{{i}}"
+                      (ngModelChange)="onCostAmountChange(i)" [disabled]="mode === 'view'" min="0"
+                      class="w-full rounded-md border border-gray-200 px-3 py-1.5 text-sm dark:bg-dark-900 dark:border-gray-700 dark:text-white" />
+                  </td>
+                  <td *ngIf="mode !== 'view'" class="px-4 py-3 text-center">
+                    <button type="button" (click)="removeCostElement(i)"
                       class="text-error-500 hover:text-error-600 transition-colors">
                       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -498,30 +630,11 @@
 
     </form>
 
-    <!-- Line Notes Modal -->
-    <app-modal [isOpen]="isLineNotesModalOpen" (close)="isLineNotesModalOpen = false"
-      [title]="'common.statement' | translate">
-      <div class="p-5 space-y-5">
-        <div class="space-y-2">
-          <label class="block text-sm font-semibold text-gray-800 dark:text-gray-200">
-            {{ 'common.statement' | translate }}
-          </label>
-          <textarea [(ngModel)]="currentLineNotes" name="current_line_notes" rows="5" [readonly]="mode === 'view'"
-            class="w-full rounded-xl border border-gray-200 bg-gray-50/50 px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:border-brand-500 focus:bg-white focus:outline-none focus:ring-4 focus:ring-brand-500/10 dark:border-white/10 dark:bg-white/5 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-500 shadow-sm transition-all resize-none disabled:opacity-75"></textarea>
-        </div>
-      </div>
-      <div
-        class="px-5 py-4 bg-gray-50 dark:bg-white/5 border-t border-gray-100 dark:border-white/10 flex justify-end gap-3 rounded-b-2xl">
-        <button type="button" (click)="isLineNotesModalOpen = false"
-          class="px-5 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700 dark:hover:bg-gray-700 transition-colors shadow-theme-xs">
-          {{ (mode === 'view' ? 'common.back' : 'common.cancel') | translate }}
-        </button>
-        <button *ngIf="mode !== 'view'" type="button" (click)="saveLineNotes()"
-          class="px-5 py-2.5 text-sm font-medium text-white bg-brand-500 rounded-xl hover:bg-brand-600 transition-all shadow-theme-sm hover:shadow-theme-md">
-          {{ 'common.save' | translate }}
-        </button>
-      </div>
-    </app-modal>
+    <!-- Line Notes Modal Component -->
+    <app-line-notes-modal [isOpen]="isLineNotesModalOpen" [notes]="currentLineNotes" [readonly]="mode === 'view'"
+      [itemCode]="currentLineItemCode" [itemName]="currentLineItemName" (close)="isLineNotesModalOpen = false"
+      (save)="onSaveLineNotes($event)">
+    </app-line-notes-modal>
   </app-component-card>
 </div>
 
@@ -529,9 +642,13 @@
   (close)="validationErrors = []"></app-error-banner>
 
 <!-- Modals -->
-<app-item-lookup-modal [isOpen]="isItemModalOpen" (close)="isItemModalOpen = false" [usageType]="2"
+<app-item-lookup-modal [isOpen]="isItemModalOpen" (close)="isItemModalOpen = false" [usageType]="1"
   [warehouseId]="model.warehouseId" [checkWarehouseExistence]="false" (selectItem)="onItemSelected($event)">
 </app-item-lookup-modal>
+
+<app-cost-element-lookup-modal [isOpen]="isCostElementModalOpen" (close)="isCostElementModalOpen = false"
+  (selectElement)="onCostElementSelected($event)">
+</app-cost-element-lookup-modal>
 
 <!-- Unsaved Changes Confirmation Overlay -->
 <div *ngIf="showLeaveConfirmation"
@@ -572,5 +689,9 @@
 
 <!-- Print Preview Modal -->
 <app-print-preview-modal *ngIf="isPrintModalOpen" [isOpen]="isPrintModalOpen" [pdfBlobUrl]="pdfBlobUrl"
-  [loading]="pdfLoading" [title]="'Purchase Order ' + model.code" (close)="closePrintModal()">
+  [loading]="pdfLoading" [title]="('salesQuotations.printOrder' | translate) + ' ' + model.code" (close)="closePrintModal()">
 </app-print-preview-modal>
+
+<!-- Quick Customer Modal -->
+<app-quick-customer-modal [(isOpen)]="isQuickCustomerModalOpen" (customerCreated)="onCustomerCreated($event)">
+</app-quick-customer-modal>

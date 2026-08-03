@@ -130,12 +130,14 @@ export class ItemFormComponent implements OnInit {
   };
 
   ngOnInit(): void {
-    this.route.url.subscribe(url => {
-      const path = url[url.length - (this.route.snapshot.paramMap.has('id') ? 2 : 1)]?.path;
-      if (path === 'edit') this.mode = 'edit';
-      else if (path === 'view') this.mode = 'view';
-      else this.mode = 'add';
-    });
+    const url = this.router.url;
+    if (url.includes('/edit/')) {
+      this.mode = 'edit';
+    } else if (url.includes('/view/')) {
+      this.mode = 'view';
+    } else {
+      this.mode = 'add';
+    }
 
     this.loadGeneralLookups();
 

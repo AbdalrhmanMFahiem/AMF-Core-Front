@@ -139,9 +139,17 @@ export class BusinessPartnerFormComponent implements OnInit {
     this.activeTab = tab;
   }
 
+  onTypeChange(): void {
+    if (this.mode === 'add') {
+      this.getNextCode();
+    }
+  }
+
   getNextCode(): void {
-    this.businessPartnerService.getNextCode().subscribe(res => {
-      this.model.code = res.nextCode;
+    this.businessPartnerService.getNextCode(this.model.isCustomer, this.model.isVendor).subscribe(res => {
+      if (res && res.nextCode) {
+        this.model.code = res.nextCode;
+      }
     });
   }
 

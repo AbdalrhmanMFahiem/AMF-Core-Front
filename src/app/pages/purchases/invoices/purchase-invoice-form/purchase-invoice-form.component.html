@@ -103,9 +103,18 @@
 
           <!-- Business Partner -->
           <div>
-            <label class="mb-2.5 block text-sm font-medium text-gray-800 dark:text-white/90">
-              {{ 'purchaseInvoices.fields.businessPartner' | translate }} <span class="text-error-500">*</span>
-            </label>
+            <div class="flex items-center justify-between mb-2.5">
+              <label class="block text-sm font-medium text-gray-800 dark:text-white/90">
+                {{ 'purchaseInvoices.fields.businessPartner' | translate }} <span class="text-error-500">*</span>
+              </label>
+              <button *ngIf="mode !== 'view'" type="button" (click)="openQuickVendorModal()"
+                class="inline-flex items-center gap-1 text-xs font-medium text-brand-600 hover:text-brand-700 dark:text-brand-400">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                </svg>
+                {{ 'common.quickAdd' | translate }}
+              </button>
+            </div>
             <app-searchable-select [(ngModel)]="model.businessPartnerId" name="businessPartnerId" required
               [options]="partnersOptions" [disabled]="mode === 'view'" placeholder="common.select">
             </app-searchable-select>
@@ -516,4 +525,8 @@
     </div>
   </div>
 </div>
+
+<!-- Quick Vendor Modal -->
+<app-quick-vendor-modal [(isOpen)]="isQuickVendorModalOpen" (vendorCreated)="onVendorCreated($event)">
+</app-quick-vendor-modal>
 

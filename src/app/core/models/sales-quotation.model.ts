@@ -1,3 +1,4 @@
+import { InvoiceCostLineRequest, InvoiceCostLineResponse } from './invoice.model';
 import { RequestFilters } from './pagination.model';
 import { DocumentStatus, ApprovalStatus } from './document-status.model';
 export { DocumentStatus, ApprovalStatus };
@@ -12,6 +13,7 @@ export interface SalesQuotationBasicResponse {
   documentDate: string;
   dueDate: string;
   totalAmount: number;
+  remarks?: string;
 }
 
 export interface SalesQuotationLineResponse {
@@ -28,6 +30,7 @@ export interface SalesQuotationLineResponse {
   openQuantity: number;
   unitOfMeasureId?: number;
   unitOfMeasureName?: string;
+  uomName?: string;
   uomConversionFactor: number;
   unitPrice: number;
   discountPercent: number;
@@ -52,6 +55,7 @@ export interface OpenSalesQuotationLineResponse {
   itemName: string;
   quantity: number;
   openQuantity: number;
+  importQuantity?: number;
   unitPrice: number;
   discountPercent: number;
   taxPercent: number;
@@ -62,6 +66,7 @@ export interface OpenSalesQuotationLineResponse {
   baseQuantity: number;
   baseUnitPrice: number;
   notes?: string;
+  [key: string]: any;
 }
 
 export interface SalesQuotationResponse {
@@ -103,11 +108,13 @@ export interface SalesQuotationResponse {
   shipToAddress?: string;
   incoterms?: string;
   referenceNumber: string;
+  remarks?: string;
   buyerId?: string;
   buyerName?: string;
   internalNotes?: string;
   printedNotes?: string;
   lines: SalesQuotationLineResponse[];
+  costLines?: InvoiceCostLineResponse[];
 }
 
 export interface SalesQuotationLineRequest {
@@ -174,6 +181,7 @@ export interface SalesQuotationRequest {
   internalNotes?: string;
   printedNotes?: string;
   lines: SalesQuotationLineRequest[];
+  costLines?: InvoiceCostLineRequest[];
 }
 
 export interface SalesQuotationFilters extends RequestFilters {

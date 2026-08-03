@@ -1,4 +1,4 @@
-﻿<app-page-breadcrumb
+<app-page-breadcrumb
   [pageTitle]="(mode === 'edit' ? 'businessPartners.edit' : mode === 'view' ? 'common.view' : 'businessPartners.addNew')" />
 
 <div class="space-y-6">
@@ -47,14 +47,14 @@
           <div class="flex items-center gap-6 mt-3">
             <label class="flex items-center gap-2"
               [ngClass]="{'cursor-pointer': mode !== 'view', 'opacity-60': mode === 'view'}">
-              <input type="checkbox" [(ngModel)]="model.isCustomer" name="isCustomer" [disabled]="mode === 'view'"
+              <input type="checkbox" [(ngModel)]="model.isCustomer" (change)="onTypeChange()" name="isCustomer" [disabled]="mode === 'view'"
                 class="h-4 w-4 rounded text-brand-500 border-gray-300 focus:ring-brand-500 dark:border-gray-700 dark:bg-gray-900" />
               <span class="text-sm font-medium text-gray-700 dark:text-gray-300">{{ 'businessPartners.types.customer' |
                 translate }}</span>
             </label>
             <label class="flex items-center gap-2"
               [ngClass]="{'cursor-pointer': mode !== 'view', 'opacity-60': mode === 'view'}">
-              <input type="checkbox" [(ngModel)]="model.isVendor" name="isVendor" [disabled]="mode === 'view'"
+              <input type="checkbox" [(ngModel)]="model.isVendor" (change)="onTypeChange()" name="isVendor" [disabled]="mode === 'view'"
                 class="h-4 w-4 rounded text-brand-500 border-gray-300 focus:ring-brand-500 dark:border-gray-700 dark:bg-gray-900" />
               <span class="text-sm font-medium text-gray-700 dark:text-gray-300">{{ 'businessPartners.types.vendor' |
                 translate }}</span>

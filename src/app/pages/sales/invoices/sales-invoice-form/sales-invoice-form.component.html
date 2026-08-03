@@ -22,7 +22,8 @@
           <!-- Invoice Code -->
           <div
             class="flex items-center gap-2 px-3 py-2 bg-brand-50 dark:bg-brand-500/10 border border-brand-100 dark:border-brand-500/20 rounded-lg shadow-theme-xs">
-            <svg class="w-4 h-4 text-brand-600 dark:text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="w-4 h-4 text-brand-600 dark:text-brand-400" fill="none" stroke="currentColor"
+              viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                 d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
             </svg>
@@ -35,11 +36,25 @@
             </span>
           </div>
 
+          <!-- Referenced Sales Orders Badge (Header) -->
+          <div *ngIf="referencedSoCodes.length > 0" class="flex items-center gap-1.5 flex-wrap">
+            <span *ngFor="let soCode of referencedSoCodes"
+              class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-medium bg-blue-50 text-blue-700 border border-blue-200/80 shadow-2xs dark:bg-blue-900/40 dark:text-blue-300 dark:border-blue-700/50">
+              <svg class="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+              </svg>
+              <span>{{ 'salesInvoices.fromSO' | translate }}: <strong class="font-mono font-bold text-blue-800 dark:text-blue-200">{{ soCode }}</strong></span>
+            </span>
+          </div>
+
           <!-- Status Badges -->
           <ng-container *ngIf="mode === 'view' && viewResponse">
             <app-document-status-badge [status]="viewResponse.status"></app-document-status-badge>
-            <app-status-badge *ngIf="viewResponse.approvalStatus" [status]="viewResponse.approvalStatus" [translationPrefix]="'common.approvalStatusEnum'"></app-status-badge>
-            <app-status-badge *ngIf="viewResponse.paymentStatus" [status]="viewResponse.paymentStatus" [translationPrefix]="'common.paidStatusEnum'"></app-status-badge>
+            <app-status-badge *ngIf="viewResponse.approvalStatus" [status]="viewResponse.approvalStatus"
+              [translationPrefix]="'common.approvalStatusEnum'"></app-status-badge>
+            <app-status-badge *ngIf="viewResponse.paymentStatus" [status]="viewResponse.paymentStatus"
+              [translationPrefix]="'common.paidStatusEnum'"></app-status-badge>
           </ng-container>
         </div>
 
@@ -47,13 +62,19 @@
         <div class="flex items-center gap-3">
           <button *ngIf="mode === 'view' && $any(viewResponse?.status) === 'D'" type="button" (click)="onConfirm()"
             class="flex items-center gap-2 px-5 py-2.5 text-sm font-medium text-white bg-success-500 rounded-lg shadow-theme-xs hover:bg-success-600 transition-colors">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
             {{ 'stockAdjustments.confirm' | translate }}
           </button>
 
-          <button *ngIf="mode === 'view' && $any(viewResponse?.status) !== 'Cancelled' && $any(viewResponse?.status) !== 'FullyPaid'" type="button" (click)="onCancelDocument()"
+          <button
+            *ngIf="mode === 'view' && $any(viewResponse?.status) !== 'Cancelled' && $any(viewResponse?.status) !== 'FullyPaid'"
+            type="button" (click)="onCancelDocument()"
             class="flex items-center gap-2 px-5 py-2.5 text-sm font-medium text-white bg-error-500 rounded-lg shadow-theme-xs hover:bg-error-600 transition-colors">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
             {{ 'stockAdjustments.cancelDocument' | translate }}
           </button>
 
@@ -71,7 +92,9 @@
           <button *ngIf="mode === 'view'" type="button" (click)="openPdfPreview()"
             class="flex items-center gap-2 px-5 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg shadow-theme-xs hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700 dark:hover:bg-gray-700 transition-colors">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z">
+              </path>
             </svg>
             {{ 'salesInvoices.printInvoice' | translate }}
           </button>
@@ -112,9 +135,18 @@
 
           <!-- Business Partner -->
           <div>
-            <label class="mb-2.5 block text-sm font-medium text-gray-800 dark:text-white/90">
-              {{ 'salesInvoices.fields.businessPartner' | translate }} <span class="text-error-500">*</span>
-            </label>
+            <div class="flex items-center justify-between mb-2.5">
+              <label class="block text-sm font-medium text-gray-800 dark:text-white/90">
+                {{ 'salesInvoices.fields.businessPartner' | translate }} <span class="text-error-500">*</span>
+              </label>
+              <button *ngIf="mode !== 'view'" type="button" (click)="openQuickCustomerModal()"
+                class="inline-flex items-center gap-1 text-xs font-medium text-brand-600 hover:text-brand-700 dark:text-brand-400">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                </svg>
+                {{ 'common.quickAdd' | translate }}
+              </button>
+            </div>
             <app-searchable-select [(ngModel)]="model.businessPartnerId" name="businessPartnerId" required
               [options]="partnersOptions" [disabled]="mode === 'view'" placeholder="common.select">
             </app-searchable-select>
@@ -126,8 +158,9 @@
             <label class="mb-2.5 block text-sm font-medium text-gray-800 dark:text-white/90">
               {{ 'salesInvoices.fields.warehouse' | translate }} <span class="text-error-500">*</span>
             </label>
-            <app-searchable-select [(ngModel)]="model.warehouseId" (ngModelChange)="onWarehouseChange($event)" name="warehouseId" required [options]="warehousesOptions"
-              [disabled]="mode === 'view'" placeholder="common.select">
+            <app-searchable-select [(ngModel)]="model.warehouseId" (ngModelChange)="onWarehouseChange($event)"
+              name="warehouseId" required [options]="warehousesOptions" [disabled]="mode === 'view'"
+              placeholder="common.select">
             </app-searchable-select>
           </div>
 
@@ -193,7 +226,15 @@
 
       <!-- Items Tab -->
       <div *ngIf="activeTab === 'items'" class="space-y-4">
-        <div class="flex justify-end" *ngIf="mode !== 'view'">
+        <div class="flex items-center justify-end gap-3" *ngIf="mode !== 'view'">
+          <button type="button" (click)="openSoModal()"
+            class="flex items-center gap-2 px-4 py-2 text-sm font-medium text-blue-700 bg-blue-50 border border-blue-200 rounded-lg shadow-theme-xs hover:bg-blue-100 dark:bg-blue-950/40 dark:text-blue-300 dark:border-blue-800 dark:hover:bg-blue-900/50 transition-colors">
+            <svg class="w-4 h-4 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+            </svg>
+            {{ 'salesInvoices.importFromSO' | translate }}
+          </button>
           <button type="button" (click)="openItemModal()"
             class="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-brand-500 rounded-lg shadow-theme-xs hover:bg-brand-600 transition-colors">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -205,7 +246,7 @@
 
         <div
           class="w-full min-w-0 overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/5 dark:bg-white/3">
-          <div class="w-full overflow-x-auto">
+          <div class="w-full overflow-x-auto overflow-y-visible min-h-75 pb-36">
             <table class="min-w-full">
               <thead class="border-b border-gray-100 dark:border-white/5 bg-gray-50 dark:bg-gray-800/50">
                 <tr>
@@ -218,6 +259,8 @@
                     {{ 'invoices.qty' | translate }}</th>
                   <th class="px-4 py-3 font-medium text-gray-500 text-start text-xs dark:text-gray-400 uppercase w-32">
                     {{ 'invoices.price' | translate }}</th>
+                  <th class="px-4 py-3 font-medium text-gray-500 text-start text-xs dark:text-gray-400 uppercase w-36">
+                    {{ 'common.unitOfMeasure' | translate }} <span class="text-error-500">*</span></th>
                   <th class="px-4 py-3 font-medium text-gray-500 text-start text-xs dark:text-gray-400 uppercase w-32">
                     <div class="flex flex-col gap-1">
                       <span>{{ 'invoices.discount' | translate }}</span>
@@ -240,27 +283,44 @@
               </thead>
               <tbody class="divide-y divide-gray-100 dark:divide-white/5">
                 <tr *ngIf="model.lines.length === 0">
-                  <td [attr.colspan]="mode !== 'view' ? 10 : 9"
+                  <td [attr.colspan]="mode !== 'view' ? 9 : 8"
                     class="px-4 py-8 text-center text-gray-500 dark:text-gray-400">
                     {{ 'salesInvoices.errors.atLeastOneItem' | translate }}
                   </td>
                 </tr>
-                <tr *ngFor="let line of model.lines; let i = index">
+                <tr *ngFor="let line of model.lines; let i = index"
+                  [ngClass]="{'bg-blue-50/30 dark:bg-blue-950/20 border-s-2 border-s-blue-500': line.baseDocumentCode || line.baseDocumentId || line.baseDocumentTypeId || line['_baseDocumentCode']}">
                   <!-- Serial -->
                   <td class="px-4 py-3 text-center text-sm font-medium text-gray-500 dark:text-gray-400 align-top pt-4">
                     {{ i + 1 }}
                   </td>
                   <!-- Item Info -->
-                  <td class="px-4 py-3 align-top  min-w-[200px]">
+                  <td class="px-4 py-3 align-top min-w-50">
                     <div class="flex flex-col items-start gap-1.5">
-                      <div
-                        class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-xs font-mono font-medium bg-gray-100 text-gray-600 border border-gray-200 shadow-sm dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700">
-                        <svg class="w-3.5 h-3.5 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor"
-                          viewBox="0 0 24 24">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
-                        </svg>
-                        {{ line['_itemCode'] }}
+                      <div class="flex items-center gap-1.5 flex-wrap">
+                        <div
+                          class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-xs font-mono font-medium bg-gray-100 text-gray-600 border border-gray-200 shadow-sm dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700">
+                          <svg class="w-3.5 h-3.5 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                          </svg>
+                          {{ line['_itemCode'] }}
+                        </div>
+
+                        <!-- Reference Badge (SO) -->
+                        <span *ngIf="line.baseDocumentCode || line.baseDocumentId || line.baseDocumentTypeId || line['_baseDocumentCode']"
+                          class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-medium bg-blue-50 text-blue-700 border border-blue-200/80 shadow-2xs dark:bg-blue-900/40 dark:text-blue-300 dark:border-blue-700/50"
+                          [title]="('salesInvoices.fromSO' | translate) + ': ' + (line.baseDocumentCode || line.baseDocumentId || line['_baseDocumentCode'] || '')">
+                          <svg class="w-3 h-3 text-blue-600 dark:text-blue-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+                          </svg>
+                          <span>
+                            {{ 'salesInvoices.fromSO' | translate }}:
+                            <strong class="font-mono font-bold text-blue-800 dark:text-blue-200">{{ line.baseDocumentCode || line.baseDocumentId || line['_baseDocumentCode'] }}</strong>
+                          </span>
+                        </span>
                       </div>
                       <div class="text-sm font-semibold text-gray-900 dark:text-white/90 ps-1">
                         {{ line['_itemName'] }}
@@ -272,23 +332,32 @@
                   <td class="px-4 py-2">
                     <input type="number" [(ngModel)]="line.quantity" name="qty_{{i}}"
                       (ngModelChange)="recalculateTotals()" [disabled]="mode === 'view'" min="1"
-                      class="w-full min-w-[100px] rounded-md border border-gray-200 px-3 py-1.5 text-sm dark:bg-dark-900 dark:border-gray-700 dark:text-white" />
+                      class="w-full min-w-25 rounded-md border border-gray-200 px-3 py-1.5 text-sm dark:bg-dark-900 dark:border-gray-700 dark:text-white" />
                   </td>
 
                   <!-- Price -->
                   <td class="px-4 py-2">
                     <input type="number" [(ngModel)]="line.unitPrice" name="price_{{i}}"
                       (ngModelChange)="recalculateTotals()" [disabled]="mode === 'view'" min="0"
-                      class="w-full min-w-[100px] rounded-md border border-gray-200 px-3 py-1.5 text-sm dark:bg-dark-900 dark:border-gray-700 dark:text-white" />
+                      class="w-full min-w-25 rounded-md border border-gray-200 px-3 py-1.5 text-sm dark:bg-dark-900 dark:border-gray-700 dark:text-white" />
+                  </td>
+
+                  <!-- UOM -->
+                  <td class="px-4 py-2 min-w-36">
+                    <app-searchable-select
+                      [options]="line['_availableUomsOptions'] || getUomOptions(line['_baseUomType'])"
+                      [(ngModel)]="line.uomId" name="uom_{{i}}" [disabled]="mode === 'view'"
+                      [placeholder]="'common.select' | translate" [required]="true">
+                    </app-searchable-select>
                   </td>
 
                   <!-- Discount -->
-                  <td class="px-4 py-1.5 min-w-[110px]">
+                  <td class="px-4 py-1.5 min-w-27.5">
                     <div class="flex flex-col -space-y-px">
                       <div class="relative w-full">
                         <input type="number" [(ngModel)]="line.discountPercent" name="disc_perc_{{i}}"
                           (ngModelChange)="onDiscountPercentChange(i)" [disabled]="mode === 'view'" min="0" max="100"
-                          class="w-full min-w-[60px] rounded-t-md rounded-b-none border border-gray-200 pl-2 pr-6 py-1 text-xs h-7 dark:bg-dark-900 dark:border-gray-700 dark:text-white ltr:pr-6 rtl:pl-6 rtl:pr-2 focus:z-10 relative"
+                          class="w-full min-w-15 rounded-t-md rounded-b-none border border-gray-200 pl-2 pr-6 py-1 text-xs h-7 dark:bg-dark-900 dark:border-gray-700 dark:text-white ltr:pr-6 rtl:pl-6 rtl:pr-2 focus:z-10 relative"
                           placeholder="%" />
                         <span
                           class="absolute inset-y-0 inset-e-0 flex items-center pe-2 text-gray-400 text-[11px] font-medium z-20">%</span>
@@ -296,19 +365,19 @@
                       <div class="relative w-full">
                         <input type="number" [(ngModel)]="line._discountAmount" name="disc_amt_{{i}}"
                           (ngModelChange)="onDiscountAmountChange(i)" [disabled]="mode === 'view'" min="0"
-                          class="w-full min-w-[60px] rounded-b-md rounded-t-none border border-gray-200 px-2 py-1 text-xs h-7 dark:bg-dark-900 dark:border-gray-700 dark:text-white focus:z-10 relative"
+                          class="w-full min-w-15 rounded-b-md rounded-t-none border border-gray-200 px-2 py-1 text-xs h-7 dark:bg-dark-900 dark:border-gray-700 dark:text-white focus:z-10 relative"
                           [placeholder]="'invoices.amount' | translate" />
                       </div>
                     </div>
                   </td>
 
                   <!-- Tax -->
-                  <td class="px-4 py-1.5 min-w-[110px]">
+                  <td class="px-4 py-1.5 min-w-27.5">
                     <div class="flex flex-col -space-y-px">
                       <div class="relative w-full">
                         <input type="number" [(ngModel)]="line.taxPercent" name="tax_perc_{{i}}"
                           (ngModelChange)="onTaxPercentChange(i)" [disabled]="mode === 'view'" min="0" max="100"
-                          class="w-full min-w-[60px] rounded-t-md rounded-b-none border border-gray-200 pl-2 pr-6 py-1 text-xs h-7 dark:bg-dark-900 dark:border-gray-700 dark:text-white ltr:pr-6 rtl:pl-6 rtl:pr-2 focus:z-10 relative"
+                          class="w-full min-w-15 rounded-t-md rounded-b-none border border-gray-200 pl-2 pr-6 py-1 text-xs h-7 dark:bg-dark-900 dark:border-gray-700 dark:text-white ltr:pr-6 rtl:pl-6 rtl:pr-2 focus:z-10 relative"
                           placeholder="%" />
                         <span
                           class="absolute inset-y-0 inset-e-0 flex items-center pe-2 text-gray-400 text-[11px] font-medium z-20">%</span>
@@ -316,7 +385,7 @@
                       <div class="relative w-full">
                         <input type="number" [(ngModel)]="line._taxAmount" name="tax_amt_{{i}}"
                           (ngModelChange)="onTaxAmountChange(i)" [disabled]="mode === 'view'" min="0"
-                          class="w-full min-w-[60px] rounded-b-md rounded-t-none border border-gray-200 px-2 py-1 text-xs h-7 dark:bg-dark-900 dark:border-gray-700 dark:text-white focus:z-10 relative"
+                          class="w-full min-w-15 rounded-b-md rounded-t-none border border-gray-200 px-2 py-1 text-xs h-7 dark:bg-dark-900 dark:border-gray-700 dark:text-white focus:z-10 relative"
                           [placeholder]="'invoices.amount' | translate" />
                       </div>
                     </div>
@@ -446,12 +515,8 @@
   (close)="validationErrors = []"></app-error-banner>
 
 <!-- Modals -->
-<app-item-lookup-modal 
-  [isOpen]="isItemModalOpen" 
-  (close)="isItemModalOpen = false"
-  [usageType]="1"
-  [warehouseId]="model.warehouseId"
-  (selectItem)="onItemSelected($event)">
+<app-item-lookup-modal [isOpen]="isItemModalOpen" (close)="isItemModalOpen = false" [usageType]="1"
+  [warehouseId]="model.warehouseId" (selectItem)="onItemSelected($event)">
 </app-item-lookup-modal>
 <app-cost-element-lookup-modal [isOpen]="isCostElementModalOpen" [type]="'sales'"
   (close)="isCostElementModalOpen = false"
@@ -491,11 +556,16 @@
 </div>
 
 <!-- Print Preview Modal -->
-<app-print-preview-modal 
-  *ngIf="isPrintModalOpen"
-  [isOpen]="isPrintModalOpen" 
-  [pdfBlobUrl]="pdfBlobUrl" 
-  [loading]="pdfLoading"
-  [title]="'Sales Invoice ' + model.code"
-  (close)="closePrintModal()">
+<app-print-preview-modal *ngIf="isPrintModalOpen" [isOpen]="isPrintModalOpen" [pdfBlobUrl]="pdfBlobUrl"
+  [loading]="pdfLoading" [title]="'Sales Invoice ' + model.code" (close)="closePrintModal()">
 </app-print-preview-modal>
+
+<!-- Quick Customer Modal -->
+<app-quick-customer-modal [(isOpen)]="isQuickCustomerModalOpen" (customerCreated)="onCustomerCreated($event)">
+</app-quick-customer-modal>
+
+<!-- SO Lines Import Modal -->
+<app-so-lines-import-modal [isOpen]="isSoModalOpen" [customerId]="model.businessPartnerId"
+  [existingItemIds]="existingItemIds" (close)="isSoModalOpen = false"
+  (importLines)="onSoLinesImported($event)">
+</app-so-lines-import-modal>

@@ -53,9 +53,26 @@ export interface SetupCompanyRequest {
   mainBranchName: string;
 }
 
+export interface SetupWarehouseRequest {
+  code: string;
+  aName: string;
+  eName?: string;
+}
+
+export interface SetupBranchRequest {
+  code: string;
+  aName: string;
+  eName?: string;
+  warehouses: SetupWarehouseRequest[];
+}
+
 export interface SetupCompanyAdminRequest {
   adminEmail?: string;
   adminPassword?: string;
-  companyName: string;
-  mainBranchName: string;
+  companyCode: string;
+  companyAName: string;
+  companyEName?: string;
+  supportExpiryDate: string;
+  maxUsers: number;
+  branches: SetupBranchRequest[];
 }

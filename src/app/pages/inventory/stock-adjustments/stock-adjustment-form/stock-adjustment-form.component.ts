@@ -18,6 +18,7 @@ import { ItemLookupModalComponent } from '../../../../shared/components/lookups/
 import { HasUnsavedChanges } from '../../../../core/guards/unsaved-changes.guard';
 import { StockAdjustmentRequest, StockAdjustmentResponse, StockAdjustmentType } from '../../../../core/models/inventory.model';
 import { ItemLookupResponse } from '../../../../core/models/lookup.model';
+import { ItemService } from '../../../../core/services/item.service';
 import { ToastrService } from 'ngx-toastr';
 import { ConfirmationModalComponent } from '../../../../shared/components/common/confirmation-modal/confirmation-modal.component';
 
@@ -44,6 +45,7 @@ export class StockAdjustmentFormComponent implements OnInit, HasUnsavedChanges {
   @ViewChild('form') form!: NgForm;
   private stockAdjustmentService = inject(StockAdjustmentService);
   private lookupService = inject(LookupService);
+  private itemService = inject(ItemService);
   private translate = inject(TranslateService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
@@ -79,6 +81,12 @@ export class StockAdjustmentFormComponent implements OnInit, HasUnsavedChanges {
 
   warehousesOptions: SearchableOption[] = [];
   adjustmentTypeOptions: SearchableOption[] = [];
+  uomOptions: SearchableOption[] = [];
+
+  getUomOptions(baseUomType?: string): SearchableOption[] {
+    if (baseUomType === undefined || baseUomType === null) return this.uomOptions;
+    return this.uomOptions.filter((u: any) => u.baseUomType === baseUomType);
+  }
 
   ngOnInit(): void {
     this.route.url.subscribe(url => {
@@ -104,12 +112,15 @@ export class StockAdjustmentFormComponent implements OnInit, HasUnsavedChanges {
     this.loading = true;
 
     const warehouses$ = this.lookupService.getWarehouses();
+    const uoms$ = this.lookupService.getUnitOfMeasures();
 
     forkJoin({
-      warehouses: warehouses$
+      warehouses: warehouses$,
+      uoms: uoms$
     }).subscribe({
       next: (res: any) => {
         this.warehousesOptions = res.warehouses.map((w: any) => ({ value: w.id, label: w.name }));
+        this.uomOptions = res.uoms.map((u: any) => ({ value: u.id, label: u.name, baseUomType: (u as any).baseUomType }));
 
         if (this.id) {
           this.loadRecord(this.id);
@@ -131,17 +142,36 @@ export class StockAdjustmentFormComponent implements OnInit, HasUnsavedChanges {
       warehouseId: res.warehouseId,
       adjustmentDate: res.adjustmentDate.split('T')[0],
       reason: res.reason,
-      lines: res.lines.map(l => ({
-        itemId: l.itemId,
-        binLocationId: l.binLocationId,
-        uomId: l.uomId,
-        systemQuantity: l.systemQuantity,
-        countedQuantity: l.countedQuantity,
-        lineOrder: l.lineOrder,
-        _itemCode: l.itemCode,
-        _itemName: l.itemName,
-        _difference: l.difference
-      } as any))
+      lines: res.lines.map(l => {
+        const lineItem: any = {
+          itemId: l.itemId,
+          binLocationId: l.binLocationId,
+          uomId: l.uomId,
+          systemQuantity: l.systemQuantity,
+          countedQuantity: l.countedQuantity,
+          lineOrder: l.lineOrder,
+          _itemCode: l.itemCode,
+          _itemName: l.itemName,
+          _availableUomsOptions: l.uomId && l.uomName ? [{ value: l.uomId, label: l.uomName }] : [],
+          _difference: l.difference
+        };
+
+        if (l.itemId) {
+          this.itemService.getSalesDetails(l.itemId).subscribe({
+            next: (details: any) => {
+              const uoms = details.availableUoms || details.unitsOfMeasure || [];
+              if (uoms && uoms.length > 0) {
+                lineItem._availableUomsOptions = uoms.map((u: any) => ({
+                  value: u.id || u.unitOfMeasureId,
+                  label: u.name || u.unitOfMeasureName || u.aName
+                }));
+              }
+            }
+          });
+        }
+
+        return lineItem;
+      })
     };
   }
 
@@ -172,16 +202,41 @@ export class StockAdjustmentFormComponent implements OnInit, HasUnsavedChanges {
       return;
     }
 
-    this.model.lines.push({
+    const defaultUomId = item.inventoryUomId || item.salesUomId || item.purchaseUomId || undefined;
+    const defaultUomName = item.inventoryUomName || item.salesUomName || item.purchaseUomName || '';
+
+    const newLine: any = {
       itemId: item.id,
+      uomId: defaultUomId,
       systemQuantity: 0,
       countedQuantity: 0,
       lineOrder: this.model.lines.length + 1,
       _itemCode: item.code,
       _itemName: item.name,
+      _baseUomType: item.baseUomType,
+      _availableUomsOptions: defaultUomId && defaultUomName ? [{ value: defaultUomId, label: defaultUomName }] : [],
       _difference: 0
-    } as any);
+    };
+
+    this.model.lines.push(newLine);
     this.form?.form.markAsDirty();
+
+    this.itemService.getSalesDetails(item.id).subscribe({
+      next: (details: any) => {
+        newLine.uomId = details.inventoryUomId || details.salesUomId || defaultUomId || newLine.uomId;
+        newLine._baseUomType = details.baseUomType || item.baseUomType || newLine._baseUomType;
+        const uoms = details.availableUoms || details.unitsOfMeasure || [];
+        if (uoms && uoms.length > 0) {
+          newLine._availableUomsOptions = uoms.map((u: any) => ({
+            value: u.id || u.unitOfMeasureId,
+            label: u.name || u.unitOfMeasureName || u.aName
+          }));
+        }
+      },
+      error: (err: any) => {
+        console.error('Error fetching UOM details for item', err);
+      }
+    });
   }
 
   onQuantityChange(index: number): void {
@@ -202,6 +257,15 @@ export class StockAdjustmentFormComponent implements OnInit, HasUnsavedChanges {
     }
     if (!this.model.lines || this.model.lines.length === 0) {
       this.validationErrors.push(this.translate.instant('stockAdjustments.errors.atLeastOneItem'));
+    } else {
+      this.model.lines.forEach((l: any, idx: number) => {
+        const lineNum = idx + 1;
+        const rowPrefix = `${this.translate.instant('common.row')} ${lineNum}`;
+
+        if (!l.uomId) {
+          this.validationErrors.push(`${rowPrefix}: ${this.translate.instant('common.unitOfMeasure')} ${this.translate.instant('common.uomRequired')}`);
+        }
+      });
     }
     return this.validationErrors.length === 0;
   }
@@ -217,6 +281,8 @@ export class StockAdjustmentFormComponent implements OnInit, HasUnsavedChanges {
       delete l._itemName;
       delete l._itemCode;
       delete l._difference;
+      delete l._baseUomType;
+      delete l._availableUomsOptions;
     });
 
     this.stockAdjustmentService.create(requestToSend).subscribe({

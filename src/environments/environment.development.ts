@@ -1,5 +1,5 @@
 export const environment = {
-  production: true,
+  production: false,
+  //apiUrl: 'https://amfcore-system.runasp.net'
   apiUrl: 'https://localhost:7218'
-  // apiUrl: 'http://localhost:5000' // Local .NET 10 Web API backend server
 };

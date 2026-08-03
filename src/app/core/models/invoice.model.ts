@@ -58,6 +58,10 @@ export interface InvoiceLineResponse {
   lineOrder: number;
   notes?: string;
   purchaseOrderLineId?: number;
+  baseDocumentId?: string;
+  baseDocumentCode?: string;
+  baseLineId?: string;
+  baseDocumentTypeId?: number;
 }
 
 export interface InvoiceCostLineResponse {
@@ -128,6 +132,10 @@ export interface InvoiceLineRequest {
   taxPercent: number;
   lineOrder: number;
   notes?: string;
+  baseDocumentId?: string;
+  baseDocumentCode?: string;
+  baseLineId?: string;
+  baseDocumentTypeId?: number;
   // UI properties
   _itemName?: string;
   _itemCode?: string;
@@ -137,6 +145,25 @@ export interface InvoiceLineRequest {
   _discountFixedMode?: 'percentage' | 'amount';
   _taxFixedMode?: 'percentage' | 'amount';
   [key: string]: any;
+}
+
+export interface OpenSalesOrderLineResponse {
+  salesOrderLineId: number;
+  salesOrderCode: string;
+  itemId: number;
+  itemCode: string;
+  itemName: string;
+  warehouseId: number;
+  warehouseCode?: string;
+  warehouseName?: string;
+  quantity: number;
+  openQuantity: number;
+  unitPrice: number;
+  discountPercent: number;
+  taxPercent: number;
+  unitOfMeasureId?: number;
+  uomName?: string;
+  importQuantity?: number;
 }
 
 export interface InvoiceCostLineRequest {

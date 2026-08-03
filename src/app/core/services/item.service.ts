@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { ItemResponse, ItemBasicResponse, ItemRequest, ItemFilters, ItemUnitOfMeasureResponse, ItemPurchasingDetailsResponse } from '../models/item.model';
+import { ItemResponse, ItemBasicResponse, ItemRequest, ItemFilters, ItemUnitOfMeasureResponse, ItemPurchasingDetailsResponse, ItemSalesDetailsResponse } from '../models/item.model';
 import { NextCodeResponse } from '../models/lookup.model';
 import { PaginatedList } from '../models/pagination.model';
 import { environment } from '../../../environments/environment';
@@ -34,6 +34,15 @@ export class ItemService {
     if (filters.itemPropertyId) {
       params = params.set('itemPropertyId', filters.itemPropertyId.toString());
     }
+    if (filters.warehouseId) {
+      params = params.set('warehouseId', filters.warehouseId.toString());
+    }
+    if (filters.baseUomType) {
+      params = params.set('baseUomType', filters.baseUomType);
+    }
+    if (filters.usageType) {
+      params = params.set('usageType', filters.usageType);
+    }
 
     return this.http.get<PaginatedList<ItemBasicResponse>>(this.apiUrl, { params });
   }
@@ -44,6 +53,10 @@ export class ItemService {
 
   getPurchasingDetails(id: number): Observable<ItemPurchasingDetailsResponse> {
     return this.http.get<ItemPurchasingDetailsResponse>(`${this.apiUrl}/${id}/purchasing-details`);
+  }
+
+  getSalesDetails(id: number): Observable<ItemSalesDetailsResponse> {
+    return this.http.get<ItemSalesDetailsResponse>(`${this.apiUrl}/${id}/sales-details`);
   }
 
   getUnitsOfMeasure(id: number): Observable<ItemUnitOfMeasureResponse[]> {

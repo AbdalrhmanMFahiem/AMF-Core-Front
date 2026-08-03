@@ -87,7 +87,7 @@
                 </span>
               </div>
             </th>
-            <th class="px-5 py-3 font-medium text-gray-500 text-center text-theme-xs dark:text-gray-400 uppercase">
+            <th *ngIf="!hideActions" class="px-5 py-3 font-medium text-gray-500 text-center text-theme-xs dark:text-gray-400 uppercase">
               {{ 'common.actions' | translate }}
             </th>
           </tr>
@@ -99,7 +99,7 @@
               <td *ngFor="let col of columns" class="px-5 py-4">
                 <div class="h-4 bg-gray-200 rounded-md dark:bg-gray-700/50 animate-pulse w-3/4"></div>
               </td>
-              <td class="px-4 py-3">
+              <td *ngIf="!hideActions" class="px-4 py-3">
                 <div class="flex justify-center">
                   <div class="h-8 w-8 bg-gray-200 rounded-lg dark:bg-gray-700/50 animate-pulse"></div>
                 </div>
@@ -119,9 +119,22 @@
                 </ng-container>
                 <ng-template #dynamicBadgeCell>
                   <ng-container *ngIf="col.type === 'dynamic-badge'; else documentStatusCell">
-                    <app-badge size="sm" [color]="item[col.field + 'Color'] || 'primary'">
-                      {{ item[col.field] }}
-                    </app-badge>
+                    <div class="relative group inline-flex items-center gap-1.5">
+                      <app-badge size="sm" [color]="item[col.field + 'Color'] || 'primary'">
+                        {{ item[col.field] }}
+                      </app-badge>
+                      <div *ngIf="col.field === 'statusDisplay' && item.remarks" [title]="item.remarks"
+                        class="cursor-pointer inline-flex items-center justify-center text-gray-400 hover:text-brand-500 dark:text-gray-500 dark:hover:text-brand-400 transition-colors">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <!-- Tooltip Popup -->
+                        <div class="absolute bottom-full mb-2.5 left-1/2 -translate-x-1/2 hidden group-hover:block z-50 w-56 p-2.5 bg-gray-900 dark:bg-gray-800 text-white text-xs font-normal rounded-xl shadow-xl border border-gray-700 pointer-events-none transition-all">
+                          <span class="whitespace-pre-line leading-relaxed block">{{ item.remarks }}</span>
+                          <div class="absolute top-full left-1/2 -translate-x-1/2 -mt-1 border-4 border-transparent border-t-gray-900 dark:border-t-gray-800"></div>
+                        </div>
+                      </div>
+                    </div>
                   </ng-container>
                 </ng-template>
                 <ng-template #documentStatusCell>
@@ -212,7 +225,7 @@
                   </ng-template>
                 </ng-template>
               </td>
-              <td class="px-4 py-3 text-gray-500 text-center text-theme-sm dark:text-gray-400">
+              <td *ngIf="!hideActions" class="px-4 py-3 text-gray-500 text-center text-theme-sm dark:text-gray-400">
                 <div class="flex justify-center">
                   <!-- Trigger Button -->
                   <button (click)="toggleActionPopup(item.id, $event)"

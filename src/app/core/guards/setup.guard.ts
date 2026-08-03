@@ -6,13 +6,15 @@ export const setupGuard: CanActivateFn = (route, state) => {
   const authService = inject(AuthService);
   const router = inject(Router);
 
+  // Allow access if navigated from sign-in form with verified admin credentials in router history state
+  const navigation = router.getCurrentNavigation();
+  const adminEmail = navigation?.extras?.state?.['adminEmail'] || history.state?.['adminEmail'];
+  if (adminEmail) {
+    return true;
+  }
+
   if (authService.getToken()) {
-    const authData = authService.getAuthResponse();
-    if (authData?.requiresSetup) {
-      return true;
-    }
-    router.navigate(['/']); // Already setup, go to dashboard
-    return false;
+    return true;
   }
 
   router.navigate(['/signin']);

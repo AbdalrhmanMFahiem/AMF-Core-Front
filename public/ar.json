@@ -1,5 +1,16 @@
 {
   "common": {
+    "address": "العنوان",
+    "email": "البريد الإلكتروني",
+    "phone": "رقم الهاتف",
+    "quickAdd": "إضافة سريعة",
+    "uomRequired": "مطلوبة",
+    "enterNotesPlaceholder": "اكتب الملاحظات أو البيان الخاص بهذا السطر هنا...",
+    "quickSuggestions": "اقتراحات سريعة",
+    "clear": "مسح",
+    "qty": "الكميه",
+    "quantity": "الكميه",
+    "price": "السعر",
     "readOnly": "للقراءة فقط",
     "saving": "جاري الحفظ...",
     "confirmStatusChange": "هل أنت متأكد من تغيير الحالة؟",
@@ -23,6 +34,7 @@
     "from": "من",
     "to": "إلى",
     "unitOfMeasure": "وحدة القياس",
+    "customerReference": "مرجع العميل",
     "uom": "وحدة القياس",
     "additionalDetails": "تفاصيل إضافية",
     "currency": "العملة",
@@ -236,11 +248,17 @@
     "dashboard": "لوحة التحكم",
     "UnitOfMeasure": {
       "Title": "وحدات القياس",
+      "title": "وحدات القياس",
       "AddTitle": "إضافة وحدة قياس",
+      "addTitle": "إضافة وحدة قياس",
       "EditTitle": "تعديل وحدة قياس",
+      "editTitle": "تعديل وحدة قياس",
       "ViewTitle": "عرض وحدة قياس",
+      "viewTitle": "عرض وحدة قياس",
       "SearchPlaceholder": "البحث بالكود أو الاسم",
-      "Add": "إضافة وحدة قياس"
+      "searchPlaceholder": "البحث بالكود أو الاسم",
+      "Add": "إضافة وحدة قياس",
+      "add": "إضافة وحدة قياس"
     }
   },
   "warehouses": {
@@ -435,6 +453,10 @@
     "printDirect": "طباعة"
   },
   "businessPartners": {
+    "quickAddCustomer": "إضافة عميل سريع",
+    "quickAddSubtitle": "إضافة عميل جديد بالبيانات الأساسية مباشرة وسيتم تفعيله تلقائياً",
+    "quickAddVendor": "إضافة مورد سريع",
+    "quickAddVendorSubtitle": "إضافة مورد جديد بالبيانات الأساسية مباشرة وسيتم تفعيله تلقائياً",
     "list": {
       "title": "شركاء العمل"
     },
@@ -663,7 +685,13 @@
   },
   "errors": {
     "generic": "حدث خطأ غير متوقع، يرجى المحاولة مرة أخرى",
-    "conflict": "البيانات المدخلة تتعارض مع سجلات موجودة"
+    "conflict": "البيانات المدخلة تتعارض مع سجلات موجودة",
+    "tokenExpired": "انتهت صلاحية الجلسة، يرجى تسجيل الدخول مجدداً.",
+    "sessionExpired": "جلسة منتهية",
+    "unauthorized": "غير مصرح بالوصول، يرجى تسجيل الدخول.",
+    "unauthorizedTitle": "غير مصرح",
+    "networkError": "تعذر الاتصال بالخادم، يرجى التحقق من اتصالك بالإنترنت.",
+    "networkErrorTitle": "خطأ في الاتصال"
   },
   "invoices": {
     "amount": "المبلغ",
@@ -737,9 +765,11 @@
     "netAmount": "الصافي",
     "noItemsAdded": "لم يتم إضافة بنود. انقر على \u0027+ إضافة بند\u0027 للبدء.",
     "additionalCosts": "التكاليف الإضافية",
+    "noCostElements": "لا توجد تكاليف إضافية",
     "addCost": "إضافة تكلفة",
     "percentage": "النسبة",
     "costElement": "عنصر التكلفة",
+    "costElementTitle": "عناصر التكلفة",
     "grandTotal": "الإجمالي الكلي",
     "selectItem": "اختر الصنف",
     "selectCost": "اختر التكلفة",
@@ -824,6 +854,7 @@
     "addItems": "إضافة أصناف",
     "addCostElement": "إضافة عنصر تكلفة",
     "labels": {
+      "customerReference": "مرجع العميل",
       "paymentTerms": "شروط الدفع",
       "paymentMethod": "طريقة الدفع",
       "shippingMethod": "طريقة الشحن",
@@ -845,7 +876,16 @@
     "convertToInvoice": "تحويل إلى أمر مبيعات",
     "confirmedSuccess": "تم تأكيد عرض السعر بنجاح",
     "cancelledSuccess": "تم إلغاء عرض السعر بنجاح",
-    "convertedSuccess": "تم تحويل عرض السعر بنجاح"
+    "closeTitle": "إغلاق عرض السعر",
+    "closeText": "هل أنت متأكد من أنك تريد إغلاق عرض السعر هذا؟",
+    "closeDocument": "إغلاق العرض",
+    "closedSuccess": "تم إغلاق عرض السعر بنجاح",
+    "convertedSuccess": "تم تحويل عرض السعر بنجاح",
+    "errors": {
+      "atLeastOneItem": "يجب إضافة صنف واحد على الأقل في عرض الأسعار.",
+      "duplicateItem": "هذا الصنف مضاف مسبقاً لعرض الأسعار.",
+      "duplicateCostElement": "عنصر التكلفة هذا مضاف مسبقاً لعرض الأسعار."
+    }
   },
   "salesOrders": {
     "title": "أوامر المبيعات",
@@ -856,11 +896,13 @@
     "printOrder": "طباعة الأمر",
     "addItems": "إضافة أصناف",
     "copyFromSQ": "نسخ من عرض سعر",
+    "fromSQ": "عرض سعر",
     "addCostElement": "إضافة عنصر تكلفة",
     "labels": {
       "paymentTerms": "شروط الدفع",
       "paymentMethod": "طريقة الدفع",
       "shippingMethod": "طريقة الشحن",
+      "customerReference": "مرجع العميل",
       "buyer": "المندوب",
       "contactPerson": "الشخص المسؤول"
     },
@@ -874,17 +916,42 @@
     "confirmText": "هل أنت متأكد من أنك تريد تأكيد أمر المبيعات هذا؟",
     "cancelTitle": "إلغاء أمر المبيعات",
     "cancelText": "هل أنت متأكد من أنك تريد إلغاء أمر المبيعات هذا؟",
+    "cancelDocument": "إلغاء الأمر",
     "convertTitle": "تحويل إلى فاتورة مبيعات",
     "convertText": "هل أنت متأكد من تحويل أمر المبيعات إلى فاتورة؟",
     "convertToInvoice": "تحويل إلى فاتورة",
     "confirmedSuccess": "تم تأكيد أمر المبيعات بنجاح",
     "cancelledSuccess": "تم إلغاء أمر المبيعات بنجاح",
+    "closeTitle": "إغلاق أمر المبيعات",
+    "closeText": "هل أنت متأكد من أنك تريد إغلاق أمر المبيعات هذا؟",
+    "closeDocument": "إغلاق الأمر",
+    "closedSuccess": "تم إغلاق أمر المبيعات بنجاح",
     "convertedSuccess": "تم تحويل أمر المبيعات بنجاح",
+    "conversionNotSupported": "التحويل إلى فاتورة مبيعات سيكون متاحاً قريباً.",
     "importLines": "استيراد أصناف من عرض السعر",
     "importFromPO": "استيراد من عرض سعر",
     "openQty": "الكمية المتبقية",
     "noOpenLines": "لا يوجد أصناف معتمدة قيد الانتظار لهذا العميل",
-    "importSelected": "استيراد المحدد"
+    "importSelected": "استيراد المحدد",
+    "fields": {
+      "warehouse": "المخزن",
+      "dueDate": "تاريخ الاستحقاق",
+      "subTotal": "الإجمالي الفرعي",
+      "totalAmount": "إجمالي المبلغ"
+    },
+    "tabs": {
+      "items": "الأصناف"
+    },
+    "errors": {
+      "atLeastOneItem": "يجب إضافة صنف واحد على الأقل في أمر المبيعات.",
+      "invalidQuantity": "يجب أن تكون الكمية أكبر من صفر.",
+      "invalidPrice": "يجب أن يكون السعر أكبر من صفر.",
+      "duplicateItem": "هذا الصنف مضاف مسبقاً لأمر المبيعات.",
+      "duplicateCostElement": "عنصر التكلفة هذا مضاف مسبقاً لأمر المبيعات.",
+      "warehouseRequiredFirst": "يجب اختيار المخزن أولاً قبل إضافة الأصناف.",
+      "customerRequiredFirst": "يجب اختيار العميل أولاً قبل إضافة الأصناف.",
+      "changeWarehouseWarning": "تغيير المخزن سيؤدي إلى مسح جميع الأصناف المحددة. هل تود الاستمرار؟"
+    }
   },
   "salesInvoices": {
     "title": "فواتير المبيعات",
@@ -895,6 +962,12 @@
     "addPayment": "إضافة دفعة",
     "printInvoice": "طباعة الفاتورة",
     "addItems": "إضافة أصناف",
+    "importFromSO": "استيراد من أوامر البيع",
+    "importSOLines": "استيراد بنود أوامر البيع",
+    "selectSOLines": "اختر بنود أوامر البيع المراد إضافتها",
+    "fromSO": "أمر بيع",
+    "noOpenSOLines": "لا توجد بنود مفتوحة لأوامر البيع لهذا العميل",
+    "importSelected": "استيراد المحدد",
     "addCostElement": "إضافة عنصر تكلفة",
     "fields": {
       "businessPartner": "العميل",
@@ -915,6 +988,12 @@
       "costElements": "عناصر التكلفة"
     },
     "paymentMethods": {
+      "Cash": "نقدي",
+      "BankTransfer": "تحويل بنكي",
+      "Cheque": "شيك",
+      "CreditCard": "بطاقة ائتمان",
+      "PostDatedCheque": "شيك آجل",
+      "Other": "أخرى",
       "cash": "نقدي",
       "bankTransfer": "تحويل بنكي",
       "cheque": "شيك",
@@ -930,6 +1009,7 @@
       "duplicateItem": "هذا الصنف مضاف مسبقاً للفاتورة.",
       "duplicateCostElement": "عنصر التكلفة هذا مضاف مسبقاً للفاتورة.",
       "warehouseRequiredFirst": "يجب اختيار المخزن أولاً قبل إضافة الأصناف.",
+      "customerRequiredFirst": "يجب اختيار العميل أولاً قبل استيراد أوامر البيع.",
       "changeWarehouseWarning": "تغيير المخزن سيؤدي إلى مسح جميع الأصناف المحددة. هل تود الاستمرار؟"
     }
   },
@@ -965,6 +1045,8 @@
       "BankTransfer": "تحويل بنكي",
       "Cheque": "شيك",
       "CreditCard": "بطاقة ائتمان",
+      "PostDatedCheque": "شيك آجل",
+      "Other": "أخرى",
       "cash": "نقدي",
       "bankTransfer": "تحويل بنكي",
       "cheque": "شيك",
@@ -1208,10 +1290,27 @@
   },
   "stockTransactions": {
     "title": "حركات المخزون",
+    "list": "سجل حركات المخزون",
+    "type": "نوع الحركة",
     "item": "الصنف",
     "warehouse": "المخزن",
     "quantity": "الكمية",
-    "runningBalance": "الرصيد التراكمي"
+    "runningBalance": "الرصيد التراكمي",
+    "uom": "وحدة القياس",
+    "reference": "رقم المرجع",
+    "types": {
+      "SalesOut": "صرف مبيعات",
+      "SalesReturnIn": "مرتجع مبيعات",
+      "PurchaseIn": "إضافة مشتريات",
+      "PurchaseReturnOut": "مرتجع مشتريات",
+      "TransferOut": "صادر تحويل",
+      "TransferIn": "وارد تحويل",
+      "AdjustmentIn": "تسوية إضافة",
+      "AdjustmentOut": "تسوية خصم",
+      "OpeningBalance": "رصيد افتتاحي",
+      "ManualIn": "إضافة يدوي",
+      "ManualOut": "صرف يدوي"
+    }
   },
   "inventorySettings": {
     "title": "إعدادات المخزون",
@@ -1507,6 +1606,12 @@
     "landingHomeDesc": "الوصول المباشر للبوابة والصفحة الرئيسية",
     "preferenceSaved": "تم حفظ تفضيلات صفحة البداية بنجاح"
   },
+  "userMenu": {
+    "editProfile": "تعديل الملف الشخصي",
+    "accountSettings": "إعدادات الحساب",
+    "support": "الدعم والمساعدة",
+    "signOut": "تسجيل الخروج"
+  },
   "invoice": {
     "recentTransactions": "المعاملات والفواتير الأخيرة",
     "recentTransactionsSub": "أحدث حركة فواتير المبيعات والمشتريات المسجلة",
@@ -1528,7 +1633,48 @@
       "Open": "مفتوحة",
       "Cancelled": "ملغاة"
     }
+  },
+  "setupWizard": {
+    "title": "الإعداد الأولي للنظام وتسجيل العميل (Setup Wizard)",
+    "subtitle": "قم بإعداد وتكوين بيانات الشركة، الفروع، المخازن، وتشفير معايير حماية ترخيص المالك",
+    "steps": {
+      "company": "بيانات الشركة والترخيص",
+      "branches": "إدارة الفروع",
+      "warehouses": "توزيع المخازن",
+      "summary": "المراجعة والتأكيد"
+    },
+    "company": {
+      "code": "كود الشركة",
+      "aName": "اسم الشركة (عربي)",
+      "eName": "اسم الشركة (إنجليزي)",
+      "supportExpiryDate": "تاريخ انتهاء الدعم (Support Expiry Date)",
+      "maxUsers": "أقصى عدد للمستخدمين (Max Users)",
+      "ownerRightsHint": "تنبيه لحماية حقوق المالك: سيتم تشفير معايير الدعم وعدد المستخدمين وتوقيعها بخوارزمية HMAC-SHA256 داخل سجلات المستأجر (Tenant) لمنع أي تعديل أو تجاوز غير مصرح به."
+    },
+    "branches": {
+      "addBranch": "إضافة فرع جديد",
+      "code": "كود الفرع",
+      "aName": "اسم الفرع (عربي)",
+      "eName": "اسم الفرع (إنجليزي)",
+      "remove": "حذف الفرع",
+      "hint": "يجب تسجيل فرع واحد على الأقل لكل شركة لبدء العمليات التشغيلية."
+    },
+    "warehouses": {
+      "addWarehouse": "إضافة مخزن للفرع",
+      "code": "كود المخزن",
+      "aName": "اسم المخزن (عربي)",
+      "eName": "اسم المخزن (إنجليزي)",
+      "remove": "حذف المخزن",
+      "hint": "قم بتعريف المخازن التابعة لكل فرع. يمكنك لاحقاً ضبط التفاصيل الإضافية (مثل السعة التخزينية Capacity) من شاشات النظام."
+    },
+    "summary": {
+      "reviewDesc": "يرجى مراجعة كافة المقدرات قبل إصدار التوقيع الأمني للترخيص واعتماد هيكلية المستأجر.",
+      "totalBranches": "إجمالي عدد الفروع:",
+      "totalWarehouses": "إجمالي عدد المخازن:",
+      "confirmButton": "تأكيد واعتماد الإعدادات",
+      "back": "الخطوة السابقة",
+      "next": "الخطوة التالية",
+      "successMessage": "تم إعداد وتسجيل الشركة بنجاح! جاري التوجيه..."
+    }
   }
 }
-
-

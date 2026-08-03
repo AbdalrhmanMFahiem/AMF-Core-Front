@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { Observable } from 'rxjs';
-import { LoginRequest, AuthResponse, VerifyCredentialsRequest, VerifyCredentialsResponse, TenantBranchResponse } from '../models/auth.models';
+import { LoginRequest, AuthResponse, VerifyCredentialsRequest, VerifyCredentialsResponse, TenantBranchResponse, SetupCompanyRequest, SetupCompanyAdminRequest } from '../models/auth.models';
 
 @Injectable({
   providedIn: 'root'
@@ -23,11 +23,11 @@ export class AuthService {
     return this.http.post<AuthResponse>(this.apiUrl, request);
   }
 
-  setupCompany(request: import('../models/auth.models').SetupCompanyRequest): Observable<AuthResponse> {
+  setupCompany(request: SetupCompanyRequest): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.apiUrl}/setup-company`, request);
   }
 
-  setupCompanyAdmin(request: import('../models/auth.models').SetupCompanyAdminRequest): Observable<void> {
+  setupCompanyAdmin(request: SetupCompanyAdminRequest): Observable<void> {
     return this.http.post<void>(`${this.apiUrl}/setup-company-admin`, request);
   }
 

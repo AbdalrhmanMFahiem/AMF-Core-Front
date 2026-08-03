@@ -74,4 +74,12 @@ export class SalesQuotationService {
   cancel(id: number): Observable<void> {
     return this.http.put<void>(`${this.apiUrl}/${id}/cancel`, {});
   }
+
+  close(id: number): Observable<void> {
+    return this.http.put<void>(`${this.apiUrl}/${id}/close`, {});
+  }
+
+  printPdf(id: number): Observable<Blob> {
+    return this.http.get(`${this.apiUrl}/${id}/print-pdf`, { responseType: 'blob' });
+  }
 }

@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { BusinessPartnerResponse, BusinessPartnerBasicResponse, BusinessPartnerRequest } from '../models/business-partner.model';
+import { BusinessPartnerResponse, BusinessPartnerBasicResponse, BusinessPartnerRequest, QuickCustomerRequest, QuickVendorRequest } from '../models/business-partner.model';
 import { PaginatedList, RequestFilters } from '../models/pagination.model';
 import { NextCodeResponse } from '../models/lookup.model';
 import { BusinessPartnerLedgerResponse, LedgerFilters, BalanceSummaryResponse } from '../models/business-partner.model';
@@ -38,12 +38,27 @@ export class BusinessPartnerService {
     return this.http.get<BusinessPartnerResponse>(`${this.apiUrl}/${id}`);
   }
 
-  getNextCode(): Observable<NextCodeResponse> {
-    return this.http.get<NextCodeResponse>(`${this.apiUrl}/next-code`);
+  getNextCode(isCustomer?: boolean, isVendor?: boolean): Observable<NextCodeResponse> {
+    let params = new HttpParams();
+    if (isCustomer !== undefined && isCustomer !== null) {
+      params = params.set('isCustomer', isCustomer.toString());
+    }
+    if (isVendor !== undefined && isVendor !== null) {
+      params = params.set('isVendor', isVendor.toString());
+    }
+    return this.http.get<NextCodeResponse>(`${this.apiUrl}/next-code`, { params });
   }
 
   create(data: BusinessPartnerRequest): Observable<BusinessPartnerResponse> {
     return this.http.post<BusinessPartnerResponse>(this.apiUrl, data);
+  }
+
+  quickCreateCustomer(data: QuickCustomerRequest): Observable<BusinessPartnerResponse> {
+    return this.http.post<BusinessPartnerResponse>(`${this.apiUrl}/quick-customer`, data);
+  }
+
+  quickCreateVendor(data: QuickVendorRequest): Observable<BusinessPartnerResponse> {
+    return this.http.post<BusinessPartnerResponse>(`${this.apiUrl}/quick-vendor`, data);
   }
 
   update(id: number, data: BusinessPartnerRequest): Observable<void> {

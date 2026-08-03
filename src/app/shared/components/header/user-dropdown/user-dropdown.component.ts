@@ -3,13 +3,14 @@ import { DropdownComponent } from '../../ui/dropdown/dropdown.component';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { DropdownItemTwoComponent } from '../../ui/dropdown/dropdown-item/dropdown-item.component-two';
+import { TranslateModule } from '@ngx-translate/core';
 import { AuthService } from '../../../../core/services/auth.service';
 import { AuthResponse } from '../../../../core/models/auth.models';
 
 @Component({
   selector: 'app-user-dropdown',
   templateUrl: './user-dropdown.component.html',
-  imports: [CommonModule, RouterModule, DropdownComponent, DropdownItemTwoComponent]
+  imports: [CommonModule, RouterModule, TranslateModule, DropdownComponent, DropdownItemTwoComponent]
 })
 export class UserDropdownComponent implements OnInit {
   private authService = inject(AuthService);

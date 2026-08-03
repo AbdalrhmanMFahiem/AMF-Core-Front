@@ -1,5 +1,16 @@
 {
   "common": {
+    "address": "Address",
+    "email": "Email",
+    "phone": "Phone",
+    "quickAdd": "Quick Add",
+    "uomRequired": "is required",
+    "enterNotesPlaceholder": "Type statement or notes for this line here...",
+    "quickSuggestions": "Quick Suggestions",
+    "clear": "Clear",
+    "qty": "Qty",
+    "quantity": "Quantity",
+    "price": "Price",
     "readOnly": "Read Only",
     "saving": "Saving...",
     "confirmStatusChange": "Are you sure you want to change the status?",
@@ -16,6 +27,7 @@
     "type": "Type",
     "loading": "Loading...",
     "savedSuccessfully": "Saved successfully",
+    "customerReference": "Customer Reference",
     "edit": "Edit",
     "activate": "Activate",
     "date": "Date",
@@ -223,11 +235,17 @@
     "dashboard": "Dashboard",
     "UnitOfMeasure": {
       "Title": "Unit of Measures",
+      "title": "Unit of Measures",
       "AddTitle": "Add Unit of Measure",
+      "addTitle": "Add Unit of Measure",
       "EditTitle": "Edit Unit of Measure",
+      "editTitle": "Edit Unit of Measure",
       "ViewTitle": "View Unit of Measure",
+      "viewTitle": "View Unit of Measure",
       "SearchPlaceholder": "Search by code or name",
-      "Add": "Add Unit of Measure"
+      "searchPlaceholder": "Search by code or name",
+      "Add": "Add Unit of Measure",
+      "add": "Add Unit of Measure"
     }
   },
   "warehouses": {
@@ -420,6 +438,10 @@
     "printDirect": "Print"
   },
   "businessPartners": {
+    "quickAddCustomer": "Quick Add Customer",
+    "quickAddSubtitle": "Add a new customer with basic info directly and activate automatically",
+    "quickAddVendor": "Quick Add Vendor",
+    "quickAddVendorSubtitle": "Add a new vendor with basic info directly and activate automatically",
     "list": {
       "title": "Business Partners"
     },
@@ -648,7 +670,13 @@
   },
   "errors": {
     "generic": "An unexpected error occurred, please try again",
-    "conflict": "The entered data conflicts with existing records"
+    "conflict": "The entered data conflicts with existing records",
+    "tokenExpired": "Your session has expired. Please log in again.",
+    "sessionExpired": "Session Expired",
+    "unauthorized": "Unauthorized access. Please log in.",
+    "unauthorizedTitle": "Unauthorized",
+    "networkError": "Unable to connect to the server. Please check your connection.",
+    "networkErrorTitle": "Network Error"
   },
   "invoices": {
     "amount": "Amount",
@@ -710,6 +738,7 @@
     "operationType": "Operation Type",
     "addition": "Addition",
     "discount": "Discount",
+    "noCostElements": "No Cost Elements",
     "generalDetails": "General Details",
     "invoiceLines": "Invoice Lines",
     "addLine": "Add Line",
@@ -725,6 +754,7 @@
     "addCost": "Add Cost",
     "percentage": "Percentage",
     "costElement": "Cost Element",
+    "costElementTitle": "Cost Element",
     "grandTotal": "Grand Total",
     "selectItem": "Select Item",
     "selectCost": "Select Cost",
@@ -809,6 +839,7 @@
     "addItems": "Add Items",
     "addCostElement": "Add Cost Element",
     "labels": {
+      "customerReference": "Customer Reference",
       "paymentTerms": "Payment Terms",
       "paymentMethod": "Payment Method",
       "shippingMethod": "Shipping Method",
@@ -830,7 +861,16 @@
     "convertToInvoice": "Convert to Sales Order",
     "confirmedSuccess": "Sales quotation confirmed successfully",
     "cancelledSuccess": "Sales quotation cancelled successfully",
-    "convertedSuccess": "Sales quotation converted successfully"
+    "closeTitle": "Close Sales Quotation",
+    "closeText": "Are you sure you want to close this sales quotation?",
+    "closeDocument": "Close Quotation",
+    "closedSuccess": "Sales quotation closed successfully",
+    "convertedSuccess": "Sales quotation converted successfully",
+    "errors": {
+      "atLeastOneItem": "At least one item is required in the sales quotation.",
+      "duplicateItem": "This item is already added to the sales quotation.",
+      "duplicateCostElement": "This cost element is already added to the sales quotation."
+    }
   },
   "salesOrders": {
     "title": "Sales Orders",
@@ -841,11 +881,13 @@
     "printOrder": "Print Order",
     "addItems": "Add Items",
     "copyFromSQ": "Copy From Quotation",
+    "fromSQ": "Quotation",
     "addCostElement": "Add Cost Element",
     "labels": {
       "paymentTerms": "Payment Terms",
       "paymentMethod": "Payment Method",
       "shippingMethod": "Shipping Method",
+      "customerReference": "Customer Reference",
       "buyer": "Buyer",
       "contactPerson": "Contact Person"
     },
@@ -859,17 +901,42 @@
     "confirmText": "Are you sure you want to confirm this sales order?",
     "cancelTitle": "Cancel Sales Order",
     "cancelText": "Are you sure you want to cancel this sales order?",
+    "cancelDocument": "Cancel Order",
     "convertTitle": "Convert to Sales Invoice",
     "convertText": "Are you sure you want to convert this sales order to a sales invoice?",
     "convertToInvoice": "Convert to Invoice",
     "confirmedSuccess": "Sales order confirmed successfully",
     "cancelledSuccess": "Sales order cancelled successfully",
+    "closeTitle": "Close Sales Order",
+    "closeText": "Are you sure you want to close this sales order?",
+    "closeDocument": "Close Order",
+    "closedSuccess": "Sales order closed successfully",
     "convertedSuccess": "Sales order converted successfully",
+    "conversionNotSupported": "Conversion to Sales Invoice will be supported soon.",
     "importLines": "Import Lines from Quotation",
     "importFromPO": "Import from Quotation",
     "openQty": "Open Qty",
     "noOpenLines": "No open quotation lines for this customer",
-    "importSelected": "Import Selected"
+    "importSelected": "Import Selected",
+    "fields": {
+      "warehouse": "Warehouse",
+      "dueDate": "Due Date",
+      "subTotal": "Subtotal",
+      "totalAmount": "Total Amount"
+    },
+    "tabs": {
+      "items": "Items"
+    },
+    "errors": {
+      "atLeastOneItem": "At least one item is required in the sales order.",
+      "invalidQuantity": "Quantity must be greater than zero.",
+      "invalidPrice": "Price must be greater than zero.",
+      "duplicateItem": "This item is already added to the sales order.",
+      "duplicateCostElement": "This cost element is already added to the sales order.",
+      "warehouseRequiredFirst": "You must select a warehouse before adding items.",
+      "customerRequiredFirst": "You must select a customer before adding items.",
+      "changeWarehouseWarning": "Changing the warehouse will clear all selected items. Do you want to proceed?"
+    }
   },
   "salesInvoices": {
     "title": "Sales Invoices",
@@ -880,6 +947,12 @@
     "addPayment": "Add Payment",
     "printInvoice": "Print Invoice",
     "addItems": "Add Items",
+    "importFromSO": "Import from Sales Orders",
+    "importSOLines": "Import Sales Order Lines",
+    "selectSOLines": "Select Sales Order lines to import",
+    "fromSO": "Sales Order",
+    "noOpenSOLines": "No open Sales Order lines found for this customer",
+    "importSelected": "Import Selected",
     "addCostElement": "Add Cost Element",
     "fields": {
       "businessPartner": "Customer",
@@ -900,6 +973,12 @@
       "costElements": "Cost Elements"
     },
     "paymentMethods": {
+      "Cash": "Cash",
+      "BankTransfer": "Bank Transfer",
+      "Cheque": "Cheque",
+      "CreditCard": "Credit Card",
+      "PostDatedCheque": "Post-Dated Cheque",
+      "Other": "Other",
       "cash": "Cash",
       "bankTransfer": "Bank Transfer",
       "cheque": "Cheque",
@@ -915,6 +994,7 @@
       "duplicateItem": "This item is already added to the invoice.",
       "duplicateCostElement": "This cost element is already added to the invoice.",
       "warehouseRequiredFirst": "You must select a warehouse before adding items.",
+      "customerRequiredFirst": "You must select a customer before importing Sales Orders.",
       "changeWarehouseWarning": "Changing the warehouse will clear all selected items. Do you want to proceed?"
     }
   },
@@ -950,6 +1030,8 @@
       "BankTransfer": "Bank Transfer",
       "Cheque": "Cheque",
       "CreditCard": "Credit Card",
+      "PostDatedCheque": "Post-Dated Cheque",
+      "Other": "Other",
       "cash": "Cash",
       "bankTransfer": "Bank Transfer",
       "cheque": "Cheque",
@@ -1193,10 +1275,27 @@
   },
   "stockTransactions": {
     "title": "Stock Transactions",
+    "list": "Stock Transactions Log",
+    "type": "Transaction Type",
     "item": "Item",
     "warehouse": "Warehouse",
     "quantity": "Quantity",
-    "runningBalance": "Running Balance"
+    "runningBalance": "Running Balance",
+    "uom": "Unit of Measure",
+    "reference": "Reference Code",
+    "types": {
+      "SalesOut": "Sales Out",
+      "SalesReturnIn": "Sales Return In",
+      "PurchaseIn": "Purchase In",
+      "PurchaseReturnOut": "Purchase Return Out",
+      "TransferOut": "Transfer Out",
+      "TransferIn": "Transfer In",
+      "AdjustmentIn": "Adjustment In",
+      "AdjustmentOut": "Adjustment Out",
+      "OpeningBalance": "Opening Balance",
+      "ManualIn": "Manual Receipt In",
+      "ManualOut": "Manual Issue Out"
+    }
   },
   "inventorySettings": {
     "title": "Inventory Settings",
@@ -1490,6 +1589,12 @@
     "landingHomeDesc": "Direct access to portal & homepage",
     "preferenceSaved": "Landing page preferences saved successfully"
   },
+  "userMenu": {
+    "editProfile": "Edit Profile",
+    "accountSettings": "Account Settings",
+    "support": "Support & Help",
+    "signOut": "Sign Out"
+  },
   "invoice": {
     "recentTransactions": "Recent Transactions & Invoices",
     "recentTransactionsSub": "Latest sales & purchase invoices registered",
@@ -1511,7 +1616,48 @@
       "Open": "Open",
       "Cancelled": "Cancelled"
     }
+  },
+  "setupWizard": {
+    "title": "System Initial Setup & Tenant Registration",
+    "subtitle": "Configure company details, branches, warehouses, and licensing protection parameters",
+    "steps": {
+      "company": "Company Data & License",
+      "branches": "Branches Setup",
+      "warehouses": "Warehouses Allocation",
+      "summary": "Review & Activation"
+    },
+    "company": {
+      "code": "Company Code",
+      "aName": "Arabic Company Name",
+      "eName": "English Company Name",
+      "supportExpiryDate": "Support Expiry Date",
+      "maxUsers": "Maximum Active Users",
+      "ownerRightsHint": "These parameters will be mathematically encrypted and HMAC-SHA256 signed inside the Tenant security Vault to safeguard system owner intellectual and commercial rights."
+    },
+    "branches": {
+      "addBranch": "Add New Branch",
+      "code": "Branch Code",
+      "aName": "Branch Arabic Name",
+      "eName": "Branch English Name",
+      "remove": "Remove Branch",
+      "hint": "You must define at least one operational branch for the company."
+    },
+    "warehouses": {
+      "addWarehouse": "Add Warehouse to Branch",
+      "code": "Warehouse Code",
+      "aName": "Warehouse Arabic Name",
+      "eName": "Warehouse English Name",
+      "remove": "Remove Warehouse",
+      "hint": "Assign initial warehouses for each branch. Additional parameters like capacity can be configured later in settings."
+    },
+    "summary": {
+      "reviewDesc": "Please review all configured data before issuing the cryptographic license and establishing the tenant database schemas.",
+      "totalBranches": "Total Branches:",
+      "totalWarehouses": "Total Warehouses:",
+      "confirmButton": "Confirm & Complete Setup",
+      "back": "Previous Step",
+      "next": "Next Step",
+      "successMessage": "Company setup completed successfully! Redirecting to dashboard..."
+    }
   }
 }
-
-

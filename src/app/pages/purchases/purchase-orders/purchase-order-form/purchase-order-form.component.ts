@@ -30,6 +30,9 @@ import {
 import { ItemLookupResponse } from '../../../../core/models/lookup.model';
 import { ToastrService } from 'ngx-toastr';
 
+import { LineNotesModalComponent } from '../../../../shared/components/common/line-notes-modal/line-notes-modal.component';
+import { QuickVendorModalComponent } from '../../../../shared/components/quick-vendor-modal/quick-vendor-modal.component';
+
 @Component({
   selector: 'app-purchase-order-form',
   standalone: true,
@@ -47,8 +50,9 @@ import { ToastrService } from 'ngx-toastr';
     DocumentStatusBadgeComponent,
     StatusBadgeComponent,
     PrintPreviewModalComponent,
-    ModalComponent,
-    ConfirmationModalComponent
+    ConfirmationModalComponent,
+    LineNotesModalComponent,
+    QuickVendorModalComponent
   ],
   templateUrl: './purchase-order-form.component.html',
 })
@@ -94,6 +98,21 @@ export class PurchaseOrderFormComponent implements OnInit, HasUnsavedChanges {
   isPrintModalOpen = false;
   pdfBlobUrl: string | null = null;
   pdfLoading = false;
+
+  isQuickVendorModalOpen = false;
+
+  openQuickVendorModal(): void {
+    if (this.mode === 'view') return;
+    this.isQuickVendorModalOpen = true;
+  }
+
+  onVendorCreated(newVendor: any): void {
+    this.lookupService.getVendors().subscribe((vendors: any[]) => {
+      this.vendorsOptions = vendors.map((v: any) => ({ value: v.id, label: `${v.code} - ${v.name}` }));
+      this.model.businessPartnerId = newVendor.id;
+      this.form?.form.markAsDirty();
+    });
+  }
 
   model: PurchaseOrderRequest = {
     id: 0,
@@ -397,15 +416,22 @@ export class PurchaseOrderFormComponent implements OnInit, HasUnsavedChanges {
   }
 
   // Notes Modal Actions
+  currentLineItemCode?: string;
+  currentLineItemName?: string;
+
   openLineNotesModal(index: number): void {
+    const line = this.model.lines[index] as any;
+    if (!line) return;
     this.currentLineNotesIndex = index;
-    this.currentLineNotes = this.model.lines[index].notes || '';
+    this.currentLineNotes = line.notes || '';
+    this.currentLineItemCode = line._itemCode;
+    this.currentLineItemName = line._itemName;
     this.isLineNotesModalOpen = true;
   }
 
-  saveLineNotes(): void {
-    if (this.currentLineNotesIndex > -1) {
-      this.model.lines[this.currentLineNotesIndex].notes = this.currentLineNotes;
+  onSaveLineNotes(updatedNotes: string): void {
+    if (this.currentLineNotesIndex >= 0 && this.model.lines[this.currentLineNotesIndex]) {
+      (this.model.lines[this.currentLineNotesIndex] as any).notes = updatedNotes;
       this.form?.form.markAsDirty();
     }
     this.isLineNotesModalOpen = false;
@@ -463,10 +489,10 @@ export class PurchaseOrderFormComponent implements OnInit, HasUnsavedChanges {
   validate(): boolean {
     this.validationErrors = [];
     if (!this.model.businessPartnerId) {
-      this.validationErrors.push(`${this.translate.instant('common.vendor')}: ${this.translate.instant('validation.required')}`);
+      this.validationErrors.push(`${this.translate.instant('common.vendor')}: ${this.translate.instant('common.pleaseFillRequiredFields')}`);
     }
     if (!this.model.warehouseId) {
-      this.validationErrors.push(`${this.translate.instant('salesInvoices.fields.warehouse')}: ${this.translate.instant('validation.required')}`);
+      this.validationErrors.push(`${this.translate.instant('salesInvoices.fields.warehouse')}: ${this.translate.instant('common.pleaseFillRequiredFields')}`);
     }
     if (!this.model.lines || this.model.lines.length === 0) {
       this.validationErrors.push(this.translate.instant('salesInvoices.errors.atLeastOneItem'));
@@ -480,14 +506,14 @@ export class PurchaseOrderFormComponent implements OnInit, HasUnsavedChanges {
         }
         itemIds.add(l.itemId);
 
-        if (l.quantity <= 0) {
+        if (!l.unitOfMeasureId) {
+          this.validationErrors.push(`${this.translate.instant('common.row')} ${rowNum}: ${this.translate.instant('common.unitOfMeasure')} ${this.translate.instant('common.uomRequired')}`);
+        }
+        if (l.quantity === undefined || l.quantity === null || l.quantity <= 0) {
           this.validationErrors.push(`${this.translate.instant('common.row')} ${rowNum}: ${this.translate.instant('salesInvoices.errors.invalidQuantity')}`);
         }
-        if (l.unitPrice <= 0) {
+        if (l.unitPrice === undefined || l.unitPrice === null || l.unitPrice <= 0) {
           this.validationErrors.push(`${this.translate.instant('common.row')} ${rowNum}: ${this.translate.instant('salesInvoices.errors.invalidPrice')}`);
-        }
-        if (!l.unitOfMeasureId) {
-          this.validationErrors.push(`${this.translate.instant('common.row')} ${rowNum}: ${this.translate.instant('common.unitOfMeasure')} ${this.translate.instant('validation.required')}`);
         }
       });
     }

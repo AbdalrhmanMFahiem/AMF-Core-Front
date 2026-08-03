@@ -3,40 +3,40 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { ModalComponent } from '../../ui/modal/modal.component';
-import { SalesQuotationService } from '../../../../core/services/sales-quotation.service';
-import { OpenSalesQuotationLineResponse } from '../../../../core/models/sales-quotation.model';
+import { SalesOrderService } from '../../../../core/services/sales-order.service';
+import { OpenSalesOrderLineResponse } from '../../../../core/models/invoice.model';
 
 @Component({
-  selector: 'app-sq-lines-import-modal',
+  selector: 'app-so-lines-import-modal',
   standalone: true,
   imports: [CommonModule, FormsModule, TranslateModule, ModalComponent],
-  templateUrl: './sq-lines-import-modal.component.html',
+  templateUrl: './so-lines-import-modal.component.html',
 })
-export class SqLinesImportModalComponent implements OnChanges {
-  private sqService = inject(SalesQuotationService);
+export class SoLinesImportModalComponent implements OnChanges {
+  private soService = inject(SalesOrderService);
 
   @Input() isOpen = false;
   @Input() customerId?: number;
   @Input() existingItemIds: number[] = [];
   @Output() close = new EventEmitter<void>();
-  @Output() importLines = new EventEmitter<OpenSalesQuotationLineResponse[]>();
+  @Output() importLines = new EventEmitter<OpenSalesOrderLineResponse[]>();
 
-  lines: OpenSalesQuotationLineResponse[] = [];
+  lines: OpenSalesOrderLineResponse[] = [];
   selectedLines: Set<number> = new Set<number>();
   loading = false;
   searchTerm = '';
 
-  get filteredLines(): OpenSalesQuotationLineResponse[] {
+  get filteredLines(): OpenSalesOrderLineResponse[] {
     if (!this.searchTerm) return this.lines;
     const term = this.searchTerm.toLowerCase();
     return this.lines.filter(l => 
       l.itemCode.toLowerCase().includes(term) ||
       l.itemName.toLowerCase().includes(term) ||
-      l.salesQuotationCode.toLowerCase().includes(term)
+      l.salesOrderCode.toLowerCase().includes(term)
     );
   }
 
-  get selectableLines(): OpenSalesQuotationLineResponse[] {
+  get selectableLines(): OpenSalesOrderLineResponse[] {
     return this.filteredLines.filter(l => !this.isItemDisabled(l.itemId));
   }
 
@@ -45,9 +45,6 @@ export class SqLinesImportModalComponent implements OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    // Only load lines when isOpen or customerId changes — NOT when existingItemIds changes,
-    // because existingItemIds is a getter that returns a new array reference on every
-    // change detection cycle, which would cause an infinite API call loop.
     if ((changes['isOpen'] || changes['customerId']) && this.isOpen && this.customerId) {
       this.searchTerm = '';
       this.selectedLines.clear();
@@ -57,12 +54,12 @@ export class SqLinesImportModalComponent implements OnChanges {
 
   loadLines() {
     this.loading = true;
-    this.sqService.getOpenLines(this.customerId!).subscribe({
+    this.soService.getOpenLinesForInvoice(this.customerId!).subscribe({
       next: (res: any[]) => {
         this.lines = (res || []).map(l => ({
           ...l,
-          salesQuotationLineId: l.salesQuotationLineId || l.id,
-          salesQuotationCode: l.salesQuotationCode || l.baseDocumentId || l.code || '',
+          salesOrderLineId: l.salesOrderLineId || l.id,
+          salesOrderCode: l.salesOrderCode || l.baseDocumentCode || l.baseDocumentId || l.code || '',
           importQuantity: l.openQuantity
         }));
         this.loading = false;
@@ -71,30 +68,30 @@ export class SqLinesImportModalComponent implements OnChanges {
     });
   }
 
-  toggleSelection(line: OpenSalesQuotationLineResponse) {
+  toggleSelection(line: OpenSalesOrderLineResponse) {
     if (this.isItemDisabled(line.itemId)) return;
-    if (this.selectedLines.has(line.salesQuotationLineId)) {
-      this.selectedLines.delete(line.salesQuotationLineId);
+    if (this.selectedLines.has(line.salesOrderLineId)) {
+      this.selectedLines.delete(line.salesOrderLineId);
     } else {
-      this.selectedLines.add(line.salesQuotationLineId);
+      this.selectedLines.add(line.salesOrderLineId);
     }
   }
 
   isAllSelected(): boolean {
-    return this.selectableLines.length > 0 && this.selectableLines.every(l => this.selectedLines.has(l.salesQuotationLineId));
+    return this.selectableLines.length > 0 && this.selectableLines.every(l => this.selectedLines.has(l.salesOrderLineId));
   }
 
   toggleAll() {
     if (this.isAllSelected()) {
       this.selectedLines.clear();
     } else {
-      this.selectableLines.forEach(l => this.selectedLines.add(l.salesQuotationLineId));
+      this.selectableLines.forEach(l => this.selectedLines.add(l.salesOrderLineId));
     }
   }
 
   confirmSelection() {
     const selected = this.lines
-      .filter(l => this.selectedLines.has(l.salesQuotationLineId))
+      .filter(l => this.selectedLines.has(l.salesOrderLineId))
       .map(l => ({
         ...l,
         quantity: Math.min(Math.max(1, l.importQuantity || l.openQuantity), l.openQuantity)
@@ -108,4 +105,3 @@ export class SqLinesImportModalComponent implements OnChanges {
     this.close.emit();
   }
 }
-

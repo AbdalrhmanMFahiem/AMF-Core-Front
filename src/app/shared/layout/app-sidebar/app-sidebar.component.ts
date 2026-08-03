@@ -96,7 +96,6 @@ export class AppSidebarComponent {
         { name: "Stock Adjustments", translationKey: "pages.stockAdjustments", path: "/inventory/stock-adjustments" },
         { name: "Stock Issues", translationKey: "stockVouchers.issues.title", path: "/inventory/stock-issues" },
         { name: "Stock Receipts", translationKey: "stockVouchers.receipts.title", path: "/inventory/stock-receipts" },
-        { name: "Inventory Counts", translationKey: "inventoryCounts.title", path: "/inventory/inventory-counts" },
         { name: "Stock Transactions", translationKey: "pages.stockTransactions", path: "/inventory/stock-transactions" }
       ],
     },

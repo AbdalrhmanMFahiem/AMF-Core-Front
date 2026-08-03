@@ -17,8 +17,12 @@ import { ItemService } from '../../../../core/services/item.service';
 import { DocumentStatusBadgeComponent } from '../../../../shared/components/common/document-status-badge/document-status-badge.component';
 import { StatusBadgeComponent } from '../../../../shared/components/ui/status-badge/status-badge.component';
 import { PrintPreviewModalComponent } from '../../../../shared/components/common/print-preview-modal/print-preview-modal.component';
-import { ModalComponent } from '../../../../shared/components/ui/modal/modal.component';
+import { LineNotesModalComponent } from '../../../../shared/components/common/line-notes-modal/line-notes-modal.component';
 import { ConfirmationModalComponent } from '../../../../shared/components/common/confirmation-modal/confirmation-modal.component';
+import { CostElementLookupModalComponent } from '../../../../shared/components/lookups/cost-element-lookup-modal/cost-element-lookup-modal.component';
+import { QuickCustomerModalComponent } from '../../../../shared/components/quick-customer-modal/quick-customer-modal.component';
+import { InvoiceCostElementDropdown } from '../../../../core/models/lookup.model';
+import { InvoiceCostLineRequest, InvoiceCostLineResponse } from '../../../../core/models/invoice.model';
 import { HasUnsavedChanges } from '../../../../core/guards/unsaved-changes.guard';
 import {
   SalesQuotationRequest,
@@ -44,11 +48,13 @@ import { ToastrService } from 'ngx-toastr';
     SearchableSelectComponent,
     DatePickerComponent,
     ItemLookupModalComponent,
+    CostElementLookupModalComponent,
     DocumentStatusBadgeComponent,
     StatusBadgeComponent,
     PrintPreviewModalComponent,
-    ModalComponent,
-    ConfirmationModalComponent
+    ConfirmationModalComponent,
+    LineNotesModalComponent,
+    QuickCustomerModalComponent
   ],
   templateUrl: './sales-quotation-form.component.html',
 })
@@ -78,13 +84,14 @@ export class SalesQuotationFormComponent implements OnInit, HasUnsavedChanges {
   actionModalMessage = '';
   actionModalType: 'warning' | 'danger' | 'info' | 'success' = 'warning';
   actionModalConfirmText = '';
-  pendingAction: 'confirm' | 'cancel' | 'convert' | null = null;
+  pendingAction: 'confirm' | 'cancel' | 'convert' | 'close' | null = null;
 
   showLeaveConfirmation = false;
   private leaveConfirmationResolver: ((value: boolean) => void) | null = null;
 
-  activeTab: 'items' | 'additional' = 'items';
+  activeTab: 'items' | 'cost-elements' | 'additional' = 'items';
   isItemModalOpen = false;
+  isCostElementModalOpen = false;
 
   // Line Notes Modal
   isLineNotesModalOpen = false;
@@ -94,6 +101,21 @@ export class SalesQuotationFormComponent implements OnInit, HasUnsavedChanges {
   isPrintModalOpen = false;
   pdfBlobUrl: string | null = null;
   pdfLoading = false;
+
+  isQuickCustomerModalOpen = false;
+
+  openQuickCustomerModal(): void {
+    if (this.mode === 'view') return;
+    this.isQuickCustomerModalOpen = true;
+  }
+
+  onCustomerCreated(newCustomer: any): void {
+    this.lookupService.getCustomers().subscribe((customers: any[]) => {
+      this.customersOptions = customers.map((v: any) => ({ value: v.id, label: `${v.code} - ${v.name}` }));
+      this.model.businessPartnerId = newCustomer.id;
+      this.form?.form.markAsDirty();
+    });
+  }
 
   model: SalesQuotationRequest = {
     id: 0,
@@ -120,7 +142,8 @@ export class SalesQuotationFormComponent implements OnInit, HasUnsavedChanges {
     referenceNumber: '',
     notes: '',
     internalNotes: '',
-    lines: []
+    lines: [],
+    costLines: []
   };
 
   viewResponse?: SalesQuotationResponse;
@@ -203,32 +226,60 @@ export class SalesQuotationFormComponent implements OnInit, HasUnsavedChanges {
       documentDate: res.documentDate.split('T')[0],
       dueDate: res.dueDate.split('T')[0],
       requiredDate: res.requiredDate ? res.requiredDate.split('T')[0] : undefined,
-      lines: res.lines.map(l => ({
-        id: l.id,
-        itemId: l.itemId,
-        warehouseId: l.warehouseId,
-        lineNumber: l.lineNumber,
-        description: l.description,
-        quantity: l.quantity,
-        unitOfMeasureId: l.unitOfMeasureId,
-        uomConversionFactor: l.uomConversionFactor,
-        unitPrice: l.unitPrice,
-        discountPercent: l.discountPercent,
-        discountAmount: l.discountAmount,
-        taxPercent: l.taxPercent,
-        taxAmount: l.taxAmount,
-        lineTotalBeforeDiscount: l.lineTotalBeforeDiscount,
-        lineTotalBeforeTax: l.lineTotalBeforeTax,
-        lineTotal: l.lineTotal,
-        lineDueDate: l.lineDueDate ? l.lineDueDate.split('T')[0] : undefined,
-        status: l.lineStatus,
-        notes: l.notes,
-        // Add extra fields just for UI display
-        _itemName: l.itemName,
-        _itemCode: l.itemCode,
-        _baseUomType: l.baseUomType,
-        _discountFixedMode: 'percentage',
-        _taxFixedMode: 'percentage'
+      lines: res.lines.map(l => {
+        const lineItem: any = {
+          id: l.id,
+          itemId: l.itemId,
+          warehouseId: l.warehouseId,
+          lineNumber: l.lineNumber,
+          description: l.description,
+          quantity: l.quantity,
+          unitOfMeasureId: l.unitOfMeasureId,
+          uomConversionFactor: l.uomConversionFactor,
+          unitPrice: l.unitPrice,
+          discountPercent: l.discountPercent,
+          discountAmount: l.discountAmount,
+          taxPercent: l.taxPercent,
+          taxAmount: l.taxAmount,
+          lineTotalBeforeDiscount: l.lineTotalBeforeDiscount,
+          lineTotalBeforeTax: l.lineTotalBeforeTax,
+          lineTotal: l.lineTotal,
+          lineDueDate: l.lineDueDate ? l.lineDueDate.split('T')[0] : undefined,
+          status: l.lineStatus,
+          notes: l.notes,
+          // Add extra fields just for UI display
+          _itemName: l.itemName,
+          _itemCode: l.itemCode,
+          _baseUomType: l.baseUomType,
+          _availableUomsOptions: l.unitOfMeasureId && (l.uomName || l.unitOfMeasureName) ? [{ value: l.unitOfMeasureId, label: (l.uomName || l.unitOfMeasureName)! }] : [],
+          _discountFixedMode: 'percentage',
+          _taxFixedMode: 'percentage'
+        };
+
+        if (l.itemId) {
+          this.itemService.getSalesDetails(l.itemId).subscribe({
+            next: (details: any) => {
+              const uoms = details.availableUoms || details.unitsOfMeasure || [];
+              if (uoms.length > 0) {
+                lineItem._availableUomsOptions = uoms.map((u: any) => ({
+                  value: u.id || u.unitOfMeasureId,
+                  label: u.name || u.unitOfMeasureName || u.aName
+                }));
+              }
+            }
+          });
+        }
+
+        return lineItem;
+      }),
+      costLines: (res.costLines || []).map(c => ({
+        invoiceCostElementId: c.invoiceCostElementId,
+        amount: c.amount,
+        percentage: c.percentage,
+        notes: c.notes,
+        _name: c.invoiceCostElementName,
+        _operationType: c.invoiceCostOperation,
+        _fixedMode: 'amount'
       } as any))
     };
     this.recalculateTotals();
@@ -248,7 +299,7 @@ export class SalesQuotationFormComponent implements OnInit, HasUnsavedChanges {
     });
   }
 
-  setTab(tab: 'items' | 'additional'): void {
+  setTab(tab: 'items' | 'cost-elements' | 'additional'): void {
     this.activeTab = tab;
   }
 
@@ -306,12 +357,12 @@ export class SalesQuotationFormComponent implements OnInit, HasUnsavedChanges {
   onItemSelected(item: ItemLookupResponse): void {
     const exists = this.model.lines.some((l: any) => l.itemId === item.id);
     if (exists) {
-      this.validationErrors = [this.translate.instant('salesInvoices.errors.duplicateItem')];
+      this.validationErrors = [this.translate.instant('salesQuotations.errors.duplicateItem')];
       setTimeout(() => this.validationErrors = [], 4000);
       return;
     }
 
-    this.model.lines.push({
+    const newLine: any = {
       id: 0,
       itemId: item.id,
       warehouseId: this.model.warehouseId!,
@@ -323,7 +374,7 @@ export class SalesQuotationFormComponent implements OnInit, HasUnsavedChanges {
       taxAmount: 0,
       lineNumber: this.model.lines.length + 1,
       uomConversionFactor: 1,
-      unitOfMeasureId: item.purchaseUomId || undefined,
+      unitOfMeasureId: item.salesUomId || undefined,
       description: item.name,
       lineTotalBeforeDiscount: 0,
       lineTotalBeforeTax: 0,
@@ -337,30 +388,31 @@ export class SalesQuotationFormComponent implements OnInit, HasUnsavedChanges {
       _taxFixedMode: 'percentage',
       _isLoading: true,
       notes: ''
-    } as any);
+    };
+    this.model.lines.push(newLine);
     this.form?.form.markAsDirty();
     this.recalculateTotals();
 
-    this.itemService.get(item.id).subscribe({
+    this.itemService.getSalesDetails(item.id).subscribe({
       next: (details: any) => {
-        const line = this.model.lines[this.model.lines.length - 1] as any;
-        if (line) {
-          line.unitOfMeasureId = details.salesUomId || line.unitOfMeasureId;
-          line._baseUomType = details.baseUomType || line._baseUomType;
-          if (details.salesPrice !== undefined && details.salesPrice !== null) {
-            line.unitPrice = details.salesPrice;
-          }
-          if (details.unitsOfMeasure && details.unitsOfMeasure.length > 0) {
-            line._availableUomsOptions = details.unitsOfMeasure.map((u: any) => ({ value: u.unitOfMeasureId, label: u.unitOfMeasureName }));
-          }
-          line._isLoading = false;
-          this.recalculateTotals();
+        newLine.unitOfMeasureId = details.salesUomId || item.salesUomId || newLine.unitOfMeasureId;
+        newLine._baseUomType = details.baseUomType || item.baseUomType || newLine._baseUomType;
+        if (details.salesPrice !== undefined && details.salesPrice !== null && details.salesPrice > 0) {
+          newLine.unitPrice = details.salesPrice;
         }
+        const uoms = details.availableUoms || details.unitsOfMeasure || [];
+        if (uoms.length > 0) {
+          newLine._availableUomsOptions = uoms.map((u: any) => ({
+            value: u.id || u.unitOfMeasureId,
+            label: u.name || u.unitOfMeasureName || u.aName
+          }));
+        }
+        newLine._isLoading = false;
+        this.recalculateTotals();
       },
       error: (err: any) => {
         console.error('Error fetching sales details', err);
-        const line = this.model.lines[this.model.lines.length - 1] as any;
-        if (line) { line._isLoading = false; }
+        newLine._isLoading = false;
         this.recalculateTotals();
       }
     });
@@ -398,19 +450,73 @@ export class SalesQuotationFormComponent implements OnInit, HasUnsavedChanges {
   }
 
   // Notes Modal Actions
+  currentLineItemCode?: string;
+  currentLineItemName?: string;
+
   openLineNotesModal(index: number): void {
-    if (this.mode === 'view') return;
+    const line = this.model.lines[index] as any;
+    if (!line) return;
     this.currentLineNotesIndex = index;
-    this.currentLineNotes = this.model.lines[index].notes || '';
+    this.currentLineNotes = line.notes || '';
+    this.currentLineItemCode = line._itemCode;
+    this.currentLineItemName = line._itemName;
     this.isLineNotesModalOpen = true;
   }
 
-  saveLineNotes(): void {
-    if (this.currentLineNotesIndex > -1) {
-      this.model.lines[this.currentLineNotesIndex].notes = this.currentLineNotes;
+  onSaveLineNotes(updatedNotes: string): void {
+    if (this.currentLineNotesIndex >= 0 && this.model.lines[this.currentLineNotesIndex]) {
+      (this.model.lines[this.currentLineNotesIndex] as any).notes = updatedNotes;
       this.form?.form.markAsDirty();
     }
     this.isLineNotesModalOpen = false;
+  }
+
+  // Cost Elements Tab Actions
+  openCostElementModal(): void {
+    if (this.mode === 'view') return;
+    this.isCostElementModalOpen = true;
+  }
+
+  onCostElementSelected(element: InvoiceCostElementDropdown): void {
+    if (!this.model.costLines) this.model.costLines = [];
+    const exists = this.model.costLines.some((c: any) => c.invoiceCostElementId === element.id);
+    if (exists) {
+      this.validationErrors = [this.translate.instant('salesQuotations.errors.duplicateCostElement')];
+      setTimeout(() => this.validationErrors = [], 4000);
+      return;
+    }
+
+    this.model.costLines.push({
+      invoiceCostElementId: element.id,
+      amount: 0,
+      percentage: element.defaultPercentage || 0,
+      _name: element.name,
+      _operationType: element.operationType,
+      _fixedMode: 'percentage'
+    } as any);
+    this.form?.form.markAsDirty();
+    this.recalculateTotals();
+  }
+
+  onCostPercentageChange(index: number): void {
+    if (!this.model.costLines) return;
+    const cost = this.model.costLines[index] as any;
+    cost._fixedMode = 'percentage';
+    this.recalculateTotals();
+  }
+
+  onCostAmountChange(index: number): void {
+    if (!this.model.costLines) return;
+    const cost = this.model.costLines[index] as any;
+    cost._fixedMode = 'amount';
+    this.recalculateTotals();
+  }
+
+  removeCostElement(index: number): void {
+    if (this.mode === 'view' || !this.model.costLines) return;
+    this.model.costLines.splice(index, 1);
+    this.form?.form.markAsDirty();
+    this.recalculateTotals();
   }
 
   recalculateTotals(): void {
@@ -452,6 +558,26 @@ export class SalesQuotationFormComponent implements OnInit, HasUnsavedChanges {
       this.totalTax += tax;
     });
 
+    const itemsNetTotal = this.model.lines.reduce((sum: any, line: any) => sum + (line.lineTotal || 0), 0);
+
+    let additionalCosts = 0;
+    if (this.model.costLines) {
+      this.model.costLines.forEach((cost: any) => {
+        if (cost._fixedMode === 'amount') {
+          cost.percentage = itemsNetTotal > 0 ? Number(((cost.amount / itemsNetTotal) * 100).toFixed(2)) : 0;
+        } else {
+          cost.amount = Number(((cost.percentage / 100) * itemsNetTotal).toFixed(2));
+        }
+
+        if (cost._operationType === 'Addition') {
+          additionalCosts += cost.amount;
+        } else if (cost._operationType === 'Discount' || cost._operationType === 'Deduction') {
+          this.totalDiscount += cost.amount;
+        }
+      });
+    }
+
+    this.totalTax += additionalCosts;
     this.netTotal = this.subTotal - this.totalDiscount + this.totalTax;
 
     // Update model totals
@@ -465,23 +591,45 @@ export class SalesQuotationFormComponent implements OnInit, HasUnsavedChanges {
   validate(): boolean {
     this.validationErrors = [];
     if (!this.model.businessPartnerId) {
-      this.validationErrors.push(`${this.translate.instant('common.customer')}: ${this.translate.instant('validation.required')}`);
+      this.validationErrors.push(`${this.translate.instant('common.customer')}: ${this.translate.instant('common.pleaseFillRequiredFields')}`);
     }
     if (!this.model.warehouseId) {
-      this.validationErrors.push(`${this.translate.instant('salesInvoices.fields.warehouse')}: ${this.translate.instant('validation.required')}`);
+      this.validationErrors.push(`${this.translate.instant('salesInvoices.fields.warehouse')}: ${this.translate.instant('common.pleaseFillRequiredFields')}`);
     }
     if (!this.model.lines || this.model.lines.length === 0) {
       this.validationErrors.push(this.translate.instant('salesInvoices.errors.atLeastOneItem'));
     } else {
-      const invalidQuantity = this.model.lines.some((l: any) => l.quantity <= 0);
-      if (invalidQuantity) {
-        this.validationErrors.push(this.translate.instant('salesInvoices.errors.invalidQuantity'));
+      // Check for duplicate items
+      const itemIds = this.model.lines.map((l: any) => l.itemId).filter(id => !!id);
+      const uniqueItemIds = new Set(itemIds);
+      if (uniqueItemIds.size < itemIds.length) {
+        this.validationErrors.push(this.translate.instant('salesQuotations.errors.duplicateItem'));
       }
-      const invalidPrice = this.model.lines.some((l: any) => l.unitPrice <= 0);
-      if (invalidPrice) {
-        this.validationErrors.push(this.translate.instant('salesInvoices.errors.invalidPrice'));
+
+      this.model.lines.forEach((l: any, idx: number) => {
+        const lineNum = idx + 1;
+        const rowPrefix = `${this.translate.instant('common.row')} ${lineNum}`;
+
+        if (!l.unitOfMeasureId) {
+          this.validationErrors.push(`${rowPrefix}: ${this.translate.instant('common.unitOfMeasure')} ${this.translate.instant('common.uomRequired')}`);
+        }
+        if (l.quantity === undefined || l.quantity === null || l.quantity <= 0) {
+          this.validationErrors.push(`${rowPrefix}: ${this.translate.instant('salesInvoices.errors.invalidQuantity')}`);
+        }
+        if (l.unitPrice === undefined || l.unitPrice === null || l.unitPrice <= 0) {
+          this.validationErrors.push(`${rowPrefix}: ${this.translate.instant('salesInvoices.errors.invalidPrice')}`);
+        }
+      });
+    }
+
+    if (this.model.costLines && this.model.costLines.length > 0) {
+      const costElementIds = this.model.costLines.map((c: any) => c.invoiceCostElementId).filter(id => !!id);
+      const uniqueCostIds = new Set(costElementIds);
+      if (uniqueCostIds.size < costElementIds.length) {
+        this.validationErrors.push(this.translate.instant('salesQuotations.errors.duplicateCostElement'));
       }
     }
+
     return this.validationErrors.length === 0;
   }
 
@@ -502,6 +650,13 @@ export class SalesQuotationFormComponent implements OnInit, HasUnsavedChanges {
       delete l._isLoading;
       delete l._availableUomsOptions;
     });
+    if (requestToSend.costLines) {
+      requestToSend.costLines.forEach((c: any) => {
+        delete c._name;
+        delete c._operationType;
+        delete c._fixedMode;
+      });
+    }
 
     const obs$: any = this.id
       ? this.salesQuotationService.update(this.id, requestToSend)
@@ -547,6 +702,16 @@ export class SalesQuotationFormComponent implements OnInit, HasUnsavedChanges {
     this.isActionModalOpen = true;
   }
 
+  onCloseDocument(): void {
+    if (!this.id) return;
+    this.actionModalTitle = this.translate.instant('salesQuotations.closeTitle');
+    this.actionModalMessage = this.translate.instant('salesQuotations.closeText');
+    this.actionModalType = 'warning';
+    this.actionModalConfirmText = this.translate.instant('salesQuotations.closeDocument');
+    this.pendingAction = 'close';
+    this.isActionModalOpen = true;
+  }
+
   onConvertToInvoice(): void {
     if (!this.id) return;
     this.actionModalTitle = this.translate.instant('salesQuotations.convertTitle');
@@ -581,6 +746,16 @@ export class SalesQuotationFormComponent implements OnInit, HasUnsavedChanges {
         },
         error: () => this.isActionLoading = false
       });
+    } else if (this.pendingAction === 'close') {
+      this.salesQuotationService.close(this.id).subscribe({
+        next: () => {
+          this.toastr.success(this.translate.instant('salesQuotations.closedSuccess'));
+          this.loadRecord(this.id!);
+          this.isActionModalOpen = false;
+          this.isActionLoading = false;
+        },
+        error: () => this.isActionLoading = false
+      });
     } else if (this.pendingAction === 'convert') {
       this.toastr.info('Conversion to Purchase Invoice will be supported soon.');
       this.isActionModalOpen = false;
@@ -597,12 +772,18 @@ export class SalesQuotationFormComponent implements OnInit, HasUnsavedChanges {
     this.isPrintModalOpen = true;
     this.pdfLoading = true;
 
-    // Placeholder for print
-    setTimeout(() => {
-      this.pdfLoading = false;
-      this.toastr.info('Print preview is not implemented yet.');
-      this.isPrintModalOpen = false;
-    }, 1000);
+    this.salesQuotationService.printPdf(this.id).subscribe({
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+        this.pdfBlobUrl = url;
+        this.pdfLoading = false;
+      },
+      error: () => {
+        this.toastr.error(this.translate.instant('errors.generic'));
+        this.pdfLoading = false;
+        this.isPrintModalOpen = false;
+      }
+    });
   }
 
   closePrintModal(): void {

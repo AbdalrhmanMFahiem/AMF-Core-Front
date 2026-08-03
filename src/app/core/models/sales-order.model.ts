@@ -1,3 +1,4 @@
+import { InvoiceCostLineRequest, InvoiceCostLineResponse } from './invoice.model';
 import { RequestFilters } from './pagination.model';
 import { DocumentStatus, ApprovalStatus } from './document-status.model';
 export { DocumentStatus, ApprovalStatus };
@@ -12,6 +13,7 @@ export interface SalesOrderBasicResponse {
   documentDate: string;
   dueDate: string;
   totalAmount: number;
+  remarks?: string;
 }
 
 export interface SalesOrderLineResponse {
@@ -31,6 +33,7 @@ export interface SalesOrderLineResponse {
   remainingQuantity: number;
   unitOfMeasureId?: number;
   unitOfMeasureName?: string;
+  uomName?: string;
   uomConversionFactor: number;
   unitPrice: number;
   discountPercent: number;
@@ -45,6 +48,7 @@ export interface SalesOrderLineResponse {
   baseUomType?: string;
   
   baseDocumentId?: string;
+  baseDocumentCode?: string;
   baseDocumentStatus?: string;
   baseDocumentMessage?: string;
   baseLineId?: string;
@@ -95,11 +99,13 @@ export interface SalesOrderResponse {
   shipToAddress?: string;
   incoterms?: string;
   referenceNumber: string;
+  remarks?: string;
   buyerId?: string;
   buyerName?: string;
   internalNotes?: string;
   printedNotes?: string;
   lines: SalesOrderLineResponse[];
+  costLines?: InvoiceCostLineResponse[];
 }
 
 export interface SalesOrderLineRequest {
@@ -123,6 +129,7 @@ export interface SalesOrderLineRequest {
   notes?: string;
   
   baseDocumentId?: string;
+  baseDocumentCode?: string;
   baseLineId?: string;
   baseDocumentTypeId?: number;
   
@@ -171,6 +178,7 @@ export interface SalesOrderRequest {
   internalNotes?: string;
   printedNotes?: string;
   lines: SalesOrderLineRequest[];
+  costLines?: InvoiceCostLineRequest[];
 }
 
 export interface SalesOrderFilters extends RequestFilters {

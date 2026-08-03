@@ -24,7 +24,9 @@ export enum StockTransactionType {
   TransferIn = 6,
   AdjustmentIn = 7,
   AdjustmentOut = 8,
-  OpeningBalance = 9
+  OpeningBalance = 9,
+  ManualIn = 10,
+  ManualOut = 11
 }
 
 export interface StockTransferRequest {
@@ -90,6 +92,9 @@ export interface StockAdjustmentLineRequest {
   _itemCode?: string;
   _itemName?: string;
   _difference?: number;
+  _baseUomType?: string;
+  _availableUomsOptions?: any[];
+  [key: string]: any;
 }
 
 export interface StockAdjustmentResponse {

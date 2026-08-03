@@ -1,4 +1,4 @@
-<div class="relative w-full text-sm">
+<div class="relative w-full text-sm" [ngClass]="{'z-50': isOpen, 'z-10': !isOpen}">
   <!-- Trigger Button -->
   <div (click)="toggleDropdown()" [ngClass]="{
       'border-brand-500 ring-3 ring-brand-500/10 dark:border-brand-500': isOpen,

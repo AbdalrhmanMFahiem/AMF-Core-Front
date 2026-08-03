@@ -38,6 +38,28 @@ export interface BusinessPartnerRequest {
   address?: string;
 }
 
+export interface QuickCustomerRequest {
+  code?: string;
+  aName: string;
+  eName?: string;
+  phoneNumber?: string;
+  email?: string;
+  address?: string;
+  country?: string;
+  notes?: string;
+}
+
+export interface QuickVendorRequest {
+  code?: string;
+  aName: string;
+  eName?: string;
+  phoneNumber?: string;
+  email?: string;
+  address?: string;
+  country?: string;
+  notes?: string;
+}
+
 export interface BusinessPartnerLedgerResponse {
   id: number;
   entryDate: string;

@@ -18,6 +18,8 @@ import { PaymentModalComponent } from '../payment-modal/payment-modal.component'
 import { DocumentStatusBadgeComponent } from '../../../../shared/components/common/document-status-badge/document-status-badge.component';
 import { StatusBadgeComponent } from '../../../../shared/components/ui/status-badge/status-badge.component';
 import { PrintPreviewModalComponent } from '../../../../shared/components/common/print-preview-modal/print-preview-modal.component';
+import { QuickCustomerModalComponent } from '../../../../shared/components/quick-customer-modal/quick-customer-modal.component';
+import { SoLinesImportModalComponent } from '../../../../shared/components/lookups/so-lines-import-modal/so-lines-import-modal.component';
 import { HasUnsavedChanges } from '../../../../core/guards/unsaved-changes.guard';
 import {
   InvoiceRequest,
@@ -27,7 +29,8 @@ import {
   InvoiceLineRequest,
   InvoiceCostLineRequest,
   InvoiceCostOperation,
-  PaymentMethod
+  PaymentMethod,
+  OpenSalesOrderLineResponse
 } from '../../../../core/models/invoice.model';
 import { ItemLookupResponse, InvoiceCostElementDropdown } from '../../../../core/models/lookup.model';
 
@@ -51,7 +54,9 @@ import { ToastrService } from 'ngx-toastr';
     PaymentModalComponent,
     DocumentStatusBadgeComponent,
     StatusBadgeComponent,
-    PrintPreviewModalComponent
+    PrintPreviewModalComponent,
+    QuickCustomerModalComponent,
+    SoLinesImportModalComponent
   ],
   templateUrl: './sales-invoice-form.component.html',
 })
@@ -78,12 +83,107 @@ export class SalesInvoiceFormComponent implements OnInit, HasUnsavedChanges {
 
   activeTab: 'items' | 'cost-elements' = 'items';
   isItemModalOpen = false;
+  isSoModalOpen = false;
   isCostElementModalOpen = false;
   isPaymentModalOpen = false;
-  
+
+  get existingItemIds(): number[] {
+    return (this.model.lines || []).map((l: any) => l.itemId);
+  }
+
+  get referencedSoCodes(): string[] {
+    const codes = new Set<string>();
+    (this.model.lines || []).forEach((l: any) => {
+      const code = l.baseDocumentCode || l.baseDocumentId || l._baseDocumentCode;
+      if (code) codes.add(code);
+    });
+    return Array.from(codes);
+  }
+
+  openSoModal(): void {
+    if (this.mode === 'view') return;
+    if (!this.model.businessPartnerId) {
+      this.validationErrors = [this.translate.instant('salesInvoices.errors.customerRequiredFirst')];
+      setTimeout(() => this.validationErrors = [], 4000);
+      return;
+    }
+    if (!this.model.warehouseId) {
+      this.validationErrors = [this.translate.instant('salesInvoices.errors.warehouseRequiredFirst')];
+      setTimeout(() => this.validationErrors = [], 4000);
+      return;
+    }
+    this.isSoModalOpen = true;
+  }
+
+  onSoLinesImported(lines: OpenSalesOrderLineResponse[]): void {
+    if (!lines || lines.length === 0) return;
+
+    if (!this.model.warehouseId && lines[0].warehouseId) {
+      this.model.warehouseId = lines[0].warehouseId;
+      this.previousWarehouseId = lines[0].warehouseId;
+    }
+
+    const currentItemIds = new Set((this.model.lines || []).map((l: any) => l.itemId));
+
+    lines.forEach(l => {
+      if (currentItemIds.has(l.itemId)) {
+        return;
+      }
+      currentItemIds.add(l.itemId);
+
+      const lineId = l.salesOrderLineId ?? (l as any).id ?? (l as any).baseLineId;
+      const docCode = l.salesOrderCode ?? (l as any).baseDocumentCode ?? (l as any).baseDocumentId ?? (l as any).code ?? '';
+      const qtyToImport = l.importQuantity ?? l.openQuantity ?? l.quantity;
+
+      const defaultUomId = l.unitOfMeasureId || (l as any).uomId;
+
+      this.model.lines.push({
+        itemId: l.itemId,
+        uomId: defaultUomId,
+        warehouseId: l.warehouseId || this.model.warehouseId,
+        quantity: qtyToImport,
+        unitPrice: l.unitPrice,
+        discountPercent: l.discountPercent || 0,
+        taxPercent: l.taxPercent || 0,
+        lineOrder: this.model.lines.length + 1,
+        baseDocumentId: docCode ? docCode.toString() : '',
+        baseDocumentCode: docCode ? docCode.toString() : '',
+        baseLineId: lineId !== undefined && lineId !== null ? lineId.toString() : '',
+        baseDocumentTypeId: 3, // 3 = Sales Order
+        _itemName: l.itemName,
+        _itemCode: l.itemCode,
+        _baseDocumentCode: docCode,
+        _availableUomsOptions: defaultUomId && l.uomName ? [{ value: defaultUomId, label: l.uomName }] : [],
+        _netAmount: 0,
+        _discountAmount: 0,
+        _taxAmount: 0,
+        _discountFixedMode: 'percentage',
+        _taxFixedMode: 'percentage'
+      } as any);
+    });
+
+    this.form?.form.markAsDirty();
+    this.recalculateTotals();
+  }
+
   isPrintModalOpen = false;
   pdfBlobUrl: string | null = null;
   pdfLoading = false;
+
+  isQuickCustomerModalOpen = false;
+
+  openQuickCustomerModal(): void {
+    if (this.mode === 'view') return;
+    this.isQuickCustomerModalOpen = true;
+  }
+
+  onCustomerCreated(newCustomer: any): void {
+    this.lookupService.getCustomers().subscribe((customers: any[]) => {
+      this.partnersOptions = customers.map((v: any) => ({ value: v.id, label: `${v.code} - ${v.name}` }));
+      this.model.businessPartnerId = newCustomer.id;
+      this.form?.form.markAsDirty();
+    });
+  }
 
   model: InvoiceRequest = {
     code: '',
@@ -104,6 +204,12 @@ export class SalesInvoiceFormComponent implements OnInit, HasUnsavedChanges {
   // Options for Dropdowns
   partnersOptions: SearchableOption[] = [];
   warehousesOptions: SearchableOption[] = [];
+  uomOptions: SearchableOption[] = [];
+
+  getUomOptions(baseUomType?: string): SearchableOption[] {
+    if (baseUomType === undefined || baseUomType === null) return this.uomOptions;
+    return this.uomOptions.filter((u: any) => u.baseUomType === baseUomType);
+  }
 
   // Totals calculated on the fly
   subTotal = 0;
@@ -131,16 +237,19 @@ export class SalesInvoiceFormComponent implements OnInit, HasUnsavedChanges {
 
     const customers$ = this.lookupService.getCustomers();
     const warehouses$ = this.lookupService.getWarehouses();
+    const uoms$ = this.lookupService.getUnitOfMeasures();
     const action$ = this.id ? this.invoiceService.get(this.id) : this.invoiceService.getNextCode();
 
     forkJoin({
       customers: customers$,
       warehouses: warehouses$,
+      uoms: uoms$,
       actionData: action$
     }).subscribe({
       next: (res: any) => {
         this.partnersOptions = res.customers.map((v: any) => ({ value: v.id, label: `${v.code} - ${v.name}` }));
         this.warehousesOptions = res.warehouses.map((w: any) => ({ value: w.id, label: w.name }));
+        this.uomOptions = res.uoms.map((u: any) => ({ value: u.id, label: u.name, baseUomType: (u as any).baseUomType }));
 
         if (this.id) {
           this.processViewResponse(res.actionData as InvoiceResponse);
@@ -181,9 +290,15 @@ export class SalesInvoiceFormComponent implements OnInit, HasUnsavedChanges {
         taxPercent: l.taxPercent,
         lineOrder: l.lineOrder,
         notes: l.notes,
+        baseDocumentId: l.baseDocumentId,
+        baseDocumentCode: l.baseDocumentCode || l.baseDocumentId,
+        baseLineId: l.baseLineId,
+        baseDocumentTypeId: l.baseDocumentTypeId,
         // Add extra fields just for UI display
         _itemName: l.itemName,
         _itemCode: l.itemCode,
+        _baseDocumentCode: l.baseDocumentCode || l.baseDocumentId,
+        _availableUomsOptions: l.uomId && l.uomName ? [{ value: l.uomId, label: l.uomName }] : [],
         _netAmount: l.netAmount,
         _discountAmount: 0,
         _taxAmount: 0,
@@ -276,8 +391,12 @@ export class SalesInvoiceFormComponent implements OnInit, HasUnsavedChanges {
       return;
     }
 
+    const defaultUomId = item.salesUomId || item.inventoryUomId || item.purchaseUomId || undefined;
+    const defaultUomName = item.salesUomName || item.inventoryUomName || item.purchaseUomName || '';
+
     this.model.lines.push({
       itemId: item.id,
+      uomId: defaultUomId,
       quantity: 1,
       unitPrice: item.salesPrice || 0,
       discountPercent: 0,
@@ -286,6 +405,8 @@ export class SalesInvoiceFormComponent implements OnInit, HasUnsavedChanges {
       // Internal properties for UI
       _itemCode: item.code,
       _itemName: item.name,
+      _baseUomType: item.baseUomType,
+      _availableUomsOptions: defaultUomId && defaultUomName ? [{ value: defaultUomId, label: defaultUomName }] : [],
       _netAmount: 0,
       _discountAmount: 0,
       _taxAmount: 0,
@@ -439,22 +560,28 @@ export class SalesInvoiceFormComponent implements OnInit, HasUnsavedChanges {
   validate(): boolean {
     this.validationErrors = [];
     if (!this.model.businessPartnerId) {
-      this.validationErrors.push(`${this.translate.instant('salesInvoices.fields.businessPartner')}: ${this.translate.instant('validation.required')}`);
+      this.validationErrors.push(`${this.translate.instant('salesInvoices.fields.businessPartner')}: ${this.translate.instant('common.pleaseFillRequiredFields')}`);
     }
     if (!this.model.warehouseId) {
-      this.validationErrors.push(`${this.translate.instant('salesInvoices.fields.warehouse')}: ${this.translate.instant('validation.required')}`);
+      this.validationErrors.push(`${this.translate.instant('salesInvoices.fields.warehouse')}: ${this.translate.instant('common.pleaseFillRequiredFields')}`);
     }
     if (!this.model.lines || this.model.lines.length === 0) {
       this.validationErrors.push(this.translate.instant('salesInvoices.errors.atLeastOneItem'));
     } else {
-      const invalidQuantity = this.model.lines.some((l: any) => l.quantity <= 0);
-      if (invalidQuantity) {
-        this.validationErrors.push(this.translate.instant('salesInvoices.errors.invalidQuantity'));
-      }
-      const invalidPrice = this.model.lines.some((l: any) => l.unitPrice <= 0);
-      if (invalidPrice) {
-        this.validationErrors.push(this.translate.instant('salesInvoices.errors.invalidPrice'));
-      }
+      this.model.lines.forEach((l: any, idx: number) => {
+        const lineNum = idx + 1;
+        const rowPrefix = `${this.translate.instant('common.row')} ${lineNum}`;
+
+        if (!l.uomId && !l.unitOfMeasureId) {
+          this.validationErrors.push(`${rowPrefix}: ${this.translate.instant('common.unitOfMeasure')} ${this.translate.instant('common.uomRequired')}`);
+        }
+        if (l.quantity === undefined || l.quantity === null || l.quantity <= 0) {
+          this.validationErrors.push(`${rowPrefix}: ${this.translate.instant('salesInvoices.errors.invalidQuantity')}`);
+        }
+        if (l.unitPrice === undefined || l.unitPrice === null || l.unitPrice <= 0) {
+          this.validationErrors.push(`${rowPrefix}: ${this.translate.instant('salesInvoices.errors.invalidPrice')}`);
+        }
+      });
     }
     return this.validationErrors.length === 0;
   }
@@ -467,10 +594,21 @@ export class SalesInvoiceFormComponent implements OnInit, HasUnsavedChanges {
 
     // Clean up internal _ UI properties before sending
     const requestToSend = JSON.parse(JSON.stringify(this.model));
+
+    if (!requestToSend.dueDate || (typeof requestToSend.dueDate === 'string' && requestToSend.dueDate.trim() === '')) {
+      delete requestToSend.dueDate;
+    }
+    if (!requestToSend.notes || (typeof requestToSend.notes === 'string' && requestToSend.notes.trim() === '')) {
+      delete requestToSend.notes;
+    }
+
     requestToSend.lines.forEach((l: any) => {
+      l.uomId = l.uomId || l.unitOfMeasureId;
       delete l._itemName;
       delete l._itemCode;
       delete l._netAmount;
+      delete l._baseUomType;
+      delete l._availableUomsOptions;
     });
     requestToSend.costLines.forEach((c: any) => {
       delete c._name;
@@ -565,7 +703,7 @@ export class SalesInvoiceFormComponent implements OnInit, HasUnsavedChanges {
     if (!this.id) return;
     this.isPrintModalOpen = true;
     this.pdfLoading = true;
-    
+
     this.invoiceService.printPdf(this.id).subscribe({
       next: (blob) => {
         const url = window.URL.createObjectURL(blob);

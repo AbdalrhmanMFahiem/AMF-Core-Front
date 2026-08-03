@@ -69,4 +69,18 @@ export class SalesOrderService {
   cancel(id: number): Observable<void> {
     return this.http.put<void>(`${this.apiUrl}/${id}/cancel`, {});
   }
+
+  close(id: number): Observable<void> {
+    return this.http.put<void>(`${this.apiUrl}/${id}/close`, {});
+  }
+
+  printPdf(id: number): Observable<Blob> {
+    return this.http.get(`${this.apiUrl}/${id}/print-pdf`, { responseType: 'blob' });
+  }
+
+  getOpenLinesForInvoice(customerId: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/open-lines-for-invoice`, {
+      params: new HttpParams().set('customerId', customerId.toString())
+    });
+  }
 }
