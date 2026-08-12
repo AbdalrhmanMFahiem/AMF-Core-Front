@@ -171,6 +171,30 @@
             </svg>
             <span>{{ 'items.tabs.additional' | translate }}</span>
           </button>
+
+          <!-- Warehouse Balances Tab -->
+          <button *ngIf="mode !== 'add'" type="button" (click)="setTab('warehouse-balances')" [class.border-brand-500]="activeTab === 'warehouse-balances'"
+            [class.text-brand-600]="activeTab === 'warehouse-balances'" [class.dark:text-brand-400]="activeTab === 'warehouse-balances'"
+            [class.border-transparent]="activeTab !== 'warehouse-balances'" [class.text-gray-500]="activeTab !== 'warehouse-balances'"
+            [class.dark:text-gray-400]="activeTab !== 'warehouse-balances'"
+            class="inline-flex items-center gap-2 whitespace-nowrap border-b-2 px-1 py-3 text-sm font-medium transition-colors hover:text-brand-500">
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+            </svg>
+            <span>{{ 'items.tabs.warehouseBalances' | translate }}</span>
+          </button>
+
+          <!-- Components (BOM) Tab -->
+          <button *ngIf="mode !== 'add'" type="button" (click)="setTab('components')" [class.border-brand-500]="activeTab === 'components'"
+            [class.text-brand-600]="activeTab === 'components'" [class.dark:text-brand-400]="activeTab === 'components'"
+            [class.border-transparent]="activeTab !== 'components'" [class.text-gray-500]="activeTab !== 'components'"
+            [class.dark:text-gray-400]="activeTab !== 'components'"
+            class="inline-flex items-center gap-2 whitespace-nowrap border-b-2 px-1 py-3 text-sm font-medium transition-colors hover:text-brand-500">
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+            </svg>
+            <span>{{ 'items.tabs.components' | translate }}</span>
+          </button>
         </nav>
       </div>
 
@@ -621,6 +645,90 @@
           </label>
           <textarea [(ngModel)]="model.notes" name="notes" rows="3" [disabled]="mode === 'view'"
             class="w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm outline-none focus:border-brand-500 dark:border-gray-800 dark:focus:border-brand-500"></textarea>
+        </div>
+      </div>
+
+      <!-- TAB 7: WAREHOUSE BALANCES -->
+      <div *ngIf="activeTab === 'warehouse-balances'" class="space-y-6 pt-2">
+        <div class="flex items-center justify-between">
+          <h3 class="text-lg font-bold text-gray-900 dark:text-white">
+            {{ 'items.tabs.warehouseBalances' | translate }}
+          </h3>
+          <span class="inline-flex items-center gap-1.5 rounded-full bg-brand-50 px-3 py-1 text-xs font-semibold text-brand-700 dark:bg-brand-500/10 dark:text-brand-400">
+            {{ 'items.totalOnHand' | translate }}: {{ warehouseStockData?.totalOnHandQty || 0 }}
+          </span>
+        </div>
+
+        <div class="overflow-x-auto rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900">
+          <table class="w-full text-right text-sm">
+            <thead class="bg-gray-50 text-xs font-semibold text-gray-700 dark:bg-gray-800/50 dark:text-gray-300">
+              <tr>
+                <th class="px-4 py-3">{{ 'common.warehouse' | translate }}</th>
+                <th class="px-4 py-3">{{ 'items.onHandQty' | translate }}</th>
+                <th class="px-4 py-3">{{ 'items.lastModified' | translate }}</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100 dark:divide-gray-800">
+              <tr *ngFor="let stock of warehouseStockData?.lines" class="hover:bg-gray-50/50 dark:hover:bg-gray-800/30">
+                <td class="px-4 py-2.5">{{ stock.warehouseName }}</td>
+                <td class="px-4 py-2.5 font-medium text-gray-900 dark:text-white">{{ stock.onHandQty }}</td>
+                <td class="px-4 py-2.5 text-gray-500">{{ stock.lastModifiedOn | date:'medium' }}</td>
+              </tr>
+              <tr *ngIf="!warehouseStockData?.lines?.length">
+                <td colspan="3" class="py-8 text-center text-gray-500 dark:text-gray-400">
+                  {{ 'common.noRecordsFound' | translate }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- TAB 8: COMPONENTS (BOM) -->
+      <div *ngIf="activeTab === 'components'" class="space-y-6 pt-2">
+        <div class="flex items-center justify-between">
+          <h3 class="text-lg font-bold text-gray-900 dark:text-white">
+            {{ 'items.tabs.components' | translate }}
+          </h3>
+          <a [routerLink]="['/inventory/item-boms', model.id]" 
+             class="flex items-center gap-2 rounded-lg bg-brand-500 px-4 py-2 text-sm font-medium text-white shadow-theme-xs hover:bg-brand-600 transition-colors">
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+            </svg>
+            <span>{{ 'items.manageComponents' | translate }}</span>
+          </a>
+        </div>
+
+        <div class="overflow-x-auto rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900">
+          <table class="w-full text-right text-sm">
+            <thead class="bg-gray-50 text-xs font-semibold text-gray-700 dark:bg-gray-800/50 dark:text-gray-300">
+              <tr>
+                <th class="px-4 py-3">{{ 'common.componentItem' | translate }}</th>
+                <th class="px-4 py-3">{{ 'common.quantity' | translate }}</th>
+                <th class="px-4 py-3">{{ 'items.scrapPercentage' | translate }}</th>
+                <th class="px-4 py-3">{{ 'items.issueMethod' | translate }}</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100 dark:divide-gray-800">
+              <tr *ngFor="let comp of bomComponentsData" class="hover:bg-gray-50/50 dark:hover:bg-gray-800/30">
+                <td class="px-4 py-2.5">{{ comp.componentName || comp.componentCode }}</td>
+                <td class="px-4 py-2.5">{{ comp.quantity }}</td>
+                <td class="px-4 py-2.5">{{ comp.scrapPercentage }}%</td>
+                <td class="px-4 py-2.5">
+                  <span class="inline-flex items-center rounded-full px-2 py-1 text-xs font-medium" 
+                        [class.bg-blue-50]="comp.issueMethod === 1" [class.text-blue-700]="comp.issueMethod === 1"
+                        [class.bg-purple-50]="comp.issueMethod === 2" [class.text-purple-700]="comp.issueMethod === 2">
+                    {{ comp.issueMethod === 1 ? 'Backflush' : 'Manual' }}
+                  </span>
+                </td>
+              </tr>
+              <tr *ngIf="!bomComponentsData?.length">
+                <td colspan="4" class="py-8 text-center text-gray-500 dark:text-gray-400">
+                  {{ 'items.noComponentsFound' | translate }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
 

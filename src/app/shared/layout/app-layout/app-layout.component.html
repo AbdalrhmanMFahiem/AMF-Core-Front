@@ -3,17 +3,17 @@
     <app-sidebar></app-sidebar>
     <app-backdrop></app-backdrop>
   </div>
-  <div class="flex-1 min-w-0 transition-all duration-300 ease-in-out" [ngClass]="{
-        'ltr:xl:ml-[290px] rtl:xl:mr-[290px]': (isExpanded$ | async) || (isHovered$ | async),
-        'ltr:xl:ml-[90px] rtl:xl:mr-[90px]': !(isExpanded$ | async) && !(isHovered$ | async),
+  <div class="flex-1 min-w-0 transition-all duration-300 ease-in-out flex flex-col min-h-screen md:h-screen md:overflow-hidden" [ngClass]="{
+        'ltr:xl:ml-72.5 rtl:xl:mr-72.5': (isExpanded$ | async) || (isHovered$ | async),
+        'ltr:xl:ml-22.5 rtl:xl:mr-22.5': !(isExpanded$ | async) && !(isHovered$ | async),
         'ltr:ml-0 rtl:mr-0': (isMobileOpen$ | async)
       }">
     <!-- app header start -->
     <app-header />
     <!-- app header end -->
-    <!-- <div class="p-4 mx-auto max-w-(--breakpoint-2xl) md:p-6"> -->
-    <div class="p-4 mx-auto md:p-6">
+    <div class="p-4 mx-auto md:p-6 flex-1 w-full md:overflow-y-auto">
       <router-outlet></router-outlet>
     </div>
+    <app-footer></app-footer>
   </div>
 </div>

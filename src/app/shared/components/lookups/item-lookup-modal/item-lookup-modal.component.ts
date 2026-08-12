@@ -1,12 +1,13 @@
-import { Component, EventEmitter, inject, Input, Output, OnChanges, OnInit, OnDestroy } from '@angular/core';
+import { Component, EventEmitter, inject, Input, Output, OnChanges, OnInit, OnDestroy, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { ModalComponent } from '../../ui/modal/modal.component';
 import { LookupService } from '../../../../core/services/lookup.service';
 import { ItemLookupResponse, ItemUsageType, ItemLookupsFilters } from '../../../../core/models/lookup.model';
-import { Subject, Subscription } from 'rxjs';
+import { Observable, Subject, Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { PaginatedList } from '../../../../core/models/pagination.model';
 
 import { UomTypeBadgeComponent } from '../../common/uom-type-badge/uom-type-badge.component';
 
@@ -23,6 +24,7 @@ export class ItemLookupModalComponent implements OnChanges, OnInit, OnDestroy {
   @Input() usageType?: ItemUsageType;
   @Input() warehouseId?: number;
   @Input() checkWarehouseExistence?: boolean;
+  @Input() fetchItemsFn?: (filters: ItemLookupsFilters) => Observable<PaginatedList<ItemLookupResponse>>;
   @Output() close = new EventEmitter<void>();
   @Output() selectItem = new EventEmitter<ItemLookupResponse>();
 
@@ -51,8 +53,11 @@ export class ItemLookupModalComponent implements OnChanges, OnInit, OnDestroy {
     });
   }
 
-  ngOnChanges() {
-    if (this.isOpen) {
+  ngOnChanges(changes: SimpleChanges) {
+    const isOpenChanged = changes['isOpen'] && changes['isOpen'].currentValue === true && changes['isOpen'].previousValue !== true;
+    const filterInputChanged = !!(changes['usageType'] || changes['warehouseId'] || changes['checkWarehouseExistence']);
+
+    if (isOpenChanged || (this.isOpen && filterInputChanged)) {
       this.searchTerm = '';
       this.pageNumber = 1;
       this.loadItems();
@@ -85,7 +90,11 @@ export class ItemLookupModalComponent implements OnChanges, OnInit, OnDestroy {
       filters.checkWarehouseExistence = this.checkWarehouseExistence;
     }
 
-    this.lookupService.getItemsLookup(filters).subscribe({
+    const request$ = this.fetchItemsFn
+      ? this.fetchItemsFn(filters)
+      : this.lookupService.getItemsLookup(filters);
+
+    request$.subscribe({
       next: (res) => {
         this.items = res.items || [];
         this.pageNumber = res.pageIndex || 1;
@@ -98,6 +107,7 @@ export class ItemLookupModalComponent implements OnChanges, OnInit, OnDestroy {
       error: () => this.loading = false
     });
   }
+
 
   onSearch() {
     this.pageNumber = 1;

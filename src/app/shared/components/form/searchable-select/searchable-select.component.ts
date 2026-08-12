@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, forwardRef, HostListener, ElementRef, OnInit } from '@angular/core';
+import { Component, Input, Output, EventEmitter, forwardRef, HostListener, ElementRef, OnInit, ViewChild, AfterViewChecked } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
@@ -34,6 +34,8 @@ export class SearchableSelectComponent implements ControlValueAccessor, OnInit {
   searchText = '';
   value: any = undefined;
 
+  dropdownStyle: { [key: string]: string } = {};
+
   onChange: any = () => {};
   onTouch: any = () => {};
 
@@ -51,11 +53,25 @@ export class SearchableSelectComponent implements ControlValueAccessor, OnInit {
     );
   }
 
+  isOptionMatch(opt: SearchableOption, val: any): boolean {
+    if (val === undefined || val === null) return false;
+    if (opt.value === val || String(opt.value).toLowerCase() === String(val).toLowerCase()) {
+      return true;
+    }
+    if ((opt.value === 'Item' || opt.value === 'I') && (val === 'Item' || val === 'I' || val === 1 || val === 73)) {
+      return true;
+    }
+    if ((opt.value === 'Resource' || opt.value === 'R') && (val === 'Resource' || val === 'R' || val === 2 || val === 82)) {
+      return true;
+    }
+    return false;
+  }
+
   get selectedLabel(): string {
     if (this.value === undefined || this.value === null) {
       return '';
     }
-    const option = this.options.find(opt => opt.value === this.value);
+    const option = this.options.find(opt => this.isOptionMatch(opt, this.value));
     return option ? option.label : '';
   }
 
@@ -64,8 +80,50 @@ export class SearchableSelectComponent implements ControlValueAccessor, OnInit {
     this.isOpen = !this.isOpen;
     if (this.isOpen) {
       this.searchText = '';
+      this.updateDropdownPosition();
     } else {
       this.onTouch();
+    }
+  }
+
+  updateDropdownPosition(): void {
+    const el = this.elementRef.nativeElement.querySelector('.select-trigger');
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    const spaceBelow = window.innerHeight - rect.bottom;
+    const dropdownMaxHeight = 280; // approximate max-h
+    const openUpward = spaceBelow < dropdownMaxHeight && rect.top > dropdownMaxHeight;
+
+    if (openUpward) {
+      this.dropdownStyle = {
+        position: 'fixed',
+        bottom: `${window.innerHeight - rect.top + 4}px`,
+        left: `${rect.left}px`,
+        width: `${rect.width}px`,
+        'z-index': '9999'
+      };
+    } else {
+      this.dropdownStyle = {
+        position: 'fixed',
+        top: `${rect.bottom + 4}px`,
+        left: `${rect.left}px`,
+        width: `${rect.width}px`,
+        'z-index': '9999'
+      };
+    }
+  }
+
+  @HostListener('window:scroll')
+  onWindowScroll() {
+    if (this.isOpen) {
+      this.updateDropdownPosition();
+    }
+  }
+
+  @HostListener('window:resize')
+  onWindowResize() {
+    if (this.isOpen) {
+      this.updateDropdownPosition();
     }
   }
 

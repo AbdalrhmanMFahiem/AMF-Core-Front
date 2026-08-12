@@ -45,6 +45,11 @@ export interface AuthResponse {
   companyCode?: string;
   branchCode?: string;
   defaultLandingPage?: string;
+  tenantId?: string;
+  photoPath?: string;
+  companyLogoPath?: string;
+  permissions?: string[];
+  backendUrl?: string;
 }
 
 

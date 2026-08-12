@@ -1,9 +1,22 @@
-import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
+import { ApplicationConfig, provideZoneChangeDetection, APP_INITIALIZER, inject } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { DATE_PIPE_DEFAULT_OPTIONS } from '@angular/common';
-import { provideTranslateService, MissingTranslationHandler } from '@ngx-translate/core';
-import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
+import { provideTranslateService, MissingTranslationHandler, TranslateLoader } from '@ngx-translate/core';
+import { Observable, of } from 'rxjs';
+import arTranslations from '../../public/i18n/ar.json';
+import enTranslations from '../../public/i18n/en.json';
+
+class SyncTranslateLoader implements TranslateLoader {
+  public getTranslation(lang: string): Observable<any> {
+    if (lang === 'ar') {
+      return of(arTranslations);
+    } else if (lang === 'en') {
+      return of(enTranslations);
+    }
+    return of({});
+  }
+}
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideToastr } from 'ngx-toastr';
 
@@ -12,6 +25,29 @@ import { languageInterceptor } from './core/interceptors/language.interceptor';
 import { errorInterceptor } from './core/interceptors/error.interceptor';
 import { authInterceptor } from './core/interceptors/auth.interceptor';
 import { CustomMissingTranslationHandler } from './core/handlers/missing-translation.handler';
+import { PermissionsService } from './core/services/permissions.service';
+import { AuthService } from './core/services/auth.service';
+
+import { environment } from '../environments/environment';
+
+export function initializeApp(permissionsService: PermissionsService, authService: AuthService) {
+  return () => {
+    return fetch('/config.json')
+      .then(res => res.json())
+      .then(config => {
+        if (config && config.apiUrl) {
+          environment.apiUrl = config.apiUrl;
+        }
+      })
+      .catch(err => console.warn('Could not load config.json, using environment fallback', err))
+      .finally(() => {
+        if (authService.getToken()) {
+          return permissionsService.loadPermissions();
+        }
+        return Promise.resolve();
+      });
+  };
+}
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -26,15 +62,21 @@ export const appConfig: ApplicationConfig = {
       preventDuplicates: true,
     }),
     provideTranslateService({
-      fallbackLang: 'en',
+      fallbackLang: 'ar',
       missingTranslationHandler: {
         provide: MissingTranslationHandler,
         useClass: CustomMissingTranslationHandler
+      },
+      loader: {
+        provide: TranslateLoader,
+        useClass: SyncTranslateLoader
       }
     }),
-    provideTranslateHttpLoader({
-      prefix: './',
-      suffix: '.json'
-    })
+    {
+      provide: APP_INITIALIZER,
+      useFactory: initializeApp,
+      deps: [PermissionsService, AuthService],
+      multi: true
+    }
   ]
 };

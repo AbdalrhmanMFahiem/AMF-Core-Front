@@ -47,9 +47,6 @@ export class RolesListComponent implements OnInit {
   columns: CrudColumn[] = [
     { field: 'code', header: 'common.code', type: 'code' },
     { field: 'name', header: 'common.name', type: 'text' },
-    { field: 'aName', header: 'common.arabicName', type: 'text' },
-    { field: 'eName', header: 'common.englishName', type: 'text' },
-    { field: 'notes', header: 'common.notes', type: 'text' },
     { field: 'isActive', header: 'common.status', type: 'badge' }
   ];
 

@@ -2,6 +2,8 @@ import { Routes } from '@angular/router';
 import { HomePageComponent } from './pages/home-page/home-page.component';
 import { unsavedChangesGuard } from './core/guards/unsaved-changes.guard';
 import { authGuard } from './core/guards/auth.guard';
+import { permissionGuard } from './core/guards/permission.guard';
+import { Permissions } from './core/constants/permissions';
 import { setupGuard } from './core/guards/setup.guard';
 import { dashboardGuard } from './core/guards/dashboard.guard';
 import { EcommerceComponent } from './pages/dashboard/ecommerce/ecommerce.component';
@@ -138,10 +140,123 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/master-data/business-partners/business-partner-form/business-partner-form.component').then(c => c.BusinessPartnerFormComponent),
         title: 'View Business Partner | AMF Core'
       },
+      {
+        path: 'master-data/country-groups',
+        loadComponent: () => import('./pages/master-data/country-groups/country-groups-list/country-groups-list.component').then(c => c.CountryGroupsListComponent),
+        title: 'Country Groups | AMF Core'
+      },
+      {
+        path: 'master-data/country-groups/add',
+        loadComponent: () => import('./pages/master-data/country-groups/country-group-form/country-group-form.component').then(c => c.CountryGroupFormComponent),
+        canDeactivate: [unsavedChangesGuard],
+        title: 'Add Country Group | AMF Core'
+      },
+      {
+        path: 'master-data/country-groups/edit/:id',
+        loadComponent: () => import('./pages/master-data/country-groups/country-group-form/country-group-form.component').then(c => c.CountryGroupFormComponent),
+        canDeactivate: [unsavedChangesGuard],
+        title: 'Edit Country Group | AMF Core'
+      },
+      {
+        path: 'master-data/country-groups/view/:id',
+        loadComponent: () => import('./pages/master-data/country-groups/country-group-form/country-group-form.component').then(c => c.CountryGroupFormComponent),
+        title: 'View Country Group | AMF Core'
+      },
+      // Configuration
+      {
+        path: 'master-data/countries',
+        loadComponent: () => import('./pages/master-data/countries/countries-list/countries-list.component').then(c => c.CountriesListComponent),
+        title: 'Countries | AMF Core'
+      },
+      {
+        path: 'master-data/countries/add',
+        loadComponent: () => import('./pages/master-data/countries/country-form/country-form.component').then(c => c.CountryFormComponent),
+        canDeactivate: [unsavedChangesGuard],
+        title: 'Add Country | AMF Core'
+      },
+      {
+        path: 'master-data/countries/edit/:id',
+        loadComponent: () => import('./pages/master-data/countries/country-form/country-form.component').then(c => c.CountryFormComponent),
+        canDeactivate: [unsavedChangesGuard],
+        title: 'Edit Country | AMF Core'
+      },
+      {
+        path: 'master-data/countries/view/:id',
+        loadComponent: () => import('./pages/master-data/countries/country-form/country-form.component').then(c => c.CountryFormComponent),
+        title: 'View Country | AMF Core'
+      },
+      {
+        path: 'master-data/governorates',
+        loadComponent: () => import('./pages/master-data/governorates/governorates-list/governorates-list.component').then(c => c.GovernoratesListComponent),
+        title: 'Governorates | AMF Core'
+      },
+      {
+        path: 'master-data/governorates/add',
+        loadComponent: () => import('./pages/master-data/governorates/governorate-form/governorate-form.component').then(c => c.GovernorateFormComponent),
+        canDeactivate: [unsavedChangesGuard],
+        title: 'Add Governorate | AMF Core'
+      },
+      {
+        path: 'master-data/governorates/edit/:id',
+        loadComponent: () => import('./pages/master-data/governorates/governorate-form/governorate-form.component').then(c => c.GovernorateFormComponent),
+        canDeactivate: [unsavedChangesGuard],
+        title: 'Edit Governorate | AMF Core'
+      },
+      {
+        path: 'master-data/governorates/view/:id',
+        loadComponent: () => import('./pages/master-data/governorates/governorate-form/governorate-form.component').then(c => c.GovernorateFormComponent),
+        title: 'View Governorate | AMF Core'
+      },
+      {
+        path: 'master-data/cities',
+        loadComponent: () => import('./pages/master-data/cities/cities-list/cities-list.component').then(c => c.CitiesListComponent),
+        title: 'Cities | AMF Core'
+      },
+      {
+        path: 'master-data/cities/add',
+        loadComponent: () => import('./pages/master-data/cities/city-form/city-form.component').then(c => c.CityFormComponent),
+        canDeactivate: [unsavedChangesGuard],
+        title: 'Add City | AMF Core'
+      },
+      {
+        path: 'master-data/cities/edit/:id',
+        loadComponent: () => import('./pages/master-data/cities/city-form/city-form.component').then(c => c.CityFormComponent),
+        canDeactivate: [unsavedChangesGuard],
+        title: 'Edit City | AMF Core'
+      },
+      {
+        path: 'master-data/cities/view/:id',
+        loadComponent: () => import('./pages/master-data/cities/city-form/city-form.component').then(c => c.CityFormComponent),
+        title: 'View City | AMF Core'
+      },
+      {
+        path: 'master-data/districts',
+        loadComponent: () => import('./pages/master-data/districts/districts-list/districts-list.component').then(c => c.DistrictsListComponent),
+        title: 'Districts | AMF Core'
+      },
+      {
+        path: 'master-data/districts/add',
+        loadComponent: () => import('./pages/master-data/districts/district-form/district-form.component').then(c => c.DistrictFormComponent),
+        canDeactivate: [unsavedChangesGuard],
+        title: 'Add District | AMF Core'
+      },
+      {
+        path: 'master-data/districts/edit/:id',
+        loadComponent: () => import('./pages/master-data/districts/district-form/district-form.component').then(c => c.DistrictFormComponent),
+        canDeactivate: [unsavedChangesGuard],
+        title: 'Edit District | AMF Core'
+      },
+      {
+        path: 'master-data/districts/view/:id',
+        loadComponent: () => import('./pages/master-data/districts/district-form/district-form.component').then(c => c.DistrictFormComponent),
+        title: 'View District | AMF Core'
+      },
       // Configuration
       {
         path: 'configuration/company-settings',
         loadComponent: () => import('./pages/configuration/company-settings/company-settings.component').then(c => c.CompanySettingsComponent),
+        canActivate: [permissionGuard],
+        data: { permission: Permissions.GetCompanySettings },
         title: 'Company Settings | AMF Core'
       },
       {
@@ -153,6 +268,11 @@ export const routes: Routes = [
         path: 'configuration/invoice-settings',
         loadComponent: () => import('./pages/configuration/invoice-settings/invoice-settings.component').then(c => c.InvoiceSettingsComponent),
         title: 'Invoice Settings | AMF Core'
+      },
+      {
+        path: 'configuration/general-settings',
+        loadComponent: () => import('./pages/configuration/general-settings/general-settings.component').then(c => c.GeneralSettingsComponent),
+        title: 'General Settings | AMF Core'
       },
       // Inventory
       {
@@ -361,6 +481,28 @@ export const routes: Routes = [
         title: 'View Warehouse | AMF Core'
       },
       {
+        path: 'inventory/resources',
+        loadComponent: () => import('./pages/inventory/resources/resources-list/resources-list.component').then(c => c.ResourcesListComponent),
+        title: 'Resources | AMF Core'
+      },
+      {
+        path: 'inventory/resources/add',
+        loadComponent: () => import('./pages/inventory/resources/resource-form/resource-form.component').then(c => c.ResourceFormComponent),
+        canDeactivate: [unsavedChangesGuard],
+        title: 'Add Resource | AMF Core'
+      },
+      {
+        path: 'inventory/resources/edit/:id',
+        loadComponent: () => import('./pages/inventory/resources/resource-form/resource-form.component').then(c => c.ResourceFormComponent),
+        canDeactivate: [unsavedChangesGuard],
+        title: 'Edit Resource | AMF Core'
+      },
+      {
+        path: 'inventory/resources/view/:id',
+        loadComponent: () => import('./pages/inventory/resources/resource-form/resource-form.component').then(c => c.ResourceFormComponent),
+        title: 'View Resource | AMF Core'
+      },
+      {
         path: 'inventory/locations',
         loadComponent: () => import('./pages/inventory/locations/locations-list/locations-list.component').then(c => c.LocationsListComponent),
         title: 'Locations | AMF Core'
@@ -398,7 +540,27 @@ export const routes: Routes = [
       {
         path: 'inventory/items/view/:id',
         loadComponent: () => import('./pages/inventory/items/item-form/item-form.component').then(c => c.ItemFormComponent),
-        title: 'View Item | AMF Core'
+        data: { mode: 'view', breadcrumb: 'common.view' }
+      },
+      {
+        path: 'inventory/item-boms',
+        loadComponent: () => import('./pages/inventory/item-boms/item-boms-list/item-boms-list.component').then(c => c.ItemBomsListComponent),
+        data: { breadcrumb: 'items.manageComponents' }
+      },
+      {
+        path: 'inventory/item-boms/add',
+        loadComponent: () => import('./pages/inventory/item-boms/item-bom-form/item-bom-form.component').then(c => c.ItemBomFormComponent),
+        data: { mode: 'add', breadcrumb: 'common.add' }
+      },
+      {
+        path: 'inventory/item-boms/edit/:id',
+        loadComponent: () => import('./pages/inventory/item-boms/item-bom-form/item-bom-form.component').then(c => c.ItemBomFormComponent),
+        data: { mode: 'edit', breadcrumb: 'common.edit' }
+      },
+      {
+        path: 'inventory/item-boms/view/:id',
+        loadComponent: () => import('./pages/inventory/item-boms/item-bom-form/item-bom-form.component').then(c => c.ItemBomFormComponent),
+        data: { mode: 'view', breadcrumb: 'common.view' }
       },
       {
         path: 'inventory/invoice-cost-elements',
@@ -563,6 +725,11 @@ export const routes: Routes = [
         title: 'Inventory Valuation | AMF Core'
       },
       {
+        path: 'reports/profitability',
+        loadComponent: () => import('./pages/reports/profitability-report/profitability-report.component').then(c => c.ProfitabilityReportComponent),
+        title: 'Invoice Profitability | AMF Core'
+      },
+      {
         path: 'reports/warehouse-items-stock',
         loadComponent: () => import('./features/reports/warehouse-items-stock/warehouse-items-stock.component').then(c => c.WarehouseItemsStockComponent),
         title: 'Warehouse Items Stock | AMF Core'
@@ -587,6 +754,11 @@ export const routes: Routes = [
     title: 'Angular Sign Up Dashboard | TailAdmin - Angular Admin Dashboard Template'
   },
   // error pages
+  {
+    path: 'unauthorized',
+    loadComponent: () => import('./pages/unauthorized/unauthorized.component').then(c => c.UnauthorizedComponent),
+    title: 'Unauthorized | AMF Core'
+  },
   {
     path: '**',
     component: NotFoundComponent,

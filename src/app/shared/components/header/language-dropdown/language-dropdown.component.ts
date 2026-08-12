@@ -13,12 +13,12 @@ export class LanguageDropdownComponent {
   @Input() openUp = false;
 
   isOpen = false;
-  currentLang = 'en';
+  currentLang = 'ar';
 
   private translateService = inject(TranslateService);
 
   constructor() {
-    const savedLang = localStorage.getItem('lang') || 'en';
+    const savedLang = localStorage.getItem('lang') || 'ar';
     this.currentLang = savedLang;
     this.translateService.setDefaultLang(savedLang);
     this.translateService.use(savedLang);

@@ -27,7 +27,10 @@ export class CompanySettingService {
     if (data.registrationNumber) formData.append('RegistrationNumber', data.registrationNumber);
     if (data.taxNumber) formData.append('TaxNumber', data.taxNumber);
     if (data.address) formData.append('Address', data.address);
-    if (data.country) formData.append('Country', data.country);
+    if (data.defaultCountryId) formData.append('DefaultCountryId', data.defaultCountryId.toString());
+    if (data.defaultGovernorateId) formData.append('DefaultGovernorateId', data.defaultGovernorateId.toString());
+    if (data.defaultCityId) formData.append('DefaultCityId', data.defaultCityId.toString());
+    if (data.defaultDistrictId) formData.append('DefaultDistrictId', data.defaultDistrictId.toString());
     if (data.phoneNumber) formData.append('PhoneNumber', data.phoneNumber);
     if (data.email) formData.append('Email', data.email);
     if (data.website) formData.append('Website', data.website);

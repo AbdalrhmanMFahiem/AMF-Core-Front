@@ -93,8 +93,11 @@
     <!-- Items Card -->
     <app-component-card [title]="'stockAdjustments.items'">
       <div class="mb-4" *ngIf="mode !== 'view'">
-        <button type="button" (click)="openItemModal()" class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600">
-          <i class="fas fa-plus mr-2 rtl:mr-0 rtl:ml-2"></i> {{ 'stockAdjustments.addItems' | translate }}
+        <button type="button" (click)="openItemModal()" class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 inline-flex items-center">
+          <svg class="w-4 h-4 mr-2 rtl:mr-0 rtl:ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+          </svg>
+          {{ 'stockAdjustments.addItems' | translate }}
         </button>
       </div>
 
@@ -151,8 +154,10 @@
                          [disabled]="true">
                 </td>
                 <td class="px-4 py-3 text-center" *ngIf="mode !== 'view'">
-                  <button type="button" (click)="removeItem(i)" class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300" title="{{ 'common.delete' | translate }}">
-                    <i class="fas fa-trash"></i>
+                  <button type="button" (click)="removeItem(i)" class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300 inline-flex items-center justify-center" title="{{ 'common.delete' | translate }}">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
                   </button>
                 </td>
               </tr>
@@ -180,8 +185,14 @@
         *ngIf="mode !== 'view'"
         type="submit" 
         [disabled]="saving"
-        class="px-5 py-2.5 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 disabled:opacity-50">
-        <span *ngIf="saving"><i class="fas fa-spinner fa-spin mr-2 rtl:mr-0 rtl:ml-2"></i> {{ 'common.saving' | translate }}</span>
+        class="px-5 py-2.5 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 disabled:opacity-50 inline-flex items-center">
+        <span *ngIf="saving" class="inline-flex items-center">
+          <svg class="w-4 h-4 animate-spin mr-2 rtl:mr-0 rtl:ml-2" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          {{ 'common.saving' | translate }}
+        </span>
         <span *ngIf="!saving">{{ 'common.save' | translate }}</span>
       </button>
     </div>
@@ -201,7 +212,9 @@
 <div *ngIf="showLeaveConfirmation" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
   <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg max-w-sm w-full p-6 text-center transform transition-all">
     <div class="w-16 h-16 bg-yellow-100 dark:bg-yellow-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
-      <i class="fas fa-exclamation-triangle text-2xl text-yellow-600 dark:text-yellow-400"></i>
+      <svg class="w-8 h-8 text-yellow-600 dark:text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+      </svg>
     </div>
     <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">{{ 'common.unsavedChanges' | translate }}</h3>
     <p class="text-gray-500 dark:text-gray-400 mb-6">{{ 'common.unsavedChangesMessage' | translate }}</p>
@@ -213,6 +226,7 @@
         {{ 'common.leave' | translate }}
       </button>
     </div>
+  </div>
 </div>
 
 <!-- Confirmation Modal -->
@@ -230,5 +244,3 @@
 
 <app-error-banner [isVisible]="validationErrors.length > 0" [errors]="validationErrors"
   (close)="validationErrors = []"></app-error-banner>
-
-

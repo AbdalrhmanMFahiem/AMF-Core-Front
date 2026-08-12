@@ -16,12 +16,12 @@ import { LanguageLoaderComponent } from './shared/components/common/language-loa
 export class AppComponent {
   title = 'AMFCore-Front';
   showLanguageLoader = false;
-  targetLang = 'en';
+  targetLang = 'ar';
 
   private translateService = inject(TranslateService);
 
   constructor() {
-    const savedLang = localStorage.getItem('lang') || 'en';
+    const savedLang = localStorage.getItem('lang') || 'ar';
     this.targetLang = savedLang;
     this.translateService.setDefaultLang(savedLang);
     this.translateService.use(savedLang);

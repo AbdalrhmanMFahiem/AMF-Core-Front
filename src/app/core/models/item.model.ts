@@ -170,3 +170,20 @@ export interface UomLineDraft {
   isDefaultSalesUnit: boolean;
   barcode?: string;
 }
+
+export interface ItemWarehouseStockResponse {
+  itemId: number;
+  itemCode: string;
+  itemName: string;
+  totalOnHandQty: number;
+  lines: ItemWarehouseStockLine[];
+}
+
+export interface ItemWarehouseStockLine {
+  warehouseId: number;
+  warehouseCode: string;
+  warehouseName: string;
+  onHandQty: number;
+  lastModifiedOn?: string | null;
+  lastSyncDate?: string | null;
+}

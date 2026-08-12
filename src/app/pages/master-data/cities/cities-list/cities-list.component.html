@@ -1,0 +1,31 @@
+<app-page-breadcrumb [pageTitle]="'cities.list.title' | translate"></app-page-breadcrumb>
+<div class="space-y-6">
+  <app-crud-list 
+    [pageTitle]="'cities.list.title' | translate" 
+    [searchPlaceholder]="'cities.searchPlaceholder' | translate"
+    [addBtnText]="'cities.addNew' | translate"
+    [columns]="columns" 
+    [data]="data" 
+    [filters]="filters"
+    [includeDisabled]="includeDisabled"
+    [isLoading]="loading"
+    (search)="onSearch()"
+    (add)="onAdd()"
+    (view)="onView($event)"
+    (edit)="onEdit($event)"
+    (toggleStatus)="onToggleStatus($event)"
+    (pageChange)="onPageChange($event)"
+    (includeDisabledChange)="onIncludeDisabledChange($event)">
+    <ng-container custom-filters>
+      <div class="w-full sm:max-w-xs">
+        <app-searchable-select
+          [options]="governorates"
+          [placeholder]="'governorates.title'"
+          [allowClear]="true"
+          [(ngModel)]="filters.governorateId"
+          (selectionChange)="onGovernorateChange($event)">
+        </app-searchable-select>
+      </div>
+    </ng-container>
+  </app-crud-list>
+</div>

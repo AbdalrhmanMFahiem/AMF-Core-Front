@@ -3,8 +3,11 @@
   <button (click)="toggleDropdown()"
     class="flex items-center text-gray-700 dropdown-toggle dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors focus:outline-none">
     <span
-      class="ltr:mr-2.5 rtl:ml-2.5 overflow-hidden rounded-full h-10 w-10 ring-2 ring-gray-200 dark:ring-slate-700 shrink-0 shadow-xs">
-      <img src="/images/user/owner.png" alt="User" class="w-full h-full object-cover" />
+      class="ltr:mr-2.5 rtl:ml-2.5 overflow-hidden rounded-full h-10 w-10 ring-2 ring-gray-200 dark:ring-slate-700 shrink-0 shadow-xs flex items-center justify-center bg-linear-to-tr from-brand-600 to-indigo-600 text-white font-bold text-sm">
+      <img *ngIf="!imageError && userImageUrl" [src]="userImageUrl" alt="User" class="w-full h-full object-cover" (error)="onImageError()" />
+      <span *ngIf="imageError || !userImageUrl">
+        {{ (userData?.firstName ? userData!.firstName.charAt(0) : 'U') }}{{ (userData?.lastName ? userData!.lastName.charAt(0) : '') }}
+      </span>
     </span>
     <span class="hidden sm:block ltr:mr-1.5 rtl:ml-1.5 font-semibold text-theme-sm text-gray-800 dark:text-gray-200">
       {{ userData?.firstName }}
@@ -27,8 +30,11 @@
       class="p-3 mb-2 rounded-xl bg-slate-50 dark:bg-slate-800/70 border border-slate-100 dark:border-slate-700/60 ltr:text-left rtl:text-right">
       <div class="flex items-center gap-3">
         <div
-          class="w-10 h-10 rounded-full bg-linear-to-tr from-brand-600 to-indigo-600 text-white flex items-center justify-center font-bold text-sm shadow-sm shrink-0">
-          {{ (user.firstName ? user.firstName.charAt(0) : 'U') }}{{ (user.lastName ? user.lastName.charAt(0) : '') }}
+          class="w-10 h-10 rounded-full bg-linear-to-tr from-brand-600 to-indigo-600 text-white flex items-center justify-center font-bold text-sm shadow-sm shrink-0 overflow-hidden">
+          <img *ngIf="!imageError && userImageUrl" [src]="userImageUrl" alt="User" class="w-full h-full object-cover" (error)="onImageError()" />
+          <span *ngIf="imageError || !userImageUrl">
+            {{ (user.firstName ? user.firstName.charAt(0) : 'U') }}{{ (user.lastName ? user.lastName.charAt(0) : '') }}
+          </span>
         </div>
         <div class="min-w-0 flex-1">
           <span class="block font-extrabold text-gray-900 text-sm dark:text-white truncate">

@@ -1,7 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import Swal from 'sweetalert2';
 import { forkJoin } from 'rxjs';
@@ -16,7 +16,8 @@ import { ItemService } from '../../../../core/services/item.service';
 import { UnitOfMeasureService } from '../../../../core/services/unit-of-measure.service';
 import { LookupService } from '../../../../core/services/lookup.service';
 
-import { ItemRequest, ItemUnitOfMeasureRequest, UomType, UOM_TYPE_CONFIG_LIST, UomTypeMeta, getUomTypeConfig } from '../../../../core/models/item.model';
+import { ItemRequest, ItemUnitOfMeasureRequest, UomType, UOM_TYPE_CONFIG_LIST, UomTypeMeta, getUomTypeConfig, ItemWarehouseStockResponse } from '../../../../core/models/item.model';
+import { ItemBomLineResponse } from '../../../../core/models/item-bom.model';
 import { UnitOfMeasure } from '../../../../core/models/uom.model';
 import { IdNameResponse, IntIdCodeNameResponse } from '../../../../core/models/lookup.model';
 
@@ -59,6 +60,7 @@ export function syncLegacyUomFields(model: ItemRequest): ItemRequest {
   imports: [
     CommonModule,
     FormsModule,
+    RouterModule,
     TranslateModule,
     ComponentCardComponent,
     PageBreadcrumbComponent,
@@ -84,8 +86,11 @@ export class ItemFormComponent implements OnInit {
   saveSuccess = false;
   validationErrors: string[] = [];
 
-  activeTab: 'basic' | 'uoms' | 'inventory' | 'sales' | 'purchasing' | 'additional' = 'basic';
+  activeTab: 'basic' | 'uoms' | 'inventory' | 'sales' | 'purchasing' | 'additional' | 'warehouse-balances' | 'components' = 'basic';
   tabsWithErrors: string[] = [];
+
+  warehouseStockData?: ItemWarehouseStockResponse;
+  bomComponentsData?: ItemBomLineResponse[];
 
   selectedUomType: UomType | null = null;
 
@@ -327,12 +332,26 @@ export class ItemFormComponent implements OnInit {
     });
   }
 
-  setTab(tab: 'basic' | 'uoms' | 'inventory' | 'sales' | 'purchasing' | 'additional'): void {
-    if (tab !== 'basic' && !this.selectedUomType) {
+  setTab(tab: 'basic' | 'uoms' | 'inventory' | 'sales' | 'purchasing' | 'additional' | 'warehouse-balances' | 'components'): void {
+    if (tab !== 'basic' && tab !== 'warehouse-balances' && tab !== 'components' && !this.selectedUomType) {
       this.validationErrors = [this.translate.instant('items.uomTypeWarning')];
       return;
     }
     this.activeTab = tab;
+
+    if (this.mode !== 'add' && this.id) {
+      if (tab === 'warehouse-balances' && !this.warehouseStockData) {
+        this.itemService.getWarehouseStock(this.id).subscribe({
+          next: (res) => this.warehouseStockData = res,
+          error: (err) => console.error('Failed to load warehouse stock', err)
+        });
+      } else if (tab === 'components' && !this.bomComponentsData) {
+        this.itemService.getBomComponents(this.id).subscribe({
+          next: (res) => this.bomComponentsData = res,
+          error: (err) => console.error('Failed to load BOM components', err)
+        });
+      }
+    }
   }
 
   addUomRow(): void {

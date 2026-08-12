@@ -2,9 +2,8 @@ import { Component, Input, Output, EventEmitter, ElementRef, ViewChild, forwardR
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import flatpickr from 'flatpickr';
-import { Arabic } from 'flatpickr/dist/l10n/ar.js';
+import { Arabic } from './ar-locale';
 import { LabelComponent } from '../label/label.component';
-import "flatpickr/dist/flatpickr.css";
 
 @Component({
   selector: 'app-date-picker',

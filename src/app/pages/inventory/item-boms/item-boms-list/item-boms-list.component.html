@@ -1,0 +1,25 @@
+<app-page-breadcrumb 
+  [pageTitle]="'items.manageComponents' | translate" 
+  parentPageTitle="pages.inventory" 
+  parentPageUrl="/inventory">
+</app-page-breadcrumb>
+
+<div class="space-y-6">
+  <app-crud-list
+    [pageTitle]="'items.manageComponents' | translate"
+    addBtnText="common.add"
+    [data]="data"
+    [columns]="columns"
+    [filters]="filters"
+    [includeDisabled]="includeDisabled"
+    [showIncludeDisabledToggle]="true"
+    [isLoading]="loading"
+    (search)="loadData()"
+    (pageChange)="onPageChange($event)"
+    (includeDisabledChange)="onIncludeDisabledChanged($event)"
+    (add)="onAdd()"
+    (edit)="onEdit($event)"
+    (view)="onView($event)"
+    (toggleStatus)="onToggleStatus($event)">
+  </app-crud-list>
+</div>

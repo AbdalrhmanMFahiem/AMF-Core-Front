@@ -1,10 +1,21 @@
 {
+  "footer": {
+    "company": "Company",
+    "branch": "Branch",
+    "connectedDb": "Connected DB:",
+    "allRightsReserved": "All rights reserved."
+  },
   "common": {
     "address": "Address",
     "print": "Print",
+    "item": "Item",
+    "resource": "Resource",
+    "componentItem": "Component Item",
+    "component": "Component",
     "email": "Email",
     "phone": "Phone",
     "quickAdd": "Quick Add",
+    "selectBranch": "Select Branch",
     "uomRequired": "is required",
     "enterNotesPlaceholder": "Type statement or notes for this line here...",
     "quickSuggestions": "Quick Suggestions",
@@ -22,6 +33,7 @@
     "errorLoadingData": "An error occurred while loading data.",
     "all": "All",
     "errorTitle": "Please fix the following errors:",
+    "row": "Row",
     "refresh": "Refresh",
     "view": "View",
     "back": "Back",
@@ -52,6 +64,7 @@
     "warehouses": "Warehouses",
     "deactivate": "Deactivate",
     "save": "Save",
+    "saveAndStay": "Save & Stay",
     "cancel": "Cancel",
     "search": "Search",
     "status": "Status",
@@ -158,6 +171,12 @@
       "mustSelectFromWarehouse": "Must select the Target (From) warehouse first."
     }
   },
+  "unauthorizedAccess": {
+    "title": "Unauthorized Access",
+    "message": "You do not have the required permissions to view this page.",
+    "attemptedUrlMessage": "You attempted to access: ",
+    "redirect": "Redirecting to the home page in {{seconds}} seconds..."
+  },
   "pages": {
     "definitions": "Definitions",
     "transactions": "Transactions",
@@ -165,6 +184,7 @@
     "configuration": "System Configuration",
     "inventorySettings": "Inventory Settings",
     "invoiceSettings": "Invoice Settings",
+    "generalSettings": "General Settings",
     "homepage": "Home Page",
     "overview": "Dashboard",
     "logout": "Sign Out",
@@ -193,11 +213,19 @@
     "statusActive": "Status: Active",
     "noDbs": "No databases registered under this client profile.",
     "masterData": "Master Data",
+    "geographicHierarchy": "Geographic Hierarchy",
     "businessPartners": "Business Partners",
+    "countryGroups": "Country Groups",
+    "countries": "Countries",
+    "governorates": "Governorates",
+    "cities": "Cities",
+    "districts": "Districts",
     "inventory": "Inventory",
     "itemGroups": "Item Groups",
     "itemProperties": "Item Properties",
     "items": "Items",
+    "itemBoms": "Item BOMs",
+    "resources": "Resources",
     "administration": "Administration",
     "departments": "Departments",
     "sales": "Sales",
@@ -249,7 +277,157 @@
       "searchPlaceholder": "Search by code or name",
       "Add": "Add Unit of Measure",
       "add": "Add Unit of Measure"
+    },
+    "ItemProperties": {
+      "Title": "Item Properties",
+      "title": "Item Properties",
+      "AddTitle": "Add Item Property",
+      "addTitle": "Add Item Property",
+      "EditTitle": "Edit Item Property",
+      "editTitle": "Edit Item Property",
+      "ViewTitle": "View Item Property",
+      "viewTitle": "View Item Property",
+      "SearchPlaceholder": "Search item properties...",
+      "searchPlaceholder": "Search item properties...",
+      "Add": "Add Item Property",
+      "add": "Add Item Property"
+    },
+    "ItemGroups": {
+      "Title": "Item Groups",
+      "title": "Item Groups",
+      "AddTitle": "Add Item Group",
+      "addTitle": "Add Item Group",
+      "EditTitle": "Edit Item Group",
+      "editTitle": "Edit Item Group",
+      "ViewTitle": "View Item Group",
+      "viewTitle": "View Item Group",
+      "SearchPlaceholder": "Search item groups...",
+      "searchPlaceholder": "Search item groups...",
+      "Add": "Add Item Group",
+      "add": "Add Item Group"
+    },
+    "CountryGroups": {
+      "Title": "Country Groups",
+      "title": "Country Groups",
+      "AddTitle": "Add Country Group",
+      "addTitle": "Add Country Group",
+      "EditTitle": "Edit Country Group",
+      "editTitle": "Edit Country Group",
+      "ViewTitle": "View Country Group",
+      "viewTitle": "View Country Group",
+      "SearchPlaceholder": "Search country groups...",
+      "searchPlaceholder": "Search country groups...",
+      "Add": "Add Country Group",
+      "add": "Add Country Group"
     }
+  },
+  "countryGroups": {
+    "title": "Country Groups",
+    "addNew": "Add New Country Group",
+    "edit": "Edit Country Group",
+    "addTitle": "Add Country Group",
+    "fields": {
+      "code": "Code",
+      "name": "Name",
+      "aName": "Name (Arabic)",
+      "eName": "Name (English)",
+      "notes": "Notes",
+      "status": "Status"
+    },
+    "list": {
+      "title": "Country Groups List"
+    }
+  },
+  "countries": {
+    "title": "Countries",
+    "addNew": "Add New Country",
+    "saveSuccess": "Country saved successfully",
+    "add": {
+      "title": "Add Country"
+    },
+    "edit": {
+      "title": "Edit Country"
+    },
+    "view": {
+      "title": "View Country"
+    },
+    "fields": {
+      "code": "Code",
+      "codePlaceholder": "Enter Country Code",
+      "name": "Name",
+      "aName": "Name (Arabic)",
+      "aNamePlaceholder": "Enter Arabic Name",
+      "eName": "Name (English)",
+      "eNamePlaceholder": "Enter English Name",
+      "countryGroup": "Country Group",
+      "countryGroupPlaceholder": "Select Country Group",
+      "isoCode": "ISO Code",
+      "isoCodePlaceholder": "Ex: EG",
+      "notes": "Notes",
+      "notesPlaceholder": "Enter Notes",
+      "status": "Status"
+    },
+    "list": {
+      "title": "Countries List"
+    },
+    "searchPlaceholder": "Search countries..."
+  },
+  "governorates": {
+    "title": "Governorates",
+    "addNew": "Add New Governorate",
+    "saveSuccess": "Governorate saved successfully",
+    "add": { "title": "Add Governorate" },
+    "edit": { "title": "Edit Governorate" },
+    "view": { "title": "View Governorate" },
+    "fields": {
+      "code": "Code", "codePlaceholder": "Enter Code",
+      "name": "Name",
+      "aName": "Name (Arabic)", "aNamePlaceholder": "Enter Arabic Name",
+      "eName": "Name (English)", "eNamePlaceholder": "Enter English Name",
+      "country": "Country", "countryPlaceholder": "Select Country",
+      "notes": "Notes", "notesPlaceholder": "Enter Notes",
+      "status": "Status"
+    },
+    "list": { "title": "Governorates List" },
+    "searchPlaceholder": "Search governorates..."
+  },
+  "cities": {
+    "title": "Cities",
+    "addNew": "Add New City",
+    "saveSuccess": "City saved successfully",
+    "add": { "title": "Add City" },
+    "edit": { "title": "Edit City" },
+    "view": { "title": "View City" },
+    "fields": {
+      "code": "Code", "codePlaceholder": "Enter Code",
+      "name": "Name",
+      "aName": "Name (Arabic)", "aNamePlaceholder": "Enter Arabic Name",
+      "eName": "Name (English)", "eNamePlaceholder": "Enter English Name",
+      "governorate": "Governorate", "governoratePlaceholder": "Select Governorate",
+      "notes": "Notes", "notesPlaceholder": "Enter Notes",
+      "status": "Status"
+    },
+    "list": { "title": "Cities List" },
+    "searchPlaceholder": "Search cities..."
+  },
+  "districts": {
+    "title": "Districts",
+    "addNew": "Add New District",
+    "saveSuccess": "District saved successfully",
+    "add": { "title": "Add District" },
+    "edit": { "title": "Edit District" },
+    "view": { "title": "View District" },
+    "fields": {
+      "code": "Code", "codePlaceholder": "Enter Code",
+      "name": "Name",
+      "aName": "Name (Arabic)", "aNamePlaceholder": "Enter Arabic Name",
+      "eName": "Name (English)", "eNamePlaceholder": "Enter English Name",
+      "city": "City", "cityPlaceholder": "Select City",
+      "notes": "Notes", "notesPlaceholder": "Enter Notes",
+      "status": "Status"
+    },
+    "list": { "title": "Districts List" },
+    "searchPlaceholder": "Search districts..."
   },
   "warehouses": {
     "title": "Warehouses",
@@ -279,6 +457,50 @@
       "maxPalletsCount": "Pallets Capacity"
     }
   },
+  "resources": {
+    "title": "Resources",
+    "subTitle": "Manage resources, cost rates, and operational units.",
+    "addNew": "Add New Resource",
+    "addTitle": "Add Resource",
+    "guide": {
+      "title": "How Resources Work in Costing & Manufacturing",
+      "whatIsResource": "Operational Resource Definition",
+      "whatIsResourceDesc": "Resources represent direct operational elements (Labor, Machines & Equipment, Operations).",
+      "costCalculation": "Cost Rate & Measurement",
+      "costCalculationDesc": "Sets unit cost rate for the resource (e.g. 2.50 EGP per machine operation minute, or 10 EGP per labor piece).",
+      "bomIntegration": "BOM & Routing Integration",
+      "bomIntegrationDesc": "Included in Item BOMs & Routings to accurately calculate direct manufacturing cost per piece or minute."
+    },
+    "sections": {
+      "basicInfo": "Basic Resource Information",
+      "costInfo": "Costing & Measurement Standards",
+      "notesInfo": "Additional Notes"
+    },
+    "form": {
+      "create": "Create Resource",
+      "edit": "Edit Resource",
+      "view": "View Resource"
+    },
+    "addSuccess": "Resource added successfully.",
+    "updateSuccess": "Resource updated successfully.",
+    "list": {
+      "title": "Resources List"
+    },
+    "fields": {
+      "resourceType": "Resource Type",
+      "costRate": "Cost Rate",
+      "rateUomType": "Rate UOM Type",
+      "unitOfMeasure": "Unit of Measure",
+      "unitOfMeasurePlaceholder": "Select Unit of Measure"
+    },
+    "types": {
+      "Labor": "Labor",
+      "Machine": "Machine",
+      "Operation": "Operation",
+      "Other": "Other"
+    }
+  },
+
   "locations": {
     "title": "Locations",
     "subTitle": "Manage bin locations and storage areas.",
@@ -333,11 +555,46 @@
   },
   "serverUnavailable": {
     "title": "Server Connection Lost",
-    "description": "We\u0027re unable to connect to the backend system services. The server may be undergoing maintenance or experiencing traffic spikes. We\u0027re actively checking the connection.",
+    "description": "We're unable to connect to the backend system services. The server may be undergoing maintenance or experiencing traffic spikes. We're actively checking the connection.",
     "verifyConnection": "Verify Gateway Connection",
     "verifying": "Verifying Server Health..."
   },
   "reports": {
+    "profitability": {
+      "title": "Invoice & Item Profitability",
+      "netRevenue": "Net Revenue",
+      "cogs": "Cost of Goods (COGS)",
+      "grossProfit": "Gross Profit",
+      "margin": "Margin %",
+      "totalNetRevenue": "Total Net Revenue",
+      "totalCOGS": "Total COGS",
+      "totalGrossProfit": "Total Gross Profit",
+      "invoiceDetails": "Invoice Profitability Details",
+      "item": "Item",
+      "qty": "Qty",
+      "unitPrice": "Unit Price",
+      "grossAmount": "Gross Amount",
+      "headerDiscount": "Allocated Header Discount",
+      "headerCost": "Allocated Header Expenses",
+      "unitCost": "Unit Cost (SnapShot)",
+      "costSource": "Cost Source",
+      "totalRevenue": "Total Revenue",
+      "lineDiscount": "Line Discount",
+      "invoiceType": "Invoice Type",
+      "itemType": "Item Type",
+      "manufactured": "Manufactured Item",
+      "trading": "Trading Item",
+      "allTypes": "All Item Types",
+      "allInvoices": "All Invoices & Returns",
+      "salesInvoice": "Sales Invoice",
+      "salesReturn": "Sales Return",
+      "costSources": {
+        "ItemCost": "Moving Average Cost",
+        "LastPurchasePrice": "Last Purchase Price",
+        "BomCost": "BOM Production Cost",
+        "InitialPrice": "Initial Price Fallback"
+      }
+    },
     "businessPartnerStatement": {
       "title": "Partner Statement of Account",
       "partnersCount": "Partners Count:",
@@ -355,7 +612,7 @@
       "to": "To",
       "customer": "Customer",
       "vendor": "Vendor",
-      "customerAndVendor": "Customer \u0026 Vendor",
+      "customerAndVendor": "Customer & Vendor",
       "collapseAll": "Collapse All",
       "expandAll": "Expand All",
       "balance": "Balance:",
@@ -455,12 +712,20 @@
       "eName": "English Name",
       "phone": "Phone Number",
       "email": "Email Address",
-      "address": "Address"
+      "address": "Address",
+      "openingBalance": "Opening Balance",
+      "openingBalanceDate": "Opening Balance Date",
+      "district": "District",
+      "salesReps": "Sales Representatives",
+      "assignSalesRep": "Assign Sales Representative",
+      "repName": "Representative Name",
+      "assignmentDate": "Assignment Date",
+      "commission": "Commission %"
     },
     "types": {
       "customer": "Customer",
       "vendor": "Vendor",
-      "both": "Customer \u0026 Vendor"
+      "both": "Customer & Vendor"
     },
     "tabs": {
       "basicInfo": "Basic Information",
@@ -487,12 +752,12 @@
   },
   "companySettings": {
     "title": "Company Configuration",
-    "subtitle": "Global Company Identity \u0026 Registration",
+    "subtitle": "Global Company Identity & Registration",
     "generalInfo": "General Information",
     "generalInfoDesc": "Basic details and identifiers for your company.",
     "contactInfo": "Contact Information",
     "contactInfoDesc": "Where and how to reach the company.",
-    "branding": "Branding \u0026 Assets",
+    "branding": "Branding & Assets",
     "brandingDesc": "Upload the company logo and icon.",
     "companyCode": "Company Code",
     "companyCodePlaceholder": "Enter unique company code",
@@ -516,18 +781,26 @@
     "websitePlaceholder": "Enter website url",
     "logoUpload": "Company Brand Logo",
     "iconUpload": "System Navigation Icon",
-    "logoHint": "Upload business logo used in headers \u0026 invoices",
+    "logoHint": "Upload business logo used in headers & invoices",
     "iconHint": "Upload brand shortcut icon used in tab browsers",
-    "dragDropHint": "Drag \u0026 drop file here or click to browse",
+    "dragDropHint": "Drag & drop file here or click to browse",
     "logo": "Company Logo",
     "icon": "Company Icon",
     "saving": "Saving Configuration...",
     "success": "Company configuration saved successfully!"
   },
+  "generalSettings": {
+    "title": "General Settings",
+    "editTitle": "Edit General Settings",
+    "editSubtitle": "Modify global system settings",
+    "defaultActivationOnCreate": "Default Activation on Create",
+    "enableLocalization": "Enable Localization",
+    "autoFillEnglishName": "Auto Fill English Name"
+  },
   "crud": {
     "back": "Back",
     "saveDraft": "Save as Draft",
-    "saveConfirm": "Save \u0026 Confirm",
+    "saveConfirm": "Save & Confirm",
     "records": "Records Counts",
     "tablePageSize": "Number of records per page",
     "prev": "Previous",
@@ -585,6 +858,14 @@
   },
   "items": {
     "title": "Items",
+    "item": "Item",
+    "treeType": "Tree Type",
+    "priceList": "Price List",
+    "minSpeed": "Min Speed",
+    "maxSpeed": "Max Speed",
+    "dfltSpeed": "Default Speed",
+    "dfltWeight": "Default Weight",
+    "speedAndWeight": "Speed & Weight Specifications",
     "addNew": "Add New Record",
     "edit": "Edit Record",
     "uomTypeSelectFirst": "Select Unit of Measure Type first to start",
@@ -592,6 +873,15 @@
     "uomTypeRequired": "Unit of Measure Type must be selected before saving",
     "confirmChangeTypeTitle": "Confirm Changing UOM Type",
     "confirmChangeTypeText": "Changing UOM type will reset and clear existing unit of measure lines. Are you sure you want to proceed?",
+    "manageComponents": "Manage Components",
+    "manageComponentsDesc": "Manage BOM components for items",
+    "noComponentsFound": "No components found",
+    "onHandQty": "On-Hand Qty",
+    "lastModified": "Last Modified",
+    "scrapPercentage": "Scrap Percentage",
+    "totalRequiredQuantity": "Total Required Qty",
+    "issueMethod": "Issue Method",
+    "totalOnHand": "Total On-Hand",
     "types": {
       "Weight": "Weight",
       "Quantity": "Quantity",
@@ -613,7 +903,9 @@
       "sales": "Sales Data",
       "inventory": "Inventory Data",
       "additional": "Additional Data",
-      "uoms": "Units of Measure"
+      "uoms": "Units of Measure",
+      "warehouseBalances": "Warehouse Balances",
+      "components": "Components"
     },
     "fields": {
       "aName": "Name (Arabic)",
@@ -654,6 +946,8 @@
       "barcode": "Barcode"
     },
     "errors": {
+      "componentsRequired": "At least one component is required",
+      "headerItemRequired": "Please select the Parent Item first to start adding components.",
       "exactlyOneBaseUnit": "There must be exactly one base unit of measure.",
       "exactlyOneBaseUnitRequired": "There must be exactly one base unit of measure.",
       "invalidConversionFactor": "Conversion factor for non-base unit must be greater than zero.",
@@ -708,7 +1002,7 @@
     "confirmedText": "The invoice has been confirmed.",
     "loadingInvoices": "Loading Invoices...",
     "cancelTitle": "Are you sure?",
-    "cancelText": "You won\u0027t be able to revert this!",
+    "cancelText": "You won't be able to revert this!",
     "cancelConfirm": "Yes, cancel it!",
     "cancelledTitle": "Cancelled!",
     "cancelledText": "The invoice has been cancelled.",
@@ -758,7 +1052,7 @@
     "discPercent": "Disc %",
     "taxPercent": "Tax %",
     "netAmount": "Net Amt",
-    "noItemsAdded": "No items added. Click \u0027+ Add Line\u0027 to start.",
+    "noItemsAdded": "No items added. Click '+ Add Line' to start.",
     "additionalCosts": "Additional Costs / Global Discounts",
     "addCost": "Add Cost",
     "percentage": "Percentage",
@@ -797,7 +1091,9 @@
     "searchElements": "Search elements by code or name...",
     "noElementsFound": "No elements found matching your search.",
     "selectElement": "Select Element",
-    "confirmSelectionOfCostElement": "Are you sure you want to select this cost element?"
+    "confirmSelectionOfCostElement": "Are you sure you want to select this cost element?",
+    "selectComponent": "Select Component",
+    "searchComponents": "Search components by code or name..."
   },
   "purchaseOrders": {
     "title": "Purchase Orders",
@@ -1140,10 +1436,12 @@
       "2": "Payment",
       "3": "Return",
       "4": "Adjustment",
+      "5": "Opening Balance",
       "invoice": "Invoice",
       "payment": "Payment",
       "return": "Return",
-      "adjustment": "Adjustment"
+      "adjustment": "Adjustment",
+      "openingBalance": "Opening Balance"
     }
   },
   "homePage": {

@@ -1,6 +1,17 @@
 <div class="relative p-6 bg-white z-1 dark:bg-gray-900 sm:p-0">
   <div class="relative flex flex-col justify-center w-full h-screen lg:flex-row dark:bg-gray-900 sm:p-0">
-    <ng-content></ng-content>
+    <div class="flex flex-col justify-center items-center flex-1 w-full lg:w-1/2 h-full overflow-y-auto">
+      <div class="w-full flex flex-col justify-center my-auto">
+        <!-- Mobile Logo -->
+        <div class="flex justify-center mb-8 lg:hidden shrink-0">
+          <a routerLink="/" class="block relative transition-transform hover:scale-105 duration-300">
+            <img class="h-24 sm:h-28 w-auto object-contain drop-shadow-md dark:brightness-110"
+              src="/images/logo/AMF-Core-Icon-tans.png" alt="AMF Core Logo" />
+          </a>
+        </div>
+        <ng-content></ng-content>
+      </div>
+    </div>
     <div class="items-center hidden w-full h-full lg:w-1/2 bg-brand-950 dark:bg-white/5 lg:grid relative">
       <div class="flex items-center justify-center z-1">
         <!-- ===== Common Grid Shape Start ===== -->
@@ -35,6 +46,12 @@
       class="fixed z-50 hidden bottom-6 right-6 sm:flex sm:flex-col sm:items-center sm:gap-4 ltr:right-6 rtl:left-6 rtl:right-auto">
       <app-language-dropdown sizeClass="size-14" [openUp]="true" />
       <app-theme-toggle-two />
+    </div>
+    
+    <!-- Mobile toggle buttons -->
+    <div class="fixed z-50 flex sm:hidden top-4 ltr:right-4 rtl:left-4 rtl:right-auto gap-3 items-center">
+      <app-theme-toggle-two />
+      <app-language-dropdown sizeClass="size-10" [openUp]="false" />
     </div>
   </div>
 </div>

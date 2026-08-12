@@ -37,7 +37,10 @@ export class LookupService {
 
   getUnitOfMeasureByType(uomType: UomType | string): Observable<UnitOfMeasureBasicResponse[]> {
     let params = new HttpParams();
-    if (uomType) params = params.set('uomType', uomType.toString());
+    if (uomType) {
+      const typeStr = uomType.toString() === 'Time' ? 'Timing' : uomType.toString();
+      params = params.set('uomType', typeStr);
+    }
     return this.http.get<UnitOfMeasureBasicResponse[]>(`${this.apiUrl}/unit-of-measure-by-type`, { params });
   }
 
@@ -141,5 +144,29 @@ export class LookupService {
 
   getLocations(filters?: LookupsFilters): Observable<IdNameResponse[]> {
     return this.http.get<IdNameResponse[]>(`${this.apiUrl}/locations`, this.getOptions(filters));
+  }
+
+  getGovernorates(filters?: LookupsFilters): Observable<IdNameResponse[]> {
+    return this.http.get<IdNameResponse[]>(`${this.apiUrl}/governorate`, this.getOptions(filters));
+  }
+
+  getGovernoratesByCountry(countryId: number): Observable<IdNameResponse[]> {
+    return this.http.get<IdNameResponse[]>(`${this.apiUrl}/${countryId}/governorates`);
+  }
+
+  getCities(filters?: LookupsFilters): Observable<IdNameResponse[]> {
+    return this.http.get<IdNameResponse[]>(`${this.apiUrl}/city`, this.getOptions(filters));
+  }
+
+  getCitiesByGovernorate(governorateId: number): Observable<IdNameResponse[]> {
+    return this.http.get<IdNameResponse[]>(`${this.apiUrl}/${governorateId}/cities`);
+  }
+
+  getDistricts(filters?: LookupsFilters): Observable<IdNameResponse[]> {
+    return this.http.get<IdNameResponse[]>(`${this.apiUrl}/district`, this.getOptions(filters));
+  }
+
+  getDistrictsByCity(cityId: number): Observable<IdNameResponse[]> {
+    return this.http.get<IdNameResponse[]>(`${this.apiUrl}/${cityId}/districts`);
   }
 }

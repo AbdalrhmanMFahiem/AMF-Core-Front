@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
@@ -10,6 +10,8 @@ import { ButtonComponent } from '../../../shared/components/ui/button/button.com
 import { LabelComponent } from '../../../shared/components/form/label/label.component';
 import { InputFieldComponent } from '../../../shared/components/form/input/input-field.component';
 import { ModalComponent } from '../../../shared/components/ui/modal/modal.component';
+import { LookupService } from '../../../core/services/lookup.service';
+import { IdNameResponse } from '../../../core/models/lookup.model';
 
 @Component({
   selector: 'app-company-settings',
@@ -18,6 +20,12 @@ import { ModalComponent } from '../../../shared/components/ui/modal/modal.compon
   templateUrl: './company-settings.component.html'
 })
 export class CompanySettingsComponent implements OnInit {
+  private companySettingService = inject(CompanySettingService);
+  private lookupService = inject(LookupService);
+  private fb = inject(FormBuilder);
+  private toastr = inject(ToastrService);
+  private translate = inject(TranslateService);
+
   form!: FormGroup;
   isLoading = false;
   isSaving = false;
@@ -29,12 +37,12 @@ export class CompanySettingsComponent implements OnInit {
   
   settings: any = {};
 
-  constructor(
-    private fb: FormBuilder,
-    private companySettingService: CompanySettingService,
-    private toastr: ToastrService,
-    private translate: TranslateService
-  ) {}
+  countries: IdNameResponse[] = [];
+  governorates: IdNameResponse[] = [];
+  cities: IdNameResponse[] = [];
+  districts: IdNameResponse[] = [];
+
+  constructor() {}
 
   ngOnInit(): void {
     this.initForm();
@@ -43,6 +51,9 @@ export class CompanySettingsComponent implements OnInit {
 
   openModal(): void {
     this.form.patchValue(this.settings);
+    if (this.settings.defaultCountryId) this.loadGovernorates(this.settings.defaultCountryId);
+    if (this.settings.defaultGovernorateId) this.loadCities(this.settings.defaultGovernorateId);
+    if (this.settings.defaultCityId) this.loadDistricts(this.settings.defaultCityId);
     this.isOpen = true;
   }
 
@@ -61,12 +72,16 @@ export class CompanySettingsComponent implements OnInit {
       registrationNumber: [''],
       taxNumber: [''],
       address: [''],
-      country: [''],
+      defaultCountryId: [null],
+      defaultGovernorateId: [null],
+      defaultCityId: [null],
+      defaultDistrictId: [null],
       phoneNumber: [''],
       email: [''],
       website: [''],
       logoPath: ['']
     });
+    this.loadCountries();
   }
 
   loadSettings(): void {
@@ -85,7 +100,10 @@ export class CompanySettingsComponent implements OnInit {
             registrationNumber: data.registrationNumber,
             taxNumber: data.taxNumber,
             address: data.address,
-            country: data.country,
+            defaultCountryId: data.defaultCountryId,
+            defaultGovernorateId: data.defaultGovernorateId,
+            defaultCityId: data.defaultCityId,
+            defaultDistrictId: data.defaultDistrictId,
             phoneNumber: data.phoneNumber,
             email: data.email,
             website: data.website,
@@ -106,6 +124,72 @@ export class CompanySettingsComponent implements OnInit {
         this.isLoading = false;
       }
     });
+  }
+
+  loadCountries(): void {
+    this.lookupService.getCountries().subscribe({
+      next: (res) => this.countries = res
+    });
+  }
+
+  loadGovernorates(countryId: number): void {
+    this.governorates = [];
+    this.cities = [];
+    this.districts = [];
+    this.lookupService.getGovernoratesByCountry(countryId).subscribe({
+      next: (res) => this.governorates = res
+    });
+  }
+
+  loadCities(governorateId: number): void {
+    this.cities = [];
+    this.districts = [];
+    this.lookupService.getCitiesByGovernorate(governorateId).subscribe({
+      next: (res) => this.cities = res
+    });
+  }
+
+  loadDistricts(cityId: number): void {
+    this.districts = [];
+    this.lookupService.getDistrictsByCity(cityId).subscribe({
+      next: (res) => this.districts = res
+    });
+  }
+
+  onCountryChange(event: Event): void {
+    const target = event.target as HTMLSelectElement;
+    const val = target.value ? parseInt(target.value) : null;
+    this.form.patchValue({ defaultGovernorateId: null, defaultCityId: null, defaultDistrictId: null });
+    if (val) {
+      this.loadGovernorates(val);
+    } else {
+      this.governorates = [];
+      this.cities = [];
+      this.districts = [];
+    }
+  }
+
+  onGovernorateChange(event: Event): void {
+    const target = event.target as HTMLSelectElement;
+    const val = target.value ? parseInt(target.value) : null;
+    this.form.patchValue({ defaultCityId: null, defaultDistrictId: null });
+    if (val) {
+      this.loadCities(val);
+    } else {
+      this.cities = [];
+      this.districts = [];
+    }
+  }
+
+  onCityChange(event: Event): void {
+    const target = event.target as HTMLSelectElement;
+    const val = target.value ? parseInt(target.value) : null;
+    this.form.patchValue({ defaultDistrictId: null });
+    if (val) {
+      this.loadDistricts(val);
+    } else {
+      this.districts = [];
+    }
   }
 
   onLogoChange(event: any): void {

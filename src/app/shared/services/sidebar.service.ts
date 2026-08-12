@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
+import { Permissions } from '../../core/constants/permissions';
 
 export type NavItem = {
   name: string;
@@ -8,7 +9,8 @@ export type NavItem = {
   path?: string;
   new?: boolean;
   pro?: boolean;
-  subItems?: { name: string; translationKey?: string; path?: string; pro?: boolean; new?: boolean; icon?: string; subItems?: any[] }[];
+  permissionKey?: string;
+  subItems?: { name: string; translationKey?: string; path?: string; pro?: boolean; new?: boolean; icon?: string; subItems?: any[]; permissionKey?: string }[];
 };
 
 @Injectable({
@@ -47,15 +49,16 @@ export class SidebarService {
           name: "Users Management", translationKey: "pages.usersManagement",
           icon: `<svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>`,
           subItems: [
-            { name: "Users", translationKey: "pages.users", path: "/administration/users" },
-            { name: "Roles", translationKey: "pages.roles", path: "/administration/roles" }
+            { name: "Users", translationKey: "pages.users", path: "/administration/users", permissionKey: Permissions.GetUsers },
+            { name: "Roles", translationKey: "pages.roles", path: "/administration/roles", permissionKey: Permissions.GetRoles }
           ]
         },
         {
           name: "Configuration", translationKey: "pages.configuration",
           icon: `<svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path><circle cx="12" cy="12" r="3"></circle></svg>`,
           subItems: [
-            { name: "Company Settings", translationKey: "pages.companySettings", path: "/configuration/company-settings" },
+            { name: "Company Settings", translationKey: "pages.companySettings", path: "/configuration/company-settings", permissionKey: Permissions.GetCompanySettings },
+            { name: "General Settings", translationKey: "pages.generalSettings", path: "/configuration/general-settings", permissionKey: Permissions.UpdateGeneralSettings },
             { name: "Inventory Settings", translationKey: "pages.inventorySettings", path: "/configuration/inventory-settings" },
             { name: "Invoice Settings", translationKey: "pages.invoiceSettings", path: "/configuration/invoice-settings" }
           ]
@@ -64,8 +67,19 @@ export class SidebarService {
           name: "Master Data", translationKey: "pages.masterData",
           icon: `<svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M3 5V19A9 3 0 0 0 21 19V5"></path><path d="M3 12A9 3 0 0 0 21 12"></path></svg>`,
           subItems: [
-            { name: "Business Partners", translationKey: "pages.businessPartners", path: "/master-data/business-partners" },
-            { name: "Invoice Cost Elements", translationKey: "pages.invoiceCostElements", path: "/inventory/invoice-cost-elements" }
+            { name: "Business Partners", translationKey: "pages.businessPartners", path: "/master-data/business-partners", permissionKey: Permissions.GetBusinessPartners },
+            { name: "Invoice Cost Elements", translationKey: "pages.invoiceCostElements", path: "/inventory/invoice-cost-elements", permissionKey: Permissions.GetCostElements }
+          ]
+        },
+        {
+          name: "Geographic Hierarchy", translationKey: "pages.geographicHierarchy",
+          icon: `<svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>`,
+          subItems: [
+            { name: "Country Groups", translationKey: "pages.countryGroups", path: "/master-data/country-groups", permissionKey: Permissions.GetCountryGroups },
+            { name: "Countries", translationKey: "pages.countries", path: "/master-data/countries", permissionKey: Permissions.GetCountries },
+            { name: "Governorates", translationKey: "pages.governorates", path: "/master-data/governorates" },
+            { name: "Cities", translationKey: "pages.cities", path: "/master-data/cities" },
+            { name: "Districts", translationKey: "pages.districts", path: "/master-data/districts" }
           ]
         }
       ],
@@ -76,19 +90,21 @@ export class SidebarService {
       icon: `<svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M4 6V19C4 20.1046 4.89543 21 6 21H18C19.1046 21 20 20.1046 20 19V6H4ZM2 6C2 4.89543 2.89543 4 4 4H20C21.1046 4 22 4.89543 22 6V19C22 21.2091 20.2091 23 18 23H6C3.79086 23 2 21.2091 2 19V6ZM7 9C7 8.44772 7.44772 8 8 8H16C16.5523 8 17 8.44772 17 9C17 9.55228 16.5523 10 16 10H8C7.44772 10 7 9.55228 7 9ZM7 13C7 12.4477 7.44772 12 8 12H12C12.5523 12 13 12.4477 13 13C13 13.5523 12.5523 14 12 14H8C7.44772 14 7 13.5523 7 13Z" fill="currentColor"></path></svg>`,
       subItems: [
         {
-          name: "Definitions", 
+          name: "Definitions",
           translationKey: "pages.definitions",
           subItems: [
-            { name: "Item Properties", translationKey: "pages.itemProperties", path: "/inventory/item-properties" },
-            { name: "Unit of Measures", translationKey: "pages.UnitOfMeasure.Title", path: "/inventory/unit-of-measure" },
-            { name: "Item Groups", translationKey: "pages.itemGroups", path: "/inventory/item-groups" },
-            { name: "Warehouses", translationKey: "warehouses.title", path: "/inventory/warehouses" },
-            { name: "Locations", translationKey: "locations.title", path: "/inventory/locations" },
-            { name: "Items", translationKey: "pages.items", path: "/inventory/items" }
+            { name: "Item Properties", translationKey: "pages.itemProperties", path: "/inventory/item-properties", permissionKey: Permissions.GetItemProperty },
+            { name: "Unit of Measures", translationKey: "pages.UnitOfMeasure.Title", path: "/inventory/unit-of-measure", permissionKey: Permissions.GetUnitOfMeasures },
+            { name: "Item Groups", translationKey: "pages.itemGroups", path: "/inventory/item-groups", permissionKey: Permissions.GetItemGroups },
+            { name: "Warehouses", translationKey: "warehouses.title", path: "/inventory/warehouses", permissionKey: Permissions.GetWarehouses },
+            { name: "Resources", translationKey: "resources.title", path: "/inventory/resources", permissionKey: Permissions.GetResources },
+            { name: "Locations", translationKey: "locations.title", path: "/inventory/locations", permissionKey: Permissions.GetLocations },
+            { name: "Items", translationKey: "pages.items", path: "/inventory/items", permissionKey: Permissions.GetItems },
+            { name: "Item BOMs", translationKey: "pages.itemBoms", path: "/inventory/item-boms", permissionKey: Permissions.GetItemBom }
           ]
         },
         {
-          name: "Transactions", 
+          name: "Transactions",
           translationKey: "pages.transactions",
           subItems: [
             { name: "Stock Transfers", translationKey: "pages.stockTransfers", path: "/inventory/stock-transfers" },
@@ -98,7 +114,7 @@ export class SidebarService {
           ]
         },
         {
-          name: "Reports", 
+          name: "Reports",
           translationKey: "pages.reports",
           subItems: [
             { name: "Stock Transactions", translationKey: "pages.stockTransactions", path: "/inventory/stock-transactions" }
@@ -113,7 +129,7 @@ export class SidebarService {
       subItems: [
         { name: "Sales Quotations", translationKey: "salesQuotations.title", path: "/sales/sales-quotations" },
         { name: "Sales Orders", translationKey: "salesOrders.title", path: "/sales/sales-orders" },
-        { name: "Sales Invoices", translationKey: "salesInvoices.title", path: "/invoices/sales" },
+        { name: "Sales Invoices", translationKey: "salesInvoices.title", path: "/invoices/sales", permissionKey: Permissions.GetSalesInvoices },
         { name: "Sales Returns", translationKey: "salesReturns.title", path: "/sales/returns" }
       ],
     },
@@ -122,8 +138,8 @@ export class SidebarService {
       translationKey: "pages.purchases",
       icon: `<svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M5.5 2C5.08579 2 4.75 2.33579 4.75 2.75C4.75 3.16421 5.08579 3.5 5.5 3.5H6.25L7.75 14.75H19.25C19.6642 14.75 20 14.4142 20 14C20 13.5858 19.6642 13.25 19.25 13.25H8.25L7 4H5.5C5.08579 4 4.75 4.33579 4.75 4.75C4.75 5.16421 5.08579 5.5 5.5 5.5H6.75L8.25 16.75C8.75 20.5 11.75 23.5 15.5 23.5C19.25 23.5 22.25 20.5 22.75 16.75H20.75C20.25 19.5 17.75 21.5 15.5 21.5C13.25 21.5 11 19.5 10.75 16.75H8.25L9.75 22.25C10 23 10.75 23.5 11.5 23.5H19.5C20.25 23.5 21 23 21.25 22.25L22.75 16.75C23.25 12.75 20.25 9.5 16.5 9.5H13.75L12.25 1.75C12 1 11.25 0.5 10.5 0.5H2.5C1.75 0.5 1 1 0.75 1.75L2.5 16.75C3 20.5 6 23.5 9.75 23.5C13.5 23.5 16.5 20.5 17 16.75H15C14.5 19.5 12 21.5 9.75 21.5C7.5 21.5 5.25 19.5 5 16.75L3.5 2.75C3.5 2.75 3.5 2.75 3.5 2.75Z" fill="currentColor"></path></svg>`,
       subItems: [
-        { name: "Purchase Orders", translationKey: "purchaseOrders.title", path: "/purchases/purchase-orders" },
-        { name: "Purchase Invoices", translationKey: "purchaseInvoices.title", path: "/purchases/invoices" },
+        { name: "Purchase Orders", translationKey: "purchaseOrders.title", path: "/purchases/purchase-orders", permissionKey: Permissions.GetPurchaseOrders },
+        { name: "Purchase Invoices", translationKey: "purchaseInvoices.title", path: "/purchases/invoices", permissionKey: Permissions.GetPurchaseInvoices },
         { name: "Purchase Returns", translationKey: "purchaseReturns.title", path: "/purchases/returns" }
       ],
     },
@@ -135,7 +151,8 @@ export class SidebarService {
         { name: "Business Partner Statement", translationKey: "pages.businessPartnerStatement", path: "/reports/business-partner-statement" },
         { name: "Sales Report", translationKey: "pages.salesReport", path: "/reports/sales" },
         { name: "Purchases Report", translationKey: "pages.purchasesReport", path: "/reports/purchases" },
-        { name: "Warehouse Items Stock", translationKey: "reports.warehouseStock.title", path: "/reports/warehouse-items-stock" }
+        { name: "Warehouse Items Stock", translationKey: "reports.warehouseStock.title", path: "/reports/warehouse-items-stock" },
+        { name: "Invoice Profitability", translationKey: "reports.profitability.title", path: "/reports/profitability" }
       ],
     }
   ];

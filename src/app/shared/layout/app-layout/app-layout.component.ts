@@ -5,6 +5,7 @@ import { AppSidebarComponent } from '../app-sidebar/app-sidebar.component';
 import { BackdropComponent } from '../backdrop/backdrop.component';
 import { RouterModule } from '@angular/router';
 import { AppHeaderComponent } from '../app-header/app-header.component';
+import { AppFooterComponent } from '../app-footer/app-footer.component';
 
 @Component({
   selector: 'app-layout',
@@ -13,7 +14,8 @@ import { AppHeaderComponent } from '../app-header/app-header.component';
     RouterModule,
     AppHeaderComponent,
     AppSidebarComponent,
-    BackdropComponent
+    BackdropComponent,
+    AppFooterComponent
   ],
   templateUrl: './app-layout.component.html',
 })
@@ -35,7 +37,7 @@ export class AppLayoutComponent {
       'transition-all',
       'duration-300',
       'ease-in-out',
-      (this.isExpanded$ || this.isHovered$) ? 'xl:ml-[290px]' : 'xl:ml-[90px]',
+      (this.isExpanded$ || this.isHovered$) ? 'xl:ml-72.5' : 'xl:ml-22.5',
       this.isMobileOpen$ ? 'ml-0' : ''
     ];
   }

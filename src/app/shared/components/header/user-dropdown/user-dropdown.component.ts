@@ -17,9 +17,25 @@ export class UserDropdownComponent implements OnInit {
   private router = inject(Router);
   isOpen = false;
   userData: AuthResponse | null = null;
+  imageError = false;
+  userImageUrl = '';
 
   ngOnInit() {
     this.userData = this.authService.getAuthResponse();
+    if (this.userData) {
+      if (this.userData.photoPath) {
+        const baseUrl = this.userData.backendUrl || '';
+        this.userImageUrl = `${baseUrl}${this.userData.photoPath}`;
+      } else {
+        import('../../../../../environments/environment').then(m => {
+          this.userImageUrl = `${m.environment.apiUrl}/uploads/users/${this.userData?.id}.png`;
+        });
+      }
+    }
+  }
+
+  onImageError() {
+    this.imageError = true;
   }
 
   toggleDropdown() {

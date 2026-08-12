@@ -43,7 +43,11 @@ export class SetupCompanyComponent implements OnInit {
     const defaultExpiry = nextYear.toISOString().split('T')[0];
 
     this.form = this.fb.group({
-      companyCode: ['COMP-001', [Validators.required, Validators.maxLength(50)]],
+      companyCode: ['', [
+        Validators.required, 
+        Validators.maxLength(7), 
+        Validators.pattern(/^\S+$/)
+      ]],
       companyAName: ['', [Validators.required, Validators.maxLength(250)]],
       companyEName: ['', [Validators.maxLength(250)]],
       supportExpiryDate: [defaultExpiry, [Validators.required]],
@@ -165,6 +169,7 @@ export class SetupCompanyComponent implements OnInit {
     this.successMsg = '';
 
     const formVal = this.form.value;
+
     const request: SetupCompanyAdminRequest = {
       adminEmail: this.adminEmail || undefined,
       adminPassword: this.adminPassword || undefined,

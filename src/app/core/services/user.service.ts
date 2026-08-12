@@ -47,8 +47,8 @@ export class UserService {
       if (value !== null && value !== undefined) {
         if (key === 'photo' && value instanceof File) {
           formData.append(key, value);
-        } else if (key === 'roles' && Array.isArray(value)) {
-          value.forEach(role => formData.append('roles', role));
+        } else if (Array.isArray(value)) {
+          value.forEach(item => formData.append(key, String(item)));
         } else if (key === 'userEmploymentInfo' && typeof value === 'object') {
           // Serialize nested object properties for ASP.NET Core model binding
           Object.keys(value).forEach(subKey => {

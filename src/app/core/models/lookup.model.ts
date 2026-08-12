@@ -75,6 +75,14 @@ export interface ItemLookupResponse {
   inventoryUomId?: number;
   inventoryUomName?: string;
   inventoryUomConvFactor?: number;
+  itemGroupId?: number;
+  itemGroupName?: string;
+  dfltWarehouseId?: number;
+  warehouseName?: string;
+  dfltWeight?: number;
+  isPurchased?: boolean;
+  isSold?: boolean;
+  isInventoryItem?: boolean;
 }
 
 export interface NextCodeResponse {

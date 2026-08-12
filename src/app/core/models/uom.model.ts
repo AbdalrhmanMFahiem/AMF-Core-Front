@@ -67,19 +67,19 @@ export const UOM_TYPE_CONFIG_MAP: Record<UomType, UomTypeMeta> = {
     svgPath: 'M4 4h16v16H4z',
     badgeClasses: 'bg-purple-50 text-purple-700 border-purple-200 dark:bg-purple-500/10 dark:text-purple-400 dark:border-purple-500/20'
   },
-  [UomType.Time]: {
-    type: UomType.Time,
-    aName: 'وقت',
-    eName: 'Time',
-    translationKey: 'uom.types.Time',
-    icon: 'clock',
-    svgPath: 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z',
-    badgeClasses: 'bg-orange-50 text-orange-700 border-orange-200 dark:bg-orange-500/10 dark:text-orange-400 dark:border-orange-500/20'
-  },
   [UomType.Timing]: {
     type: UomType.Timing,
-    aName: 'توقيت',
-    eName: 'Timing',
+    aName: 'وقت / توقيت',
+    eName: 'Time / Timing',
+    translationKey: 'uom.types.Timing',
+    icon: 'clock',
+    svgPath: 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z',
+    badgeClasses: 'bg-rose-50 text-rose-700 border-rose-200 dark:bg-rose-500/10 dark:text-rose-400 dark:border-rose-500/20'
+  },
+  [UomType.Time]: {
+    type: UomType.Timing,
+    aName: 'وقت / توقيت',
+    eName: 'Time / Timing',
     translationKey: 'uom.types.Timing',
     icon: 'clock',
     svgPath: 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z',
@@ -96,11 +96,20 @@ export const UOM_TYPE_CONFIG_MAP: Record<UomType, UomTypeMeta> = {
   }
 };
 
-export const UOM_TYPE_CONFIG_LIST: UomTypeMeta[] = Object.values(UOM_TYPE_CONFIG_MAP);
+export const UOM_TYPE_CONFIG_LIST: UomTypeMeta[] = [
+  UOM_TYPE_CONFIG_MAP[UomType.Timing],
+  UOM_TYPE_CONFIG_MAP[UomType.Length],
+  UOM_TYPE_CONFIG_MAP[UomType.Area],
+  UOM_TYPE_CONFIG_MAP[UomType.Volume],
+  UOM_TYPE_CONFIG_MAP[UomType.Weight],
+  UOM_TYPE_CONFIG_MAP[UomType.Quantity],
+  UOM_TYPE_CONFIG_MAP[UomType.Other]
+];
 
 export function getUomTypeConfig(type?: UomType | string | null): UomTypeMeta {
   if (!type) return UOM_TYPE_CONFIG_MAP[UomType.Other];
-  const found = (UOM_TYPE_CONFIG_MAP as any)[type];
+  const normalizedType = type === 'Time' ? UomType.Timing : type;
+  const found = (UOM_TYPE_CONFIG_MAP as any)[normalizedType];
   return found || UOM_TYPE_CONFIG_MAP[UomType.Other];
 }
 

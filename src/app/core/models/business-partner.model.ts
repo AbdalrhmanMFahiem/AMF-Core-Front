@@ -10,6 +10,14 @@ export interface BusinessPartnerResponse {
   phone?: string;
   email?: string;
   address?: string;
+  countryId?: number | null;
+  countryName?: string | null;
+  governorateId?: number | null;
+  governorateName?: string | null;
+  cityId?: number | null;
+  cityName?: string | null;
+  districtId?: number | null;
+  districtName?: string | null;
   name?: string;
   bpType?: string;
 }
@@ -36,6 +44,12 @@ export interface BusinessPartnerRequest {
   phone?: string;
   email?: string;
   address?: string;
+  countryId?: number | null;
+  governorateId?: number | null;
+  cityId?: number | null;
+  districtId?: number | null;
+  openingBalance?: number | null;
+  openingBalanceDate?: Date | string | null;
 }
 
 export interface QuickCustomerRequest {
@@ -88,7 +102,8 @@ export enum LedgerEntryType {
   Invoice = 1,
   Return = 2,
   Payment = 3,
-  Adjustment = 4
+  Adjustment = 4,
+  OpeningBalance = 5
 }
 
 export interface BalanceSummaryResponse {
@@ -96,5 +111,10 @@ export interface BalanceSummaryResponse {
   totalInvoiced: number;
   totalPaid: number;
   totalOverdue: number;
+}
+
+export interface AddOpeningBalanceRequest {
+  amount: number;
+  date: Date | string;
 }
 

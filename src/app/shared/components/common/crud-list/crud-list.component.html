@@ -221,7 +221,12 @@
                     <span class="text-gray-500 dark:text-gray-400">{{ item[col.field] | date }}</span>
                   </ng-container>
                   <ng-template #plainTextCell>
-                    <span class="text-gray-500 dark:text-gray-400">{{ item[col.field] }}</span>
+                    <ng-container *ngIf="col.type === 'number'; else defaultTextCell">
+                      <span class="text-gray-500 dark:text-gray-400">{{ item[col.field] | number:'1.2-2' }}</span>
+                    </ng-container>
+                    <ng-template #defaultTextCell>
+                      <span class="text-gray-500 dark:text-gray-400">{{ item[col.field] }}</span>
+                    </ng-template>
                   </ng-template>
                 </ng-template>
               </td>

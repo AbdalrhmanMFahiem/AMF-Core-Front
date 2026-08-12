@@ -13,12 +13,12 @@
 
 <div class="space-y-6" *ngIf="!saveSuccess">
   <!-- Status Badge for View Mode -->
-  <div *ngIf="mode === 'view' && viewResponse" class="flex justify-between items-center bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+  <div *ngIf="mode === 'view' && viewResponse" class="flex justify-between items-center bg-white dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm">
     <div class="flex items-center gap-3">
-      <span class="text-sm font-medium text-gray-500">{{ 'common.status' | translate }}:</span>
+      <span class="text-sm font-medium text-gray-500 dark:text-gray-400">{{ 'common.status' | translate }}:</span>
       <app-document-status-badge [status]="viewResponse.status"></app-document-status-badge>
-      <span class="text-sm font-medium text-gray-500 ml-4">{{ 'common.code' | translate }}:</span>
-      <span class="text-sm font-bold text-gray-900">{{ viewResponse.code }}</span>
+      <span class="text-sm font-medium text-gray-500 dark:text-gray-400 ml-4">{{ 'common.code' | translate }}:</span>
+      <span class="text-sm font-bold text-gray-900 dark:text-white">{{ viewResponse.code }}</span>
     </div>
     
     <div class="flex items-center gap-2">
@@ -47,7 +47,7 @@
         
         <!-- Warehouse -->
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
             {{ 'stockVouchers.fields.warehouse' | translate }}
           </label>
           <app-searchable-select
@@ -70,14 +70,14 @@
 
         <!-- Reason -->
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
             {{ 'stockVouchers.fields.reason' | translate }}
           </label>
           <input type="text"
                  name="reason"
                  [(ngModel)]="model.reason"
                  [disabled]="mode === 'view'"
-                 class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:bg-gray-100 disabled:text-gray-500">
+                 class="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-900 px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:bg-gray-100 dark:disabled:bg-gray-800 disabled:text-gray-500">
         </div>
       </div>
     </app-component-card>
@@ -85,14 +85,17 @@
     <!-- Items Card -->
     <app-component-card [title]="'stockTransfers.items'">
       <div class="mb-4" *ngIf="mode !== 'view'">
-        <button type="button" (click)="openItemModal()" class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700">
-          <i class="fas fa-plus mr-2"></i> {{ 'stockTransfers.addItems' | translate }}
+        <button type="button" (click)="openItemModal()" class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 inline-flex items-center">
+          <svg class="w-4 h-4 mr-2 rtl:mr-0 rtl:ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+          </svg>
+          {{ 'stockTransfers.addItems' | translate }}
         </button>
       </div>
 
       <div class="overflow-x-auto">
-        <table class="min-w-full divide-y divide-gray-200 text-sm text-left rtl:text-right">
-          <thead class="bg-gray-50 text-gray-700">
+        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700 text-sm text-left rtl:text-right">
+          <thead class="bg-gray-50 dark:bg-gray-900 text-gray-700 dark:text-gray-300">
             <tr>
               <th scope="col" class="px-4 py-3">{{ 'common.code' | translate }}</th>
               <th scope="col" class="px-4 py-3">{{ 'common.name' | translate }}</th>
@@ -100,27 +103,29 @@
               <th scope="col" class="px-4 py-3 text-center" *ngIf="mode !== 'view'">{{ 'common.actions' | translate }}</th>
             </tr>
           </thead>
-          <tbody class="divide-y divide-gray-200 bg-white">
+          <tbody class="divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-800">
             <tr *ngFor="let line of model.lines; let i = index">
-              <td class="px-4 py-3 font-medium text-gray-900">{{ line._itemCode }}</td>
-              <td class="px-4 py-3">{{ line._itemName }}</td>
+              <td class="px-4 py-3 font-medium text-gray-900 dark:text-white">{{ line._itemCode }}</td>
+              <td class="px-4 py-3 text-gray-700 dark:text-gray-300">{{ line._itemName }}</td>
               <td class="px-4 py-3">
                 <input type="number" 
                        [(ngModel)]="line.quantity" 
                        name="qty_{{i}}" 
                        min="1" 
-                       class="w-full rounded-md border border-gray-300 px-3 py-1.5 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none"
+                       class="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white px-3 py-1.5 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none"
                        [disabled]="mode === 'view'"
                        required>
               </td>
               <td class="px-4 py-3 text-center" *ngIf="mode !== 'view'">
-                <button type="button" (click)="removeItem(i)" class="text-red-600 hover:text-red-900" title="{{ 'common.delete' | translate }}">
-                  <i class="fas fa-trash"></i>
+                <button type="button" (click)="removeItem(i)" class="text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300 inline-flex items-center justify-center" title="{{ 'common.delete' | translate }}">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                  </svg>
                 </button>
               </td>
             </tr>
             <tr *ngIf="model.lines.length === 0">
-              <td colspan="4" class="px-4 py-8 text-center text-gray-500">
+              <td colspan="4" class="px-4 py-8 text-center text-gray-500 dark:text-gray-400">
                 {{ 'common.noData' | translate }}
               </td>
             </tr>
@@ -130,11 +135,11 @@
     </app-component-card>
 
     <!-- Form Actions -->
-    <div class="flex items-center justify-end gap-3 pt-4 border-t border-gray-200">
+    <div class="flex items-center justify-end gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
       <button 
         type="button" 
         (click)="onCancel()"
-        class="px-5 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
+        class="px-5 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700"
         [disabled]="saving">
         {{ mode === 'view' ? ('common.back' | translate) : ('common.cancel' | translate) }}
       </button>
@@ -142,8 +147,14 @@
         *ngIf="mode !== 'view'"
         type="submit" 
         [disabled]="saving"
-        class="px-5 py-2.5 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50">
-        <span *ngIf="saving"><i class="fas fa-spinner fa-spin mr-2"></i> {{ 'common.saving' | translate }}</span>
+        class="px-5 py-2.5 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50 inline-flex items-center">
+        <span *ngIf="saving" class="inline-flex items-center">
+          <svg class="w-4 h-4 animate-spin mr-2 rtl:mr-0 rtl:ml-2" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          {{ 'common.saving' | translate }}
+        </span>
         <span *ngIf="!saving">{{ 'common.save' | translate }}</span>
       </button>
     </div>
@@ -155,19 +166,22 @@
   [isOpen]="isItemModalOpen"
   (close)="isItemModalOpen = false"
   [warehouseId]="model.warehouseId"
+  [checkWarehouseExistence]="false"
   (selectItem)="onItemSelected($event)">
 </app-item-lookup-modal>
 
 <!-- Leave Confirmation Modal -->
 <div *ngIf="showLeaveConfirmation" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
-  <div class="bg-white rounded-xl shadow-lg max-w-sm w-full p-6 text-center transform transition-all">
-    <div class="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
-      <i class="fas fa-exclamation-triangle text-2xl text-yellow-600"></i>
+  <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg max-w-sm w-full p-6 text-center transform transition-all">
+    <div class="w-16 h-16 bg-yellow-100 dark:bg-yellow-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+      <svg class="w-8 h-8 text-yellow-600 dark:text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+      </svg>
     </div>
-    <h3 class="text-lg font-bold text-gray-900 mb-2">{{ 'common.unsavedChanges' | translate }}</h3>
-    <p class="text-gray-500 mb-6">{{ 'common.unsavedChangesMessage' | translate }}</p>
+    <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">{{ 'common.unsavedChanges' | translate }}</h3>
+    <p class="text-gray-500 dark:text-gray-400 mb-6">{{ 'common.unsavedChangesMessage' | translate }}</p>
     <div class="flex justify-center gap-3">
-      <button (click)="onCancelLeave()" class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors">
+      <button (click)="onCancelLeave()" class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
         {{ 'common.stay' | translate }}
       </button>
       <button (click)="onConfirmLeave()" class="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700 transition-colors">

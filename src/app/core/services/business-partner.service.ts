@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { BusinessPartnerResponse, BusinessPartnerBasicResponse, BusinessPartnerRequest, QuickCustomerRequest, QuickVendorRequest } from '../models/business-partner.model';
 import { PaginatedList, RequestFilters } from '../models/pagination.model';
 import { NextCodeResponse } from '../models/lookup.model';
-import { BusinessPartnerLedgerResponse, LedgerFilters, BalanceSummaryResponse } from '../models/business-partner.model';
+import { BusinessPartnerLedgerResponse, LedgerFilters, BalanceSummaryResponse, AddOpeningBalanceRequest } from '../models/business-partner.model';
 import { environment } from '../../../environments/environment';
 
 @Injectable({
@@ -69,6 +69,10 @@ export class BusinessPartnerService {
     return this.http.put<void>(`${this.apiUrl}/${id}/toggleStatus`, {});
   }
 
+  addOpeningBalance(id: number, data: AddOpeningBalanceRequest): Observable<void> {
+    return this.http.post<void>(`${this.apiUrl}/${id}/opening-balance`, data);
+  }
+
   getBalanceSummary(id: number): Observable<BalanceSummaryResponse> {
     return this.http.get<BalanceSummaryResponse>(`${this.apiUrl}/${id}/balance-summary`);
   }
@@ -89,5 +93,17 @@ export class BusinessPartnerService {
     }
 
     return this.http.get<PaginatedList<BusinessPartnerLedgerResponse>>(`${this.apiUrl}/${id}/ledger`, { params });
+  }
+
+  getSalesReps(id: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/${id}/sales-reps`);
+  }
+
+  assignSalesRep(id: number, data: any): Observable<void> {
+    return this.http.post<void>(`${this.apiUrl}/${id}/sales-reps`, data);
+  }
+
+  removeSalesRep(id: number, repId: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}/sales-reps/${repId}`);
   }
 }

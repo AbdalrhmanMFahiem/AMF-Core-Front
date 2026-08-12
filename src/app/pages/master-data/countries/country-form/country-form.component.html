@@ -1,0 +1,109 @@
+<div class="px-6">
+    <app-page-breadcrumb
+        [pageTitle]="'countries.' + mode + '.title' | translate"
+        [parentPageTitle]="'countries.title' | translate"
+        parentPageUrl="/master-data/countries">
+    </app-page-breadcrumb>
+
+    <app-success-redirect-banner
+        *ngIf="saveSuccess"
+        [message]="'countries.saveSuccess' | translate"
+        [redirectUrl]="'/master-data/countries'">
+    </app-success-redirect-banner>
+
+    <app-error-banner
+        *ngIf="validationErrors.length > 0"
+        [errors]="validationErrors">
+    </app-error-banner>
+
+    <app-component-card [title]="'countries.' + mode + '.title' | translate">
+        <!-- Form start -->
+        <form (ngSubmit)="onSubmit()" #countryForm="ngForm" class="space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Code Field -->
+                <div>
+                    <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                        {{ 'countries.fields.code' | translate }}
+                    </label>
+                    <input type="text" name="code" [(ngModel)]="model.code"
+                        [disabled]="mode === 'view' || mode === 'edit'"
+                        [placeholder]="'countries.fields.codePlaceholder' | translate"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white disabled:opacity-50 disabled:cursor-not-allowed">
+                </div>
+
+                <!-- Arabic Name Field -->
+                <div>
+                    <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                        {{ 'countries.fields.aName' | translate }} <span class="text-red-500">*</span>
+                    </label>
+                    <input type="text" name="aName" [(ngModel)]="model.aName" required
+                        [disabled]="mode === 'view'"
+                        [placeholder]="'countries.fields.aNamePlaceholder' | translate"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white disabled:opacity-50 disabled:cursor-not-allowed">
+                </div>
+
+                <!-- English Name Field -->
+                <div>
+                    <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                        {{ 'countries.fields.eName' | translate }}
+                    </label>
+                    <input type="text" name="eName" [(ngModel)]="model.eName"
+                        [disabled]="mode === 'view'"
+                        [placeholder]="'countries.fields.eNamePlaceholder' | translate"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white disabled:opacity-50 disabled:cursor-not-allowed">
+                </div>
+
+                <!-- ISO Code Field -->
+                <div>
+                    <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                        {{ 'countries.fields.isoCode' | translate }}
+                    </label>
+                    <input type="text" name="isoCode" [(ngModel)]="model.isoCode" maxlength="3"
+                        [disabled]="mode === 'view'"
+                        [placeholder]="'countries.fields.isoCodePlaceholder' | translate"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white disabled:opacity-50 disabled:cursor-not-allowed">
+                </div>
+                
+                <!-- Country Group Field -->
+                <div>
+                    <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                        {{ 'countries.fields.countryGroup' | translate }}
+                    </label>
+                    <select name="countryGroupId" [(ngModel)]="model.countryGroupId"
+                        [disabled]="mode === 'view'"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white disabled:opacity-50 disabled:cursor-not-allowed">
+                        <option [ngValue]="null">{{ 'countries.fields.countryGroupPlaceholder' | translate }}</option>
+                        <option *ngFor="let group of countryGroups" [ngValue]="group.id">
+                            {{ group.name }}
+                        </option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Notes Field -->
+            <div>
+                <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                    {{ 'countries.fields.notes' | translate }}
+                </label>
+                <textarea name="notes" [(ngModel)]="model.notes" rows="4"
+                    [disabled]="mode === 'view'"
+                    [placeholder]="'countries.fields.notesPlaceholder' | translate"
+                    class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white disabled:opacity-50 disabled:cursor-not-allowed"></textarea>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex items-center gap-3">
+                <button *ngIf="mode !== 'view'" type="submit" [disabled]="!countryForm.form.valid || saving"
+                    class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800 disabled:opacity-50 disabled:cursor-not-allowed">
+                    <span *ngIf="saving">{{ 'common.saving' | translate }}</span>
+                    <span *ngIf="!saving">{{ 'common.save' | translate }}</span>
+                </button>
+
+                <button type="button" (click)="onCancel()"
+                    class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">
+                    {{ (mode === 'view' ? 'common.back' : 'common.cancel') | translate }}
+                </button>
+            </div>
+        </form>
+    </app-component-card>
+</div>

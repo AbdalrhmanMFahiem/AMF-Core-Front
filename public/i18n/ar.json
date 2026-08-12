@@ -1,10 +1,21 @@
 {
+  "footer": {
+    "company": "الشركة",
+    "branch": "الفرع",
+    "connectedDb": "قاعدة البيانات:",
+    "allRightsReserved": "جميع الحقوق محفوظة."
+  },
   "common": {
     "address": "العنوان",
     "print": "طباعة",
+    "item": "الصنف",
+    "resource": "المورد",
+    "componentItem": "صنف المكون",
+    "component": "المكون",
     "email": "البريد الإلكتروني",
     "phone": "رقم الهاتف",
     "quickAdd": "إضافة سريعة",
+    "selectBranch": "إختر الفرع",
     "uomRequired": "مطلوبة",
     "enterNotesPlaceholder": "اكتب الملاحظات أو البيان الخاص بهذا السطر هنا...",
     "quickSuggestions": "اقتراحات سريعة",
@@ -53,6 +64,7 @@
     "warehouses": "المخازن",
     "deactivate": "إلغاء التفعيل",
     "save": "حفظ",
+    "saveAndStay": "حفظ وبقاء",
     "cancel": "إلغاء",
     "search": "بحث",
     "status": "الحالة",
@@ -171,6 +183,12 @@
       "mustSelectFromWarehouse": "يجب اختيار المخزن المحول منه أولاً."
     }
   },
+  "unauthorizedAccess": {
+    "title": "وصول غير مصرح به",
+    "message": "ليس لديك الصلاحيات الكافية لعرض هذه الصفحة.",
+    "attemptedUrlMessage": "لقد حاولت الوصول إلى: ",
+    "redirect": "جاري التوجيه إلى الصفحة الرئيسية خلال {{seconds}} ثوانٍ..."
+  },
   "pages": {
     "definitions": "التعريفات",
     "transactions": "العمليات",
@@ -178,6 +196,7 @@
     "configuration": "إعدادات النظام",
     "inventorySettings": "إعدادات المخازن",
     "invoiceSettings": "إعدادات الفواتير",
+    "generalSettings": "الإعدادات العامة",
     "homepage": "الصفحة الرئيسية",
     "overview": "لوحة القيادة",
     "logout": "تسجيل الخروج",
@@ -206,11 +225,19 @@
     "statusActive": "الحالة: نشط",
     "noDbs": "لا توجد قواعد بيانات مسجلة لهذا الملف التعريفي.",
     "masterData": "البيانات الأساسية",
-    "businessPartners": "شركاء العمل",
+    "geographicHierarchy": "الهيكل الجغرافي",
+    "businessPartners": "شركاء الأعمال",
+    "countryGroups": "مجموعات الدول",
+    "countries": "الدول",
+    "governorates": "المحافظات",
+    "cities": "المدن",
+    "districts": "الأحياء",
     "inventory": "المخازن",
     "itemGroups": "مجموعات الأصناف",
     "itemProperties": "خصائص الأصناف",
     "items": "الأصناف",
+    "itemBoms": "مكونات الأصناف",
+    "resources": "الموارد",
     "administration": "الإدارة",
     "departments": "الأقسام",
     "sales": "المبيعات",
@@ -262,7 +289,157 @@
       "searchPlaceholder": "البحث بالكود أو الاسم",
       "Add": "إضافة وحدة قياس",
       "add": "إضافة وحدة قياس"
+    },
+    "ItemProperties": {
+      "Title": "خصائص الأصناف",
+      "title": "خصائص الأصناف",
+      "AddTitle": "إضافة خاصية",
+      "addTitle": "إضافة خاصية",
+      "EditTitle": "تعديل خاصية",
+      "editTitle": "تعديل خاصية",
+      "ViewTitle": "عرض خاصية",
+      "viewTitle": "عرض خاصية",
+      "SearchPlaceholder": "البحث في خصائص الأصناف...",
+      "searchPlaceholder": "البحث في خصائص الأصناف...",
+      "Add": "إضافة خاصية",
+      "add": "إضافة خاصية"
+    },
+    "ItemGroups": {
+      "Title": "مجموعات الأصناف",
+      "title": "مجموعات الأصناف",
+      "AddTitle": "إضافة مجموعة",
+      "addTitle": "إضافة مجموعة",
+      "EditTitle": "تعديل مجموعة",
+      "editTitle": "تعديل مجموعة",
+      "ViewTitle": "عرض مجموعة",
+      "viewTitle": "عرض مجموعة",
+      "SearchPlaceholder": "البحث في مجموعات الأصناف...",
+      "searchPlaceholder": "البحث في مجموعات الأصناف...",
+      "Add": "إضافة مجموعة",
+      "add": "إضافة مجموعة"
+    },
+    "CountryGroups": {
+      "Title": "مجموعات الدول",
+      "title": "مجموعات الدول",
+      "AddTitle": "إضافة مجموعة دول",
+      "addTitle": "إضافة مجموعة دول",
+      "EditTitle": "تعديل مجموعة دول",
+      "editTitle": "تعديل مجموعة دول",
+      "ViewTitle": "عرض مجموعة دول",
+      "viewTitle": "عرض مجموعة دول",
+      "SearchPlaceholder": "البحث في مجموعات الدول...",
+      "searchPlaceholder": "البحث في مجموعات الدول...",
+      "Add": "إضافة مجموعة دول",
+      "add": "إضافة مجموعة دول"
     }
+  },
+  "countryGroups": {
+    "title": "مجموعات الدول",
+    "addNew": "إضافة مجموعة دول جديدة",
+    "edit": "تعديل مجموعة دول",
+    "addTitle": "إضافة مجموعة دول",
+    "fields": {
+      "code": "الكود",
+      "name": "الاسم",
+      "aName": "الاسم (عربي)",
+      "eName": "الاسم (إنجليزي)",
+      "notes": "ملاحظات",
+      "status": "الحالة"
+    },
+    "list": {
+      "title": "قائمة مجموعات الدول"
+    }
+  },
+  "countries": {
+    "title": "الدول",
+    "addNew": "إضافة دولة جديدة",
+    "saveSuccess": "تم حفظ الدولة بنجاح",
+    "add": {
+      "title": "إضافة دولة"
+    },
+    "edit": {
+      "title": "تعديل دولة"
+    },
+    "view": {
+      "title": "عرض دولة"
+    },
+    "fields": {
+      "code": "الكود",
+      "codePlaceholder": "أدخل كود الدولة",
+      "name": "الاسم",
+      "aName": "الاسم (عربي)",
+      "aNamePlaceholder": "أدخل الاسم بالعربية",
+      "eName": "الاسم (إنجليزي)",
+      "eNamePlaceholder": "أدخل الاسم بالإنجليزية",
+      "countryGroup": "مجموعة الدولة",
+      "countryGroupPlaceholder": "اختر مجموعة الدولة",
+      "isoCode": "رمز الأيزو",
+      "isoCodePlaceholder": "مثال: EG",
+      "notes": "ملاحظات",
+      "notesPlaceholder": "أدخل الملاحظات",
+      "status": "الحالة"
+    },
+    "list": {
+      "title": "قائمة الدول"
+    },
+    "searchPlaceholder": "البحث عن دول..."
+  },
+  "governorates": {
+    "title": "المحافظات",
+    "addNew": "إضافة محافظة جديدة",
+    "saveSuccess": "تم حفظ المحافظة بنجاح",
+    "add": { "title": "إضافة محافظة" },
+    "edit": { "title": "تعديل محافظة" },
+    "view": { "title": "عرض محافظة" },
+    "fields": {
+      "code": "الكود", "codePlaceholder": "أدخل الكود",
+      "name": "الاسم",
+      "aName": "الاسم (عربي)", "aNamePlaceholder": "أدخل الاسم بالعربية",
+      "eName": "الاسم (إنجليزي)", "eNamePlaceholder": "أدخل الاسم بالإنجليزية",
+      "country": "الدولة", "countryPlaceholder": "اختر الدولة",
+      "notes": "ملاحظات", "notesPlaceholder": "أدخل الملاحظات",
+      "status": "الحالة"
+    },
+    "list": { "title": "قائمة المحافظات" },
+    "searchPlaceholder": "البحث عن محافظات..."
+  },
+  "cities": {
+    "title": "المدن",
+    "addNew": "إضافة مدينة جديدة",
+    "saveSuccess": "تم حفظ المدينة بنجاح",
+    "add": { "title": "إضافة مدينة" },
+    "edit": { "title": "تعديل مدينة" },
+    "view": { "title": "عرض مدينة" },
+    "fields": {
+      "code": "الكود", "codePlaceholder": "أدخل الكود",
+      "name": "الاسم",
+      "aName": "الاسم (عربي)", "aNamePlaceholder": "أدخل الاسم بالعربية",
+      "eName": "الاسم (إنجليزي)", "eNamePlaceholder": "أدخل الاسم بالإنجليزية",
+      "governorate": "المحافظة", "governoratePlaceholder": "اختر المحافظة",
+      "notes": "ملاحظات", "notesPlaceholder": "أدخل الملاحظات",
+      "status": "الحالة"
+    },
+    "list": { "title": "قائمة المدن" },
+    "searchPlaceholder": "البحث عن مدن..."
+  },
+  "districts": {
+    "title": "الأحياء",
+    "addNew": "إضافة حي جديد",
+    "saveSuccess": "تم حفظ الحي بنجاح",
+    "add": { "title": "إضافة حي" },
+    "edit": { "title": "تعديل حي" },
+    "view": { "title": "عرض حي" },
+    "fields": {
+      "code": "الكود", "codePlaceholder": "أدخل الكود",
+      "name": "الاسم",
+      "aName": "الاسم (عربي)", "aNamePlaceholder": "أدخل الاسم بالعربية",
+      "eName": "الاسم (إنجليزي)", "eNamePlaceholder": "أدخل الاسم بالإنجليزية",
+      "city": "المدينة", "cityPlaceholder": "اختر المدينة",
+      "notes": "ملاحظات", "notesPlaceholder": "أدخل الملاحظات",
+      "status": "الحالة"
+    },
+    "list": { "title": "قائمة الأحياء" },
+    "searchPlaceholder": "البحث عن أحياء..."
   },
   "warehouses": {
     "title": "المخازن",
@@ -292,6 +469,50 @@
       "maxPalletsCount": "سعة الطبالي"
     }
   },
+  "resources": {
+    "title": "الموارد",
+    "subTitle": "إدارة الموارد وتكاليفها وحساباتها التشغيلية.",
+    "addNew": "إضافة مورد جديد",
+    "addTitle": "إضافة مورد",
+    "guide": {
+      "title": "دليل استخدام الموارد في التكاليف والتصنيع",
+      "whatIsResource": "تعريف المورد التشغيلي",
+      "whatIsResourceDesc": "الموارد تُمثّل عناصر الإنتاج المباشرة (مثل العمالة، الآلات والماكينات، ومراحل العمليات).",
+      "costCalculation": "معدل التكلفة والقياس",
+      "costCalculationDesc": "يُحدّد سعر تكلفة الوحدة للمورد (مثال: الدقيقة التشغيلية للماكينة = 2.5 ج.م، أو القطعة للعمالة = 10 ج.م).",
+      "bomIntegration": "الربط بمكونات المنتجات (BOM)",
+      "bomIntegrationDesc": "يُدرج المورد في قوالب تشغيل ومكونات المنتجات لحساب التكلفة المباشرة لدقيقة أو قطعة التصنيع بدقة."
+    },
+    "sections": {
+      "basicInfo": "البيانات الأساسية للمورد",
+      "costInfo": "معايير وحساب التكلفة والقياس",
+      "notesInfo": "ملاحظات إضافية"
+    },
+    "form": {
+      "create": "إضافة مورد",
+      "edit": "تعديل مورد",
+      "view": "عرض مورد"
+    },
+    "addSuccess": "تمت إضافة المورد بنجاح.",
+    "updateSuccess": "تم تحديث المورد بنجاح.",
+    "list": {
+      "title": "قائمة الموارد"
+    },
+    "fields": {
+      "resourceType": "نوع المورد",
+      "costRate": "معدل التكلفة",
+      "rateUomType": "نوع وحدة القياس للمعدل",
+      "unitOfMeasure": "وحدة القياس",
+      "unitOfMeasurePlaceholder": "اختر وحدة القياس"
+    },
+    "types": {
+      "Labor": "عمالة",
+      "Machine": "آلة",
+      "Operation": "عملية",
+      "Other": "أخرى"
+    }
+  },
+
   "locations": {
     "title": "المواقع التخزينية",
     "subTitle": "إدارة المواقع ومساحات التخزين الداخلية.",
@@ -351,6 +572,41 @@
     "verifying": "جاري التحقق من صحة السيرفر..."
   },
   "reports": {
+    "profitability": {
+      "title": "تقرير ربحية الفواتير والأصناف",
+      "netRevenue": "صافي الإيراد",
+      "cogs": "تكلفة البضاعة المباعة",
+      "grossProfit": "مجمل الربح",
+      "margin": "نسبة الهامش %",
+      "totalNetRevenue": "إجمالي الإيرادات",
+      "totalCOGS": "إجمالي التكلفة",
+      "totalGrossProfit": "إجمالي مجمل الربح",
+      "invoiceDetails": "تفاصيل الأرباح والتكلفة للفاتورة",
+      "item": "الصنف",
+      "qty": "الكمية",
+      "unitPrice": "سعر الوحدة",
+      "grossAmount": "الإجمالي قبل الخصم",
+      "headerDiscount": "خصم الهيدر الموزع",
+      "headerCost": "مصاريف الفاتورة الموزعة",
+      "unitCost": "تكلفة الوحدة (SnapShot)",
+      "costSource": "مصدر التكلفة",
+      "totalRevenue": "إجمالي الإيراد",
+      "lineDiscount": "خصم السطر",
+      "invoiceType": "نوع الفاتورة",
+      "itemType": "نوع الصنف",
+      "manufactured": "صنف مُصنَّع",
+      "trading": "صنف تجاري",
+      "allTypes": "كل الأنواع",
+      "allInvoices": "كل الفواتير والمرتجعات",
+      "salesInvoice": "فاتورة مبيعات",
+      "salesReturn": "مردود مبيعات",
+      "costSources": {
+        "ItemCost": "متوسط التكلفة (Moving Average)",
+        "LastPurchasePrice": "آخر سعر شراء (Last Purchase Price)",
+        "BomCost": "تكلفة التصنيع (BOM Cost Snapshot)",
+        "InitialPrice": "سعر أولي افتراضي (Initial Price)"
+      }
+    },
     "businessPartnerStatement": {
       "title": "كشف حساب الشركاء",
       "partnersCount": "عدد الشركاء:",
@@ -470,7 +726,15 @@
       "eName": "الاسم (إنجليزي)",
       "phone": "رقم الهاتف",
       "email": "البريد الإلكتروني",
-      "address": "العنوان"
+      "address": "العنوان",
+      "openingBalance": "الرصيد الافتتاحي",
+      "openingBalanceDate": "تاريخ الرصيد الافتتاحي",
+      "district": "الحي",
+      "salesReps": "مندوبي المبيعات",
+      "assignSalesRep": "تعيين مندوب مبيعات",
+      "repName": "اسم المندوب",
+      "assignmentDate": "تاريخ التعيين",
+      "commission": "نسبة العمولة %"
     },
     "types": {
       "customer": "عميل",
@@ -539,6 +803,14 @@
     "saving": "جاري حفظ التهيئة...",
     "success": "تم حفظ تهيئة الشركة بنجاح!"
   },
+  "generalSettings": {
+    "title": "الإعدادات العامة",
+    "editTitle": "تعديل الإعدادات العامة",
+    "editSubtitle": "تعديل إعدادات النظام العالمية",
+    "defaultActivationOnCreate": "تفعيل السجلات الجديدة افتراضياً",
+    "enableLocalization": "تفعيل التعريب واللغتين",
+    "autoFillEnglishName": "تعبئة الاسم الإنجليزي تلقائياً"
+  },
   "crud": {
     "back": "رجوع",
     "saveDraft": "حفظ كمسودة",
@@ -600,6 +872,14 @@
   },
   "items": {
     "title": "الأصناف",
+    "item": "الصنف",
+    "treeType": "نوع الشجرة",
+    "priceList": "قائمة الأسعار",
+    "minSpeed": "السرعة الدنيا",
+    "maxSpeed": "السرعة القصوى",
+    "dfltSpeed": "السرعة الافتراضية",
+    "dfltWeight": "الوزن الافتراضي",
+    "speedAndWeight": "مواصفات السرعة والوزن",
     "addNew": "إضافة سجل جديد",
     "edit": "تعديل سجل",
     "uomTypeSelectFirst": "اختر نوع وحدة القياس أولاً للبدء",
@@ -607,6 +887,15 @@
     "uomTypeRequired": "يجب اختيار نوع وحدة القياس قبل الحفظ",
     "confirmChangeTypeTitle": "تأكيد تغيير نوع وحدة القياس",
     "confirmChangeTypeText": "تغيير نوع الوحدة سيؤدي إلى تصفية ومسح أسطر وحدات القياس الحالية ورسترتها. هل أنت متأكد من الاستمرار؟",
+    "manageComponents": "إدارة المكونات",
+    "manageComponentsDesc": "إدارة مكونات صنف التجميع (BOM)",
+    "noComponentsFound": "لا يوجد مكونات",
+    "onHandQty": "الكمية المتاحة",
+    "lastModified": "آخر تعديل",
+    "scrapPercentage": "نسبة الهالك",
+    "totalRequiredQuantity": "الكمية المطلوبة بالكامل",
+    "issueMethod": "طريقة الصرف",
+    "totalOnHand": "إجمالي المتاح",
     "types": {
       "Weight": "وزن",
       "Quantity": "عدد",
@@ -628,7 +917,9 @@
       "sales": "بيانات البيع",
       "inventory": "بيانات المخزون",
       "additional": "بيانات إضافية",
-      "uoms": "وحدات القياس"
+      "uoms": "وحدات القياس",
+      "warehouseBalances": "أرصدة المخازن",
+      "components": "المكونات"
     },
     "fields": {
       "aName": "الاسم (عربي)",
@@ -669,7 +960,9 @@
       "barcode": "الباركود"
     },
     "errors": {
-      "exactlyOneBaseUnit": "يجب تحديد وحدة قياس أساسية واحدة فقط.",
+      "componentsRequired": "مكون واحد على الأقل مطلوب",
+      "headerItemRequired": "يرجى اختيار الصنف الأب أولاً قبل البدء بإضافة المكونات.",
+      "exactlyOneBaseUnit": "يجب أن تكون هناك وحدة قياس أساسية واحدة بالضبط.",
       "exactlyOneBaseUnitRequired": "يجب تحديد وحدة قياس أساسية واحدة فقط.",
       "invalidConversionFactor": "معامل التحويل للوحدة غير الأساسية يجب أن يكون أكبر من صفر.",
       "unitsOfMeasureRequired": "يجب إضافة وحدة قياس واحدة على الأقل للصنف المخزني.",
@@ -700,7 +993,10 @@
     "unauthorized": "غير مصرح بالوصول، يرجى تسجيل الدخول.",
     "unauthorizedTitle": "غير مصرح",
     "networkError": "تعذر الاتصال بالخادم، يرجى التحقق من اتصالك بالإنترنت.",
-    "networkErrorTitle": "خطأ في الاتصال"
+    "networkErrorTitle": "خطأ في الاتصال",
+    "required": "هذا الحقل مطلوب",
+    "maxLength": "الحد الأقصى 7 أحرف",
+    "noSpaces": "لا يسمح بوجود مسافات"
   },
   "invoices": {
     "amount": "المبلغ",
@@ -772,7 +1068,7 @@
     "discPercent": "نسبة الخصم %",
     "taxPercent": "نسبة الضريبة %",
     "netAmount": "الصافي",
-    "noItemsAdded": "لم يتم إضافة بنود. انقر على \u0027+ إضافة بند\u0027 للبدء.",
+    "noItemsAdded": "لم يتم إضافة بنود. انقر على '+ إضافة بند' للبدء.",
     "additionalCosts": "التكاليف الإضافية",
     "noCostElements": "لا توجد تكاليف إضافية",
     "addCost": "إضافة تكلفة",
@@ -812,7 +1108,9 @@
     "searchElements": "ابحث عن عناصر التكاليف بالكود أو الاسم...",
     "noElementsFound": "لم يتم العثور على عناصر تطابق بحثك.",
     "selectElement": "اختر عنصر التكلفة",
-    "confirmSelectionOfCostElement": "هل أنت متأكد من أنك تريد اختيار عنصر التكلفة هذا؟"
+    "confirmSelectionOfCostElement": "هل أنت متأكد من أنك تريد اختيار عنصر التكلفة هذا؟",
+    "selectComponent": "اختيار مكون",
+    "searchComponents": "ابحث عن المكونات بالكود أو الاسم..."
   },
   "purchaseOrders": {
     "title": "أوامر الشراء",
@@ -1155,10 +1453,12 @@
       "2": "سداد",
       "3": "مردود",
       "4": "تسوية",
+      "5": "رصيد افتتاحي",
       "invoice": "فاتورة",
       "payment": "سداد",
       "return": "مردود",
-      "adjustment": "تسوية"
+      "adjustment": "تسوية",
+      "openingBalance": "رصيد افتتاحي"
     }
   },
   "homePage": {

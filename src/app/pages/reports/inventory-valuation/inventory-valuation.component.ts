@@ -88,12 +88,12 @@ export class InventoryValuationComponent implements OnInit {
   loadReport() {
     this.loading = true;
     this.reportService.getInventoryValuationReport(this.filters).subscribe({
-      next: (res) => {
-        if (res.succeeded) {
-          this.data = res.data.items;
-          this.totalPages = res.data.totalPages;
-          this.hasPreviousPage = res.data.hasPreviousPage;
-          this.hasNextPage = res.data.hasNextPage;
+      next: (res: any) => {
+        if (res && res.items) {
+          this.data = res.items;
+          this.totalPages = res.totalPages;
+          this.hasPreviousPage = res.hasPreviousPage;
+          this.hasNextPage = res.hasNextPage;
         }
         this.loading = false;
       },

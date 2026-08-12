@@ -1,0 +1,64 @@
+<app-page-breadcrumb [pageTitle]="'resources.list.title' | translate"></app-page-breadcrumb>
+
+<app-crud-list 
+  [pageTitle]="'resources.list.title' | translate" 
+  [addBtnText]="translate.instant('resources.addNew')"
+  [columns]="columns" 
+  [data]="data" 
+  [filters]="filters" 
+  [isLoading]="loading" 
+  [includeDisabled]="includeDisabled"
+  [hasAdvancedFilters]="true"
+  [hasActiveAdvancedFilters]="hasActiveAdvancedFilters"
+  (search)="onSearch()" 
+  (pageChange)="onPageChange($event)" 
+  (includeDisabledChange)="onIncludeDisabledChanged($event)"
+  (add)="onAdd()" 
+  (edit)="onEdit($event)" 
+  (view)="onView($event)" 
+  (toggleStatus)="onToggleStatus($event)">
+
+  <!-- Advanced Filters Content Projection -->
+  <div advanced-filters class="space-y-4">
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div>
+        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+          {{ 'resources.fields.resourceType' | translate }}
+        </label>
+        <app-searchable-select
+          [(ngModel)]="filters.resourceType"
+          [options]="resourceTypeOptions"
+          [placeholder]="'resources.fields.resourceType' | translate"
+          [allowClear]="true">
+        </app-searchable-select>
+      </div>
+
+      <div>
+        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+          {{ 'resources.fields.rateUomType' | translate }}
+        </label>
+        <app-searchable-select
+          [(ngModel)]="filters.rateUomType"
+          [options]="rateUomTypeOptions"
+          [placeholder]="'resources.fields.rateUomType' | translate"
+          [allowClear]="true">
+        </app-searchable-select>
+      </div>
+    </div>
+
+    <div class="flex items-center justify-end gap-2 pt-2 border-t border-gray-100 dark:border-gray-800">
+      <button 
+        type="button" 
+        (click)="clearAdvancedFilters()" 
+        class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700 dark:hover:bg-gray-700 transition-colors">
+        {{ 'common.reset' | translate }}
+      </button>
+      <button 
+        type="button" 
+        (click)="onSearch()" 
+        class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors">
+        {{ 'common.apply' | translate }}
+      </button>
+    </div>
+  </div>
+</app-crud-list>

@@ -86,16 +86,18 @@ export class SalesReportComponent implements OnInit {
       .pipe(finalize(() => this.loading = false))
       .subscribe({
         next: (response: any) => {
-          const isSuccess = response.isSuccess !== undefined ? response.isSuccess : response.succeeded;
-          if (isSuccess) {
-            const data = response.value || response.data;
-            this.items = data?.items || [];
-            this.totalItems = data?.totalRecords || data?.totalCount || 0;
-            this.hasPreviousPage = data?.hasPreviousPage || false;
-            this.hasNextPage = data?.hasNextPage || false;
-            this.totalPages = data?.totalPages || 1;
+          if (response && response.items) {
+            this.items = response.items || [];
+            this.totalItems = response.totalRecords || response.totalCount || 0;
+            this.hasPreviousPage = response.hasPreviousPage || false;
+            this.hasNextPage = response.hasNextPage || false;
+            this.totalPages = response.totalPages || 1;
+            
+            if (response.pageIndex !== undefined) {
+              this.pageNumber = response.pageIndex;
+            }
           } else {
-            const errorMsg = response.error?.description || response.messages?.[0] || 'Error fetching data';
+            const errorMsg = response?.error?.description || response?.messages?.[0] || 'Error fetching data';
             this.toastr.error(errorMsg);
           }
         },

@@ -6,6 +6,7 @@ import { InputFieldComponent } from '../../form/input/input-field.component';
 import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../../../core/services/auth.service';
+import { PermissionsService } from '../../../../core/services/permissions.service';
 import { TranslateModule } from '@ngx-translate/core';
 import { AdminTenantResponse, TenantBranchResponse } from '../../../../core/models/auth.models';
 import { CommonModule } from '@angular/common';
@@ -46,6 +47,7 @@ export class SigninFormComponent {
   private authService = inject(AuthService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
+  private permissionsService = inject(PermissionsService);
 
   togglePasswordVisibility() {
     this.showPassword = !this.showPassword;
@@ -68,15 +70,18 @@ export class SigninFormComponent {
         if (this.isAdmin) {
           this.selectedTenantId = null;
           this.branches = []; // Reset branches until tenant is selected
+          this.step = 'branch_selection';
         } else {
           // If there's only one branch, auto-select it
           if (this.branches.length === 1) {
              this.selectedBranchId = this.branches[0].id;
              this.selectedTenantId = this.branches[0].tenantId;
+             this.step = 'branch_selection';
+             this.onSignIn();
+          } else {
+             this.step = 'branch_selection';
           }
         }
-        
-        this.step = 'branch_selection';
       },
       error: (err) => {
         this.isLoading = false;
@@ -100,6 +105,7 @@ export class SigninFormComponent {
         this.branches = res || [];
         if (this.branches.length === 1) {
            this.selectedBranchId = this.branches[0].id;
+           this.onSignIn();
         }
       },
       error: (err) => {
@@ -136,19 +142,21 @@ export class SigninFormComponent {
         this.isLoading = false;
         if (res && res.token) {
           this.authService.setAuthResponse(res);
-          const returnUrl = this.route.snapshot.queryParams['returnUrl'];
-          if (returnUrl && returnUrl !== '/') {
-            this.router.navigateByUrl(returnUrl);
-          } else {
-            const landingPref = this.authService.getLandingPagePreference();
-            const hasDashboardPermission = this.authService.hasDashboardPermission();
-
-            if (landingPref === 'dashboard' && hasDashboardPermission) {
-              this.router.navigate(['/dashboard']);
+          this.permissionsService.loadPermissions().subscribe(() => {
+            const returnUrl = this.route.snapshot.queryParams['returnUrl'];
+            if (returnUrl && returnUrl !== '/') {
+              this.router.navigateByUrl(returnUrl);
             } else {
-              this.router.navigate(['/']);
+              const landingPref = this.authService.getLandingPagePreference();
+              const hasDashboardPermission = this.authService.hasDashboardPermission();
+
+              if (landingPref === 'dashboard' && hasDashboardPermission) {
+                this.router.navigate(['/dashboard']);
+              } else {
+                this.router.navigate(['/']);
+              }
             }
-          }
+          });
         }
 
       },

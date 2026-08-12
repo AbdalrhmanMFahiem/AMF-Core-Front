@@ -3,10 +3,11 @@ import { Component, ElementRef, QueryList, ViewChildren, ChangeDetectorRef } fro
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { SafeHtmlPipe } from '../../pipe/safe-html.pipe';
 import { SidebarWidgetComponent } from './app-sidebar-widget.component';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { combineLatest, Subscription } from 'rxjs';
 
 import { NavItem, SidebarService } from '../../services/sidebar.service';
+import { PermissionsService } from '../../../core/services/permissions.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -38,7 +39,9 @@ export class AppSidebarComponent {
   constructor(
     public sidebarService: SidebarService,
     private router: Router,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private permissionsService: PermissionsService,
+    private translateService: TranslateService
   ) {
     this.isExpanded$ = this.sidebarService.isExpanded$;
     this.isMobileOpen$ = this.sidebarService.isMobileOpen$;
@@ -47,7 +50,69 @@ export class AppSidebarComponent {
     this.othersItems = this.sidebarService.othersItems;
   }
 
+  searchQuery = '';
+  showDropdown = false;
+  searchResults: NavItem[] = [];
+  private flatRoutes: NavItem[] = [];
+  @ViewChildren('searchInput') searchInput!: QueryList<ElementRef>;
+
+  private getFlatRoutes(items: NavItem[], parentIcon?: string): NavItem[] {
+    let result: NavItem[] = [];
+    for (const item of items) {
+      const currentIcon = item.icon || parentIcon;
+      if (item.path) {
+        result.push({ ...item, icon: currentIcon });
+      }
+      if (item.subItems) {
+        result = [...result, ...this.getFlatRoutes(item.subItems, currentIcon)];
+      }
+    }
+    return result;
+  }
+
+  onSearch(event: any) {
+    const query = event.target.value?.toLowerCase() || '';
+    this.searchQuery = query;
+    if (!query) {
+      this.showDropdown = false;
+      this.searchResults = [];
+      return;
+    }
+    
+    this.searchResults = this.flatRoutes.filter(route => {
+      const nameMatch = route.name?.toLowerCase().includes(query);
+      const translatedName = route.translationKey ? this.translateService.instant(route.translationKey)?.toLowerCase() : '';
+      const translationMatch = translatedName.includes(query);
+      return nameMatch || translationMatch;
+    }).slice(0, 8);
+    
+    this.showDropdown = true;
+  }
+
+  closeDropdown() {
+    setTimeout(() => { this.showDropdown = false; }, 200);
+  }
+
+  goToRoute(path: string) {
+    this.router.navigate([path]);
+    this.showDropdown = false;
+    this.searchQuery = '';
+    const input = this.searchInput?.first?.nativeElement;
+    if (input) {
+      input.value = '';
+      input.blur();
+    }
+    this.sidebarService.setMobileOpen(false);
+  }
+
+  hasPermission(key?: string): boolean {
+    if (!key) return true;
+    return this.permissionsService.hasPermission(key);
+  }
+
   ngOnInit() {
+    this.flatRoutes = this.getFlatRoutes([...this.navItems, ...this.othersItems]);
+
     // Initial active menu setup
     setTimeout(() => {
       this.setActiveMenuFromRoute(this.router.url);

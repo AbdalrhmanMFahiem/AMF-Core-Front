@@ -6,7 +6,14 @@ export interface CompanySettingResponse {
   registrationNumber?: string;
   taxNumber?: string;
   address?: string;
-  country?: string;
+  defaultCountryId?: number | null;
+  defaultCountryName?: string | null;
+  defaultGovernorateId?: number | null;
+  defaultGovernorateName?: string | null;
+  defaultCityId?: number | null;
+  defaultCityName?: string | null;
+  defaultDistrictId?: number | null;
+  defaultDistrictName?: string | null;
   phoneNumber?: string;
   email?: string;
   website?: string;
@@ -23,7 +30,10 @@ export interface CompanySettingRequest {
   registrationNumber?: string | null;
   taxNumber?: string | null;
   address?: string | null;
-  country?: string | null;
+  defaultCountryId?: number | null;
+  defaultGovernorateId?: number | null;
+  defaultCityId?: number | null;
+  defaultDistrictId?: number | null;
   phoneNumber?: string | null;
   email?: string | null;
   website?: string | null;

@@ -1,7 +1,8 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { ItemResponse, ItemBasicResponse, ItemRequest, ItemFilters, ItemUnitOfMeasureResponse, ItemPurchasingDetailsResponse, ItemSalesDetailsResponse } from '../models/item.model';
+import { ItemResponse, ItemBasicResponse, ItemRequest, ItemFilters, ItemUnitOfMeasureResponse, ItemPurchasingDetailsResponse, ItemSalesDetailsResponse, ItemWarehouseStockResponse } from '../models/item.model';
+import { ItemBomLineResponse } from '../models/item-bom.model';
 import { NextCodeResponse } from '../models/lookup.model';
 import { PaginatedList } from '../models/pagination.model';
 import { environment } from '../../../environments/environment';
@@ -61,6 +62,14 @@ export class ItemService {
 
   getUnitsOfMeasure(id: number): Observable<ItemUnitOfMeasureResponse[]> {
     return this.http.get<ItemUnitOfMeasureResponse[]>(`${this.apiUrl}/${id}/units-of-measure`);
+  }
+
+  getWarehouseStock(id: number): Observable<ItemWarehouseStockResponse> {
+    return this.http.get<ItemWarehouseStockResponse>(`${this.apiUrl}/${id}/warehouse-stock`);
+  }
+
+  getBomComponents(id: number): Observable<ItemBomLineResponse[]> {
+    return this.http.get<ItemBomLineResponse[]>(`${this.apiUrl}/${id}/bom-components`);
   }
 
   getNextCode(): Observable<NextCodeResponse> {

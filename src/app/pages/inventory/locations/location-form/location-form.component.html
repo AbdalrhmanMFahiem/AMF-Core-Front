@@ -1,4 +1,4 @@
-﻿<app-page-breadcrumb 
+<app-page-breadcrumb 
   [pageTitle]="isEditMode ? ('locations.form.edit' | translate) : isViewMode ? ('locations.form.view' | translate) : ('locations.form.create' | translate)"
   [parentPageTitle]="'locations.list.title' | translate"
   parentPageUrl="/inventory/locations"
@@ -23,7 +23,10 @@
   <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center p-6 border-b border-gray-100 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/50">
     <div class="flex items-center gap-3">
       <div class="w-10 h-10 rounded-lg bg-indigo-50 dark:bg-indigo-900/30 flex items-center justify-center border border-indigo-100 dark:border-indigo-800/50">
-        <i class="fas fa-map-marker-alt text-indigo-600 dark:text-indigo-400 text-lg"></i>
+        <svg class="w-5 h-5 text-indigo-600 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+        </svg>
       </div>
       <div>
         <h2 class="text-lg font-bold text-gray-900 dark:text-white">
@@ -52,7 +55,9 @@
         </label>
         <div class="relative">
           <div class="absolute inset-y-0 inset-s-0 flex items-center ps-3 pointer-events-none">
-            <i class="fas fa-language text-gray-400 dark:text-gray-500"></i>
+            <svg class="w-4 h-4 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129" />
+            </svg>
           </div>
           <input 
             type="text" 
@@ -74,7 +79,9 @@
         </label>
         <div class="relative">
           <div class="absolute inset-y-0 inset-s-0 flex items-center ps-3 pointer-events-none">
-            <i class="fas fa-language text-gray-400 dark:text-gray-500"></i>
+            <svg class="w-4 h-4 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129" />
+            </svg>
           </div>
           <input 
             type="text" 
@@ -121,8 +128,13 @@
         type="submit" 
         [disabled]="form.invalid || submitting"
         class="px-5 py-2.5 text-sm font-medium text-white bg-indigo-600 dark:bg-indigo-500 rounded-lg hover:bg-indigo-700 dark:hover:bg-indigo-600 focus:ring-4 focus:outline-none focus:ring-indigo-300 dark:focus:ring-indigo-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-sm flex items-center gap-2">
-        <i class="fas fa-spinner fa-spin" *ngIf="submitting"></i>
-        <i class="fas fa-save" *ngIf="!submitting"></i>
+        <svg *ngIf="submitting" class="w-4 h-4 animate-spin text-white" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+        <svg *ngIf="!submitting" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
+        </svg>
         {{ (isEditMode ? 'common.save' : 'common.add') | translate }}
       </button>
     </div>

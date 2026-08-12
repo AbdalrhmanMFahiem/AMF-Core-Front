@@ -32,10 +32,15 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
 
         localStorage.removeItem('token');
         localStorage.removeItem('authResponse');
-        const returnUrl = router.url;
+        if (!router.url.includes('/signin')) {
+          router.navigate(['/signin']);
+        }
+        return throwError(() => error);
+      }
 
-        if (!router.url.includes('/Auth')) {
-          router.navigate(['/Auth'], { queryParams: { returnUrl } });
+      if (error.status === 403) {
+        if (!router.url.includes('/unauthorized')) {
+          router.navigate(['/unauthorized'], { queryParams: { attemptedUrl: router.url } });
         }
         return throwError(() => error);
       }

@@ -1,0 +1,20 @@
+<app-page-breadcrumb [pageTitle]="'governorates.list.title' | translate"></app-page-breadcrumb>
+<div class="space-y-6">
+  <app-crud-list 
+    [pageTitle]="'governorates.list.title' | translate" 
+    [searchPlaceholder]="'governorates.searchPlaceholder' | translate"
+    [addBtnText]="'governorates.addNew' | translate"
+    [columns]="columns" 
+    [data]="data" 
+    [filters]="filters"
+    [includeDisabled]="includeDisabled"
+    [isLoading]="loading"
+    (search)="onSearch()"
+    (add)="onAdd()"
+    (view)="onView($event)"
+    (edit)="onEdit($event)"
+    (toggleStatus)="onToggleStatus($event)"
+    (pageChange)="onPageChange($event)"
+    (includeDisabledChange)="onIncludeDisabledChange($event)">
+  </app-crud-list>
+</div>

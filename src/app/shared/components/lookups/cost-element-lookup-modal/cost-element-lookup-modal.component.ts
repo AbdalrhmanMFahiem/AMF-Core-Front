@@ -1,4 +1,4 @@
-import { Component, EventEmitter, inject, Input, Output, OnChanges, OnInit, OnDestroy } from '@angular/core';
+import { Component, EventEmitter, inject, Input, Output, OnChanges, OnInit, OnDestroy, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
@@ -44,8 +44,11 @@ export class CostElementLookupModalComponent implements OnChanges, OnInit, OnDes
     });
   }
 
-  ngOnChanges() {
-    if (this.isOpen) {
+  ngOnChanges(changes: SimpleChanges) {
+    const isOpenChanged = changes['isOpen'] && changes['isOpen'].currentValue === true && changes['isOpen'].previousValue !== true;
+    const typeChanged = !!changes['type'];
+
+    if (isOpenChanged || (this.isOpen && typeChanged)) {
       this.searchTerm = '';
       this.loadElements();
     }

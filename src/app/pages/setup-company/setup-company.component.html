@@ -19,9 +19,11 @@
     <!-- Step Progress Bar -->
     <div class="mb-8">
       <div class="flex items-center justify-between max-w-2xl mx-auto relative">
-        <div class="absolute top-1/2 left-0 right-0 h-1 bg-gray-200 dark:bg-slate-800 -translate-y-1/2 z-0"></div>
-        <div class="absolute top-1/2 left-0 h-1 bg-linear-to-r from-blue-500 to-indigo-600 transition-all duration-500 z-0"
-             [style.width]="((currentStep - 1) / 3) * 100 + '%'"></div>
+        <!-- Progress Line Track -->
+        <div class="absolute top-5 right-5 left-5 h-1 bg-gray-200 dark:bg-slate-700 -translate-y-1/2 z-0 rounded overflow-hidden">
+          <div class="absolute top-0 right-0 bottom-0 bg-linear-to-l from-indigo-600 to-blue-500 transition-all duration-500 rounded"
+               [style.width]="((currentStep - 1) / 3) * 100 + '%'"></div>
+        </div>
 
         <button *ngFor="let stepNum of [1, 2, 3, 4]" type="button" (click)="goToStep(stepNum)"
                 class="relative z-10 flex flex-col items-center group focus:outline-none"
@@ -30,7 +32,7 @@
                [ngClass]="{
                  'bg-blue-600 text-white ring-4 ring-blue-100 dark:ring-blue-900/50 scale-110': currentStep === stepNum,
                  'bg-indigo-600 text-white': stepNum < currentStep,
-                 'bg-white dark:bg-slate-800 text-gray-400 dark:text-gray-500 border-2 border-gray-200 dark:border-slate-700': stepNum > currentStep
+                 'bg-slate-800 text-gray-500 border-2 border-slate-700': stepNum > currentStep
                }">
             <span *ngIf="stepNum >= currentStep">{{ stepNum }}</span>
             <svg *ngIf="stepNum < currentStep" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -38,7 +40,7 @@
             </svg>
           </div>
           <span class="mt-2 text-xs font-semibold tracking-wide transition-colors"
-                [ngClass]="currentStep === stepNum ? 'text-blue-600 dark:text-blue-400 font-bold' : 'text-gray-500 dark:text-gray-400'">
+                [ngClass]="currentStep === stepNum ? 'text-blue-400 font-bold' : 'text-gray-400'">
             {{ (stepNum === 1 ? 'setupWizard.steps.company' : stepNum === 2 ? 'setupWizard.steps.branches' : stepNum === 3 ? 'setupWizard.steps.warehouses' : 'setupWizard.steps.summary') | translate }}
           </span>
         </button>
@@ -46,7 +48,7 @@
     </div>
 
     <!-- Main Content Card -->
-    <div class="bg-white/80 dark:bg-slate-800/80 backdrop-blur-xl rounded-2xl shadow-xl border border-gray-100 dark:border-slate-700/60 p-6 sm:p-10 transition-all duration-300">
+    <div class="bg-[#1e2536] dark:bg-[#1e2536] rounded-2xl shadow-xl border border-slate-700/60 p-6 sm:p-10 transition-all duration-300">
       
       <!-- Notifications -->
       <div *ngIf="errorMsg" class="mb-6 p-4 rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 flex items-start gap-3 shadow-sm animate-shake">
@@ -92,8 +94,14 @@
                 {{ 'setupWizard.company.code' | translate }} <span class="text-red-500">*</span>
               </label>
               <input formControlName="companyCode" type="text"
+                     [ngClass]="{'border-red-500 dark:border-red-500': form.get('companyCode')?.invalid && form.get('companyCode')?.touched}"
                      class="w-full px-4 py-2.5 rounded-xl border border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:outline-none transition-all shadow-sm font-mono text-sm uppercase"
                      placeholder="e.g. COMP-001">
+              <div *ngIf="form.get('companyCode')?.invalid && form.get('companyCode')?.touched" class="text-red-500 text-xs mt-1.5 font-semibold">
+                <span *ngIf="form.get('companyCode')?.errors?.['required']">{{ 'errors.required' | translate }}</span>
+                <span *ngIf="form.get('companyCode')?.errors?.['maxlength']">{{ 'errors.maxLength' | translate }}</span>
+                <span *ngIf="form.get('companyCode')?.errors?.['pattern']">{{ 'errors.noSpaces' | translate }}</span>
+              </div>
             </div>
 
             <!-- Arabic Name -->
@@ -102,8 +110,12 @@
                 {{ 'setupWizard.company.aName' | translate }} <span class="text-red-500">*</span>
               </label>
               <input formControlName="companyAName" type="text"
+                     [ngClass]="{'border-red-500 dark:border-red-500': form.get('companyAName')?.invalid && form.get('companyAName')?.touched}"
                      class="w-full px-4 py-2.5 rounded-xl border border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:outline-none transition-all shadow-sm text-sm"
                      placeholder="مثال: الشركة المتحدة للتجارة">
+              <div *ngIf="form.get('companyAName')?.invalid && form.get('companyAName')?.touched" class="text-red-500 text-xs mt-1.5 font-semibold">
+                <span *ngIf="form.get('companyAName')?.errors?.['required']">{{ 'errors.required' | translate }}</span>
+              </div>
             </div>
 
             <!-- English Name -->
@@ -147,25 +159,25 @@
         <!-- STEP 2: Branches Setup -->
         <div *ngIf="currentStep === 2" class="space-y-6 animate-fadeIn" formArrayName="branches">
           
-          <div class="flex items-center justify-between bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl border border-gray-200 dark:border-slate-700">
+          <div class="flex items-center justify-between pb-4 border-b border-slate-700/50">
             <div>
-              <h3 class="text-md font-bold text-gray-800 dark:text-white">{{ 'setupWizard.steps.branches' | translate }}</h3>
-              <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{{ 'setupWizard.branches.hint' | translate }}</p>
+              <h3 class="text-xl font-bold text-white">{{ 'setupWizard.steps.branches' | translate }}</h3>
+              <p class="text-sm text-gray-400 mt-1">{{ 'setupWizard.branches.hint' | translate }}</p>
             </div>
             <button type="button" (click)="addBranch()"
-                    class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-xl shadow-md transition-all duration-200 transform active:scale-95">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4" />
-              </svg>
+                    class="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-xl shadow-md transition-all duration-200">
               <span>{{ 'setupWizard.branches.addBranch' | translate }}</span>
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+              </svg>
             </button>
           </div>
 
           <div *ngFor="let branch of branches.controls; let i = index" [formGroupName]="i"
-               class="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700/80 shadow-sm relative group hover:border-blue-400 dark:hover:border-blue-500 transition-all duration-300">
+               class="p-6 rounded-xl bg-[#161d2d] dark:bg-[#161d2d] border border-slate-700/80 shadow-sm relative group hover:border-blue-500/50 transition-all duration-300">
             
-            <div class="flex items-center justify-between pb-3 mb-4 border-b border-gray-100 dark:border-slate-800">
-              <span class="inline-flex items-center gap-2 text-xs font-extrabold px-3 py-1 bg-blue-50 dark:bg-blue-900/40 text-blue-600 dark:text-blue-300 rounded-lg uppercase tracking-wider">
+            <div class="flex items-center justify-between pb-4 mb-4 border-b border-slate-700/60">
+              <span class="inline-flex items-center gap-2 text-xs font-bold px-3 py-1.5 bg-slate-800 text-blue-400 rounded-lg">
                 #{{ i + 1 }} - {{ 'setupWizard.steps.branches' | translate }}
               </span>
               <button *ngIf="branches.length > 1" type="button" (click)="removeBranch(i)"
@@ -177,31 +189,29 @@
               </button>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div>
-                <label class="block text-xs font-semibold text-gray-600 dark:text-gray-300 mb-1">
-                  {{ 'setupWizard.branches.code' | translate }} <span class="text-red-500">*</span>
+                <label class="block text-sm font-semibold text-gray-300 mb-2">
+                  {{ 'setupWizard.branches.eName' | translate }}
                 </label>
-                <input formControlName="code" type="text"
-                       class="w-full px-3.5 py-2 rounded-lg border border-gray-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:outline-none text-sm uppercase font-mono">
+                <input formControlName="eName" type="text" dir="ltr"
+                       class="w-full px-4 py-2.5 rounded-lg border border-slate-700 bg-slate-800/80 text-white focus:ring-2 focus:ring-blue-500 focus:outline-none text-sm text-center">
               </div>
 
               <div>
-                <label class="block text-xs font-semibold text-gray-600 dark:text-gray-300 mb-1">
+                <label class="block text-sm font-semibold text-gray-300 mb-2 text-right">
                   {{ 'setupWizard.branches.aName' | translate }} <span class="text-red-500">*</span>
                 </label>
                 <input formControlName="aName" type="text"
-                       class="w-full px-3.5 py-2 rounded-lg border border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:outline-none text-sm"
-                       placeholder="الاسم العربي للفرع">
+                       class="w-full px-4 py-2.5 rounded-lg border border-slate-700 bg-slate-800/80 text-white focus:ring-2 focus:ring-blue-500 focus:outline-none text-sm text-center">
               </div>
 
               <div>
-                <label class="block text-xs font-semibold text-gray-600 dark:text-gray-300 mb-1">
-                  {{ 'setupWizard.branches.eName' | translate }}
+                <label class="block text-sm font-semibold text-gray-300 mb-2 text-right">
+                  {{ 'setupWizard.branches.code' | translate }} <span class="text-red-500">*</span>
                 </label>
-                <input formControlName="eName" type="text"
-                       class="w-full px-3.5 py-2 rounded-lg border border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:outline-none text-sm"
-                       placeholder="Branch English Name">
+                <input formControlName="code" type="text" dir="ltr"
+                       class="w-full px-4 py-2.5 rounded-lg border border-slate-700 bg-slate-800/80 text-white focus:ring-2 focus:ring-blue-500 focus:outline-none text-sm font-mono text-center">
               </div>
             </div>
           </div>
@@ -355,18 +365,18 @@
         </div>
 
         <!-- Action Navigation Buttons -->
-        <div class="flex items-center justify-between pt-6 border-t border-gray-200 dark:border-slate-700/80">
+        <div class="flex flex-row-reverse items-center justify-between pt-6 border-t border-slate-700/80">
           <button type="button" (click)="currentStep === 1 ? cancelSetup() : prevStep()" [disabled]="isLoading"
-                  class="px-5 py-2.5 rounded-xl border border-gray-300 dark:border-slate-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700 text-sm font-semibold transition-all duration-200 disabled:opacity-50">
+                  class="px-6 py-2.5 rounded-xl border border-slate-600 text-gray-300 hover:bg-slate-700 text-sm font-semibold transition-all duration-200 disabled:opacity-50">
             {{ (currentStep === 1 ? 'login.cancel' : 'setupWizard.summary.back') | translate }}
           </button>
 
           <button *ngIf="currentStep < 4" type="button" (click)="nextStep()"
-                  class="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold shadow-lg shadow-blue-600/30 dark:shadow-blue-500/20 transition-all duration-200 transform active:scale-95">
-            <span>{{ 'setupWizard.summary.next' | translate }}</span>
+                  class="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold shadow-lg shadow-blue-500/20 transition-all duration-200">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
             </svg>
+            <span>{{ 'setupWizard.summary.next' | translate }}</span>
           </button>
 
           <button *ngIf="currentStep === 4" type="submit" [disabled]="isLoading || form.invalid"

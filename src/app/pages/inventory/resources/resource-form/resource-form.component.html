@@ -1,0 +1,319 @@
+<app-page-breadcrumb 
+  [pageTitle]="isEditMode ? ('resources.form.edit' | translate) : isViewMode ? ('resources.form.view' | translate) : ('resources.form.create' | translate)"
+  [parentPageTitle]="'resources.list.title' | translate"
+  parentPageUrl="/inventory/resources"
+></app-page-breadcrumb>
+
+<!-- Notifications -->
+<app-success-redirect-banner
+  [isVisible]="showSuccess"
+  [message]="isEditMode ? ('resources.updateSuccess' | translate) : ('resources.addSuccess' | translate)"
+  redirectUrl="/inventory/resources"
+></app-success-redirect-banner>
+
+<app-error-banner 
+  [isVisible]="showError"
+  [errors]="[errorMessage]"
+  (close)="showError = false"
+></app-error-banner>
+
+<!-- Form Container -->
+<div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden mt-4" *ngIf="!loading">
+  <!-- Header: Title & Code Badge -->
+  <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center p-6 border-b border-gray-100 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/50">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-lg bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center border border-blue-100 dark:border-blue-800/50">
+        <svg class="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+        </svg>
+      </div>
+      <div>
+        <h2 class="text-lg font-bold text-gray-900 dark:text-white">
+          {{ isEditMode ? ('resources.form.edit' | translate) : isViewMode ? ('resources.form.view' | translate) : ('resources.form.create' | translate) }}
+        </h2>
+        <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">{{ 'resources.subTitle' | translate }}</p>
+      </div>
+    </div>
+    
+    <!-- Code Badge -->
+    <div class="mt-4 sm:mt-0 flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm">
+      <span class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{{ 'common.code' | translate }}</span>
+      <div class="w-px h-4 bg-gray-200 dark:bg-gray-700"></div>
+      <span class="text-base font-bold text-gray-900 dark:text-white font-mono">{{ form.get('code')?.value }}</span>
+    </div>
+  </div>
+
+  <!-- Educational Guide Banner / شرح آلية العمل والتطبيق -->
+  <div class="m-6 p-5 rounded-xl bg-gradient-to-r from-blue-50/80 via-indigo-50/50 to-blue-50/80 dark:from-gray-900/90 dark:via-gray-850/80 dark:to-gray-900/90 border border-blue-100/80 dark:border-gray-700/80">
+    <div class="flex items-center gap-2.5 mb-3 text-blue-900 dark:text-blue-300 font-bold text-sm">
+      <svg class="w-5 h-5 text-amber-500 dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 01-2 2h-1a2 2 0 01-2-2v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+      </svg>
+      <span>{{ 'resources.guide.title' | translate }}</span>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+      <div class="flex items-start gap-3 bg-white/90 dark:bg-gray-900/90 p-3.5 rounded-lg border border-blue-100/60 dark:border-gray-700/70 shadow-2xs">
+        <div class="w-8 h-8 rounded-lg bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-300 flex items-center justify-center shrink-0">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+          </svg>
+        </div>
+        <div>
+          <strong class="block text-gray-900 dark:text-white font-semibold mb-1 text-xs.5">{{ 'resources.guide.whatIsResource' | translate }}</strong>
+          <span class="text-gray-600 dark:text-gray-300 leading-relaxed">{{ 'resources.guide.whatIsResourceDesc' | translate }}</span>
+        </div>
+      </div>
+
+      <div class="flex items-start gap-3 bg-white/90 dark:bg-gray-900/90 p-3.5 rounded-lg border border-indigo-100/60 dark:border-gray-700/70 shadow-2xs">
+        <div class="w-8 h-8 rounded-lg bg-indigo-100 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-300 flex items-center justify-center shrink-0">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m-6 4h6m-6 4h4m-6 4h8a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+          </svg>
+        </div>
+        <div>
+          <strong class="block text-gray-900 dark:text-white font-semibold mb-1 text-xs.5">{{ 'resources.guide.costCalculation' | translate }}</strong>
+          <span class="text-gray-600 dark:text-gray-300 leading-relaxed">{{ 'resources.guide.costCalculationDesc' | translate }}</span>
+        </div>
+      </div>
+
+      <div class="flex items-start gap-3 bg-white/90 dark:bg-gray-900/90 p-3.5 rounded-lg border border-emerald-100/60 dark:border-gray-700/70 shadow-2xs">
+        <div class="w-8 h-8 rounded-lg bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-300 flex items-center justify-center shrink-0">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+          </svg>
+        </div>
+        <div>
+          <strong class="block text-gray-900 dark:text-white font-semibold mb-1 text-xs.5">{{ 'resources.guide.bomIntegration' | translate }}</strong>
+          <span class="text-gray-600 dark:text-gray-300 leading-relaxed">{{ 'resources.guide.bomIntegrationDesc' | translate }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="p-6 pt-2">
+    <!-- Section 1: Basic Information -->
+    <div class="space-y-4 mb-8">
+      <div class="flex items-center gap-2 pb-2 border-b border-gray-100 dark:border-gray-700 text-gray-900 dark:text-white font-bold text-sm">
+        <svg class="w-4 h-4 text-blue-500 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 012-2h2a2 2 0 012 2v1m-6 0h6" />
+        </svg>
+        <span>{{ 'resources.sections.basicInfo' | translate }}</span>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Arabic Name -->
+        <div class="space-y-1.5">
+          <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300">
+            {{ 'common.arabicName' | translate }} <span class="text-red-500 dark:text-red-400">*</span>
+          </label>
+          <div class="relative">
+            <div class="absolute inset-y-0 inset-s-0 flex items-center ps-3 pointer-events-none">
+              <svg class="w-4 h-4 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129" />
+              </svg>
+            </div>
+            <input 
+              type="text" 
+              formControlName="aName"
+              class="bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 transition-colors disabled:opacity-60 disabled:bg-gray-100 dark:disabled:bg-gray-800"
+              [placeholder]="'common.arabicNamePlaceholder' | translate"
+              [class.border-red-500]="form.get('aName')?.invalid && form.get('aName')?.touched"
+              [class.dark:border-red-500]="form.get('aName')?.invalid && form.get('aName')?.touched">
+          </div>
+          <div *ngIf="form.get('aName')?.invalid && form.get('aName')?.touched" class="text-red-500 dark:text-red-400 text-xs mt-1 font-medium">
+            {{ 'validation.required' | translate }}
+          </div>
+        </div>
+
+        <!-- English Name -->
+        <div class="space-y-1.5">
+          <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300">
+            {{ 'common.englishName' | translate }}
+          </label>
+          <div class="relative">
+            <div class="absolute inset-y-0 inset-s-0 flex items-center ps-3 pointer-events-none">
+              <svg class="w-4 h-4 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129" />
+              </svg>
+            </div>
+            <input 
+              type="text" 
+              formControlName="eName"
+              class="bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 transition-colors disabled:opacity-60 disabled:bg-gray-100 dark:disabled:bg-gray-800"
+              [placeholder]="'common.englishNamePlaceholder' | translate">
+          </div>
+        </div>
+
+        <!-- Resource Type -->
+        <div class="space-y-1.5">
+          <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300">
+            {{ 'resources.fields.resourceType' | translate }} <span class="text-red-500 dark:text-red-400">*</span>
+          </label>
+          <app-searchable-select
+            [options]="resourceTypeOptions"
+            formControlName="resourceType"
+            [placeholder]="'resources.fields.resourceType' | translate"
+            [disabled]="isViewMode">
+          </app-searchable-select>
+          <div *ngIf="form.get('resourceType')?.invalid && form.get('resourceType')?.touched" class="text-red-500 dark:text-red-400 text-xs mt-1 font-medium">
+            {{ 'validation.required' | translate }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 2: Cost & Measurement Specifications -->
+    <div class="space-y-4 mb-8">
+      <div class="flex items-center gap-2 pb-2 border-b border-gray-100 dark:border-gray-700 text-gray-900 dark:text-white font-bold text-sm">
+        <svg class="w-4 h-4 text-emerald-500 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <span>{{ 'resources.sections.costInfo' | translate }}</span>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Rate UOM Type -->
+        <div class="space-y-1.5">
+          <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300">
+            {{ 'resources.fields.rateUomType' | translate }} <span class="text-red-500 dark:text-red-400">*</span>
+          </label>
+          <app-searchable-select
+            [options]="rateUomTypeOptions"
+            formControlName="rateUomType"
+            [placeholder]="'resources.fields.rateUomType' | translate"
+            [disabled]="isViewMode">
+          </app-searchable-select>
+          <div *ngIf="form.get('rateUomType')?.invalid && form.get('rateUomType')?.touched" class="text-red-500 dark:text-red-400 text-xs mt-1 font-medium">
+            {{ 'validation.required' | translate }}
+          </div>
+        </div>
+
+        <!-- Unit of Measure -->
+        <div class="space-y-1.5">
+          <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300">
+            {{ 'resources.fields.unitOfMeasure' | translate }} <span class="text-red-500 dark:text-red-400">*</span>
+          </label>
+          <app-searchable-select
+            [options]="unitOfMeasuresOptions"
+            formControlName="unitOfMeasureId"
+            [placeholder]="'resources.fields.unitOfMeasurePlaceholder' | translate"
+            [disabled]="isViewMode">
+          </app-searchable-select>
+          <div *ngIf="form.get('unitOfMeasureId')?.invalid && form.get('unitOfMeasureId')?.touched" class="text-red-500 dark:text-red-400 text-xs mt-1 font-medium">
+            {{ 'validation.required' | translate }}
+          </div>
+        </div>
+
+        <!-- Cost Rate -->
+        <div class="space-y-1.5">
+          <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300">
+            {{ 'resources.fields.costRate' | translate }} <span class="text-red-500 dark:text-red-400">*</span>
+          </label>
+          <div class="relative">
+            <div class="absolute inset-y-0 inset-s-0 flex items-center ps-3 pointer-events-none">
+              <svg class="w-4 h-4 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <input 
+              type="number" 
+              formControlName="costRate"
+              class="bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 transition-colors disabled:opacity-60 disabled:bg-gray-100 dark:disabled:bg-gray-800"
+              placeholder="0.00">
+          </div>
+          <div *ngIf="form.get('costRate')?.invalid && form.get('costRate')?.touched" class="text-red-500 dark:text-red-400 text-xs mt-1 font-medium">
+            {{ 'validation.required' | translate }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 3: Notes -->
+    <div class="space-y-4">
+      <div class="flex items-center gap-2 pb-2 border-b border-gray-100 dark:border-gray-700 text-gray-900 dark:text-white font-bold text-sm">
+        <svg class="w-4 h-4 text-purple-500 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+        </svg>
+        <span>{{ 'resources.sections.notesInfo' | translate }}</span>
+      </div>
+
+      <div class="space-y-1.5">
+        <textarea 
+          formControlName="notes"
+          rows="3"
+          class="bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 transition-colors disabled:opacity-60 disabled:bg-gray-100 dark:disabled:bg-gray-800 resize-y"
+          [placeholder]="'common.notesPlaceholder' | translate"></textarea>
+      </div>
+    </div>
+
+    <!-- Actions Footer -->
+    <div class="mt-8 pt-5 border-t border-gray-100 dark:border-gray-700 flex items-center justify-end gap-3" *ngIf="!isViewMode">
+      <button 
+        type="button" 
+        (click)="onCancel()"
+        class="px-5 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 focus:ring-4 focus:outline-none focus:ring-gray-100 dark:focus:ring-gray-700 transition-all shadow-sm">
+        {{ 'common.cancel' | translate }}
+      </button>
+      <button 
+        type="submit" 
+        [disabled]="form.invalid || submitting"
+        class="px-5 py-2.5 text-sm font-medium text-white bg-blue-600 dark:bg-blue-500 rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-sm flex items-center gap-2">
+        <svg *ngIf="submitting" class="w-4 h-4 animate-spin text-white" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+        <svg *ngIf="!submitting" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
+        </svg>
+        {{ (isEditMode ? 'common.save' : 'common.add') | translate }}
+      </button>
+    </div>
+    
+    <div class="mt-8 pt-5 border-t border-gray-100 dark:border-gray-700 flex items-center justify-end gap-3" *ngIf="isViewMode">
+      <button 
+        type="button" 
+        (click)="onCancel()"
+        class="px-5 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 focus:ring-4 focus:outline-none focus:ring-gray-100 dark:focus:ring-gray-700 transition-all shadow-sm">
+        {{ 'common.back' | translate }}
+      </button>
+    </div>
+  </form>
+</div>
+
+<!-- Loading Skeleton -->
+<div *ngIf="loading" class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 mt-4 animate-pulse">
+  <div class="flex justify-between items-center mb-8 border-b border-gray-100 dark:border-gray-700 pb-6">
+    <div class="flex items-center gap-4">
+      <div class="w-10 h-10 bg-gray-200 dark:bg-gray-700 rounded-lg"></div>
+      <div>
+        <div class="h-5 bg-gray-200 dark:bg-gray-700 rounded-md w-32 mb-2"></div>
+        <div class="h-3 bg-gray-200 dark:bg-gray-700 rounded-md w-48"></div>
+      </div>
+    </div>
+    <div class="h-10 bg-gray-200 dark:bg-gray-700 rounded-lg w-32"></div>
+  </div>
+  
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+    <div>
+      <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-24 mb-3"></div>
+      <div class="h-10 bg-gray-200 dark:bg-gray-700 rounded-lg w-full"></div>
+    </div>
+    <div>
+      <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-24 mb-3"></div>
+      <div class="h-10 bg-gray-200 dark:bg-gray-700 rounded-lg w-full"></div>
+    </div>
+    <div>
+      <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-32 mb-3"></div>
+      <div class="h-10 bg-gray-200 dark:bg-gray-700 rounded-lg w-full"></div>
+    </div>
+    <div>
+      <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-32 mb-3"></div>
+      <div class="h-10 bg-gray-200 dark:bg-gray-700 rounded-lg w-full"></div>
+    </div>
+    <div class="col-span-1 md:col-span-2">
+      <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-24 mb-3"></div>
+      <div class="h-24 bg-gray-200 dark:bg-gray-700 rounded-lg w-full"></div>
+    </div>
+  </div>
+</div>

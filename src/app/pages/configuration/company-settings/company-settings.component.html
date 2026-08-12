@@ -78,8 +78,20 @@
           <p class="text-sm font-medium text-gray-800 dark:text-white/90">{{ settings.website || '-' }}</p>
         </div>
         <div>
-          <p class="mb-2 text-xs text-gray-500 dark:text-gray-400">{{ 'companySettings.country' | translate }}</p>
-          <p class="text-sm font-medium text-gray-800 dark:text-white/90">{{ settings.country || '-' }}</p>
+          <p class="mb-2 text-xs text-gray-500 dark:text-gray-400">{{ 'governorates.fields.country' | translate }}</p>
+          <p class="text-sm font-medium text-gray-800 dark:text-white/90">{{ settings.defaultCountryName || '-' }}</p>
+        </div>
+        <div>
+          <p class="mb-2 text-xs text-gray-500 dark:text-gray-400">{{ 'cities.fields.governorate' | translate }}</p>
+          <p class="text-sm font-medium text-gray-800 dark:text-white/90">{{ settings.defaultGovernorateName || '-' }}</p>
+        </div>
+        <div>
+          <p class="mb-2 text-xs text-gray-500 dark:text-gray-400">{{ 'districts.fields.city' | translate }}</p>
+          <p class="text-sm font-medium text-gray-800 dark:text-white/90">{{ settings.defaultCityName || '-' }}</p>
+        </div>
+        <div>
+          <p class="mb-2 text-xs text-gray-500 dark:text-gray-400">{{ 'businessPartners.fields.district' | translate }}</p>
+          <p class="text-sm font-medium text-gray-800 dark:text-white/90">{{ settings.defaultDistrictName || '-' }}</p>
         </div>
         <div class="sm:col-span-2 lg:col-span-3">
           <p class="mb-2 text-xs text-gray-500 dark:text-gray-400">{{ 'companySettings.address' | translate }}</p>
@@ -186,9 +198,44 @@
               [placeholder]="'companySettings.websitePlaceholder' | translate"></app-input-field>
           </div>
           <div>
-            <app-label>{{ 'companySettings.country' | translate }}</app-label>
-            <app-input-field formControlName="country"
-              [placeholder]="'companySettings.countryPlaceholder' | translate"></app-input-field>
+            <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+              {{ 'governorates.fields.country' | translate }}
+            </label>
+            <select formControlName="defaultCountryId" (change)="onCountryChange($event)"
+              class="w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm outline-none focus:border-brand-500 dark:border-gray-800 dark:focus:border-brand-500">
+              <option [ngValue]="null">{{ 'common.select' | translate }}</option>
+              <option *ngFor="let country of countries" [ngValue]="country.id">{{ country.name }}</option>
+            </select>
+          </div>
+          <div>
+            <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+              {{ 'cities.fields.governorate' | translate }}
+            </label>
+            <select formControlName="defaultGovernorateId" (change)="onGovernorateChange($event)"
+              class="w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm outline-none focus:border-brand-500 dark:border-gray-800 dark:focus:border-brand-500">
+              <option [ngValue]="null">{{ 'common.select' | translate }}</option>
+              <option *ngFor="let gov of governorates" [ngValue]="gov.id">{{ gov.name }}</option>
+            </select>
+          </div>
+          <div>
+            <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+              {{ 'districts.fields.city' | translate }}
+            </label>
+            <select formControlName="defaultCityId" (change)="onCityChange($event)"
+              class="w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm outline-none focus:border-brand-500 dark:border-gray-800 dark:focus:border-brand-500">
+              <option [ngValue]="null">{{ 'common.select' | translate }}</option>
+              <option *ngFor="let city of cities" [ngValue]="city.id">{{ city.name }}</option>
+            </select>
+          </div>
+          <div>
+            <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+              {{ 'businessPartners.fields.district' | translate }}
+            </label>
+            <select formControlName="defaultDistrictId"
+              class="w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm outline-none focus:border-brand-500 dark:border-gray-800 dark:focus:border-brand-500">
+              <option [ngValue]="null">{{ 'common.select' | translate }}</option>
+              <option *ngFor="let district of districts" [ngValue]="district.id">{{ district.name }}</option>
+            </select>
           </div>
           <div class="lg:col-span-2">
             <app-label>{{ 'companySettings.address' | translate }}</app-label>

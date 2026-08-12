@@ -57,8 +57,8 @@ export class InvoiceCostElementFormComponent implements OnInit {
     isActive: true
   };
 
-  costElementTypes = Object.values(InvoiceCostElementType);
-  operationTypes = Object.values(InvoiceCostOperation);
+  costElementTypes = [InvoiceCostElementType.Sales, InvoiceCostElementType.Purchases, InvoiceCostElementType.Both];
+  operationTypes = [InvoiceCostOperation.Addition, InvoiceCostOperation.Discount];
 
   typeOptions: SearchableOption[] = [];
   operationTypeOptions: SearchableOption[] = [];

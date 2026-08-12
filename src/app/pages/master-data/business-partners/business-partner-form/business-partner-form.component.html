@@ -25,6 +25,16 @@
         class="whitespace-nowrap border-b-2 px-1 py-4 text-sm font-medium mx-4">
         {{ 'businessPartners.tabs.ledger' | translate }}
       </button>
+      <button type="button" (click)="setTab('openingBalance')"
+        [ngClass]="activeTab === 'openingBalance' ? 'border-brand-500 text-brand-600 dark:text-brand-500' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'"
+        class="whitespace-nowrap border-b-2 px-1 py-4 text-sm font-medium mx-4">
+        {{ 'businessPartners.fields.openingBalance' | translate }}
+      </button>
+      <button type="button" (click)="setTab('salesReps')"
+        [ngClass]="activeTab === 'salesReps' ? 'border-brand-500 text-brand-600 dark:text-brand-500' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'"
+        class="whitespace-nowrap border-b-2 px-1 py-4 text-sm font-medium mx-4">
+        المندوبين (Sales Reps)
+      </button>
     </div>
 
     <form *ngIf="!loading" (ngSubmit)="onSubmit()" #form="ngForm" class="space-y-6">
@@ -47,14 +57,16 @@
           <div class="flex items-center gap-6 mt-3">
             <label class="flex items-center gap-2"
               [ngClass]="{'cursor-pointer': mode !== 'view', 'opacity-60': mode === 'view'}">
-              <input type="checkbox" [(ngModel)]="model.isCustomer" (change)="onTypeChange()" name="isCustomer" [disabled]="mode === 'view'"
+              <input type="checkbox" [(ngModel)]="model.isCustomer" (change)="onTypeChange()" name="isCustomer"
+                [disabled]="mode === 'view'"
                 class="h-4 w-4 rounded text-brand-500 border-gray-300 focus:ring-brand-500 dark:border-gray-700 dark:bg-gray-900" />
               <span class="text-sm font-medium text-gray-700 dark:text-gray-300">{{ 'businessPartners.types.customer' |
                 translate }}</span>
             </label>
             <label class="flex items-center gap-2"
               [ngClass]="{'cursor-pointer': mode !== 'view', 'opacity-60': mode === 'view'}">
-              <input type="checkbox" [(ngModel)]="model.isVendor" (change)="onTypeChange()" name="isVendor" [disabled]="mode === 'view'"
+              <input type="checkbox" [(ngModel)]="model.isVendor" (change)="onTypeChange()" name="isVendor"
+                [disabled]="mode === 'view'"
                 class="h-4 w-4 rounded text-brand-500 border-gray-300 focus:ring-brand-500 dark:border-gray-700 dark:bg-gray-900" />
               <span class="text-sm font-medium text-gray-700 dark:text-gray-300">{{ 'businessPartners.types.vendor' |
                 translate }}</span>
@@ -105,6 +117,40 @@
           </label>
           <input type="text" [(ngModel)]="model.address" name="address" [disabled]="mode === 'view'"
             class="w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm outline-none focus:border-brand-500 dark:border-gray-800 dark:focus:border-brand-500" />
+        </div>
+
+        <!-- Geography Fields -->
+        <div>
+          <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+            {{ 'governorates.fields.country' | translate }}
+          </label>
+          <app-searchable-select name="countryId" [(ngModel)]="model.countryId" (selectionChange)="onCountryChange()"
+            [options]="countries" [disabled]="mode === 'view'" placeholder="common.select">
+          </app-searchable-select>
+        </div>
+        <div>
+          <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+            {{ 'cities.fields.governorate' | translate }}
+          </label>
+          <app-searchable-select name="governorateId" [(ngModel)]="model.governorateId" (selectionChange)="onGovernorateChange()"
+            [options]="governorates" [disabled]="mode === 'view' || !model.countryId" placeholder="common.select">
+          </app-searchable-select>
+        </div>
+        <div>
+          <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+            {{ 'districts.fields.city' | translate }}
+          </label>
+          <app-searchable-select name="cityId" [(ngModel)]="model.cityId" (selectionChange)="onCityChange()"
+            [options]="cities" [disabled]="mode === 'view' || !model.governorateId" placeholder="common.select">
+          </app-searchable-select>
+        </div>
+        <div>
+          <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+            {{ 'businessPartners.fields.district' | translate }}
+          </label>
+          <app-searchable-select name="districtId" [(ngModel)]="model.districtId"
+            [options]="districts" [disabled]="mode === 'view' || !model.cityId" placeholder="common.select">
+          </app-searchable-select>
         </div>
 
         <!-- Notes -->
@@ -160,110 +206,359 @@
         <div *ngIf="loadingLedger" class="flex justify-center p-8">
           <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-500"></div>
         </div>
-        <div *ngIf="!loadingLedger" class="overflow-x-auto">
-          <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-800">
-            <thead class="bg-gray-50 dark:bg-gray-800/50">
-              <tr>
-                <th scope="col"
-                  class="px-6 py-3  text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-400">
-                  {{ 'ledger.entryDate' | translate }}</th>
-                <th scope="col"
-                  class="px-6 py-3  text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-400">
-                  {{ 'ledger.invoiceCode' | translate }}</th>
-                <th scope="col"
-                  class="px-6 py-3  text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-400">
-                  {{ 'ledger.entryType' | translate }}</th>
-                <th scope="col"
-                  class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-400">
-                  {{ 'ledger.amount' | translate }}</th>
-                <th scope="col"
-                  class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-400">
-                  {{ 'ledger.runningBalance' | translate }}</th>
-                <th scope="col"
-                  class="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-400">
-                  {{ 'ledger.notes' | translate }}</th>
-              </tr>
-            </thead>
-            <tbody class="bg-white divide-y divide-gray-200 dark:bg-gray-900 dark:divide-gray-800">
-              <tr *ngFor="let item of ledgerData" class="hover:bg-gray-50 dark:hover:bg-gray-800/50">
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300">
-                  <span dir="ltr" class="inline-block">{{ item.entryDate | date:'yyyy-MM-dd hh:mm a' }}</span>
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300">{{ item.invoiceCode ||
-                  '-' }}</td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300">{{ 'ledger.typeEnum.' +
-                  item.entryType | translate }}</td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-right font-medium" dir="ltr"
-                  [ngClass]="item.amount > 0 ? 'text-success-600' : (item.amount < 0 ? 'text-error-600' : 'text-gray-900 dark:text-gray-300')">
-                  {{ item.amount < 0 ? '(' + (item.amount * -1 | number:'1.2-2') + ')' : (item.amount | number:'1.2-2')
-                    }} </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-right font-medium" dir="ltr"
-                  [ngClass]="item.runningBalance < 0 ? 'text-error-600' : 'text-gray-900 dark:text-gray-300'">
-                  {{ item.runningBalance < 0 ? '(' + (item.runningBalance * -1 | number:'1.2-2') + ')' :
-                    (item.runningBalance | number:'1.2-2') }} </td>
-                <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">{{ item.notes || '-' }}</td>
-              </tr>
-              <tr *ngIf="ledgerData.length === 0">
-                <td colspan="6" class="px-6 py-8 text-center text-sm text-gray-500 dark:text-gray-400">{{
-                  'ledger.noEntries' | translate }}</td>
-              </tr>
-            </tbody>
-          </table>
+        <div *ngIf="!loadingLedger"
+          class="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/6 dark:bg-white/2">
+          <div class="max-w-full overflow-x-auto">
+            <table class="min-w-full">
+              <thead>
+                <tr class="bg-gray-50/80 dark:bg-white/3">
+                  <th
+                    class="px-5 py-3.5 font-semibold text-gray-600 text-start text-xs dark:text-gray-300 uppercase tracking-wider">
+                    {{ 'common.date' | translate }}</th>
+                  <th
+                    class="px-5 py-3.5 font-semibold text-gray-600 text-start text-xs dark:text-gray-300 uppercase tracking-wider">
+                    {{ 'reports.businessPartnerStatement.table.invoiceCode' | translate }}</th>
+                  <th
+                    class="px-5 py-3.5 font-semibold text-gray-600 text-start text-xs dark:text-gray-300 uppercase tracking-wider">
+                    {{ 'reports.businessPartnerStatement.entryType' | translate }}</th>
+                  <th
+                    class="px-5 py-3.5 font-semibold text-gray-600 text-end text-xs dark:text-gray-300 uppercase tracking-wider">
+                    {{ 'reports.businessPartnerStatement.table.balanceBefore' | translate }}</th>
+                  <th
+                    class="px-5 py-3.5 font-semibold text-gray-600 text-end text-xs dark:text-gray-300 uppercase tracking-wider">
+                    {{ 'reports.businessPartnerStatement.table.debit' | translate }}</th>
+                  <th
+                    class="px-5 py-3.5 font-semibold text-gray-600 text-end text-xs dark:text-gray-300 uppercase tracking-wider">
+                    {{ 'reports.businessPartnerStatement.table.credit' | translate }}</th>
+                  <th
+                    class="px-5 py-3.5 font-semibold text-gray-600 text-end text-xs dark:text-gray-300 uppercase tracking-wider">
+                    {{ 'reports.businessPartnerStatement.balance' | translate }}</th>
+                  <th
+                    class="px-5 py-3.5 font-semibold text-gray-600 text-start text-xs dark:text-gray-300 uppercase tracking-wider">
+                    {{ 'reports.businessPartnerStatement.table.notes' | translate }}</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-100 dark:divide-white/4">
+                <!-- Empty -->
+                <tr *ngIf="ledgerData.length === 0">
+                  <td colspan="8" class="px-5 py-12 text-center">
+                    <div class="flex flex-col items-center justify-center gap-4">
+                      <div class="w-16 h-16 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
+                        <svg class="w-8 h-8 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor"
+                          viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                            d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4">
+                          </path>
+                        </svg>
+                      </div>
+                      <div class="text-center">
+                        <p class="text-sm font-medium text-gray-600 dark:text-gray-300">{{ 'common.noRecordsFound' |
+                          translate }}</p>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+                <!-- Rows -->
+                <tr *ngFor="let item of ledgerData"
+                  class="group transition-colors hover:bg-brand-50/40 dark:hover:bg-brand-500/4">
+                  <td class="px-5 py-4 text-start text-sm text-gray-700 dark:text-gray-300">
+                    {{ item.entryDate | date:'yyyy-MM-dd HH:mm' }}
+                  </td>
+                  <td class="px-5 py-4 text-start">
+                    <span
+                      class="inline-block text-xs font-mono font-medium text-brand-600 dark:text-brand-400 bg-brand-50 dark:bg-brand-500/10 px-2 py-0.5 rounded">
+                      {{ item.invoiceCode || '-' }}
+                    </span>
+                  </td>
+                  <td class="px-5 py-4 text-start">
+                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium"
+                      [ngClass]="item.amount >= 0 ? 'bg-warning-50 text-warning-700 dark:bg-warning-500/10 dark:text-warning-400' : 'bg-success-50 text-success-700 dark:bg-success-500/10 dark:text-success-400'">
+                      {{ getEntryTypeName(item.entryType) | translate }}
+                    </span>
+                  </td>
+                  <td class="px-5 py-4 text-end text-sm text-gray-900 dark:text-white tabular-nums">
+                    {{ item.balanceBefore | number:'1.2-2' }}
+                  </td>
+                  <td class="px-5 py-4 text-end">
+                    <span *ngIf="item.debit > 0"
+                      class="inline-flex items-center px-3 py-1.5 rounded-lg text-sm font-semibold tabular-nums bg-success-50 text-success-700 dark:bg-success-500/10 dark:text-success-400">
+                      {{ item.debit | number:'1.2-2' }}
+                    </span>
+                    <span *ngIf="item.debit === 0 || !item.debit" class="text-gray-400 dark:text-gray-600">-</span>
+                  </td>
+                  <td class="px-5 py-4 text-end">
+                    <span *ngIf="item.credit > 0"
+                      class="inline-flex items-center px-3 py-1.5 rounded-lg text-sm font-semibold tabular-nums bg-error-50 text-error-700 dark:bg-error-500/10 dark:text-error-400">
+                      {{ item.credit | number:'1.2-2' }}
+                    </span>
+                    <span *ngIf="item.credit === 0 || !item.credit" class="text-gray-400 dark:text-gray-600">-</span>
+                  </td>
+                  <td class="px-5 py-4 text-end text-sm font-bold tabular-nums"
+                    [ngClass]="{'text-success-600': item.runningBalance > 0, 'text-error-600': item.runningBalance < 0, 'text-gray-900 dark:text-white': item.runningBalance === 0}">
+                    {{ getAbs(item.runningBalance) | number:'1.2-2' }}
+                  </td>
+                  <td class="px-5 py-4 text-start text-sm text-gray-500 dark:text-gray-400 max-w-50 truncate"
+                    [title]="item.notes || ''">
+                    {{ item.notes || '-' }}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
 
-          <!-- Pagination -->
-          <div *ngIf="totalLedgerRecords > 0"
-            class="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6 dark:border-gray-800 dark:bg-gray-900 mt-4">
-            <div class="flex flex-1 justify-between sm:hidden">
-              <button type="button" (click)="onLedgerPageChange(ledgerFilters.pageNumber - 1)"
-                [disabled]="ledgerFilters.pageNumber === 1"
-                class="relative inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300">
-                {{ 'common.previous' | translate }}
-              </button>
-              <button type="button" (click)="onLedgerPageChange(ledgerFilters.pageNumber + 1)"
-                [disabled]="ledgerFilters.pageNumber * ledgerFilters.pageSize >= totalLedgerRecords"
-                class="relative ml-3 inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300">
-                {{ 'common.next' | translate }}
-              </button>
-            </div>
-            <div class="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
-              <div>
-                <p class="text-sm text-gray-700 dark:text-gray-300">
-                  {{ 'common.showing' | translate }}
-                  <span class="font-medium">{{ (ledgerFilters.pageNumber - 1) * ledgerFilters.pageSize + 1 }}</span>
-                  -
-                  <span class="font-medium">{{ (ledgerFilters.pageNumber * ledgerFilters.pageSize) > totalLedgerRecords
-                    ? totalLedgerRecords : (ledgerFilters.pageNumber * ledgerFilters.pageSize) }}</span>
-                  {{ 'common.of' | translate }}
-                  <span class="font-medium">{{ totalLedgerRecords }}</span>
-                  {{ 'common.entries' | translate }}
-                </p>
-              </div>
-              <div>
-                <nav class="isolate inline-flex -space-x-px rtl:space-x-reverse rounded-md shadow-sm"
-                  aria-label="Pagination">
-                  <button type="button" (click)="onLedgerPageChange(ledgerFilters.pageNumber - 1)"
-                    [disabled]="ledgerFilters.pageNumber === 1"
-                    class="relative inline-flex items-center rounded-l-md rtl:rounded-l-none rtl:rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 disabled:opacity-50 dark:ring-gray-700 dark:hover:bg-gray-800">
-                    <span class="sr-only">{{ 'common.previous' | translate }}</span>
-                    <svg class="h-5 w-5 rtl:rotate-180" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                      <path fill-rule="evenodd"
-                        d="M12.79 5.23a.75.75 0 01-.02 1.06L8.832 10l3.938 3.71a.75.75 0 11-1.04 1.08l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 011.06.02z"
-                        clip-rule="evenodd" />
-                    </svg>
-                  </button>
-                  <button type="button" (click)="onLedgerPageChange(ledgerFilters.pageNumber + 1)"
-                    [disabled]="ledgerFilters.pageNumber * ledgerFilters.pageSize >= totalLedgerRecords"
-                    class="relative inline-flex items-center rounded-r-md rtl:rounded-r-none rtl:rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 disabled:opacity-50 dark:ring-gray-700 dark:hover:bg-gray-800">
-                    <span class="sr-only">{{ 'common.next' | translate }}</span>
-                    <svg class="h-5 w-5 rtl:rotate-180" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                      <path fill-rule="evenodd"
-                        d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z"
-                        clip-rule="evenodd" />
-                    </svg>
-                  </button>
-                </nav>
+        <!-- Pagination -->
+        <div class="mt-5 flex flex-col sm:flex-row justify-between items-center text-sm text-gray-500 dark:text-gray-400 gap-4" *ngIf="totalLedgerRecords > 0">
+          <div class="flex items-center gap-1.5 bg-gray-50 dark:bg-white/3 px-3 py-1.5 rounded-lg border border-gray-200 dark:border-gray-800">
+            <span>{{ 'common.showing' | translate }}</span>
+            <span class="font-semibold text-gray-800 dark:text-white/90">{{ ledgerData.length || 0 }}</span>
+            <span>{{ 'common.of' | translate }}</span>
+            <span class="font-semibold text-gray-800 dark:text-white/90">{{ totalLedgerRecords || 0 }}</span>
+            <span>{{ 'common.entries' | translate }}</span>
+          </div>
+
+          <div class="flex items-center gap-4">
+            <div class="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+              <span>{{ 'common.select' | translate }}</span>
+              <div class="w-32">
+                <app-searchable-select [options]="[{value:10,label:'10'},{value:25,label:'25'},{value:50,label:'50'},{value:100,label:'100'}]" placeholder="common.select" [allowClear]="false"
+                  [(ngModel)]="ledgerFilters.pageSize" name="ledgerPageSize" (selectionChange)="onLedgerPageSizeChange($event)">
+                </app-searchable-select>
               </div>
             </div>
+
+            <div class="flex items-center gap-2">
+              <button [disabled]="!ledgerHasPreviousPage" (click)="onLedgerPageChange(ledgerFilters.pageNumber - 1)"
+                class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-gray-200 bg-white text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-brand-500 disabled:opacity-50 disabled:cursor-not-allowed dark:border-gray-800 dark:bg-gray-900 dark:text-gray-400 dark:hover:bg-white/3 dark:hover:text-brand-400 transition-all">
+                <svg class="w-4 h-4 rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                </svg>
+                <span class="hidden sm:block font-medium">{{ 'common.previous' | translate }}</span>
+              </button>
+
+              <div class="flex items-center justify-center px-3 py-1.5 rounded-lg bg-gray-50 text-gray-500 dark:bg-white/3 dark:text-gray-400 border border-gray-200 dark:border-gray-800">
+                <span>{{ 'common.page' | translate }}</span>
+                <span class="font-semibold text-brand-500 dark:text-brand-400 mx-1.5">{{ ledgerFilters.pageNumber || 1 }}</span>
+                <span>{{ 'common.of' | translate }}</span>
+                <span class="font-semibold text-gray-800 dark:text-white/90 mx-1.5">{{ ledgerTotalPages || 1 }}</span>
+              </div>
+
+              <button [disabled]="!ledgerHasNextPage" (click)="onLedgerPageChange(ledgerFilters.pageNumber + 1)"
+                class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-gray-200 bg-white text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-brand-500 disabled:opacity-50 disabled:cursor-not-allowed dark:border-gray-800 dark:bg-gray-900 dark:text-gray-400 dark:hover:bg-white/3 dark:hover:text-brand-400 transition-all">
+                <span class="hidden sm:block font-medium">{{ 'common.next' | translate }}</span>
+                <svg class="w-4 h-4 rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Opening Balance Tab Content -->
+      <div *ngIf="activeTab === 'openingBalance'">
+        <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 p-6 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
+          <!-- Add Mode -->
+          <ng-container *ngIf="mode === 'add'">
+            <div class="sm:col-span-2">
+              <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                نوع الرصيد الافتتاحي
+              </label>
+              <div class="flex items-center gap-6 mt-3">
+                <label class="flex items-center gap-2 cursor-pointer">
+                  <input type="radio" [(ngModel)]="obType" value="debit" name="addObType"
+                    class="h-4 w-4 text-brand-500 border-gray-300 focus:ring-brand-500 dark:border-gray-700 dark:bg-gray-900" />
+                  <span class="text-sm font-medium text-gray-700 dark:text-gray-300">عليه (Debit)</span>
+                </label>
+                <label class="flex items-center gap-2 cursor-pointer">
+                  <input type="radio" [(ngModel)]="obType" value="credit" name="addObType"
+                    class="h-4 w-4 text-brand-500 border-gray-300 focus:ring-brand-500 dark:border-gray-700 dark:bg-gray-900" />
+                  <span class="text-sm font-medium text-gray-700 dark:text-gray-300">له (Credit)</span>
+                </label>
+              </div>
+            </div>
+            <div>
+              <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                {{ 'businessPartners.fields.openingBalance' | translate }}
+              </label>
+              <input type="number" [(ngModel)]="model.openingBalance" name="openingBalance"
+                class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm outline-none focus:border-brand-500 dark:bg-transparent dark:border-gray-800 dark:focus:border-brand-500" />
+            </div>
+            <div>
+              <app-date-picker id="openingBalanceDate" name="openingBalanceDate" [(ngModel)]="model.openingBalanceDate"
+                [placeholder]="'common.selectDate' | translate"
+                [label]="'businessPartners.fields.openingBalanceDate' | translate" [enableTime]="false" mode="single">
+              </app-date-picker>
+            </div>
+          </ng-container>
+
+          <!-- Edit Mode -->
+          <ng-container *ngIf="mode !== 'add'">
+            <div class="sm:col-span-2">
+              <div *ngIf="totalLedgerRecords > 1 || (totalLedgerRecords === 1 && ledgerData[0]?.entryType !== ledgerEntryType.OpeningBalance)"
+                class="p-4 mb-4 text-sm text-yellow-800 rounded-lg bg-yellow-50 dark:bg-gray-800 dark:text-yellow-300">
+                <span class="font-medium">تنبيه:</span> لا يمكن تعديل الرصيد الافتتاحي لوجود حركات مسجلة بالفعل في كشف
+                الحساب.
+              </div>
+            </div>
+
+            <ng-container *ngIf="totalLedgerRecords === 0 || (totalLedgerRecords === 1 && ledgerData[0]?.entryType === ledgerEntryType.OpeningBalance)">
+              <div class="sm:col-span-2 mb-2">
+                <p class="text-sm text-gray-600 dark:text-gray-400">يمكنك إدخال أو تعديل الرصيد الافتتاحي للعميل لمرة واحدة فقط
+                  طالما لم يتم تسجيل أي حركات مالية أخرى له.</p>
+              </div>
+              <div class="sm:col-span-2">
+                <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                  نوع الرصيد الافتتاحي
+                </label>
+                <div class="flex items-center gap-6 mt-3">
+                  <label class="flex items-center gap-2" [ngClass]="{'cursor-pointer': mode !== 'view', 'opacity-60': mode === 'view'}">
+                    <input type="radio" [(ngModel)]="obType" value="debit" name="editObType" [disabled]="mode === 'view' || savingOpeningBalance"
+                      class="h-4 w-4 text-brand-500 border-gray-300 focus:ring-brand-500 dark:border-gray-700 dark:bg-gray-900" />
+                    <span class="text-sm font-medium text-gray-700 dark:text-gray-300">عليه (Debit)</span>
+                  </label>
+                  <label class="flex items-center gap-2" [ngClass]="{'cursor-pointer': mode !== 'view', 'opacity-60': mode === 'view'}">
+                    <input type="radio" [(ngModel)]="obType" value="credit" name="editObType" [disabled]="mode === 'view' || savingOpeningBalance"
+                      class="h-4 w-4 text-brand-500 border-gray-300 focus:ring-brand-500 dark:border-gray-700 dark:bg-gray-900" />
+                    <span class="text-sm font-medium text-gray-700 dark:text-gray-300">له (Credit)</span>
+                  </label>
+                </div>
+              </div>
+              <div>
+                <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                  {{ 'businessPartners.fields.openingBalance' | translate }} <span class="text-error-500">*</span>
+                </label>
+                <input type="number" [(ngModel)]="openingBalanceModel.amount" name="obAmount" required
+                  [disabled]="mode === 'view' || savingOpeningBalance"
+                  class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm outline-none focus:border-brand-500 dark:bg-transparent dark:border-gray-800 dark:focus:border-brand-500" />
+              </div>
+              <div>
+                <app-date-picker id="obDate" name="obDate" [(ngModel)]="openingBalanceModel.date" required
+                  [placeholder]="'common.selectDate' | translate" [disabled]="mode === 'view' || savingOpeningBalance"
+                  [label]="'businessPartners.fields.openingBalanceDate' | translate" [enableTime]="false" mode="single">
+                </app-date-picker>
+              </div>
+              <div class="sm:col-span-2 flex items-center justify-end mt-2" *ngIf="mode !== 'view'">
+                <div *ngIf="openingBalanceSuccess"
+                  class="text-success-600 dark:text-success-500 text-sm font-medium ml-4 mr-4 flex-1 text-right">
+                  تم حفظ الرصيد الافتتاحي بنجاح!
+                </div>
+                <button type="button" (click)="submitOpeningBalance()"
+                  [disabled]="savingOpeningBalance || !openingBalanceModel.amount || !openingBalanceModel.date"
+                  class="flex items-center gap-2 rounded-lg bg-brand-500 px-5 py-2.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-brand-600 disabled:opacity-50">
+                  <svg *ngIf="savingOpeningBalance" class="h-4 w-4 animate-spin" xmlns="http://www.w3.org/2000/svg"
+                    fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                    </path>
+                  </svg>
+                  <span>حفظ الرصيد الافتتاحي</span>
+                </button>
+              </div>
+            </ng-container>
+          </ng-container>
+        </div>
+      </div>
+      
+      <!-- Sales Reps Tab Content -->
+      <div *ngIf="activeTab === 'salesReps'">
+        <!-- Add New Sales Rep (Only if not in View mode and business partner is saved) -->
+        <div *ngIf="mode !== 'view' && id" class="mb-6 p-6 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
+          <h3 class="text-sm font-medium text-gray-900 dark:text-white mb-4">إضافة مندوب مبيعات</h3>
+          <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-4 items-end">
+            <div>
+              <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                المندوب (Sales Person) <span class="text-error-500">*</span>
+              </label>
+              <app-searchable-select name="repUserId" [(ngModel)]="salesRepModel.userId" [options]="users"
+                placeholder="common.select">
+              </app-searchable-select>
+            </div>
+            <div>
+              <app-date-picker id="repAssignmentDate" name="repAssignmentDate" [(ngModel)]="salesRepModel.assignmentDate"
+                [placeholder]="'common.selectDate' | translate" label="تاريخ التعيين" [enableTime]="false" mode="single">
+              </app-date-picker>
+            </div>
+            <div>
+              <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                نسبة العمولة (%)
+              </label>
+              <input type="number" [(ngModel)]="salesRepModel.commissionPercentage" name="repCommission"
+                class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm outline-none focus:border-brand-500 dark:bg-transparent dark:border-gray-800 dark:focus:border-brand-500" />
+            </div>
+            <div class="flex items-center justify-between pb-2">
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" [(ngModel)]="salesRepModel.isPrimary" name="repIsPrimary"
+                  class="h-4 w-4 rounded border-gray-300 text-brand-500 focus:ring-brand-500 dark:border-gray-700 dark:bg-gray-900" />
+                <span class="text-sm font-medium text-gray-700 dark:text-gray-300">مندوب أساسي</span>
+              </label>
+              <button type="button" (click)="addSalesRep()" [disabled]="savingSalesRep || !salesRepModel.userId || !salesRepModel.assignmentDate"
+                class="flex items-center gap-2 rounded-lg bg-brand-500 px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-brand-600 disabled:opacity-50">
+                <svg *ngIf="savingSalesRep" class="h-4 w-4 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                <span>إضافة</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="mode === 'add' && !id" class="p-6 bg-yellow-50 dark:bg-gray-800/50 rounded-lg text-sm text-yellow-800 dark:text-yellow-300 mb-6">
+          يجب حفظ العميل أولاً لتتمكن من إضافة مندوبي مبيعات.
+        </div>
+
+        <!-- Sales Reps Table -->
+        <div class="rounded-lg border border-gray-200 dark:border-gray-800 overflow-hidden">
+          <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-800 text-sm">
+              <thead class="bg-gray-50 dark:bg-gray-800/50">
+                <tr>
+                  <th class="px-4 py-3 text-start font-medium text-gray-500 dark:text-gray-400">اسم المندوب</th>
+                  <th class="px-4 py-3 text-start font-medium text-gray-500 dark:text-gray-400">تاريخ التعيين</th>
+                  <th class="px-4 py-3 text-start font-medium text-gray-500 dark:text-gray-400">تاريخ الانتهاء</th>
+                  <th class="px-4 py-3 text-center font-medium text-gray-500 dark:text-gray-400">أساسي</th>
+                  <th class="px-4 py-3 text-end font-medium text-gray-500 dark:text-gray-400">العمولة</th>
+                  <th *ngIf="mode !== 'view'" class="px-4 py-3 text-center font-medium text-gray-500 dark:text-gray-400">إجراءات</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-200 dark:divide-gray-800 bg-white dark:bg-transparent">
+                <tr *ngIf="loadingSalesReps">
+                  <td colspan="6" class="px-4 py-8 text-center text-gray-500 dark:text-gray-400">
+                    جاري التحميل...
+                  </td>
+                </tr>
+                <tr *ngIf="!loadingSalesReps && salesReps.length === 0">
+                  <td colspan="6" class="px-4 py-8 text-center text-gray-500 dark:text-gray-400">
+                    لا يوجد مندوبين معينين لهذا العميل.
+                  </td>
+                </tr>
+                <tr *ngFor="let rep of salesReps" class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
+                  <td class="px-4 py-3 font-medium text-gray-900 dark:text-white">{{ rep.userName }}</td>
+                  <td class="px-4 py-3 text-gray-500 dark:text-gray-400">{{ rep.assignmentDate | date:'mediumDate' }}</td>
+                  <td class="px-4 py-3 text-gray-500 dark:text-gray-400">
+                    <span *ngIf="rep.endDate">{{ rep.endDate | date:'mediumDate' }}</span>
+                    <span *ngIf="!rep.endDate" class="inline-flex items-center rounded-full bg-success-50 px-2 py-1 text-xs font-medium text-success-700 ring-1 ring-inset ring-success-600/20 dark:bg-success-500/10 dark:text-success-400 dark:ring-success-500/20">نشط</span>
+                  </td>
+                  <td class="px-4 py-3 text-center">
+                    <svg *ngIf="rep.isPrimary" class="w-5 h-5 text-success-500 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                    </svg>
+                  </td>
+                  <td class="px-4 py-3 text-end text-gray-500 dark:text-gray-400">
+                    {{ rep.commissionPercentage ? (rep.commissionPercentage + '%') : '-' }}
+                  </td>
+                  <td *ngIf="mode !== 'view'" class="px-4 py-3 text-center">
+                    <button *ngIf="!rep.endDate" type="button" (click)="removeSalesRep(rep.id)" class="text-error-600 hover:text-error-700 transition-colors" title="إزالة">
+                      <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                      </svg>
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
@@ -273,6 +568,17 @@
         <button type="button" (click)="onCancel()"
           class="rounded-lg border border-gray-300 bg-white px-5 py-2.5 text-sm font-medium text-gray-700 shadow-sm transition-colors hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700">
           {{ (mode === 'view' ? 'common.back' : 'common.cancel') | translate }}
+        </button>
+        <button *ngIf="mode !== 'view'" type="button" (click)="onSubmit(true)" [disabled]="saving"
+          class="flex items-center gap-2 rounded-lg border border-brand-500 bg-white px-5 py-2.5 text-sm font-medium text-brand-600 shadow-sm transition-colors hover:bg-brand-50 dark:border-brand-500 dark:bg-transparent dark:text-brand-500 dark:hover:bg-brand-500/10 disabled:opacity-50">
+          <svg *ngIf="saving" class="h-4 w-4 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none"
+            viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor"
+              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+            </path>
+          </svg>
+          <span>{{ (saving ? 'common.saving' : 'common.saveAndStay') | translate }}</span>
         </button>
         <button *ngIf="mode !== 'view'" type="submit" [disabled]="saving"
           class="flex items-center gap-2 rounded-lg bg-brand-500 px-5 py-2.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-brand-600 disabled:opacity-50">

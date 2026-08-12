@@ -1,0 +1,41 @@
+<footer class="mt-auto w-full bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 py-4 px-6 transition-colors duration-300">
+  <div class="flex flex-col md:flex-row items-center justify-between gap-4" *ngIf="userData as user">
+    <!-- Company & Branch Info -->
+    <div class="flex flex-wrap items-center gap-4 text-sm text-gray-600 dark:text-gray-300 font-medium">
+      <div class="flex items-center gap-2" *ngIf="user.companyName">
+        <div class="w-8 h-8 rounded-full overflow-hidden border border-gray-200 dark:border-gray-600 bg-gray-50 flex items-center justify-center">
+          <img *ngIf="logoUrl" [src]="logoUrl" alt="Logo" class="object-cover w-full h-full" />
+          <i *ngIf="!logoUrl" class="ri-building-line text-lg text-gray-400"></i>
+        </div>
+        <div class="flex flex-col leading-tight">
+          <span class="text-xs text-gray-400 uppercase tracking-wider">{{ 'footer.company' | translate }}</span>
+          <span>{{ user.companyName }} <span class="text-brand-500">({{ user.companyCode }})</span></span>
+        </div>
+      </div>
+      
+      <div class="h-6 w-px bg-gray-300 dark:bg-gray-600 hidden md:block" *ngIf="user.branchName"></div>
+
+      <div class="flex items-center gap-2" *ngIf="user.branchName">
+        <div class="w-8 h-8 rounded-full overflow-hidden border border-gray-200 dark:border-gray-600 bg-gray-50 flex items-center justify-center text-gray-500">
+          <i class="ri-store-2-line text-lg"></i>
+        </div>
+        <div class="flex flex-col leading-tight">
+          <span class="text-xs text-gray-400 uppercase tracking-wider">{{ 'footer.branch' | translate }}</span>
+          <span>{{ user.branchName }} <span class="text-brand-500">({{ user.branchCode }})</span></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Database Info & Copyright -->
+    <div class="flex flex-col items-center md:items-end text-sm text-gray-500 dark:text-gray-400">
+      <div class="flex items-center gap-2 mb-1" *ngIf="user.tenantId">
+        <span class="relative flex h-2.5 w-2.5">
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+          <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-500"></span>
+        </span>
+        <span class="text-xs font-semibold">{{ 'footer.connectedDb' | translate }} <span class="font-mono text-gray-700 dark:text-gray-300">{{ user.tenantId }}</span></span>
+      </div>
+      <p class="text-xs">&copy; {{ currentYear }} AMFCore. {{ 'footer.allRightsReserved' | translate }}</p>
+    </div>
+  </div>
+</footer>
