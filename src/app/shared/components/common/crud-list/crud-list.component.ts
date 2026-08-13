@@ -34,7 +34,7 @@ export class CrudListComponent implements OnInit, OnDestroy {
   private lookupService = inject(LookupService);
   private translate = inject(TranslateService);
   @Input() pageTitle!: string;
-  @Input() searchPlaceholder: string = 'Search...';
+  @Input() searchPlaceholder: string = 'common.searchPlaceholder';
   @Input() addBtnText: string = 'Add New';
   @ContentChild('customColumn') customTemplate!: TemplateRef<any>;
 

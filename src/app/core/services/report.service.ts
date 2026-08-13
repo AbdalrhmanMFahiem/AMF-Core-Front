@@ -179,4 +179,52 @@ export class ReportService {
 
     return this.http.get(`${this.baseUrl}/profitability/export-excel`, { params, responseType: 'blob' });
   }
+
+  getItemProfitabilitySummaryReport(filters: any): Observable<PaginatedList<any>> {
+    let params = new HttpParams();
+    Object.keys(filters).forEach(key => {
+      if (filters[key] !== null && filters[key] !== undefined && filters[key] !== '') {
+        params = params.set(key, filters[key]);
+      }
+    });
+
+    return this.http.get<PaginatedList<any>>(`${this.baseUrl}/item-profitability-summary`, { params });
+  }
+
+  exportItemProfitabilitySummaryExcel(filters: any): Observable<Blob> {
+    let params = new HttpParams();
+    Object.keys(filters).forEach(key => {
+      if (filters[key] !== null && filters[key] !== undefined && filters[key] !== '') {
+        params = params.set(key, filters[key]);
+      }
+    });
+
+    return this.http.get(`${this.baseUrl}/item-profitability-summary/export-excel`, { params, responseType: 'blob' });
+  }
+
+  getUnpricedItemsReport(filters: any): Observable<PaginatedList<any>> {
+    let params = new HttpParams();
+    Object.keys(filters).forEach(key => {
+      if (filters[key] !== null && filters[key] !== undefined && filters[key] !== '') {
+        params = params.set(key, filters[key]);
+      }
+    });
+
+    return this.http.get<PaginatedList<any>>(`${this.baseUrl}/unpriced-items`, { params });
+  }
+
+  exportUnpricedItemsExcel(filters: any): Observable<Blob> {
+    let params = new HttpParams();
+    Object.keys(filters).forEach(key => {
+      if (filters[key] !== null && filters[key] !== undefined && filters[key] !== '') {
+        params = params.set(key, filters[key]);
+      }
+    });
+
+    return this.http.get(`${this.baseUrl}/unpriced-items/export-excel`, { params, responseType: 'blob' });
+  }
+
+  updateItemInitialCost(data: { itemId: number; initialPrice: number }): Observable<Result<any>> {
+    return this.http.post<Result<any>>(`${this.baseUrl}/unpriced-items/update-initial-cost`, data);
+  }
 }

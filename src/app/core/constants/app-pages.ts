@@ -123,4 +123,5 @@ export const AppPages = {
   InvoiceCostElements: 'invoiceCostElements',
   SalesQuotations: 'salesQuotations',
   SalesOrders: 'salesOrders',
+  UnpricedItemsReport: 'unpricedItemsReport',
 };

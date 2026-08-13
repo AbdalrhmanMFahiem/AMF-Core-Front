@@ -38,11 +38,12 @@ export class DatePickerComponent implements ControlValueAccessor, OnInit, AfterV
   private onTouched: () => void = () => {};
   private value: any = null;
 
-  ngOnInit() {
-    if (!this.placeholder && this.placeholder !== '') {
-      this.placeholder = this.translate.instant('common.selectDate');
-    }
+  get displayPlaceholder(): string {
+    const p = this.placeholder || 'common.selectDate';
+    return this.translate.instant(p);
   }
+
+  ngOnInit() {}
 
   ngAfterViewInit() {
     const isArabic = this.translate.currentLang === 'ar' || document.documentElement.dir === 'rtl';

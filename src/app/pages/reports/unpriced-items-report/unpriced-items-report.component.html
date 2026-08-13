@@ -1,0 +1,371 @@
+<div class="space-y-6">
+  <!-- Breadcrumb & Header -->
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    <div>
+      <app-page-breadcrumb [pageTitle]="'reports.unpricedItems.title'"></app-page-breadcrumb>
+      <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+        {{ 'reports.unpricedItems.subtitle' | translate }}
+      </p>
+    </div>
+    <div class="flex items-center gap-3">
+      <button
+        type="button"
+        (click)="exportExcel()"
+        class="inline-flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-semibold text-white bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 rounded-xl shadow-xs transition-all duration-200 cursor-pointer border border-emerald-600 dark:border-emerald-500 hover:shadow-emerald-500/20"
+      >
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+        </svg>
+        <span>{{ 'common.exportExcel' | translate }}</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Summary Cards -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    <!-- Total Unpriced Card -->
+    <div class="p-4 rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900 shadow-xs flex items-center gap-4">
+      <div class="p-3 rounded-lg bg-amber-50 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+        </svg>
+      </div>
+      <div>
+        <p class="text-xs font-medium text-gray-500 dark:text-gray-400">{{ 'reports.unpricedItems.totalUnpriced' | translate }}</p>
+        <p class="text-2xl font-bold text-gray-900 dark:text-white mt-1">{{ totalUnpricedCount }}</p>
+      </div>
+    </div>
+
+    <!-- Missing Purchase Price Card -->
+    <div class="p-4 rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900 shadow-xs flex items-center gap-4">
+      <div class="p-3 rounded-lg bg-rose-50 dark:bg-rose-900/30 text-rose-600 dark:text-rose-400">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z"></path>
+        </svg>
+      </div>
+      <div>
+        <p class="text-xs font-medium text-gray-500 dark:text-gray-400">{{ 'reports.unpricedItems.missingPurchase' | translate }}</p>
+        <p class="text-2xl font-bold text-rose-600 dark:text-rose-400 mt-1">{{ missingPurchaseCount }}</p>
+      </div>
+    </div>
+
+    <!-- Missing BOM Cost Card -->
+    <div class="p-4 rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900 shadow-xs flex items-center gap-4">
+      <div class="p-3 rounded-lg bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path>
+        </svg>
+      </div>
+      <div>
+        <p class="text-xs font-medium text-gray-500 dark:text-gray-400">{{ 'reports.unpricedItems.missingBom' | translate }}</p>
+        <p class="text-2xl font-bold text-indigo-600 dark:text-indigo-400 mt-1">{{ missingBomCount }}</p>
+      </div>
+    </div>
+
+    <!-- Zero Warehouse Cost Card -->
+    <div class="p-4 rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900 shadow-xs flex items-center gap-4">
+      <div class="p-3 rounded-lg bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+        </svg>
+      </div>
+      <div>
+        <p class="text-xs font-medium text-gray-500 dark:text-gray-400">{{ 'reports.unpricedItems.zeroWarehouseCost' | translate }}</p>
+        <p class="text-2xl font-bold text-blue-600 dark:text-blue-400 mt-1">{{ zeroWarehouseCostCount }}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filters Container -->
+  <div class="p-5 rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900 shadow-xs space-y-4">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <!-- Search Input -->
+      <div>
+        <label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5">{{ 'common.search' | translate }}</label>
+        <div class="relative">
+          <input
+            type="text"
+            [(ngModel)]="filters.search"
+            (ngModelChange)="onFilterChange()"
+            [placeholder]="'common.search' | translate"
+            class="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2 text-sm outline-none transition focus:border-brand-500 dark:border-gray-800 dark:bg-gray-900 dark:text-white"
+          />
+        </div>
+      </div>
+
+      <!-- Item Group -->
+      <div>
+        <label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5">{{ 'common.group' | translate }}</label>
+        <app-searchable-select
+          [(ngModel)]="filters.itemGroupId"
+          (ngModelChange)="onFilterChange()"
+          [options]="itemGroupOptions"
+          placeholder="common.all"
+        ></app-searchable-select>
+      </div>
+
+      <!-- Reason Filter -->
+      <div>
+        <label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5">{{ 'reports.unpricedItems.unpricedReason' | translate }}</label>
+        <app-searchable-select
+          [(ngModel)]="filters.reasonFilter"
+          (ngModelChange)="onFilterChange()"
+          [options]="reasonOptions"
+          placeholder="reports.unpricedItems.reasons.All"
+        ></app-searchable-select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Data Table Section -->
+  <div class="p-5 rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900 shadow-xs space-y-4">
+    <div class="overflow-x-auto">
+      <table class="w-full text-start text-sm">
+        <thead class="bg-gray-50 dark:bg-gray-800/50 text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
+          <tr>
+            <th class="py-3 px-4 text-start">{{ 'invoices.item' | translate }}</th>
+            <th class="py-3 px-4 text-start">{{ 'common.group' | translate }}</th>
+            <th class="py-3 px-4 text-start">{{ 'common.unitOfMeasure' | translate }}</th>
+            <th class="py-3 px-4 text-center">{{ 'common.type' | translate }}</th>
+            <th class="py-3 px-4 text-start">{{ 'reports.unpricedItems.unpricedReason' | translate }}</th>
+            <th class="py-3 px-4 text-end">{{ 'reports.unpricedItems.initialPrice' | translate }}</th>
+            <th class="py-3 px-4 text-end">{{ 'reports.unpricedItems.lastPurchasePrice' | translate }}</th>
+            <th class="py-3 px-4 text-end">{{ 'reports.unpricedItems.warehouseAvgCost' | translate }}</th>
+            <th class="py-3 px-4 text-end">{{ 'reports.unpricedItems.onHandQty' | translate }}</th>
+            <th class="py-3 px-4 text-center">{{ 'common.actions' | translate }}</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-100 dark:divide-gray-800">
+          <tr *ngIf="loading">
+            <td colspan="10" class="py-8 text-center text-gray-500 dark:text-gray-400">
+              <div class="inline-flex items-center gap-2">
+                <svg class="animate-spin h-5 w-5 text-brand-500" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                <span>{{ 'common.loading' | translate }}</span>
+              </div>
+            </td>
+          </tr>
+
+          <tr *ngIf="!loading && (!data || data.items.length === 0)">
+            <td colspan="10" class="py-8 text-center text-gray-500 dark:text-gray-400">
+              {{ 'common.noData' | translate }}
+            </td>
+          </tr>
+
+          <tr *ngFor="let item of data?.items" class="hover:bg-gray-50/50 dark:hover:bg-gray-800/30 transition-colors">
+            <td class="py-3 px-4 text-start cursor-pointer group" (click)="openItemDetails(item)">
+              <div class="flex flex-col">
+                <span class="font-mono text-xs font-bold text-brand-600 group-hover:text-brand-700 dark:text-brand-400 dark:group-hover:text-brand-300 underline underline-offset-2 decoration-brand-300 dark:decoration-brand-700 tracking-wide transition-colors">
+                  {{ item.itemCode }}
+                </span>
+                <span class="font-semibold text-sm text-gray-900 group-hover:text-brand-600 dark:text-white dark:group-hover:text-brand-400 leading-tight mt-0.5 transition-colors">
+                  {{ item.itemName }}
+                </span>
+              </div>
+            </td>
+            <td class="py-3 px-4 text-gray-600 dark:text-gray-400">{{ item.itemGroupName || '-' }}</td>
+            <td class="py-3 px-4 text-gray-700 dark:text-gray-300">
+              <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-semibold bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200">
+                {{ item.baseUomName || item.baseUomType || '-' }}
+              </span>
+            </td>
+            <td class="py-3 px-4 text-center">
+              <span
+                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+                [ngClass]="{
+                  'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300': item.isManufactured,
+                  'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300': !item.isManufactured
+                }"
+              >
+                {{ item.isManufactured ? ('reports.profitability.manufactured' | translate) : ('reports.profitability.trading' | translate) }}
+              </span>
+            </td>
+            <td class="py-3 px-4">
+              <span
+                class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium"
+                [ngClass]="{
+                  'bg-rose-50 text-rose-700 dark:bg-rose-950/40 dark:text-rose-300 border border-rose-200 dark:border-rose-800': item.unpricedReasonKey === 'MissingPurchaseAndInitialPrice',
+                  'bg-indigo-50 text-indigo-700 dark:bg-indigo-950/40 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800': item.unpricedReasonKey === 'MissingBomCost',
+                  'bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-300 border border-amber-200 dark:border-amber-800': item.unpricedReasonKey === 'ZeroWarehouseAvgCost'
+                }"
+              >
+                {{ item.unpricedReasonText }}
+              </span>
+            </td>
+            <td class="py-3 px-4 text-end font-mono" [ngClass]="{'text-rose-600 font-semibold dark:text-rose-400': item.initialPrice <= 0}">
+              {{ item.initialPrice | number:'1.2-4' }}
+            </td>
+            <td class="py-3 px-4 text-end font-mono" [ngClass]="{'text-gray-400': item.lastPurchasePrice <= 0}">
+              {{ item.lastPurchasePrice | number:'1.2-4' }}
+            </td>
+            <td class="py-3 px-4 text-end font-mono" [ngClass]="{'text-gray-400': item.warehouseAvgCost <= 0}">
+              {{ item.warehouseAvgCost | number:'1.2-4' }}
+            </td>
+            <td class="py-3 px-4 text-end font-mono font-semibold" [ngClass]="{'text-amber-600 dark:text-amber-400': item.onHandQuantity > 0}">
+              {{ item.onHandQuantity | number:'1.2-4' }}
+            </td>
+            <td class="py-3 px-4 text-center">
+              <button
+                (click)="openPriceModal(item)"
+                class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-brand-600 hover:text-white bg-brand-50 hover:bg-brand-600 dark:bg-brand-950/40 dark:text-brand-300 dark:hover:bg-brand-600 rounded-lg transition-all cursor-pointer shadow-2xs"
+              >
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                </svg>
+                {{ 'reports.unpricedItems.setInitialPrice' | translate }}
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination Footer -->
+    <div *ngIf="data && data.totalRecords > 0" class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-gray-100 dark:border-gray-800">
+      <div class="text-xs text-gray-500 dark:text-gray-400">
+        {{ 'common.showing' | translate }} {{ (data.pageIndex - 1) * filters.pageSize + 1 }} -
+        {{ data.pageIndex * filters.pageSize > data.totalRecords ? data.totalRecords : data.pageIndex * filters.pageSize }}
+        {{ 'common.of' | translate }} {{ data.totalRecords }} {{ 'common.items' | translate }}
+      </div>
+      <div class="flex items-center gap-2">
+        <button
+          [disabled]="!data.hasPreviousPage"
+          (click)="onPageChange(data.pageIndex - 1)"
+          class="px-3 py-1.5 text-xs font-medium rounded-lg border border-gray-300 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed dark:border-gray-800 dark:bg-gray-900 dark:hover:bg-gray-800 dark:text-white transition"
+        >
+          {{ 'common.previous' | translate }}
+        </button>
+        <span class="text-xs text-gray-600 dark:text-gray-400 px-2 font-mono">
+          {{ data.pageIndex }} / {{ data.totalPages }}
+        </span>
+        <button
+          [disabled]="!data.hasNextPage"
+          (click)="onPageChange(data.pageIndex + 1)"
+          class="px-3 py-1.5 text-xs font-medium rounded-lg border border-gray-300 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed dark:border-gray-800 dark:bg-gray-900 dark:hover:bg-gray-800 dark:text-white transition"
+        >
+          {{ 'common.next' | translate }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Set Initial Price (General Settings Style) -->
+<app-modal
+  [isOpen]="isModalOpen"
+  (close)="closePriceModal()"
+  className="max-w-175 m-4"
+>
+  <div *ngIf="selectedItem" class="no-scrollbar relative w-full overflow-y-auto rounded-3xl bg-white p-6 dark:bg-gray-900 lg:p-10">
+    <!-- Header Section -->
+    <div class="px-2 pr-14 ltr:pr-14 rtl:pl-14">
+      <h4 class="mb-2 text-2xl font-semibold text-gray-800 dark:text-white/90">
+        {{ 'reports.unpricedItems.setInitialPrice' | translate }}
+      </h4>
+      <p class="mb-6 text-sm text-gray-500 dark:text-gray-400 lg:mb-7">
+        {{ 'reports.unpricedItems.subtitle' | translate }}
+      </p>
+    </div>
+
+    <!-- Content Card: Selected Item Details Grid -->
+    <div class="mb-6 rounded-2xl border border-gray-200 bg-gray-50/80 p-5 dark:border-gray-800 dark:bg-gray-800/40">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div>
+          <p class="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">{{ 'common.code' | translate }}</p>
+          <p class="text-sm font-bold font-mono text-brand-600 dark:text-brand-400">{{ selectedItem.itemCode }}</p>
+        </div>
+        <div>
+          <p class="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">{{ 'common.group' | translate }}</p>
+          <p class="text-sm font-medium text-gray-800 dark:text-white/90">{{ selectedItem.itemGroupName || '-' }}</p>
+        </div>
+        <div>
+          <p class="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">{{ 'common.unitOfMeasure' | translate }} (Base UOM)</p>
+          <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-xs font-bold bg-amber-50 text-amber-800 dark:bg-amber-950/50 dark:text-amber-300 border border-amber-200 dark:border-amber-800">
+            {{ selectedItem.baseUomName || selectedItem.baseUomType || 'الوحدة الأساسية' }}
+          </span>
+        </div>
+        <div class="sm:col-span-2 lg:col-span-2">
+          <p class="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">{{ 'common.name' | translate }}</p>
+          <p class="text-sm font-semibold text-gray-900 dark:text-white">{{ selectedItem.itemName }}</p>
+        </div>
+        <div>
+          <p class="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">{{ 'common.type' | translate }}</p>
+          <span
+            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+            [ngClass]="{
+              'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300': selectedItem.isManufactured,
+              'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300': !selectedItem.isManufactured
+            }"
+          >
+            {{ selectedItem.isManufactured ? ('reports.profitability.manufactured' | translate) : ('reports.profitability.trading' | translate) }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Form Section -->
+    <div class="space-y-6">
+      <div>
+        <label class="block text-sm font-medium text-gray-800 dark:text-white/90 mb-2">
+          {{ 'reports.unpricedItems.initialPrice' | translate }}
+          <span class="text-xs font-semibold text-brand-600 dark:text-brand-400 ms-1">
+            (لكل {{ selectedItem.baseUomName || selectedItem.baseUomType || 'وحدة أصلية' }})
+          </span>
+          <span class="text-rose-500">*</span>
+        </label>
+        <div class="relative">
+          <input
+            type="number"
+            min="0.0001"
+            step="0.01"
+            [(ngModel)]="newInitialPrice"
+            placeholder="0.00"
+            class="h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 ltr:pr-24 rtl:pl-24 text-sm font-mono shadow-theme-xs text-gray-800 placeholder:text-gray-400 focus:border-brand-500 focus:outline-none focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:focus:border-brand-500"
+          />
+          <div class="absolute inset-y-0 ltr:right-0 rtl:left-0 flex items-center px-3.5 pointer-events-none text-xs font-bold text-slate-600 dark:text-slate-300 bg-gray-100 dark:bg-gray-800 ltr:rounded-r-lg rtl:rounded-l-lg border-s border-gray-200 dark:border-gray-700">
+            / {{ selectedItem.baseUomName || selectedItem.baseUomType || 'وحدة' }}
+          </div>
+        </div>
+
+        <!-- UOM Guidance Notice Box -->
+        <div class="mt-3 p-3.5 rounded-xl bg-amber-50/70 dark:bg-amber-950/20 border border-amber-200/80 dark:border-amber-800/40 flex items-start gap-3">
+          <svg class="w-5 h-5 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <div class="text-xs text-amber-900 dark:text-amber-200 leading-relaxed">
+            <span class="font-bold block mb-0.5">تنبيه نطاق وحدة الصنف (Base UOM):</span>
+            التكلفة المبدئية المعينة هنا تُحسب حصرياً بالنسبة لـ <strong>الوحدة الأساسية للصنف ({{ selectedItem.baseUomName || selectedItem.baseUomType || 'الوحدة الأصلية' }})</strong>.
+            <span *ngIf="selectedItem.purchaseUomName && selectedItem.purchaseUomName !== selectedItem.baseUomName" class="block mt-1 font-medium">
+              عند شراء الصنف بوحدة مختلفة مثل ({{ selectedItem.purchaseUomName }}), يتم تحويل احتساب متوسط تكلفة الوحدة تلقائياً بالمعاملات المعتمدة.
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer Buttons -->
+      <div class="flex items-center justify-end gap-3 pt-4 border-t border-gray-100 dark:border-gray-800">
+        <button
+          type="button"
+          (click)="closePriceModal()"
+          class="flex items-center justify-center rounded-full border border-gray-300 bg-white px-5 py-2.5 text-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-white/5 transition-all cursor-pointer"
+        >
+          {{ 'common.cancel' | translate }}
+        </button>
+        <button
+          type="button"
+          [disabled]="savingPrice || newInitialPrice <= 0"
+          (click)="saveInitialPrice()"
+          class="inline-flex items-center justify-center gap-2 rounded-full border border-transparent bg-brand-500 hover:bg-brand-600 px-6 py-2.5 text-sm font-medium text-white shadow-theme-xs disabled:opacity-50 disabled:cursor-not-allowed transition-all cursor-pointer"
+        >
+          <svg *ngIf="savingPrice" class="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          <span>{{ (savingPrice ? 'common.saving' : 'common.save') | translate }}</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</app-modal>

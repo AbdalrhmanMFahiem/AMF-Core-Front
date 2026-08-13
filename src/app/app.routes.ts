@@ -734,6 +734,13 @@ export const routes: Routes = [
         loadComponent: () => import('./features/reports/warehouse-items-stock/warehouse-items-stock.component').then(c => c.WarehouseItemsStockComponent),
         title: 'Warehouse Items Stock | AMF Core'
       },
+      {
+        path: 'reports/unpriced-items',
+        loadComponent: () => import('./pages/reports/unpriced-items-report/unpriced-items-report.component').then(c => c.UnpricedItemsReportComponent),
+        canActivate: [permissionGuard],
+        data: { permission: Permissions.ViewUnpricedItemsReport },
+        title: 'Unpriced Items Report | AMF Core'
+      },
     ]
   },
   {

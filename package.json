@@ -5,6 +5,7 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
+    "build:prod": "ng build --configuration production --output-path=\"../Release/Front\" && node -e \"require('fs').cpSync('../Release/Front/browser', '../Release/Front', {recursive: true, force: true})\"",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "sync-permissions": "node sync-permissions.js"

@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { AthanService } from '../../core/services/athan.service';
 import { AthanDto, AthanSettingsDto } from '../../core/models/athan.models';
+import { AuthService } from '../../core/services/auth.service';
+import { AuthResponse } from '../../core/models/auth.models';
 import { Subscription, interval } from 'rxjs';
 
 @Component({
@@ -14,22 +16,24 @@ import { Subscription, interval } from 'rxjs';
 })
 export class HomePageComponent implements OnInit, OnDestroy {
   private athanService = inject(AthanService);
+  private authService = inject(AuthService);
   public translate = inject(TranslateService);
 
   currentTime: Date = new Date();
   gregorianDate: string = '';
   hijriDate: string = '';
 
+  userData: AuthResponse | null = null;
   settings: AthanSettingsDto | null = null;
   prayers: AthanDto[] = [];
   nextPrayer: AthanDto | null = null;
   isAthanError: boolean = false;
 
   private clockSubscription?: Subscription;
-
   private langSubscription?: Subscription;
 
   ngOnInit(): void {
+    this.userData = this.authService.getAuthResponse();
     this.updateDateStrings();
     this.startClock();
     this.loadAthanData();
@@ -129,5 +133,28 @@ export class HomePageComponent implements OnInit, OnDestroy {
     if (!foundNext && this.prayers.length > 0) {
       this.nextPrayer = this.prayers[0];
     }
+  }
+
+  getGreeting(): string {
+    const hours = this.currentTime.getHours();
+    const isEn = (this.translate.currentLang || this.translate.defaultLang) === 'en';
+    if (hours >= 5 && hours < 12) {
+      return isEn ? 'Good Morning' : 'صباح الخير';
+    } else if (hours >= 12 && hours < 18) {
+      return isEn ? 'Good Afternoon' : 'مساء الخير';
+    } else {
+      return isEn ? 'Good Evening' : 'مساء الخير';
+    }
+  }
+
+  getPrayerIcon(prayerNameEn?: string): string {
+    if (!prayerNameEn) return '🕌';
+    const name = prayerNameEn.toLowerCase();
+    if (name.includes('fajr')) return '🌙';
+    if (name.includes('dhuhr') || name.includes('zuhr')) return '☀️';
+    if (name.includes('asr')) return '🌤️';
+    if (name.includes('maghrib')) return '🌅';
+    if (name.includes('isha')) return '🌌';
+    return '🕌';
   }
 }

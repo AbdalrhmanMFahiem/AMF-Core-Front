@@ -1,0 +1,283 @@
+<app-modal
+  [isOpen]="((itemDetailsModalService.state$ | async)?.isOpen) || false"
+  (close)="close()"
+  className="max-w-4xl m-4"
+>
+  <ng-container *ngIf="itemDetailsModalService.state$ | async as state">
+    <div class="no-scrollbar relative w-full overflow-y-auto rounded-3xl bg-white p-6 dark:bg-gray-900 lg:p-8 space-y-6">
+      
+      <!-- Loading Skeleton -->
+      <div *ngIf="state.loading" class="py-12 text-center space-y-4">
+        <div class="inline-flex items-center justify-center p-3 rounded-2xl bg-brand-50 text-brand-600 dark:bg-brand-950/50 dark:text-brand-400">
+          <svg class="animate-spin h-8 w-8 text-brand-500" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+        </div>
+        <p class="text-sm font-medium text-gray-500 dark:text-gray-400 animate-pulse">
+          {{ 'common.loading' | translate }}
+        </p>
+      </div>
+
+      <!-- Error State -->
+      <div *ngIf="!state.loading && state.error" class="p-6 text-center text-rose-500">
+        <p class="text-base font-semibold">{{ state.error }}</p>
+      </div>
+
+      <!-- Main Item Content -->
+      <div *ngIf="!state.loading && state.item as item">
+        <!-- Header Section -->
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-5 border-b border-gray-100 dark:border-gray-800 ltr:pr-12 rtl:pl-12">
+          <div class="space-y-1">
+            <div class="flex items-center gap-2 flex-wrap">
+              <span class="px-2.5 py-1 rounded-md text-xs font-mono font-bold bg-brand-50 text-brand-600 dark:bg-brand-950/60 dark:text-brand-300 border border-brand-200/60 dark:border-brand-800/40">
+                {{ item.code }}
+              </span>
+              <span *ngIf="item.itemGroupName" class="px-2.5 py-1 rounded-md text-xs font-medium bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300">
+                {{ item.itemGroupName }}
+              </span>
+              <span *ngIf="item.baseUomType" class="px-2.5 py-1 rounded-md text-xs font-semibold bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-300 border border-amber-200 dark:border-amber-800">
+                Base UOM: {{ item.inventoryUomName || item.baseUomType }}
+              </span>
+            </div>
+            <h3 class="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
+              {{ item.name }}
+            </h3>
+            <p *ngIf="item.eName && item.eName !== item.aName" class="text-xs text-gray-400 font-medium">
+              {{ item.eName }}
+            </p>
+          </div>
+        </div>
+
+        <!-- Modern Tabs Navigation -->
+        <div class="flex items-center gap-2 border-b border-gray-200 dark:border-gray-800 mt-4 mb-6 overflow-x-auto">
+          <button
+            type="button"
+            (click)="setActiveTab('general')"
+            class="px-4 py-2.5 text-sm font-semibold border-b-2 transition-all duration-200 flex items-center gap-2 whitespace-nowrap cursor-pointer"
+            [ngClass]="{
+              'border-brand-500 text-brand-600 dark:text-brand-400': activeTab === 'general',
+              'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200': activeTab !== 'general'
+            }"
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span>{{ 'itemDetails.generalInfo' | translate }}</span>
+          </button>
+
+          <button
+            type="button"
+            (click)="setActiveTab('stock')"
+            class="px-4 py-2.5 text-sm font-semibold border-b-2 transition-all duration-200 flex items-center gap-2 whitespace-nowrap cursor-pointer"
+            [ngClass]="{
+              'border-brand-500 text-brand-600 dark:text-brand-400': activeTab === 'stock',
+              'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200': activeTab !== 'stock'
+            }"
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+            </svg>
+            <span>{{ 'itemDetails.warehouseStock' | translate }}</span>
+            <span *ngIf="state.stock" class="px-2 py-0.5 text-[11px] font-bold rounded-full bg-brand-50 text-brand-600 dark:bg-brand-950/60 dark:text-brand-300">
+              {{ state.stock.totalOnHandQty | number:'1.0-2' }}
+            </span>
+          </button>
+
+          <button
+            *ngIf="state.bomComponents && state.bomComponents.length > 0"
+            type="button"
+            (click)="setActiveTab('bom')"
+            class="px-4 py-2.5 text-sm font-semibold border-b-2 transition-all duration-200 flex items-center gap-2 whitespace-nowrap cursor-pointer"
+            [ngClass]="{
+              'border-brand-500 text-brand-600 dark:text-brand-400': activeTab === 'bom',
+              'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200': activeTab !== 'bom'
+            }"
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L5.6 15.12a2 2 0 00-1.896.402l-1.3 1.3a2 2 0 00-.586 1.414V20a2 2 0 002 2h16a2 2 0 002-2v-1.757a2 2 0 00-.572-1.414l-1.314-1.401z" />
+            </svg>
+            <span>{{ 'itemDetails.bomComponents' | translate }}</span>
+            <span class="px-2 py-0.5 text-[11px] font-bold rounded-full bg-purple-50 text-purple-600 dark:bg-purple-950/60 dark:text-purple-300">
+              {{ state.bomComponents.length }}
+            </span>
+          </button>
+        </div>
+
+        <!-- TAB 1: General Info -->
+        <div *ngIf="activeTab === 'general'" class="space-y-6">
+          <!-- KPI Summary Cards -->
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <div class="p-4 rounded-2xl bg-gray-50/80 border border-gray-200/80 dark:bg-gray-800/40 dark:border-gray-800 space-y-1">
+              <p class="text-xs text-gray-500 dark:text-gray-400 font-medium">{{ 'itemDetails.initialPrice' | translate }}</p>
+              <p class="text-base font-bold font-mono text-gray-900 dark:text-white">
+                {{ item.lastPurchasePrice || 0 | number:'1.2-4' }}
+              </p>
+            </div>
+            <div class="p-4 rounded-2xl bg-gray-50/80 border border-gray-200/80 dark:bg-gray-800/40 dark:border-gray-800 space-y-1">
+              <p class="text-xs text-gray-500 dark:text-gray-400 font-medium">{{ 'itemDetails.lastPurchasePrice' | translate }}</p>
+              <p class="text-base font-bold font-mono text-gray-900 dark:text-white">
+                {{ item.lastPurchasePrice | number:'1.2-4' }}
+              </p>
+            </div>
+            <div class="p-4 rounded-2xl bg-gray-50/80 border border-gray-200/80 dark:bg-gray-800/40 dark:border-gray-800 space-y-1">
+              <p class="text-xs text-gray-500 dark:text-gray-400 font-medium">{{ 'itemDetails.salesPrice' | translate }}</p>
+              <p class="text-base font-bold font-mono text-emerald-600 dark:text-emerald-400">
+                {{ item.salesPrice | number:'1.2-4' }}
+              </p>
+            </div>
+            <div class="p-4 rounded-2xl bg-brand-50/60 border border-brand-200/60 dark:bg-brand-950/30 dark:border-brand-800/40 space-y-1">
+              <p class="text-xs text-brand-700 dark:text-brand-300 font-medium">{{ 'itemDetails.totalStock' | translate }}</p>
+              <p class="text-base font-bold font-mono text-brand-600 dark:text-brand-400">
+                {{ state.stock?.totalOnHandQty || 0 | number:'1.2-4' }}
+              </p>
+            </div>
+          </div>
+
+          <!-- Comprehensive Details Grid -->
+          <div class="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-gray-900 shadow-2xs space-y-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-4 gap-x-6">
+              <div>
+                <p class="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">{{ 'itemDetails.itemType' | translate }}</p>
+                <div class="flex items-center gap-1.5 flex-wrap">
+                  <span *ngIf="item.isPurchased" class="px-2 py-0.5 rounded text-xs font-medium bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300">
+                    {{ 'itemDetails.purchased' | translate }}
+                  </span>
+                  <span *ngIf="item.isSold" class="px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300">
+                    {{ 'itemDetails.sold' | translate }}
+                  </span>
+                  <span *ngIf="item.isInventoryItem" class="px-2 py-0.5 rounded text-xs font-medium bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300">
+                    {{ 'itemDetails.inventory' | translate }}
+                  </span>
+                </div>
+              </div>
+
+              <div>
+                <p class="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">{{ 'itemDetails.inventoryUom' | translate }}</p>
+                <p class="text-sm font-semibold text-gray-800 dark:text-white">{{ item.inventoryUomName || '-' }}</p>
+              </div>
+
+              <div>
+                <p class="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">{{ 'itemDetails.purchaseUom' | translate }}</p>
+                <p class="text-sm font-semibold text-gray-800 dark:text-white">{{ item.purchaseUomName || '-' }}</p>
+              </div>
+
+              <div>
+                <p class="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">{{ 'itemDetails.salesUom' | translate }}</p>
+                <p class="text-sm font-semibold text-gray-800 dark:text-white">{{ item.salesUomName || '-' }}</p>
+              </div>
+
+              <div>
+                <p class="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">{{ 'itemDetails.minStock' | translate }} / {{ 'itemDetails.maxStock' | translate }}</p>
+                <p class="text-sm font-mono font-medium text-gray-800 dark:text-white">
+                  {{ item.minStockLevel || 0 }} / {{ item.maxStockLevel || 0 }}
+                </p>
+              </div>
+
+              <div>
+                <p class="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">{{ 'itemDetails.preferredVendor' | translate }}</p>
+                <p class="text-sm font-medium text-gray-800 dark:text-white">{{ item.preferredVendorName || '-' }}</p>
+              </div>
+
+              <div *ngIf="item.barcode">
+                <p class="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">{{ 'itemDetails.barcode' | translate }}</p>
+                <p class="text-sm font-mono font-semibold text-gray-800 dark:text-white">{{ item.barcode }}</p>
+              </div>
+
+              <div *ngIf="item.notes" class="sm:col-span-2 lg:col-span-3">
+                <p class="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">{{ 'common.notes' | translate }}</p>
+                <p class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed bg-gray-50 dark:bg-gray-800/40 p-3 rounded-xl border border-gray-100 dark:border-gray-800">
+                  {{ item.notes }}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 2: Warehouse Stock Balances -->
+        <div *ngIf="activeTab === 'stock'" class="space-y-4">
+          <div *ngIf="!state.stock || !state.stock.lines || state.stock.lines.length === 0" class="p-8 text-center text-gray-500 dark:text-gray-400 rounded-2xl border border-dashed border-gray-300 dark:border-gray-800">
+            <p class="text-sm">{{ 'itemDetails.noWarehouseStock' | translate }}</p>
+          </div>
+
+          <div *ngIf="state.stock && state.stock.lines && state.stock.lines.length > 0" class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900 overflow-hidden shadow-xs">
+            <table class="w-full text-start text-sm">
+              <thead class="bg-gray-50 dark:bg-gray-800/50 text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
+                <tr>
+                  <th class="py-3 px-4 text-start">{{ 'itemDetails.warehouse' | translate }}</th>
+                  <th class="py-3 px-4 text-end">{{ 'itemDetails.onHandQty' | translate }}</th>
+                  <th class="py-3 px-4 text-end">{{ 'itemDetails.lastSync' | translate }}</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-100 dark:divide-gray-800">
+                <tr *ngFor="let w of state.stock.lines" class="hover:bg-gray-50/50 dark:hover:bg-gray-800/30 transition-colors">
+                  <td class="py-3 px-4">
+                    <div class="flex items-center gap-2">
+                      <span class="px-2 py-0.5 rounded text-xs font-mono font-bold bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300">
+                        {{ w.warehouseCode }}
+                      </span>
+                      <span class="font-medium text-gray-900 dark:text-white">{{ w.warehouseName }}</span>
+                    </div>
+                  </td>
+                  <td class="py-3 px-4 text-end font-mono font-bold" [ngClass]="{'text-brand-600 dark:text-brand-400': w.onHandQty > 0, 'text-gray-400': w.onHandQty <= 0}">
+                    {{ w.onHandQty | number:'1.2-4' }}
+                  </td>
+                  <td class="py-3 px-4 text-end text-xs font-mono text-gray-500 dark:text-gray-400">
+                    {{ w.lastModifiedOn ? (w.lastModifiedOn | date:'yyyy-MM-dd HH:mm') : '-' }}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- TAB 3: BOM Components -->
+        <div *ngIf="activeTab === 'bom'" class="space-y-4">
+          <div *ngIf="!state.bomComponents || state.bomComponents.length === 0" class="p-8 text-center text-gray-500 dark:text-gray-400 rounded-2xl border border-dashed border-gray-300 dark:border-gray-800">
+            <p class="text-sm">{{ 'itemDetails.noBomComponents' | translate }}</p>
+          </div>
+
+          <div *ngIf="state.bomComponents && state.bomComponents.length > 0" class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900 overflow-hidden shadow-xs">
+            <table class="w-full text-start text-sm">
+              <thead class="bg-gray-50 dark:bg-gray-800/50 text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
+                <tr>
+                  <th class="py-3 px-4 text-start">{{ 'itemDetails.componentCode' | translate }}</th>
+                  <th class="py-3 px-4 text-start">{{ 'itemDetails.componentName' | translate }}</th>
+                  <th class="py-3 px-4 text-end">{{ 'itemDetails.quantity' | translate }}</th>
+                  <th class="py-3 px-4 text-center">{{ 'itemDetails.uom' | translate }}</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-100 dark:divide-gray-800">
+                <tr *ngFor="let b of state.bomComponents" class="hover:bg-gray-50/50 dark:hover:bg-gray-800/30 transition-colors">
+                  <td class="py-3 px-4 font-mono text-xs font-bold text-brand-600 dark:text-brand-400">
+                    {{ b.componentCode || '-' }}
+                  </td>
+                  <td class="py-3 px-4 font-medium text-gray-900 dark:text-white">
+                    {{ b.componentName || '-' }}
+                  </td>
+                  <td class="py-3 px-4 text-end font-mono font-bold text-gray-900 dark:text-white">
+                    {{ b.quantity | number:'1.2-4' }}
+                  </td>
+                  <td class="py-3 px-4 text-center text-xs font-medium text-gray-600 dark:text-gray-400">
+                    {{ b.uomName || b.uomCode || '-' }}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Footer Actions -->
+        <div class="flex items-center justify-end pt-5 border-t border-gray-100 dark:border-gray-800 mt-6">
+          <button
+            type="button"
+            (click)="close()"
+            class="flex items-center justify-center rounded-full border border-gray-300 bg-white px-6 py-2.5 text-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-white/5 transition-all cursor-pointer"
+          >
+            {{ 'common.close' | translate }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</app-modal>

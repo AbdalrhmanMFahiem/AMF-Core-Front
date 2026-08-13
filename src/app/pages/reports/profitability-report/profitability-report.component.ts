@@ -16,6 +16,8 @@ import { SearchableSelectComponent, SearchableOption } from '../../../shared/com
 import { ModalComponent } from '../../../shared/components/ui/modal/modal.component';
 
 import { ToastrService } from 'ngx-toastr';
+import { ExportLoadingService } from '../../../core/services/export-loading.service';
+import { ItemDetailsModalService } from '../../../core/services/item-details-modal.service';
 
 @Component({
   selector: 'app-profitability-report',
@@ -36,9 +38,14 @@ export class ProfitabilityReportComponent implements OnInit {
   private reportService = inject(ReportService);
   private lookupService = inject(LookupService);
   public translate = inject(TranslateService);
+  private exportLoadingService = inject(ExportLoadingService);
+  public itemDetailsModalService = inject(ItemDetailsModalService);
   private toastr = inject(ToastrService);
 
+  viewMode: 'invoices' | 'items' = 'items';
+
   data: PaginatedList<InvoiceProfitability> | null = null;
+  itemData: PaginatedList<any> | null = null;
   loading = false;
 
   filters: ProfitabilityFilter = {
@@ -79,6 +86,12 @@ export class ProfitabilityReportComponent implements OnInit {
   isModalOpen = false;
   selectedInvoice: InvoiceProfitability | null = null;
 
+  // Item Profitability Breakdown Modal State
+  isItemProfitabilityModalOpen = false;
+  selectedItemBreakdown: any = null;
+  selectedItemInvoices: InvoiceProfitability[] = [];
+  itemBreakdownLoading = false;
+
   ngOnInit(): void {
     this.initOptions();
     this.loadLookups();
@@ -106,36 +119,64 @@ export class ProfitabilityReportComponent implements OnInit {
     this.lookupService.getCustomers().subscribe(res => {
       this.customers = res.map(c => ({ value: c.id, label: `${c.code} - ${c.name}` }));
     });
-    this.lookupService.getItemsLookup({ pageNumber: 1, pageSize: 1000 }).subscribe(res => {
-      this.items = res.items.map(i => ({ value: i.id, label: `${i.code} - ${i.name}` }));
-    });
+  }
+
+  switchViewMode(mode: 'invoices' | 'items'): void {
+    if (this.viewMode !== mode) {
+      this.viewMode = mode;
+      this.filters.pageNumber = 1;
+      this.loadData();
+    }
+  }
+
+  openItemDetails(itemId: number): void {
+    if (itemId) {
+      this.itemDetailsModalService.open(itemId);
+    }
   }
 
   loadData(): void {
     this.loading = true;
-    this.reportService.getProfitabilityReport(this.filters).subscribe({
-      next: (res: any) => {
-        this.data = res;
-        if (this.data && this.data.items) {
-          this.data.items = this.data.items.map((item: any) => ({
-            ...item,
-            id: item.invoiceId
-          }));
+    if (this.viewMode === 'items') {
+      this.reportService.getItemProfitabilitySummaryReport(this.filters).subscribe({
+        next: (res: any) => {
+          this.itemData = res;
+          this.calculateSummaries();
+          this.loading = false;
+        },
+        error: () => {
+          this.loading = false;
         }
-        this.calculateSummaries();
-        this.loading = false;
-      },
-      error: () => {
-        this.loading = false;
-      }
-    });
+      });
+    } else {
+      this.reportService.getProfitabilityReport(this.filters).subscribe({
+        next: (res: any) => {
+          this.data = res;
+          if (this.data && this.data.items) {
+            this.data.items = this.data.items.map((item: any) => ({
+              ...item,
+              id: item.invoiceId
+            }));
+          }
+          this.calculateSummaries();
+          this.loading = false;
+        },
+        error: () => {
+          this.loading = false;
+        }
+      });
+    }
   }
 
   calculateSummaries(): void {
-    if (this.data && this.data.items) {
-      this.totalRevenue = this.data.items.reduce((sum, item) => sum + item.totalNetRevenue, 0);
-      this.totalCOGS = this.data.items.reduce((sum, item) => sum + item.totalCOGS, 0);
-      this.totalProfit = this.data.items.reduce((sum, item) => sum + item.grossProfit, 0);
+    if (this.viewMode === 'items' && this.itemData && this.itemData.items) {
+      this.totalRevenue = this.itemData.items.reduce((sum: number, item: any) => sum + (item.totalNetRevenue || 0), 0);
+      this.totalCOGS = this.itemData.items.reduce((sum: number, item: any) => sum + (item.totalCOGS || 0), 0);
+      this.totalProfit = this.itemData.items.reduce((sum: number, item: any) => sum + (item.grossProfit || 0), 0);
+    } else if (this.viewMode === 'invoices' && this.data && this.data.items) {
+      this.totalRevenue = this.data.items.reduce((sum: number, item: any) => sum + (item.totalNetRevenue || 0), 0);
+      this.totalCOGS = this.data.items.reduce((sum: number, item: any) => sum + (item.totalCOGS || 0), 0);
+      this.totalProfit = this.data.items.reduce((sum: number, item: any) => sum + (item.grossProfit || 0), 0);
     }
   }
 
@@ -182,25 +223,87 @@ export class ProfitabilityReportComponent implements OnInit {
     this.isModalOpen = true;
   }
 
+  openItemBreakdown(item: any): void {
+    this.selectedItemBreakdown = item;
+    this.isItemProfitabilityModalOpen = true;
+    this.itemBreakdownLoading = true;
+    this.selectedItemInvoices = [];
+
+    const itemFilter: ProfitabilityFilter = {
+      ...this.filters,
+      itemId: item.itemId,
+      pageNumber: 1,
+      pageSize: 500
+    };
+
+    this.reportService.getProfitabilityReport(itemFilter).subscribe({
+      next: (res: PaginatedList<InvoiceProfitability>) => {
+        this.selectedItemInvoices = res.items || [];
+        this.itemBreakdownLoading = false;
+      },
+      error: () => {
+        this.itemBreakdownLoading = false;
+        this.toastr.error(this.translate.instant('common.errorLoadingData'));
+      }
+    });
+  }
+
   getCostSourceLabel(costSource: string): string {
     if (!costSource) return '-';
     const key = `reports.profitability.costSources.${costSource}`;
     return this.translate.instant(key);
   }
 
+  getCostSourceTooltip(costSource: string): string {
+    if (!costSource) return '';
+    const isAr = this.translate.currentLang === 'ar' || !this.translate.currentLang;
+    switch (costSource) {
+      case 'ItemCost':
+      case 'AvgCost':
+        return isAr
+          ? 'تم الاحتساب وفق المتوسط المتحرك لتكلفة المخزون (Moving Average)'
+          : 'Calculated using inventory moving average cost snapshot';
+      case 'BomCost':
+        return isAr
+          ? 'تم الاحتساب بناءً على تكلفة قائمة مواد ومكونات التصنيع المباشرة (BOM Cost Snapshot)'
+          : 'Calculated using direct Bill of Materials (BOM) cost snapshot';
+      case 'LastPurchasePrice':
+        return isAr
+          ? 'تم الاحتساب بناءً على آخر سعر شراء تم التوريد به للصنف'
+          : 'Calculated using last purchase price';
+      case 'InitialPrice':
+        return isAr
+          ? 'تم الاحتساب بناءً على التكلفة المبدئية المسجلة للصنف كبديل مساند'
+          : 'Calculated using initial fallback item cost';
+      default:
+        return '';
+    }
+  }
+
   exportExcel(): void {
-    this.reportService.exportProfitabilityExcel(this.filters).subscribe({
+    this.exportLoadingService.show({ fileType: 'excel' });
+    const req = this.viewMode === 'items' 
+      ? this.reportService.exportItemProfitabilitySummaryExcel(this.filters)
+      : this.reportService.exportProfitabilityExcel(this.filters);
+
+    req.subscribe({
       next: (blob) => {
+        this.exportLoadingService.hide();
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = `InvoiceProfitability_${new Date().getTime()}.xlsx`;
+        a.download = this.viewMode === 'items'
+          ? `ItemProfitabilitySummary_${new Date().getTime()}.xlsx`
+          : `InvoiceProfitability_${new Date().getTime()}.xlsx`;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
         window.URL.revokeObjectURL(url);
       },
-      error: () => this.toastr.error(this.translate.instant('reports.exportError'))
+      error: () => {
+        this.exportLoadingService.hide();
+        this.toastr.error(this.translate.instant('reports.exportError'));
+      }
     });
   }
 }

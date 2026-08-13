@@ -152,7 +152,8 @@ export class SidebarService {
         { name: "Sales Report", translationKey: "pages.salesReport", path: "/reports/sales" },
         { name: "Purchases Report", translationKey: "pages.purchasesReport", path: "/reports/purchases" },
         { name: "Warehouse Items Stock", translationKey: "reports.warehouseStock.title", path: "/reports/warehouse-items-stock" },
-        { name: "Invoice Profitability", translationKey: "reports.profitability.title", path: "/reports/profitability" }
+        { name: "Invoice Profitability", translationKey: "reports.profitability.title", path: "/reports/profitability" },
+        { name: "Unpriced Items Report", translationKey: "reports.unpricedItems.title", path: "/reports/unpriced-items", permissionKey: Permissions.ViewUnpricedItemsReport }
       ],
     }
   ];

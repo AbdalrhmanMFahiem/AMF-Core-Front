@@ -1,4 +1,37 @@
-<app-page-breadcrumb [pageTitle]="'reports.profitability.title' | translate"></app-page-breadcrumb>
+<app-page-breadcrumb [pageTitle]="'reports.profitability.title'"></app-page-breadcrumb>
+
+<!-- View Mode Switcher -->
+<div class="flex items-center gap-3 mb-6 bg-gray-100/80 p-1.5 rounded-2xl dark:bg-gray-800/80 w-fit">
+  <button
+    type="button"
+    (click)="switchViewMode('items')"
+    class="px-5 py-2.5 rounded-xl text-sm font-bold transition-all duration-200 flex items-center gap-2 cursor-pointer"
+    [ngClass]="{
+      'bg-white text-brand-600 shadow-sm dark:bg-gray-900 dark:text-brand-400': viewMode === 'items',
+      'text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white': viewMode !== 'items'
+    }"
+  >
+    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+    </svg>
+    <span>إجمالي الأرباح والتكلفة بالأصناف (Item Sales & Cost)</span>
+  </button>
+
+  <button
+    type="button"
+    (click)="switchViewMode('invoices')"
+    class="px-5 py-2.5 rounded-xl text-sm font-bold transition-all duration-200 flex items-center gap-2 cursor-pointer"
+    [ngClass]="{
+      'bg-white text-brand-600 shadow-sm dark:bg-gray-900 dark:text-brand-400': viewMode === 'invoices',
+      'text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white': viewMode !== 'invoices'
+    }"
+  >
+    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+    </svg>
+    <span>تفاصيل الفواتير (Invoices View)</span>
+  </button>
+</div>
 
 <!-- Summary Cards -->
 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
@@ -6,7 +39,7 @@
   <div
     class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-theme-sm border border-gray-100 dark:border-white/5 flex items-center justify-between">
     <div>
-      <p class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">{{ 'reports.profitability.totalNetRevenue' | translate }}</p>
+      <p class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">{{ 'reports.profitability.totalNetRevenue' | translate }} (كم بيعته)</p>
       <h3 class="text-2xl font-bold text-gray-900 dark:text-white">{{ totalRevenue | number:'1.2-2' }}</h3>
     </div>
     <div
@@ -22,7 +55,7 @@
   <div
     class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-theme-sm border border-gray-100 dark:border-white/5 flex items-center justify-between">
     <div>
-      <p class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">{{ 'reports.profitability.totalCOGS' | translate }}</p>
+      <p class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">{{ 'reports.profitability.totalCOGS' | translate }} (كلفني كام)</p>
       <h3 class="text-2xl font-bold text-gray-900 dark:text-white">{{ totalCOGS | number:'1.2-2' }}</h3>
     </div>
     <div
@@ -38,7 +71,7 @@
   <div
     class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-theme-sm border border-gray-100 dark:border-white/5 flex items-center justify-between">
     <div>
-      <p class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">{{ 'reports.profitability.totalGrossProfit' | translate }}</p>
+      <p class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">{{ 'reports.profitability.totalGrossProfit' | translate }} (صافي الأرباح)</p>
       <h3 class="text-2xl font-bold" [ngClass]="totalProfit >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'">
         {{ totalProfit | number:'1.2-2' }}
       </h3>
@@ -52,18 +85,159 @@
   </div>
 </div>
 
-<app-crud-list [pageTitle]="'reports.profitability.title' | translate" [columns]="columns" [data]="data"
+<!-- ITEM-LEVEL SUMMARY TABLE -->
+<div *ngIf="viewMode === 'items'" class="bg-white dark:bg-gray-900 rounded-2xl p-6 shadow-theme-sm border border-gray-100 dark:border-white/5 space-y-6">
+  <!-- Filters Bar -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+    <app-date-picker id="dateFromItem" name="dateFrom" [(ngModel)]="filters.dateFrom" [label]="'common.from' | translate" [placeholder]="'common.selectDate'">
+    </app-date-picker>
+
+    <app-date-picker id="dateToItem" name="dateTo" [(ngModel)]="filters.dateTo" [label]="'common.to' | translate" [placeholder]="'common.selectDate'">
+    </app-date-picker>
+
+    <div>
+      <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+        {{ 'warehouses.title' | translate }}
+      </label>
+      <app-searchable-select [(ngModel)]="filters.warehouseId" name="warehouseId" [options]="warehouses" [placeholder]="'common.select'">
+      </app-searchable-select>
+    </div>
+  </div>
+
+  <div class="flex items-center justify-between gap-4 flex-wrap pt-2">
+    <div class="relative min-w-60">
+      <input
+        type="text"
+        [(ngModel)]="filters.searchValue"
+        (keyup.enter)="applyFilters()"
+        placeholder="بحث باسم أو كود الصنف..."
+        class="w-full pl-10 pr-4 py-2 text-sm bg-gray-50 border border-gray-200 rounded-xl dark:bg-gray-800 dark:border-gray-700 dark:text-white"
+      />
+    </div>
+
+    <div class="flex items-center gap-3">
+      <button type="button" (click)="exportExcel()" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-semibold text-white bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 rounded-xl shadow-xs transition-all duration-200 cursor-pointer border border-emerald-600 dark:border-emerald-500 hover:shadow-emerald-500/20">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+        </svg>
+        <span>{{ 'common.exportExcel' | translate }}</span>
+      </button>
+
+      <button type="button" (click)="clearFilters()" class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-xl hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700">
+        إلغاء
+      </button>
+
+      <button type="button" (click)="applyFilters()" class="px-5 py-2 text-sm font-medium text-white bg-brand-500 rounded-xl hover:bg-brand-600">
+        تطبيق وتحديث
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="py-12 text-center text-gray-500">
+    <div class="inline-block animate-spin h-8 w-8 border-4 border-brand-500 border-t-transparent rounded-full mb-2"></div>
+    <p class="text-sm font-medium">جاري تحميل إجماليات الأصناف...</p>
+  </div>
+
+  <!-- Items Profitability Table -->
+  <div *ngIf="!loading" class="overflow-x-auto rounded-2xl border border-gray-200 dark:border-gray-800">
+    <table class="w-full text-start text-sm">
+      <thead class="bg-gray-50/80 dark:bg-gray-800/60 text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
+        <tr>
+          <th class="py-3.5 px-4 text-start">الصنف (Item)</th>
+          <th class="py-3.5 px-4 text-start">المجموعة</th>
+          <th class="py-3.5 px-4 text-center">النوع</th>
+          <th class="py-3.5 px-4 text-end">الكمية المباعة</th>
+          <th class="py-3.5 px-4 text-end">إجمالي مبيعاته (Sold)</th>
+          <th class="py-3.5 px-4 text-end">إجمالي تكلفته (Cost)</th>
+          <th class="py-3.5 px-4 text-end">إجمالي الربح</th>
+          <th class="py-3.5 px-4 text-center">نسبة الربح %</th>
+          <th class="py-3.5 px-4 text-center">{{ 'common.actions' | translate }}</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-100 dark:divide-gray-800">
+        <tr *ngIf="!itemData || itemData.items.length === 0">
+          <td colspan="9" class="py-8 text-center text-gray-500">لا توجد مبيعات أصناف بالفترة المحددة</td>
+        </tr>
+        <tr *ngFor="let item of itemData?.items" class="hover:bg-gray-50/50 dark:hover:bg-gray-800/30 transition-colors">
+          <td class="py-3 px-4 text-start cursor-pointer group" (click)="openItemBreakdown(item)">
+            <div class="flex flex-col">
+              <span class="font-mono text-xs font-bold text-brand-600 group-hover:text-brand-700 dark:text-brand-400 underline underline-offset-2 decoration-brand-300 dark:decoration-brand-700">
+                {{ item.itemCode }}
+              </span>
+              <span class="font-semibold text-sm text-gray-900 group-hover:text-brand-600 dark:text-white mt-0.5">
+                {{ item.itemName }}
+              </span>
+            </div>
+          </td>
+          <td class="py-3 px-4 text-gray-600 dark:text-gray-400">{{ item.itemGroupName || '-' }}</td>
+          <td class="py-3 px-4 text-center">
+            <span [class]="item.isManufactured ? 'px-2 py-0.5 rounded-full text-xs font-semibold bg-purple-50 text-purple-600 dark:bg-purple-950/40 dark:text-purple-300' : 'px-2 py-0.5 rounded-full text-xs font-semibold bg-blue-50 text-blue-600 dark:bg-blue-950/40 dark:text-blue-300'">
+              {{ item.isManufactured ? 'مُصنَّع' : 'تجاري' }}
+            </span>
+          </td>
+          <td class="py-3 px-4 text-end font-mono font-bold text-gray-800 dark:text-white">
+            {{ item.totalQuantitySold | number:'1.0-2' }}
+          </td>
+          <td class="py-3 px-4 text-end font-mono font-bold text-emerald-600 dark:text-emerald-400">
+            {{ item.totalNetRevenue | number:'1.2-2' }}
+          </td>
+          <td class="py-3 px-4 text-end font-mono font-bold text-orange-600 dark:text-orange-400">
+            {{ item.totalCOGS | number:'1.2-2' }}
+          </td>
+          <td class="py-3 px-4 text-end font-mono font-bold" [ngClass]="item.grossProfit >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'">
+            {{ item.grossProfit | number:'1.2-2' }}
+          </td>
+          <td class="py-3 px-4 text-center font-mono font-bold">
+            <span class="px-2.5 py-1 rounded-lg text-xs" [ngClass]="item.profitMarginPercentage >= 0 ? 'bg-green-50 text-green-700 dark:bg-green-950/50 dark:text-green-300' : 'bg-red-50 text-red-700 dark:bg-red-950/50 dark:text-red-300'">
+              {{ item.profitMarginPercentage | number:'1.2-2' }}%
+            </span>
+          </td>
+          <td class="py-3 px-4 text-center">
+            <div class="flex items-center justify-center gap-2">
+              <button
+                type="button"
+                (click)="openItemBreakdown(item)"
+                class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-brand-700 bg-brand-50 hover:bg-brand-100 dark:bg-brand-950/60 dark:text-brand-300 dark:hover:bg-brand-900 rounded-xl transition-all shadow-xs cursor-pointer border border-brand-200 dark:border-brand-800"
+                [title]="'reports.profitability.showDetails' | translate"
+              >
+                <svg class="w-4 h-4 text-brand-600 dark:text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                </svg>
+                <span>{{ 'reports.profitability.showDetails' | translate }}</span>
+              </button>
+
+              <button
+                type="button"
+                (click)="openItemDetails(item.itemId)"
+                class="inline-flex items-center p-1.5 text-gray-500 hover:text-gray-700 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700 rounded-xl transition-colors cursor-pointer"
+                [title]="'reports.profitability.itemCard' | translate"
+              >
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<app-crud-list *ngIf="viewMode === 'invoices'" [pageTitle]="'reports.profitability.title'" [columns]="columns" [data]="data"
   [filters]="filters" [isLoading]="loading" [showIncludeDisabledToggle]="false" [hideBuiltInSearch]="false"
   [hasAdvancedFilters]="true" [hasActiveAdvancedFilters]="hasActiveAdvancedFilters" [hideEdit]="true"
   [hideToggleStatus]="true" [hideAdd]="true" (search)="onSearch()" (pageChange)="onPageChange($event)" (view)="onView($event)">
   <!-- Advanced Filters Panel -->
   <div advanced-filters class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-4">
     <app-date-picker id="dateFrom" name="dateFrom" [(ngModel)]="filters.dateFrom" [label]="'common.from' | translate"
-      [placeholder]="'common.selectDate' | translate">
+      [placeholder]="'common.selectDate'">
     </app-date-picker>
 
     <app-date-picker id="dateTo" name="dateTo" [(ngModel)]="filters.dateTo" [label]="'common.to' | translate"
-      [placeholder]="'common.selectDate' | translate">
+      [placeholder]="'common.selectDate'">
     </app-date-picker>
 
     <div>
@@ -71,7 +245,7 @@
         {{ 'warehouses.title' | translate }}
       </label>
       <app-searchable-select [(ngModel)]="filters.warehouseId" name="warehouseId" [options]="warehouses"
-        [placeholder]="'common.select' | translate">
+        [placeholder]="'common.select'">
       </app-searchable-select>
     </div>
 
@@ -80,16 +254,7 @@
         {{ 'common.customer' | translate }}
       </label>
       <app-searchable-select [(ngModel)]="filters.customerId" name="customerId" [options]="customers"
-        [placeholder]="'common.select' | translate">
-      </app-searchable-select>
-    </div>
-
-    <div>
-      <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-        {{ 'items.title' | translate }}
-      </label>
-      <app-searchable-select [(ngModel)]="filters.itemId" name="itemId" [options]="items"
-        [placeholder]="'common.select' | translate">
+        [placeholder]="'common.select'">
       </app-searchable-select>
     </div>
 
@@ -98,7 +263,7 @@
         {{ 'reports.profitability.itemType' | translate }}
       </label>
       <app-searchable-select [(ngModel)]="filters.isManufactured" name="isManufactured" [options]="itemTypeOptions"
-        [placeholder]="'common.select' | translate">
+        [placeholder]="'common.select'">
       </app-searchable-select>
     </div>
 
@@ -107,7 +272,7 @@
         {{ 'reports.profitability.invoiceType' | translate }}
       </label>
       <app-searchable-select [(ngModel)]="filters.invoiceType" name="invoiceType" [options]="invoiceTypeOptions"
-        [placeholder]="'common.select' | translate">
+        [placeholder]="'common.select'">
       </app-searchable-select>
     </div>
   </div>
@@ -115,11 +280,11 @@
   <!-- Action Buttons for Advanced Filters -->
   <div advanced-filters-actions class="flex justify-end gap-3 w-full">
     <button type="button" (click)="exportExcel()"
-      class="flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-lg hover:bg-emerald-100 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20 dark:hover:bg-emerald-500/20 transition-colors shadow-theme-xs">
+      class="inline-flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-semibold text-white bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 rounded-xl shadow-xs transition-all duration-200 cursor-pointer border border-emerald-600 dark:border-emerald-500 hover:shadow-emerald-500/20">
       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
       </svg>
-      <span>{{ 'reports.exportExcel' | translate }}</span>
+      <span>{{ 'common.exportExcel' | translate }}</span>
     </button>
     <button type="button" (click)="clearFilters()"
       class="px-5 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700 dark:hover:bg-gray-700 transition-colors">
@@ -131,6 +296,143 @@
     </button>
   </div>
 </app-crud-list>
+
+<!-- Item Profitability Breakdown Modal -->
+<app-modal [isOpen]="isItemProfitabilityModalOpen" (close)="isItemProfitabilityModalOpen = false" [className]="'max-w-7xl'">
+  <div class="px-6 py-5 border-b border-gray-100 dark:border-white/5 flex justify-between items-center bg-white dark:bg-gray-900 rounded-t-2xl">
+    <div class="flex items-center gap-4">
+      <div class="w-12 h-12 rounded-full bg-brand-50 dark:bg-brand-500/10 flex items-center justify-center text-brand-600 dark:text-brand-400 shadow-inner">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+        </svg>
+      </div>
+      <div>
+        <div class="flex items-center gap-3">
+          <h3 class="text-xl font-bold text-gray-900 dark:text-white">
+            {{ selectedItemBreakdown?.itemCode }} - {{ selectedItemBreakdown?.itemName }}
+          </h3>
+          <span [class]="selectedItemBreakdown?.isManufactured ? 'px-2.5 py-0.5 rounded-full text-xs font-bold bg-purple-100 text-purple-700 dark:bg-purple-950/60 dark:text-purple-300 border border-purple-200 dark:border-purple-800' : 'px-2.5 py-0.5 rounded-full text-xs font-bold bg-blue-100 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300 border border-blue-200 dark:border-blue-800'">
+            {{ (selectedItemBreakdown?.isManufactured ? 'reports.profitability.manufactured' : 'reports.profitability.trading') | translate }}
+          </span>
+        </div>
+        <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
+          {{ 'reports.profitability.itemProfitabilityBreakdown' | translate }}
+          <span *ngIf="selectedItemBreakdown?.itemGroupName">({{ selectedItemBreakdown?.itemGroupName }})</span>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="p-6 bg-gray-50/30 dark:bg-gray-900/50 rounded-b-2xl space-y-6">
+    <!-- Item Summary Metrics Cards -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div class="bg-white dark:bg-gray-800 p-4 rounded-xl border border-gray-100 dark:border-gray-700/60 shadow-xs">
+        <span class="text-xs text-gray-500 dark:text-gray-400 font-medium block mb-1">{{ 'reports.profitability.totalQuantitySold' | translate }}</span>
+        <span class="text-lg font-bold font-mono text-gray-900 dark:text-white">{{ selectedItemBreakdown?.totalQuantitySold | number:'1.0-2' }}</span>
+      </div>
+
+      <div class="bg-white dark:bg-gray-800 p-4 rounded-xl border border-gray-100 dark:border-gray-700/60 shadow-xs">
+        <span class="text-xs text-gray-500 dark:text-gray-400 font-medium block mb-1">{{ 'reports.profitability.totalRevenue' | translate }}</span>
+        <span class="text-lg font-bold font-mono text-emerald-600 dark:text-emerald-400">{{ selectedItemBreakdown?.totalNetRevenue | number:'1.2-2' }}</span>
+      </div>
+
+      <div class="bg-white dark:bg-gray-800 p-4 rounded-xl border border-gray-100 dark:border-gray-700/60 shadow-xs">
+        <span class="text-xs text-gray-500 dark:text-gray-400 font-medium block mb-1">{{ 'reports.profitability.totalCOGS' | translate }}</span>
+        <span class="text-lg font-bold font-mono text-orange-600 dark:text-orange-400">{{ selectedItemBreakdown?.totalCOGS | number:'1.2-2' }}</span>
+      </div>
+
+      <div class="bg-white dark:bg-gray-800 p-4 rounded-xl border border-gray-100 dark:border-gray-700/60 shadow-xs">
+        <span class="text-xs text-gray-500 dark:text-gray-400 font-medium block mb-1">{{ 'reports.profitability.grossProfit' | translate }}</span>
+        <div class="flex items-center gap-2">
+          <span class="text-lg font-bold font-mono" [ngClass]="selectedItemBreakdown?.grossProfit >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'">
+            {{ selectedItemBreakdown?.grossProfit | number:'1.2-2' }}
+          </span>
+          <span class="text-xs px-2 py-0.5 rounded-md font-bold font-mono" [ngClass]="selectedItemBreakdown?.profitMarginPercentage >= 0 ? 'bg-green-50 text-green-700 dark:bg-green-950/60 dark:text-green-300' : 'bg-red-50 text-red-700 dark:bg-red-950/60 dark:text-red-300'">
+            {{ selectedItemBreakdown?.profitMarginPercentage | number:'1.2-2' }}%
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Loading State -->
+    <div *ngIf="itemBreakdownLoading" class="py-12 text-center text-gray-500">
+      <div class="inline-block animate-spin h-8 w-8 border-4 border-brand-500 border-t-transparent rounded-full mb-2"></div>
+      <p class="text-sm font-medium">جاري تفكيك حركات ومبيعات الصنف...</p>
+    </div>
+
+    <!-- Invoices Breakdown Table -->
+    <div *ngIf="!itemBreakdownLoading" class="overflow-x-auto rounded-xl border border-gray-200 dark:border-gray-800">
+      <table class="w-full text-start text-sm border-collapse min-w-225">
+        <thead>
+          <tr class="bg-gray-100/60 dark:bg-gray-800/60 border-b border-gray-200 dark:border-gray-700 text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
+            <th class="py-3.5 px-4 text-start">رقم الفاتورة والتاريخ</th>
+            <th class="py-3.5 px-4 text-start">العميل والمخزن</th>
+            <th class="py-3.5 px-4 text-end">الكمية</th>
+            <th class="py-3.5 px-4 text-end">سعر البيع</th>
+            <th class="py-3.5 px-4 text-end">الخصومات (سطر + فاتورة)</th>
+            <th class="py-3.5 px-4 text-end">المصاريف الموزعة</th>
+            <th class="py-3.5 px-4 text-end">صافي الإيراد</th>
+            <th class="py-3.5 px-4 text-end">تكلفة الوحدة</th>
+            <th class="py-3.5 px-4 text-center">أساس الاحتساب (Cost Basis)</th>
+            <th class="py-3.5 px-4 text-end">إجمالي التكلفة (COGS)</th>
+            <th class="py-3.5 px-4 text-end">الربح والنسبة %</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-100 dark:divide-gray-800 bg-white dark:bg-gray-900">
+          <ng-container *ngFor="let inv of selectedItemInvoices">
+            <tr *ngFor="let line of inv.lines" class="hover:bg-gray-50/50 dark:hover:bg-gray-800/30 transition-colors">
+              <td class="py-3.5 px-4 text-start">
+                <div class="flex flex-col">
+                  <span class="font-mono font-bold text-brand-600 dark:text-brand-400">{{ inv.code }}</span>
+                  <span class="text-xs text-gray-500 dark:text-gray-400">{{ inv.invoiceDate | date:'yyyy-MM-dd HH:mm' }}</span>
+                </div>
+              </td>
+              <td class="py-3.5 px-4 text-start">
+                <div class="flex flex-col">
+                  <span class="font-semibold text-gray-900 dark:text-white">{{ inv.businessPartnerName || inv.customerName }}</span>
+                  <span class="text-xs text-gray-500 dark:text-gray-400">{{ inv.warehouseName }}</span>
+                </div>
+              </td>
+              <td class="py-3.5 px-4 text-end font-mono font-bold text-gray-800 dark:text-white">
+                {{ line.quantity | number:'1.0-2' }}
+              </td>
+              <td class="py-3.5 px-4 text-end font-mono text-gray-600 dark:text-gray-300">
+                {{ line.unitPrice | number:'1.2-2' }}
+              </td>
+              <td class="py-3.5 px-4 text-end font-mono text-red-600 dark:text-red-400">
+                {{ (line.directLineDiscount + line.allocatedHeaderDiscount) | number:'1.2-2' }}
+              </td>
+              <td class="py-3.5 px-4 text-end font-mono text-brand-600 dark:text-brand-400">
+                {{ line.allocatedHeaderCost | number:'1.2-2' }}
+              </td>
+              <td class="py-3.5 px-4 text-end font-mono font-bold text-emerald-600 dark:text-emerald-400">
+                {{ line.lineNetRevenue | number:'1.2-2' }}
+              </td>
+              <td class="py-3.5 px-4 text-end font-mono text-gray-700 dark:text-gray-300">
+                {{ line.unitCostSnapShot | number:'1.2-2' }}
+              </td>
+              <td class="py-3.5 px-4 text-center">
+                <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-700 shadow-2xs cursor-help" [title]="getCostSourceTooltip(line.costSource)">
+                  {{ getCostSourceLabel(line.costSource) }}
+                </span>
+              </td>
+              <td class="py-3.5 px-4 text-end font-mono font-bold text-orange-600 dark:text-orange-400">
+                {{ line.lineTotalCOGS | number:'1.2-2' }}
+              </td>
+              <td class="py-3.5 px-4 text-end font-mono font-bold" [ngClass]="line.lineGrossProfit >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'">
+                <div>{{ line.lineGrossProfit | number:'1.2-2' }}</div>
+                <div class="text-xs font-normal">({{ line.profitMarginPercentage | number:'1.2-2' }}%)</div>
+              </td>
+            </tr>
+          </ng-container>
+          <tr *ngIf="selectedItemInvoices.length === 0" class="py-8 text-center text-gray-500">
+            <td colspan="11" class="py-8 text-center text-gray-500">لا توجد تفاصيل فواتير حركات لهذا الصنف بالمعايير المحددة</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</app-modal>
 
 <!-- Invoice Lines Modal -->
 <app-modal [isOpen]="isModalOpen" (close)="isModalOpen = false" [className]="'max-w-7xl'">
@@ -153,7 +455,7 @@
 
   <div class="p-6 bg-gray-50/30 dark:bg-gray-900/50 rounded-b-2xl">
     <div class="overflow-x-auto">
-      <table class="w-full text-left border-collapse min-w-[900px]">
+      <table class="w-full text-left border-collapse min-w-225">
         <thead>
           <tr class="bg-gray-100/50 dark:bg-gray-800/50 border-y border-gray-200 dark:border-gray-700">
             <th class="py-3 px-4 text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">{{ 'reports.profitability.item' | translate }}</th>
@@ -187,7 +489,7 @@
             <td class="py-3 px-4 text-sm font-semibold text-gray-900 dark:text-white text-right">{{ line.lineNetRevenue | number:'1.2-2' }}</td>
             <td class="py-3 px-4 text-sm text-gray-600 dark:text-gray-400 text-right">{{ line.unitCostSnapShot | number:'1.2-2' }}</td>
             <td class="py-3 px-4 text-xs text-center">
-              <span class="px-2 py-0.5 rounded-md text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300 border border-gray-200 dark:border-gray-700">
+              <span class="px-2 py-0.5 rounded-md text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300 border border-gray-200 dark:border-gray-700 cursor-help" [title]="getCostSourceTooltip(line.costSource)">
                 {{ getCostSourceLabel(line.costSource) }}
               </span>
             </td>

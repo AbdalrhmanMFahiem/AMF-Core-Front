@@ -2,28 +2,44 @@
   <div class="flex flex-col md:flex-row items-center justify-between gap-4" *ngIf="userData as user">
     <!-- Company & Branch Info -->
     <div class="flex flex-wrap items-center gap-4 text-sm text-gray-600 dark:text-gray-300 font-medium">
-      <div class="flex items-center gap-2" *ngIf="user.companyName">
-        <div class="w-8 h-8 rounded-full overflow-hidden border border-gray-200 dark:border-gray-600 bg-gray-50 flex items-center justify-center">
-          <img *ngIf="logoUrl" [src]="logoUrl" alt="Logo" class="object-cover w-full h-full" />
-          <i *ngIf="!logoUrl" class="ri-building-line text-lg text-gray-400"></i>
+      <!-- Company Info -->
+      <div class="flex items-center gap-2.5" *ngIf="user.companyName">
+        <div class="relative w-8 h-8 rounded-lg overflow-hidden border border-brand-200 dark:border-brand-500/30 bg-brand-50/60 dark:bg-brand-500/10 flex items-center justify-center shadow-2xs shrink-0">
+          <img *ngIf="logoUrl" [src]="logoUrl" alt="Logo" class="w-full h-full object-cover rounded-[inherit]" />
+          <svg *ngIf="!logoUrl" class="w-4.5 h-4.5 text-brand-600 dark:text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+          </svg>
         </div>
         <div class="flex flex-col leading-tight">
-          <span class="text-xs text-gray-400 uppercase tracking-wider">{{ 'footer.company' | translate }}</span>
-          <span>{{ user.companyName }} <span class="text-brand-500">({{ user.companyCode }})</span></span>
+          <span class="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">{{ 'footer.company' | translate }}</span>
+          <span class="text-xs font-bold text-gray-800 dark:text-gray-200">{{ user.companyName }} <span class="text-brand-500 font-mono">({{ user.companyCode }})</span></span>
         </div>
       </div>
       
-      <div class="h-6 w-px bg-gray-300 dark:bg-gray-600 hidden md:block" *ngIf="user.branchName"></div>
+      <div class="h-6 w-px bg-gray-200 dark:bg-gray-700 hidden md:block" *ngIf="user.companyName && user.branchName"></div>
 
-      <div class="flex items-center gap-2" *ngIf="user.branchName">
-        <div class="w-8 h-8 rounded-full overflow-hidden border border-gray-200 dark:border-gray-600 bg-gray-50 flex items-center justify-center text-gray-500">
-          <i class="ri-store-2-line text-lg"></i>
+      <!-- Branch Info -->
+      <div class="flex items-center gap-2.5" *ngIf="user.branchName">
+        <div class="relative w-8 h-8 rounded-lg overflow-hidden border border-emerald-200 dark:border-emerald-500/30 bg-emerald-50/60 dark:bg-emerald-500/10 flex items-center justify-center text-emerald-600 dark:text-emerald-400 shadow-2xs shrink-0">
+          <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+          </svg>
         </div>
         <div class="flex flex-col leading-tight">
-          <span class="text-xs text-gray-400 uppercase tracking-wider">{{ 'footer.branch' | translate }}</span>
-          <span>{{ user.branchName }} <span class="text-brand-500">({{ user.branchCode }})</span></span>
+          <span class="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">{{ 'footer.branch' | translate }}</span>
+          <span class="text-xs font-bold text-gray-800 dark:text-gray-200">{{ user.branchName }} <span class="text-emerald-500 dark:text-emerald-400 font-mono">({{ user.branchCode }})</span></span>
         </div>
       </div>
+    </div>
+
+    <!-- Powered by Section -->
+    <div class="flex items-center gap-2.5 px-3.5 py-1.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/60 shadow-2xs transition-all hover:border-brand-500/30">
+      <span class="text-[11px] font-medium text-gray-400 dark:text-gray-400 uppercase tracking-wider">Powered by</span>
+      <a href="https://www.linkedin.com/in/abdalrhman-m-fahiem-b8aa5b1b6/" target="_blank" rel="noopener noreferrer" class="flex items-center group">
+        <img src="/images/logo/AMF-Core-Icon.png" alt="AMF Core Logo" class="h-6 w-auto dark:hidden object-contain transition-transform group-hover:scale-105" />
+        <img src="/images/logo/AMF-Core-Dark-mode.png" alt="AMF Core Logo" class="h-6 w-auto hidden dark:block object-contain transition-transform group-hover:scale-105" />
+      </a>
     </div>
 
     <!-- Database Info & Copyright -->

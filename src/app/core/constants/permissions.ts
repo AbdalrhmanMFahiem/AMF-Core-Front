@@ -451,4 +451,7 @@ export const Permissions = {
   ToggleSalesOrders: `${AppPages.SalesOrders}.${AppActions.Toggle}`,
   ConfirmSalesOrders: `${AppPages.SalesOrders}.${AppActions.Confirm}`,
   CancelSalesOrders: `${AppPages.SalesOrders}.${AppActions.Cancel}`,
+  ViewUnpricedItemsReport: `${AppPages.UnpricedItemsReport}.${AppActions.View}`,
+  ExportUnpricedItemsReport: `${AppPages.UnpricedItemsReport}.${AppActions.Export}`,
+  UpdateUnpricedItemCost: `${AppPages.UnpricedItemsReport}.${AppActions.Update}`,
 };

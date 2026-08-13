@@ -6,6 +6,8 @@ import { BackdropComponent } from '../backdrop/backdrop.component';
 import { RouterModule } from '@angular/router';
 import { AppHeaderComponent } from '../app-header/app-header.component';
 import { AppFooterComponent } from '../app-footer/app-footer.component';
+import { ExportLoadingOverlayComponent } from '../../components/ui/export-loading-overlay/export-loading-overlay.component';
+import { ItemDetailsModalComponent } from '../../components/ui/item-details-modal/item-details-modal.component';
 
 @Component({
   selector: 'app-layout',
@@ -15,7 +17,9 @@ import { AppFooterComponent } from '../app-footer/app-footer.component';
     AppHeaderComponent,
     AppSidebarComponent,
     BackdropComponent,
-    AppFooterComponent
+    AppFooterComponent,
+    ExportLoadingOverlayComponent,
+    ItemDetailsModalComponent
   ],
   templateUrl: './app-layout.component.html',
 })
