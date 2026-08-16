@@ -1,16 +1,16 @@
 <app-page-breadcrumb
-  [pageTitle]="(mode === 'edit' ? 'countryGroups.edit' : mode === 'view' ? 'Common.View' : 'countryGroups.addNew') | translate"
+  [pageTitle]="(mode === 'edit' ? 'countryGroups.edit' : mode === 'view' ? 'common.view' : 'countryGroups.addNew')"
   parentPageTitle="countryGroups.title"
   parentPageUrl="/master-data/country-groups">
 </app-page-breadcrumb>
 
 <div class="space-y-6">
-  <app-success-redirect-banner [isVisible]="saveSuccess" [message]="'Common.SavedSuccessfully'"
+  <app-success-redirect-banner [isVisible]="saveSuccess" [message]="'common.savedSuccessfully'"
     [redirectUrl]="'/master-data/country-groups'" [countdownSeconds]="5">
   </app-success-redirect-banner>
 
   <app-component-card
-    [title]="(mode === 'edit' ? 'countryGroups.edit' : mode === 'view' ? 'Common.View' : 'countryGroups.addNew') | translate"
+    [title]="(mode === 'edit' ? 'countryGroups.edit' : mode === 'view' ? 'common.view' : 'countryGroups.addNew') | translate"
     [className]="'p-6'">
 
     <div *ngIf="loading" class="flex justify-center p-8">
@@ -40,7 +40,7 @@
         <div class="flex items-center gap-3">
           <button type="button" (click)="onCancel()"
             class="px-5 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg shadow-theme-xs hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700 dark:hover:bg-gray-700 transition-colors">
-            {{ (mode === 'view' ? 'Common.Back' : 'Common.Cancel') | translate }}
+            {{ (mode === 'view' ? 'common.back' : 'common.cancel') | translate }}
           </button>
 
           <button *ngIf="mode !== 'view'" type="submit" [disabled]="saving || !form.valid"
@@ -49,7 +49,7 @@
               <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
               <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
             </svg>
-            <span>{{ (saving ? 'Common.Saving' : 'Common.Save') | translate }}</span>
+            <span>{{ (saving ? 'common.saving' : 'common.save') | translate }}</span>
           </button>
         </div>
       </div>

@@ -97,6 +97,16 @@ export const routes: Routes = [
         title: 'View User | AMF Core'
       },
       {
+        path: 'administration/sales-reps',
+        loadComponent: () => import('./pages/administration/sales-reps/sales-reps-list/sales-reps-list.component').then(c => c.SalesRepsListComponent),
+        title: 'Sales Representatives | AMF Core'
+      },
+      {
+        path: 'administration/sales-reps/view/:id',
+        loadComponent: () => import('./pages/administration/sales-reps/sales-rep-details/sales-rep-details.component').then(c => c.SalesRepDetailsComponent),
+        title: 'Sales Rep Details | AMF Core'
+      },
+      {
         path: 'administration/roles',
         loadComponent: () => import('./pages/administration/roles/roles-list/roles-list.component').then(c => c.RolesListComponent),
         title: 'Roles | AMF Core'
@@ -273,6 +283,11 @@ export const routes: Routes = [
         path: 'configuration/general-settings',
         loadComponent: () => import('./pages/configuration/general-settings/general-settings.component').then(c => c.GeneralSettingsComponent),
         title: 'General Settings | AMF Core'
+      },
+      {
+        path: 'configuration/payment-settings',
+        loadComponent: () => import('./pages/configuration/payment-settings/payment-settings.component').then(c => c.PaymentSettingsComponent),
+        title: 'Payment Settings | AMF Core'
       },
       // Inventory
       {
@@ -618,6 +633,21 @@ export const routes: Routes = [
         title: 'View Sales Order | AMF Core'
       },
       {
+        path: 'sales/quick-sale',
+        loadComponent: () => import('./pages/sales/quick-sale/quick-sale.component').then(c => c.QuickSaleComponent),
+        title: 'Quick Sale POS | AMF Core'
+      },
+      {
+        path: 'sales/dashboard',
+        loadComponent: () => import('./pages/sales/sales-rep-dashboard/sales-rep-dashboard.component').then(c => c.SalesRepDashboardComponent),
+        title: 'Sales Rep Dashboard | AMF Core'
+      },
+      {
+        path: 'sales/insights',
+        loadComponent: () => import('./pages/sales/sales-insights/sales-insights.component').then(c => c.SalesInsightsComponent),
+        title: 'Sales Insights & Tracking | AMF Core'
+      },
+      {
         path: 'invoices/sales',
         loadComponent: () => import('./pages/sales/invoices/sales-invoices-list/sales-invoices-list.component').then(c => c.SalesInvoicesListComponent),
         title: 'Sales Invoices | AMF Core'
@@ -715,6 +745,11 @@ export const routes: Routes = [
         title: 'Sales Report | AMF Core'
       },
       {
+        path: 'reports/sales-rep',
+        loadComponent: () => import('./pages/reports/sales-rep-report/sales-rep-report.component').then(c => c.SalesRepReportComponent),
+        title: 'Sales Rep Report | AMF Core'
+      },
+      {
         path: 'reports/purchases',
         loadComponent: () => import('./pages/reports/purchases-report/purchases-report.component').then(c => c.PurchasesReportComponent),
         title: 'Purchases Report | AMF Core'
@@ -740,6 +775,45 @@ export const routes: Routes = [
         canActivate: [permissionGuard],
         data: { permission: Permissions.ViewUnpricedItemsReport },
         title: 'Unpriced Items Report | AMF Core'
+      },
+      // Finance
+      {
+        path: 'finance/e-wallet-providers',
+        loadComponent: () => import('./pages/finance/e-wallet-providers/e-wallet-provider-list/e-wallet-provider-list.component').then(c => c.EWalletProviderListComponent),
+        title: 'E-Wallet Providers | AMF Core'
+      },
+      {
+        path: 'finance/e-wallet-providers/add',
+        loadComponent: () => import('./pages/finance/e-wallet-providers/e-wallet-provider-form/e-wallet-provider-form.component').then(c => c.EWalletProviderFormComponent),
+        canDeactivate: [unsavedChangesGuard],
+        title: 'Add E-Wallet Provider | AMF Core'
+      },
+      {
+        path: 'finance/e-wallet-providers/edit/:id',
+        loadComponent: () => import('./pages/finance/e-wallet-providers/e-wallet-provider-form/e-wallet-provider-form.component').then(c => c.EWalletProviderFormComponent),
+        canDeactivate: [unsavedChangesGuard],
+        title: 'Edit E-Wallet Provider | AMF Core'
+      },
+      {
+        path: 'finance/e-wallet-providers/view/:id',
+        loadComponent: () => import('./pages/finance/e-wallet-providers/e-wallet-provider-form/e-wallet-provider-form.component').then(c => c.EWalletProviderFormComponent),
+        title: 'View E-Wallet Provider | AMF Core'
+      },
+      {
+        path: 'finance/business-partner-payments',
+        loadComponent: () => import('./pages/finance/business-partner-payments/payment-list/payment-list.component').then(c => c.PaymentListComponent),
+        title: 'Partner Payments | AMF Core'
+      },
+      {
+        path: 'finance/business-partner-payments/add',
+        loadComponent: () => import('./pages/finance/business-partner-payments/payment-form/payment-form.component').then(c => c.PaymentFormComponent),
+        canDeactivate: [unsavedChangesGuard],
+        title: 'Add Partner Payment | AMF Core'
+      },
+      {
+        path: 'finance/business-partner-payments/view/:id',
+        loadComponent: () => import('./pages/finance/business-partner-payments/payment-form/payment-form.component').then(c => c.PaymentFormComponent),
+        title: 'View Partner Payment | AMF Core'
       },
     ]
   },

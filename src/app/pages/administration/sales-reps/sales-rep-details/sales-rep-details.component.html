@@ -1,0 +1,121 @@
+<app-page-breadcrumb [pageTitle]="'تفاصيل المندوب'" />
+
+<div class="space-y-6">
+  <app-component-card [title]="'تعيينات المندوب: ' + (repName || '')" [className]="'p-6'">
+    <!-- Top summary & back button -->
+    <div class="mb-6 flex items-center justify-between">
+      <div class="flex items-center gap-4">
+        <div class="w-12 h-12 rounded-full bg-brand-100 text-brand-700 dark:bg-brand-500/20 dark:text-brand-400 flex items-center justify-center font-bold text-lg">
+          {{ (repName || 'S').charAt(0).toUpperCase() }}
+        </div>
+        <div>
+          <h2 class="text-lg font-bold text-gray-900 dark:text-white">{{ repName || 'مندوب المبيعات' }}</h2>
+          <p class="text-xs text-gray-500 dark:text-gray-400">معرف المستخدم: {{ userId }}</p>
+        </div>
+      </div>
+
+      <button
+        type="button"
+        (click)="onBack()"
+        class="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 transition-colors"
+      >
+        <svg class="w-4 h-4 rtl:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        </svg>
+        <span>العودة للقائمة</span>
+      </button>
+    </div>
+
+    <!-- Tabs -->
+    <div class="mb-6 flex border-b border-gray-200 dark:border-gray-800">
+      <button
+        type="button"
+        (click)="setTab('customers')"
+        [ngClass]="activeTab === 'customers' ? 'border-brand-500 text-brand-600 dark:text-brand-500' : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400'"
+        class="whitespace-nowrap border-b-2 py-3 px-4 text-sm font-medium transition-colors"
+      >
+        العملاء المرتبطين ({{ customers.length }})
+      </button>
+      <button
+        type="button"
+        (click)="setTab('warehouses')"
+        [ngClass]="activeTab === 'warehouses' ? 'border-brand-500 text-brand-600 dark:text-brand-500' : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400'"
+        class="whitespace-nowrap border-b-2 py-3 px-4 text-sm font-medium transition-colors"
+      >
+        المخازن المتاحة ({{ warehouses.length }})
+      </button>
+    </div>
+
+    <div *ngIf="loading" class="flex justify-center p-8">
+      <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-500"></div>
+    </div>
+
+    <!-- Customers Tab -->
+    <div *ngIf="!loading && activeTab === 'customers'">
+      <div class="overflow-hidden rounded-lg border border-gray-200 dark:border-gray-800">
+        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-800 text-sm">
+          <thead class="bg-gray-50 dark:bg-gray-800/50">
+            <tr>
+              <th class="px-4 py-3 text-start font-medium text-gray-500 dark:text-gray-400">كود العميل</th>
+              <th class="px-4 py-3 text-start font-medium text-gray-500 dark:text-gray-400">اسم العميل</th>
+              <th class="px-4 py-3 text-start font-medium text-gray-500 dark:text-gray-400">الهاتف</th>
+              <th class="px-4 py-3 text-center font-medium text-gray-500 dark:text-gray-400">مندوب أساسي</th>
+              <th class="px-4 py-3 text-start font-medium text-gray-500 dark:text-gray-400">تاريخ التعيين</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-200 dark:divide-gray-800 bg-white dark:bg-transparent">
+            <tr *ngIf="customers.length === 0">
+              <td colspan="5" class="px-4 py-8 text-center text-gray-500 dark:text-gray-400">
+                لا يوجد عملاء مرتبطين بهذا المندوب.
+              </td>
+            </tr>
+            <tr *ngFor="let c of customers" class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
+              <td class="px-4 py-3 font-mono font-medium text-brand-600 dark:text-brand-400">{{ c.code }}</td>
+              <td class="px-4 py-3 font-medium text-gray-900 dark:text-white">{{ c.name }}</td>
+              <td class="px-4 py-3 text-gray-500 dark:text-gray-400">{{ c.phone || '-' }}</td>
+              <td class="px-4 py-3 text-center">
+                <span *ngIf="c.isPrimary" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-success-50 text-success-700 dark:bg-success-500/10 dark:text-success-400">
+                  أساسي
+                </span>
+                <span *ngIf="!c.isPrimary" class="text-gray-400 dark:text-gray-600">-</span>
+              </td>
+              <td class="px-4 py-3 text-gray-500 dark:text-gray-400">{{ c.assignmentDate | date:'mediumDate' }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Warehouses Tab -->
+    <div *ngIf="!loading && activeTab === 'warehouses'">
+      <div class="overflow-hidden rounded-lg border border-gray-200 dark:border-gray-800">
+        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-800 text-sm">
+          <thead class="bg-gray-50 dark:bg-gray-800/50">
+            <tr>
+              <th class="px-4 py-3 text-start font-medium text-gray-500 dark:text-gray-400">كود المخزن</th>
+              <th class="px-4 py-3 text-start font-medium text-gray-500 dark:text-gray-400">اسم المخزن</th>
+              <th class="px-4 py-3 text-center font-medium text-gray-500 dark:text-gray-400">افتراضي</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-200 dark:divide-gray-800 bg-white dark:bg-transparent">
+            <tr *ngIf="warehouses.length === 0">
+              <td colspan="3" class="px-4 py-8 text-center text-gray-500 dark:text-gray-400">
+                لا يوجد مخازن معينة لهذا المندوب.
+              </td>
+            </tr>
+            <tr *ngFor="let w of warehouses" class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
+              <td class="px-4 py-3 font-mono font-medium text-brand-600 dark:text-brand-400">{{ w.code }}</td>
+              <td class="px-4 py-3 font-medium text-gray-900 dark:text-white">{{ w.name }}</td>
+              <td class="px-4 py-3 text-center">
+                <span *ngIf="w.isDefault" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-50 text-purple-700 dark:bg-purple-500/10 dark:text-purple-400">
+                  افتراضي
+                </span>
+                <span *ngIf="!w.isDefault" class="text-gray-400 dark:text-gray-600">-</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </app-component-card>
+</div>

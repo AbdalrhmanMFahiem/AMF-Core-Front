@@ -169,4 +169,8 @@ export class LookupService {
   getDistrictsByCity(cityId: number): Observable<IdNameResponse[]> {
     return this.http.get<IdNameResponse[]>(`${this.apiUrl}/${cityId}/districts`);
   }
+
+  getEWalletProviders(filters?: LookupsFilters): Observable<IntIdCodeNameResponse[]> {
+    return this.http.get<IntIdCodeNameResponse[]>(`${environment.apiUrl}/api/ewallet-providers`, this.getOptions(filters));
+  }
 }

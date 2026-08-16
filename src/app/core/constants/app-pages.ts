@@ -124,4 +124,6 @@ export const AppPages = {
   SalesQuotations: 'salesQuotations',
   SalesOrders: 'salesOrders',
   UnpricedItemsReport: 'unpricedItemsReport',
+  BusinessPartnerPayments: 'businessPartnerPayments',
+  EWalletProviders: 'eWalletProviders',
 };

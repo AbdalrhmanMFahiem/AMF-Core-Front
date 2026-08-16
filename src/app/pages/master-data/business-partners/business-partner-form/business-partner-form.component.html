@@ -153,6 +153,17 @@
           </app-searchable-select>
         </div>
 
+        <!-- Primary Sales Rep -->
+        <div class="sm:col-span-2">
+          <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+            مسؤول المبيعات الأساسي (Primary Sales Rep)
+          </label>
+          <app-searchable-select name="primarySalesRepUserId" [(ngModel)]="primarySalesRepUserId" (selectionChange)="onPrimarySalesRepChange($event)"
+            [options]="users" [disabled]="mode === 'view' || !id" placeholder="common.select">
+          </app-searchable-select>
+          <p *ngIf="!id" class="text-xs text-gray-500 dark:text-gray-400 mt-1">يجب حفظ بيانات العميل أولاً لتتمكن من اختيار مسؤول المبيعات.</p>
+        </div>
+
         <!-- Notes -->
         <div class="sm:col-span-2">
           <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">

@@ -227,4 +227,24 @@ export class ReportService {
   updateItemInitialCost(data: { itemId: number; initialPrice: number }): Observable<Result<any>> {
     return this.http.post<Result<any>>(`${this.baseUrl}/unpriced-items/update-initial-cost`, data);
   }
+
+  getSalesRepReport(filters: any): Observable<any> {
+    let params = new HttpParams();
+    Object.keys(filters).forEach(key => {
+      if (filters[key] !== null && filters[key] !== undefined && filters[key] !== '') {
+        params = params.set(key, filters[key]);
+      }
+    });
+    return this.http.get<any>(`${this.baseUrl}/sales-rep`, { params });
+  }
+
+  exportSalesRepReportExcel(filters: any): Observable<Blob> {
+    let params = new HttpParams();
+    Object.keys(filters).forEach(key => {
+      if (filters[key] !== null && filters[key] !== undefined && filters[key] !== '') {
+        params = params.set(key, filters[key]);
+      }
+    });
+    return this.http.get(`${this.baseUrl}/sales-rep/export-excel`, { params, responseType: 'blob' });
+  }
 }

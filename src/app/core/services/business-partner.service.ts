@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { BusinessPartnerResponse, BusinessPartnerBasicResponse, BusinessPartnerRequest, QuickCustomerRequest, QuickVendorRequest } from '../models/business-partner.model';
+import { BusinessPartnerResponse, BusinessPartnerBasicResponse, BusinessPartnerRequest, QuickCustomerRequest, QuickVendorRequest, BusinessPartnerQuickViewResponse } from '../models/business-partner.model';
 import { PaginatedList, RequestFilters } from '../models/pagination.model';
 import { NextCodeResponse } from '../models/lookup.model';
 import { BusinessPartnerLedgerResponse, LedgerFilters, BalanceSummaryResponse, AddOpeningBalanceRequest } from '../models/business-partner.model';
@@ -105,5 +105,9 @@ export class BusinessPartnerService {
 
   removeSalesRep(id: number, repId: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}/sales-reps/${repId}`);
+  }
+
+  getQuickView(id: number): Observable<BusinessPartnerQuickViewResponse> {
+    return this.http.get<BusinessPartnerQuickViewResponse>(`${this.apiUrl}/${id}/quick-view`);
   }
 }

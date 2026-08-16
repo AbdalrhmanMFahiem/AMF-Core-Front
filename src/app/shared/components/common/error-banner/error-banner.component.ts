@@ -20,14 +20,28 @@ import { TranslateModule } from '@ngx-translate/core';
 export class ErrorBannerComponent implements OnChanges, OnDestroy {
   @Input() isVisible: boolean = false;
   @Input() errors: string[] = [];
-  @Input() countdownSeconds: number = 5;
+  @Input() countdownSeconds: number = 7;
   @Output() close = new EventEmitter<void>();
 
   private timeoutId: any;
+  isPaused: boolean = false;
+
+  parseError(error: string): { code: string | null; message: string } {
+    if (!error) return { code: null, message: '' };
+    const match = error.match(/^\[(.*?)\]\s*(.*)$/);
+    if (match) {
+      return { code: match[1], message: match[2] };
+    }
+    return { code: null, message: error };
+  }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['isVisible'] && this.isVisible) {
-      this.startCountdown();
+    if (changes['isVisible']) {
+      if (this.isVisible) {
+        this.startCountdown();
+      } else {
+        this.clearCountdown();
+      }
     }
   }
 
@@ -41,11 +55,23 @@ export class ErrorBannerComponent implements OnChanges, OnDestroy {
     this.close.emit();
   }
 
+  onMouseEnter(): void {
+    this.isPaused = true;
+    this.clearCountdown();
+  }
+
+  onMouseLeave(): void {
+    this.isPaused = false;
+    this.startCountdown();
+  }
+
   private startCountdown(): void {
     this.clearCountdown();
-    this.timeoutId = setTimeout(() => {
-      this.onClose();
-    }, this.countdownSeconds * 1000);
+    if (!this.isPaused && this.isVisible) {
+      this.timeoutId = setTimeout(() => {
+        this.onClose();
+      }, this.countdownSeconds * 1000);
+    }
   }
 
   private clearCountdown(): void {
@@ -55,4 +81,3 @@ export class ErrorBannerComponent implements OnChanges, OnDestroy {
     }
   }
 }
-

@@ -1,39 +1,65 @@
-<div *ngIf="isVisible" class="fixed bottom-0 left-0 right-0 z-100 transform transition-all duration-300 ease-in-out"
-  [ngClass]="isVisible ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'">
-  <div class="mx-auto max-w-4xl p-4 md:p-6">
-    <div
-      class="relative overflow-hidden rounded-xl border border-error-200 bg-error-50 p-4 shadow-lg dark:border-error-800/50 dark:bg-error-900/30">
-      <div class="flex items-start">
-        <div class="shrink-0">
-          <svg class="h-6 w-6 text-error-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+<div *ngIf="isVisible" 
+     class="fixed bottom-4 left-0 right-0 z-9999 px-4 pointer-events-none transition-all duration-300 ease-in-out transform"
+     [ngClass]="isVisible ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'"
+     (mouseenter)="onMouseEnter()"
+     (mouseleave)="onMouseLeave()">
+  <div class="mx-auto max-w-3xl pointer-events-auto">
+    <div class="relative overflow-hidden rounded-2xl border border-error-200/80 bg-error-50/95 p-4 shadow-2xl backdrop-blur-md dark:border-error-800/60 dark:bg-error-950/90 sm:p-5">
+      <div class="flex items-start gap-3 sm:gap-4">
+        <!-- Error Icon Badge -->
+        <div class="shrink-0 rounded-xl bg-error-100 p-2.5 text-error-600 dark:bg-error-900/50 dark:text-error-400 ring-1 ring-error-200 dark:ring-error-800/50">
+          <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round"
-              d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
           </svg>
         </div>
-        <div class="ltr:ml-3 rtl:mr-3 w-0 flex-1 pt-0.5">
-          <h3 class="text-sm font-medium text-error-800 dark:text-error-200">
-            {{ 'common.errorTitle' | translate }}
-          </h3>
-          <div class="mt-2 text-sm text-error-700 dark:text-error-300">
-            <ul role="list" class="list-disc space-y-1 ltr:pl-5 rtl:pr-5">
-              <li *ngFor="let error of errors">{{ error }}</li>
+
+        <!-- Content -->
+        <div class="min-w-0 flex-1 pt-0.5">
+          <div class="flex items-center justify-between gap-2">
+            <h3 class="text-sm font-bold text-error-900 dark:text-error-100 flex items-center gap-2">
+              {{ 'common.errorTitle' | translate }}
+            </h3>
+            <span *ngIf="isPaused" class="text-[11px] font-semibold text-error-600 dark:text-error-400 px-2 py-0.5 bg-error-100 dark:bg-error-900/40 rounded-md">
+              ⏸️ {{ 'common.paused' | translate }}
+            </span>
+          </div>
+
+          <div class="mt-2 text-xs sm:text-sm text-error-800 dark:text-error-200">
+            <ul role="list" class="space-y-1.5 ltr:pl-2 rtl:pr-2">
+              <li *ngFor="let error of errors" class="flex items-start gap-2">
+                <span class="inline-block h-1.5 w-1.5 rounded-full bg-error-500 mt-1.5 shrink-0"></span>
+                <div class="font-semibold leading-relaxed">
+                  <ng-container *ngIf="parseError(error) as parsed">
+                    <span *ngIf="parsed.code" class="inline-block font-mono text-[11px] font-bold px-2 py-0.5 rounded-md bg-error-200/80 text-error-900 dark:bg-error-800/90 dark:text-error-100 border border-error-300 dark:border-error-700/60 ltr:mr-1.5 rtl:ml-1.5 dir-ltr select-all shadow-xs">
+                      {{ parsed.code }}
+                    </span>
+                    <span>{{ parsed.message }}</span>
+                  </ng-container>
+                </div>
+              </li>
             </ul>
           </div>
         </div>
-        <div class="ltr:ml-4 rtl:mr-4 flex shrink-0">
+
+        <!-- Close Button -->
+        <div class="shrink-0 ltr:ml-2 rtl:mr-2">
           <button type="button" (click)="onClose()"
-            class="inline-flex rounded-md bg-transparent text-error-500 hover:text-error-600 focus:outline-none focus:ring-2 focus:ring-error-500 focus:ring-offset-2 dark:hover:text-error-400">
+            class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-error-100/60 text-error-600 hover:bg-error-200 hover:text-error-800 focus:outline-none dark:bg-error-900/40 dark:text-error-300 dark:hover:bg-error-800/60 dark:hover:text-white transition-colors">
             <span class="sr-only">Close</span>
-            <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+            <svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
               <path
                 d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" />
             </svg>
           </button>
         </div>
       </div>
-      <!-- Progress Bar -->
-      <div class="absolute bottom-0 left-0 right-0 h-1 w-full bg-error-200/50 dark:bg-error-800/50">
-        <div class="h-full bg-error-500 dark:bg-error-400 animate-progress"
+
+      <!-- Animated Progress Bar -->
+      <div class="absolute bottom-0 left-0 right-0 h-1 w-full bg-error-200/50 dark:bg-error-800/40 overflow-hidden">
+        <div class="h-full bg-error-600 dark:bg-error-400"
+          [class.animate-progress]="!isPaused"
+          [style.animation-play-state]="isPaused ? 'paused' : 'running'"
           [style.animation-duration.s]="countdownSeconds"></div>
       </div>
     </div>

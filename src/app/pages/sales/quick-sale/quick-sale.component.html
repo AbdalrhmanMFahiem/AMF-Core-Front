@@ -1,0 +1,234 @@
+<div class="p-3 sm:p-4 md:p-6 bg-gray-50 dark:bg-gray-950 min-h-screen text-gray-900 dark:text-gray-100 transition-colors">
+  <!-- POS Header Bar -->
+  <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 mb-4 sm:mb-6 bg-white dark:bg-gray-900/90 backdrop-blur border border-gray-200 dark:border-gray-800 p-3.5 sm:p-5 rounded-2xl shadow-xs dark:shadow-lg">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-emerald-500/10 dark:bg-emerald-500/20 border border-emerald-500/20 dark:border-emerald-500/30 flex items-center justify-center text-emerald-600 dark:text-emerald-400 shrink-0">
+        <svg class="w-6 h-6 sm:w-7 sm:h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+        </svg>
+      </div>
+      <div>
+        <h1 class="text-lg sm:text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+          <span>نقطة بيع سريعة للمندوب</span>
+          <span class="text-[11px] font-normal px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20">متصل</span>
+        </h1>
+        <p class="text-xs text-gray-500 dark:text-gray-400">إجراء بيع مباشر، تحديث رصيد المخزن تلقائياً وإصدار الفاتورة</p>
+      </div>
+    </div>
+
+    <!-- Warehouse & Customer Quick Selector Header controls -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3 w-full lg:w-auto">
+      <div>
+        <label class="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1">المخزن المختار:</label>
+        <select [(ngModel)]="selectedWarehouseId" class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-xl px-3 py-2 text-xs sm:text-sm text-gray-800 dark:text-gray-200 focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20">
+          <option [ngValue]="null" disabled>اختر المخزن...</option>
+          <option *ngFor="let w of warehouses" [ngValue]="w.id">{{ w.name }} ({{ w.code }})</option>
+        </select>
+      </div>
+      <div>
+        <label class="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1">العميل المستهدف:</label>
+        <select [(ngModel)]="selectedCustomerId" class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-xl px-3 py-2 text-xs sm:text-sm text-gray-800 dark:text-gray-200 focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20">
+          <option [ngValue]="null" disabled>اختر العميل...</option>
+          <option *ngFor="let c of customers" [ngValue]="c.id">{{ c.name }} ({{ c.code }})</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Error & Success Alerts -->
+  <div *ngIf="errorMessage" class="mb-4 p-3.5 sm:p-4 rounded-xl bg-rose-50 dark:bg-rose-500/10 border border-rose-200 dark:border-rose-500/30 text-rose-700 dark:text-rose-300 text-xs sm:text-sm flex items-center justify-between shadow-xs">
+    <div class="flex items-center gap-2">
+      <svg class="w-5 h-5 text-rose-500 dark:text-rose-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+      <span>{{ errorMessage }}</span>
+    </div>
+    <button (click)="errorMessage = null" class="text-rose-500 hover:text-rose-700 dark:text-rose-400 dark:hover:text-rose-200 font-bold p-1">✕</button>
+  </div>
+
+  <div *ngIf="successMessage" class="mb-4 p-3.5 sm:p-4 rounded-xl bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/30 text-emerald-700 dark:text-emerald-300 text-xs sm:text-sm flex items-center justify-between shadow-xs">
+    <div class="flex items-center gap-2">
+      <svg class="w-5 h-5 text-emerald-600 dark:text-emerald-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+      <span>{{ successMessage }}</span>
+    </div>
+    <button (click)="successMessage = null" class="text-emerald-600 hover:text-emerald-800 dark:text-emerald-400 dark:hover:text-emerald-200 font-bold p-1">✕</button>
+  </div>
+
+  <!-- POS Main Layout: Left Cart, Right Catalog -->
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6">
+
+    <!-- Catalog Side (Items) - 7 cols -->
+    <div class="lg:col-span-7 space-y-3.5 sm:space-y-4">
+      <!-- Search Input -->
+      <div class="relative">
+        <input
+          type="text"
+          [(ngModel)]="searchQuery"
+          (input)="filterItems()"
+          placeholder="ابحث عن صنف بالاسم، الكود، أو الباركود..."
+          class="w-full bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-2xl px-4 py-3 pl-10 text-xs sm:text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 shadow-xs"
+        />
+        <svg class="w-5 h-5 text-gray-400 absolute left-3.5 top-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+        </svg>
+      </div>
+
+      <!-- Item Grid -->
+      <div class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-2.5 sm:gap-3.5 max-h-[50vh] lg:max-h-[calc(100vh-270px)] overflow-y-auto pr-1">
+        <div *ngIf="loadingItems" class="col-span-full text-center py-12 text-gray-400 dark:text-gray-500 text-sm">
+          جاري تحميل قائمة الأصناف المتاحة...
+        </div>
+
+        <div *ngIf="!loadingItems && filteredItems.length === 0" class="col-span-full text-center py-12 text-gray-400 dark:text-gray-500 bg-white dark:bg-gray-900/50 rounded-2xl border border-gray-200 dark:border-gray-800 text-xs sm:text-sm">
+          لا توجد أصناف مطابقة للبحث
+        </div>
+
+        <div
+          *ngFor="let item of filteredItems"
+          (click)="addToCart(item)"
+          class="bg-white dark:bg-gray-900/90 hover:bg-emerald-50/50 dark:hover:bg-gray-800/90 border border-gray-200 dark:border-gray-800 hover:border-emerald-500/40 p-3 sm:p-3.5 rounded-2xl cursor-pointer transition-all duration-200 active:scale-[0.98] group flex flex-col justify-between shadow-xs hover:shadow-md"
+        >
+          <div>
+            <div class="text-[11px] text-emerald-600 dark:text-emerald-400 font-mono mb-1">{{ item.code }}</div>
+            <div class="font-semibold text-gray-800 dark:text-gray-100 group-hover:text-emerald-700 dark:group-hover:text-white line-clamp-2 text-xs sm:text-sm mb-2">
+              {{ item.aName || item.name }}
+            </div>
+          </div>
+          <div class="flex items-center justify-between mt-2 pt-2 border-t border-gray-100 dark:border-gray-800">
+            <span class="text-[11px] text-gray-400 dark:text-gray-500 font-medium">السعر</span>
+            <ng-container *ngIf="getItemPrice(item) > 0; else unpricedTag">
+              <span class="text-xs sm:text-sm font-bold text-emerald-600 dark:text-emerald-400 font-mono">
+                {{ getItemPrice(item) | number:'1.2-2' }} ج.م
+              </span>
+            </ng-container>
+            <ng-template #unpricedTag>
+              <span class="text-[11px] font-bold px-2 py-0.5 rounded bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
+                غير مسعر
+              </span>
+            </ng-template>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cart & Payment Side - 5 cols -->
+    <div class="lg:col-span-5 flex flex-col justify-between bg-white dark:bg-gray-900/90 border border-gray-200 dark:border-gray-800 rounded-2xl p-4 sm:p-5 shadow-sm dark:shadow-xl">
+      <div>
+        <!-- Cart Title Bar -->
+        <div class="flex items-center justify-between border-b border-gray-200 dark:border-gray-800 pb-3 mb-3">
+          <div class="flex items-center gap-2">
+            <svg class="w-5 h-5 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
+            </svg>
+            <h2 class="font-bold text-gray-900 dark:text-white text-sm sm:text-base">سلة الفاتورة الحالية</h2>
+            <span class="text-xs px-2.5 py-0.5 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 font-mono font-medium">{{ cart.length }} عناصر</span>
+          </div>
+          <button (click)="clearCart()" *ngIf="cart.length > 0" class="text-xs text-rose-500 hover:text-rose-700 dark:text-rose-400 dark:hover:text-rose-300 font-medium">مسح الكل</button>
+        </div>
+
+        <!-- Cart Items List -->
+        <div class="max-h-72 sm:max-h-80 overflow-y-auto space-y-2.5 pr-1 mb-4">
+          <div *ngIf="cart.length === 0" class="text-center py-10 text-gray-400 dark:text-gray-500 text-xs sm:text-sm">
+            السلة فارغة. اضغط على أي صنف من القائمة لإضافته مباشرة.
+          </div>
+
+          <div *ngFor="let item of cart; let i = index" class="bg-gray-50 dark:bg-gray-950/80 border border-gray-200 dark:border-gray-800/80 p-3 rounded-xl flex flex-col sm:flex-row items-start sm:items-center justify-between text-xs gap-2.5 shadow-2xs">
+            <div class="flex-1 min-w-0">
+              <div class="font-semibold text-gray-900 dark:text-slate-100 truncate text-xs sm:text-sm">{{ item.name }}</div>
+              <div class="text-gray-400 dark:text-slate-400 text-[10px] font-mono mb-1">{{ item.code }}</div>
+              
+              <!-- Editable Unit Price Input -->
+              <div class="flex items-center gap-1.5 mt-1">
+                <span class="text-[11px] font-medium text-gray-600 dark:text-slate-300">سعر الوحدة:</span>
+                <input
+                  type="number"
+                  min="0"
+                  step="0.5"
+                  [(ngModel)]="item.unitPrice"
+                  (ngModelChange)="onUnitPriceChange(item)"
+                  placeholder="0.00"
+                  class="w-24 px-2 py-1 text-xs font-mono font-bold border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 rounded-lg text-emerald-600 dark:text-emerald-400 focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 text-center"
+                />
+                <span class="text-[10px] text-gray-500 dark:text-slate-400 font-medium">ج.م</span>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end self-end sm:self-center">
+              <!-- Qty controls -->
+              <div class="flex items-center gap-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg px-1 py-0.5">
+                <button (click)="updateQuantity(item, -1)" class="w-6 h-6 flex items-center justify-center text-gray-700 dark:text-slate-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded font-bold text-sm">-</button>
+                <span class="w-6 text-center font-bold text-emerald-600 dark:text-emerald-400 font-mono">{{ item.quantity }}</span>
+                <button (click)="updateQuantity(item, 1)" class="w-6 h-6 flex items-center justify-center text-gray-700 dark:text-slate-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded font-bold text-sm">+</button>
+              </div>
+
+              <!-- Total -->
+              <div class="text-right min-w-16">
+                <div class="font-bold text-gray-900 dark:text-white font-mono text-xs sm:text-sm">{{ item.subtotal | number:'1.2-2' }} ج.م</div>
+              </div>
+
+              <!-- Remove Button -->
+              <button (click)="removeFromCart(i)" class="text-gray-400 hover:text-rose-500 dark:text-slate-500 dark:hover:text-rose-400 p-1 font-bold">
+                ✕
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Payment & Checkout Summary -->
+      <div class="border-t border-gray-200 dark:border-gray-800 pt-3.5 space-y-3">
+        <!-- Financial Summary -->
+        <div class="space-y-1.5 text-xs">
+          <div class="flex justify-between text-gray-500 dark:text-slate-400">
+            <span>المجموع الفرعي:</span>
+            <span class="font-mono text-gray-800 dark:text-slate-200">{{ totalSubtotal | number:'1.2-2' }} ج.م</span>
+          </div>
+          <div class="flex justify-between text-gray-500 dark:text-slate-400">
+            <span>إجمالي الخصومات:</span>
+            <span class="font-mono text-amber-600 dark:text-amber-400">-{{ totalDiscount | number:'1.2-2' }} ج.م</span>
+          </div>
+          <div class="flex justify-between text-sm sm:text-base font-bold text-emerald-600 dark:text-emerald-400 pt-2 border-t border-gray-200 dark:border-gray-800">
+            <span>إجمالي الفاتورة المطلوب:</span>
+            <span class="font-mono text-base sm:text-lg">{{ grandTotal | number:'1.2-2' }} ج.م</span>
+          </div>
+        </div>
+
+        <!-- Payment Mode & Paid Input -->
+        <div class="grid grid-cols-2 gap-2.5 pt-1">
+          <div>
+            <label class="block text-[11px] font-semibold text-gray-600 dark:text-slate-400 mb-1">طريقة الدفع:</label>
+            <select
+              [(ngModel)]="paymentMethod"
+              (change)="onPaymentMethodChange()"
+              class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-xl px-2.5 py-1.5 text-xs text-gray-900 dark:text-slate-200 focus:outline-none focus:border-emerald-500"
+            >
+              <option value="cash">نقداً (Cash)</option>
+              <option value="bank">تحويل بنكي (Bank)</option>
+              <option value="ewallet">محفظة إلكترونية (E-Wallet)</option>
+              <option value="credit">آجل (On Credit)</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-[11px] font-semibold text-gray-600 dark:text-slate-400 mb-1">المبلغ المدفوع (ج.م):</label>
+            <input
+              type="number"
+              [(ngModel)]="paidAmount"
+              [disabled]="paymentMethod === 'credit'"
+              class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-xl px-2.5 py-1.5 text-xs text-emerald-600 dark:text-emerald-400 font-mono font-bold focus:outline-none focus:border-emerald-500 disabled:opacity-50"
+            />
+          </div>
+        </div>
+
+        <!-- Complete Sale Button -->
+        <button
+          (click)="submitSale()"
+          [disabled]="submitting || cart.length === 0"
+          class="w-full py-3.5 bg-emerald-600 hover:bg-emerald-500 active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold rounded-xl shadow-md hover:shadow-lg transition-all duration-200 flex items-center justify-center gap-2 text-xs sm:text-sm mt-2"
+        >
+          <svg *ngIf="submitting" class="animate-spin h-5 w-5 text-white" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+          <span>{{ submitting ? 'جاري إتمام البيع وتخفيض المخزن...' : 'إتمام عملية البيع وتصديق الفاتورة' }}</span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>

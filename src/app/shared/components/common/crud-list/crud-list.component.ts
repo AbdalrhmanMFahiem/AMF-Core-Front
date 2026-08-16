@@ -23,6 +23,14 @@ export interface CrudColumn {
   sortable?: boolean;
 }
 
+export interface CustomAction {
+  id: string;
+  label: string;
+  icon: string;
+  colorClass?: string;
+  visible?: (item: any) => boolean;
+}
+
 @Component({
   selector: 'app-crud-list',
   standalone: true,
@@ -52,7 +60,7 @@ export class CrudListComponent implements OnInit, OnDestroy {
   @Input() hideEdit: boolean | ((item: any) => boolean) = false;
   @Input() hideView: boolean | ((item: any) => boolean) = false;
   @Input() hideToggleStatus: boolean | ((item: any) => boolean) = false;
-  @Input() customActions: { id: string, label: string, icon: string, colorClass?: string, visible?: (item: any) => boolean }[] = [];
+  @Input() customActions: CustomAction[] = [];
 
   @Output() search = new EventEmitter<void>();
   @Output() includeDisabledChange = new EventEmitter<boolean>();

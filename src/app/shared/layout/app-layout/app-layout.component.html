@@ -1,11 +1,11 @@
-<div class="min-h-screen xl:flex">
+<div class="min-h-screen lg:flex">
   <div>
     <app-sidebar></app-sidebar>
     <app-backdrop></app-backdrop>
   </div>
   <div class="flex-1 min-w-0 transition-all duration-300 ease-in-out flex flex-col min-h-screen md:h-screen md:overflow-hidden" [ngClass]="{
-        'ltr:xl:ml-72.5 rtl:xl:mr-72.5': (isExpanded$ | async) || (isHovered$ | async),
-        'ltr:xl:ml-22.5 rtl:xl:mr-22.5': !(isExpanded$ | async) && !(isHovered$ | async),
+        'ltr:lg:ml-72.5 rtl:lg:mr-72.5': (isExpanded$ | async) || (isHovered$ | async),
+        'ltr:lg:ml-22.5 rtl:lg:mr-22.5': !(isExpanded$ | async) && !(isHovered$ | async),
         'ltr:ml-0 rtl:mr-0': (isMobileOpen$ | async)
       }">
     <!-- app header start -->

@@ -77,15 +77,18 @@ export interface QuickVendorRequest {
 export interface BusinessPartnerLedgerResponse {
   id: number;
   entryDate: string;
-  invoiceId?: number;
-  invoiceCode?: string;
-  entryType: string | number;
+  invoiceId?: number | null;
+  invoiceCode?: string | null;
+  paymentId?: number | null;
+  sourceId?: number | null;
+  sourceCode?: string | null;
+  entryType: LedgerEntryType | number;
   amount: number;
   debit: number;
   credit: number;
   balanceBefore: number;
   runningBalance: number;
-  notes?: string;
+  notes?: string | null;
   entryTypeName?: string;
   badgeColor?: string;
 }
@@ -103,7 +106,10 @@ export enum LedgerEntryType {
   Return = 2,
   Payment = 3,
   Adjustment = 4,
-  OpeningBalance = 5
+  OpeningBalance = 5,
+  PartnerPayment = 6,
+  Receipt = 7,
+  ManualJournal = 8
 }
 
 export interface BalanceSummaryResponse {
@@ -116,5 +122,60 @@ export interface BalanceSummaryResponse {
 export interface AddOpeningBalanceRequest {
   amount: number;
   date: Date | string;
+}
+
+export interface PartnerOpenInvoiceDto {
+  invoiceId: number;
+  invoiceCode: string;
+  invoiceType: number;
+  invoiceTypeName: string;
+  invoiceDate: string;
+  dueDate?: string | null;
+  totalAmount: number;
+  paidAmount: number;
+  remainingAmount: number;
+  status: number;
+  paidStatus: number;
+}
+
+export interface PartnerSalesSummaryDto {
+  salesRunningBalance: number;
+  openInvoicesCount: number;
+  openInvoicesTotal: number;
+  totalOverdue: number;
+  openInvoices: PartnerOpenInvoiceDto[];
+}
+
+export interface PartnerPurchaseSummaryDto {
+  purchaseRunningBalance: number;
+  openInvoicesCount: number;
+  openInvoicesTotal: number;
+  totalOverdue: number;
+  openInvoices: PartnerOpenInvoiceDto[];
+}
+
+export interface PartnerOverallSummaryDto {
+  totalOpenInvoicesCount: number;
+  totalOpenInvoicesAmount: number;
+  totalOverdueAmount: number;
+}
+
+export interface BusinessPartnerQuickViewResponse {
+  id: number;
+  code: string;
+  name: string;
+  aName: string;
+  eName?: string | null;
+  isCustomer: boolean;
+  isVendor: boolean;
+  partnerType: 'Customer' | 'Vendor' | 'Both';
+  phone?: string | null;
+  email?: string | null;
+  address?: string | null;
+  isActive: boolean;
+  netRunningBalance: number;
+  salesSummary?: PartnerSalesSummaryDto | null;
+  purchaseSummary?: PartnerPurchaseSummaryDto | null;
+  overallSummary: PartnerOverallSummaryDto;
 }
 

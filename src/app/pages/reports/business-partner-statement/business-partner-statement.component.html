@@ -167,14 +167,19 @@
                   {{ item.entryDate | date:'yyyy-MM-dd HH:mm' }}
                 </td>
                 <td class="px-5 py-4 text-start">
-                  <span class="inline-block text-xs font-mono font-medium text-brand-600 dark:text-brand-400 bg-brand-50 dark:bg-brand-500/10 px-2 py-0.5 rounded">
-                    {{ item.invoiceCode || '-' }}
-                  </span>
+                  <button type="button" (click)="viewTransaction(item)"
+                    [disabled]="!item.sourceId && !item.paymentId && !item.invoiceId"
+                    class="inline-flex items-center gap-1.5 text-xs font-mono font-bold text-brand-600 hover:text-brand-700 dark:text-brand-400 dark:hover:text-brand-300 bg-brand-50 hover:bg-brand-100 dark:bg-brand-500/10 dark:hover:bg-brand-500/20 px-2.5 py-1 rounded-md transition-all cursor-pointer disabled:cursor-default disabled:opacity-80">
+                    <span>{{ item.sourceCode || item.invoiceCode || ('#' + item.id) }}</span>
+                    <svg *ngIf="item.sourceId || item.paymentId || item.invoiceId" class="w-3.5 h-3.5 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                  </button>
                 </td>
                 <td class="px-5 py-4 text-start">
-                  <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium"
-                    [ngClass]="item.amount >= 0 ? 'bg-warning-50 text-warning-700 dark:bg-warning-500/10 dark:text-warning-400' : 'bg-success-50 text-success-700 dark:bg-success-500/10 dark:text-success-400'">
-                    {{ item.entryTypeName | translate }}
+                  <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold border shadow-2xs"
+                    [ngClass]="getEntryTypeBadgeClass(item.entryType)">
+                    {{ getEntryTypeName(item.entryType) | translate }}
                   </span>
                 </td>
                 <td class="px-5 py-4 text-end text-sm text-gray-900 dark:text-white tabular-nums">

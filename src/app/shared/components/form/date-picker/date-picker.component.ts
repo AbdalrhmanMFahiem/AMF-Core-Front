@@ -40,6 +40,10 @@ export class DatePickerComponent implements ControlValueAccessor, OnInit, AfterV
 
   get displayPlaceholder(): string {
     const p = this.placeholder || 'common.selectDate';
+    // If p contains spaces or Arabic characters, it is already a translated string (passed via | translate)
+    if (p.includes(' ') || /[\u0600-\u06FF]/.test(p)) {
+      return p;
+    }
     return this.translate.instant(p);
   }
 

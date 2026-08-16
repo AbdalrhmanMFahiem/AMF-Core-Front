@@ -10,10 +10,10 @@
     ),
     'translate-x-0': isMobileOpen$ | async,
     'ltr:-translate-x-full rtl:translate-x-full': !(isMobileOpen$ | async),
-    'xl:translate-x-0!': true
+    'lg:translate-x-0!': true
   }" (mouseenter)="onSidebarMouseEnter()" (mouseleave)="sidebarService.setHovered(false)">
   <!-- Sidebar Mobile Close Header -->
-  <div class="py-2 flex justify-end items-center relative xl:hidden mb-2">
+  <div class="py-2 flex justify-end items-center relative lg:hidden mb-2">
     <!-- Mobile Close Button -->
     <button class="flex items-center justify-center w-8 h-8 rounded-lg text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-200 transition-colors" (click)="sidebarService.setMobileOpen(false)">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -23,7 +23,7 @@
   </div>
 
   <!-- Mobile Search -->
-  <div class="mb-4 xl:hidden relative z-50">
+  <div class="mb-4 lg:hidden relative z-50">
     <div class="relative w-full">
       <span class="absolute -translate-y-1/2 pointer-events-none ltr:left-3 rtl:right-3 top-1/2">
         <!-- Search Icon -->
@@ -67,7 +67,7 @@
         <!-- Menu Section -->
         <div>
           <h2 class="mb-4 text-xs uppercase flex leading-5 text-gray-400" [ngClass]="{
-              'xl:justify-center': !(
+              'lg:justify-center': !(
                 (isExpanded$ | async) || (isHovered$ | async)
               ),
               'justify-start': (isExpanded$ | async) || (isHovered$ | async)
@@ -90,10 +90,10 @@
               <button (click)="toggleSubmenu('main',i)" class="menu-item group cursor-pointer"
                 [class.menu-item-active]="openSubmenu === 'main-' + i"
                 [class.menu-item-inactive]="openSubmenu !== 'main-' + i" [ngClass]="{
-                    'xl:justify-center': !(
+                    'lg:justify-center': !(
                       (isExpanded$ | async) || (isHovered$ | async)
                     ),
-                    'xl:justify-start':
+                    'lg:justify-start':
                       (isExpanded$ | async) || (isHovered$ | async)
                   }">
                 <span class="menu-item-icon-size" [class.menu-item-icon-active]="openSubmenu === 'main-' + i"
@@ -252,7 +252,7 @@
         @if (othersItems.length > 0) {
         <div>
           <h2 class="mb-4 text-xs uppercase flex leading-5 text-gray-400" [ngClass]="{
-              'xl:justify-center': !(
+              'lg:justify-center': !(
                 (isExpanded$ | async) || (isHovered$ | async)
               ),
               'justify-start': (isExpanded$ | async) || (isHovered$ | async)
@@ -280,10 +280,10 @@
               <button (click)="toggleSubmenu('others',i)" class="menu-item group cursor-pointer" [ngClass]="{
                      'menu-item-active': openSubmenu === 'others-' + i,
                      'menu-item-inactive': openSubmenu !== 'others-' + i,
-                    'xl:justify-center': !(
+                    'lg:justify-center': !(
                       (isExpanded$ | async) || (isHovered$ | async)
                     ),
-                    'xl:justify-start':
+                    'lg:justify-start':
                       (isExpanded$ | async) || (isHovered$ | async)
                   }">
                 <span class="menu-item-icon-size" [ngClass]="{

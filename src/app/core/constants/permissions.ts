@@ -454,4 +454,6 @@ export const Permissions = {
   ViewUnpricedItemsReport: `${AppPages.UnpricedItemsReport}.${AppActions.View}`,
   ExportUnpricedItemsReport: `${AppPages.UnpricedItemsReport}.${AppActions.Export}`,
   UpdateUnpricedItemCost: `${AppPages.UnpricedItemsReport}.${AppActions.Update}`,
+  GetBusinessPartnerPayments: `${AppPages.BusinessPartnerPayments}.${AppActions.Read}`,
+  GetEWalletProviders: `${AppPages.EWalletProviders}.${AppActions.Read}`,
 };

@@ -48,6 +48,7 @@
     "inventory": "صنف مخزني"
   },
   "common": {
+    "total": "الإجمالي",
     "كشف حساب الشركاء": "كشف حساب الشركاء",
     "اختر": "اختر",
     "تقرير ربحية الفواتير والأصناف": "تقرير ربحية الفواتير والأصناف",
@@ -86,6 +87,7 @@
     "errorLoadingData": "حدث خطأ أثناء تحميل البيانات.",
     "all": "الكل",
     "errorTitle": "يرجى إصلاح الأخطاء التالية",
+    "paused": "مؤقت متوقف (تمرير الماوس)",
     "row": "السطر",
     "refresh": "تحديث",
     "view": "عرض",
@@ -123,6 +125,10 @@
     "status": "الحالة",
     "active": "نشط",
     "remove": "إزالة",
+    "download": "تحميل",
+    "zoom": "تكبير",
+    "approved": "معتمد",
+    "rejected": "مرفوض",
     "upload": "رفع",
     "selectRoles": "اختر الصلاحيات",
     "additionalInfo": "معلومات إضافية",
@@ -249,6 +255,7 @@
     "configuration": "إعدادات النظام",
     "inventorySettings": "إعدادات المخازن",
     "invoiceSettings": "إعدادات الفواتير",
+    "paymentSettings": "إعدادات المدفوعات",
     "generalSettings": "الإعدادات العامة",
     "homepage": "الصفحة الرئيسية",
     "overview": "لوحة القيادة",
@@ -260,6 +267,8 @@
     "usersManagement": "إدارة المستخدمين",
     "users": "المستخدمين",
     "roles": "الصلاحيات",
+    "salesReps": "مندوبي المبيعات",
+    "salesRepReport": "تقرير مبيعات المندوب",
     "activeDbs": "قواعد بيانات الجلسة النشطة",
     "databases": "قواعد البيانات",
     "apiOnline": "خادم API متصل",
@@ -329,6 +338,9 @@
     "purchasesReport": "تقرير المشتريات",
     "inventoryValuation": "تقييم المخزون",
     "dashboard": "لوحة التحكم",
+    "finance": "المالية / السندات",
+    "eWalletProviders": "مزودي المحافظ الإلكترونية",
+    "payments": "مدفوعات شركاء الأعمال",
     "UnitOfMeasure": {
       "Title": "وحدات القياس",
       "title": "وحدات القياس",
@@ -385,6 +397,18 @@
       "Add": "إضافة مجموعة دول",
       "add": "إضافة مجموعة دول"
     }
+  },
+  "salesReps": {
+    "title": "إدارة مندوبي المبيعات"
+  },
+  "quickSale": {
+    "title": "نقطة بيع سريعة للمندوب"
+  },
+  "salesDashboard": {
+    "title": "لوحة تحكم المندوب"
+  },
+  "salesInsights": {
+    "title": "اقتراحات ومتابعة الأداء"
   },
   "countryGroups": {
     "title": "مجموعات الدول",
@@ -742,6 +766,7 @@
         "return": "مردود",
         "adjustment": "تسوية",
         "openingbalance": "رصيد افتتاحي",
+        "partnerpayment": "سداد شريك أعمال",
         "receipt": "سند قبض",
         "manualjournal": "قيد يومية"
       },
@@ -2089,5 +2114,184 @@
       "next": "الخطوة التالية",
       "successMessage": "تم إعداد وتسجيل الشركة بنجاح! جاري التوجيه..."
     }
+  },
+  "eWalletProviders": {
+    "title": "مزودي المحافظ الإلكترونية",
+    "addNew": "إضافة مزود محفظة جديد",
+    "edit": "تعديل مزود محفظة",
+    "view": "عرض مزود محفظة",
+    "commissionDetails": "تفاصيل حساب العمولة",
+    "totalCommission": "إجمالي العمولة",
+    "netAmount": "المبلغ الصافي",
+    "fields": {
+      "code": "الكود",
+      "name": "الاسم",
+      "aName": "الاسم (عربي)",
+      "eName": "الاسم (إنجليزي)",
+      "fixedCommission": "العمولة الثابتة",
+      "commissionPercent": "نسبة العمولة %",
+      "maxCommission": "الحد الأقصى للعمولة"
+    },
+    "list": {
+      "title": "قائمة مزودي المحافظ الإلكترونية"
+    }
+  },
+  "payments": {
+    "title": "مدفوعات شركاء الأعمال",
+    "addNew": "إصدار إيصال / سداد جديد",
+    "generalInfo": "البيانات الأساسية لعملية الدفع",
+    "eWalletProvider": "مزود المحفظة الإلكترونية",
+    "eWalletReferenceNumber": "رقم عملية التحويل / المرجع",
+    "list": {
+      "title": "سندات ومتحصلات شركاء الأعمال"
+    },
+    "incoming": "مقبوضات / استلام سداد",
+    "outgoing": "مدفوعات / إيصال صرف",
+    "customerReceipt": "قبض من عميل",
+    "vendorPayment": "صرف لمورد",
+    "invalidAmount": "المبلغ يجب أن يكون أكبر من الصفر",
+    "allocationTitle": "توزيع مبلغ السداد على الفواتير المفتوحة (FIFO)",
+    "unallocatedAmount": "المبلغ المتبقي غير الموزع",
+    "invoiceCode": "رقم الفاتورة",
+    "invoiceRemaining": "المتبقي بالفاتورة",
+    "allocatedAmount": "المبلغ الموزع",
+    "totalAllocated": "إجمالي الموزع",
+    "applyAllocation": "تطبيق وتأكيد التوزيع",
+    "noOpenInvoices": "لا توجد فواتير مفتوحة تستحق السداد لهذا الشريك حالياً",
+    "allocationExceedsError": "المبلغ الموزع يتجاوز المبلغ المتاح بالسداد",
+    "noAllocationSpecified": "يرجى إدخال مبلغ توزيع لسطر واحد على الأقل",
+    "allocationSuccess": "تم توزيع السداد على الفواتير بنجاح",
+    "verifyTitle": "اعتماد / مراجعة سداد المحفظة الإلكترونية",
+    "verifyPrompt": "هل ترغب في اعتماد هذا السداد الإلكتروني وتأكيده بالميزانية، أم رفضه؟",
+    "rejectionReason": "سبب الرفض",
+    "optionalIfApprove": "اختياري عند الموافقة",
+    "approve": "اعتماد وموافقة",
+    "reject": "رفض وإلغاء",
+    "approveSuccess": "تم اعتماد السداد وإدراجه بالحسابات بنجاح",
+    "rejectSuccess": "تم رفض السداد وإلغاء المعاملة",
+    "confirmCancel": "هل أنت متأكد من إلغاء هذا السداد وإلغاء كافة توزيعاته على الفواتير؟",
+    "allocatedInvoices": "الفواتير الموزع عليها هذا السداد",
+    "paymentsTitle": "المسدد",
+    "partnerSummary": {
+      "title": "ملخص حساب الشريك",
+      "currentBalance": "الرصيد الحالي",
+      "openInvoicesCount": "عدد الفواتير المفتوحة",
+      "openInvoicesTotal": "إجمالي المستحق بالفواتير",
+      "totalOverdue": "إجمالي المتأخرات",
+      "noOpenInvoices": "لا يوجد فواتير معلقة"
+    },
+    "methods": {
+      "cash": "نقداً (كاش)",
+      "bankTransfer": "تحويل بنكي",
+      "cheque": "شيك فوري",
+      "postDatedCheque": "شيك آجل",
+      "creditCard": "بطاقة ائتمانية",
+      "eWallet": "محفظة إلكترونية / دفع إلكتروني"
+    },
+    "methodHints": {
+      "cash": "تسليم نقدي مباشر",
+      "bankTransfer": "حوالة / تحويل بنكي",
+      "cheque": "شيك بنكي فور التحصيل",
+      "postDatedCheque": "شيك يستحق بتاريخ مستقبلي",
+      "creditCard": "دفع بالبطاقة / POS",
+      "eWallet": "فودافون كاش / دفع إلكتروني"
+    },
+    "statuses": {
+      "pending": "قيد الانتظار",
+      "completed": "مكتمل",
+      "cancelled": "ملغى",
+      "bounced": "شيك مرتد"
+    },
+    "fields": {
+      "code": "الكود / رقم الإيصال",
+      "direction": "نوع المعاملة",
+      "partner": "شريك الأعمال",
+      "date": "تاريخ الدفع",
+      "totalAmount": "إجمالي المبلغ",
+      "allocatedAmount": "المبلغ الموزع",
+      "unallocatedAmount": "المبلغ المتبقي",
+      "method": "طريقة الدفع",
+      "bank": "البنك",
+      "chequeNumber": "رقم الشيك",
+      "chequeDueDate": "تاريخ استحقاق الشيك",
+      "eWalletProvider": "مزود المحفظة / بوابة الدفع",
+      "eWalletRef": "الرقم المرجعي للمعاملة",
+      "receiptAttachment": "صورة الإيصال / المرفق",
+      "reference": "المرجع الخارجي",
+      "status": "حالة السداد",
+      "paymentReason": "سبب الدفع",
+      "baseAmount": "المبلغ قبل العمولة",
+      "amountAfterCommission": "المبلغ بعد العمولة (الإجمالي)",
+      "defaultCommission": "العمولة الافتراضية (للقراءة فقط)",
+      "appliedCommission": "العمولة المطبقة",
+      "commissionPercent": "نسبة العمولة %",
+      "fixedCommission": "العمولة الثابتة",
+      "commissionAmount": "إجمالي العمولة"
+    },
+    "allocationsTitle": "توزيع السداد على فواتير الشريك",
+    "allocateModalHint": "اختر الفواتير المعلقة وحدد المبلغ المراد سداده لكل فاتورة",
+    "autoAllocateBtn": "توزيع تلقائي",
+    "clearSelection": "مسح التحديد",
+    "confirmAllocation": "تأكيد التوزيع",
+    "selectInvoicesToPay": "تخصيص الدفع على فواتير معينة",
+    "confirmCancelTitle": "إلغاء معاملة السداد",
+    "confirmCancelText": "هل أنت متأكد من إلغاء هذا السداد وإلغاء كافة توزيعاته على الفواتير؟",
+    "cancelSuccess": "تم إلغاء السداد وإلغاء توزيعاته بنجاح.",
+    "actions": {
+      "allocate": "توزيع على الفواتير",
+      "verify": "اعتماد المحفظة",
+      "cancel": "إلغاء المعاملة"
+    },
+    "paymentMethodDetails": "تفاصيل طريقة الدفع",
+    "baseAmountLabel": "المبلغ الأصلي (Base Amount):",
+    "commissionLabel": "عمولة المحفظة (Commission):",
+    "totalAmountWithCommissionLabel": "إجمالي الخصم والعمولة:",
+    "cashPaymentNotice": "تم الدفع وسداد المبلغ نقداً عبر الخزينة.",
+    "receiptAttachmentTitle": "صورة إيصال التحويل / السداد المرفقة",
+    "zoomImage": "تكبير الصورة",
+    "imageAttachedSuccessfully": "تم إرفاق الصورة بنجاح",
+    "viewAndZoomReceipt": "عرض وتكبير الإيصال",
+    "noReceiptAttachment": "لا توجد صورة إيصال تحويل أو سداد مرفقة لهذه العملية.",
+    "lockedAndAutoFilledFromInvoices": "🔒 تم القفل والتعبئة التلقائية من الفواتير المحددة",
+    "editInvoices": "تعديل الفواتير",
+    "paymentReasonPlaceholder": "مثال: سداد دفعة مقدمة / سداد الفواتير المحددة...",
+    "receiptImagePreview": "معاينة صورة الإيصال / المرفق",
+    "attachedReceiptImage": "صورة الإيصال المرفق"
+  },
+  "partnerQuickView": {
+    "title": "تفاصيل وبيانات الشريك",
+    "contactInfo": "بيانات الاتصال والتواصل",
+    "financialSummary": "الملخص المالي والحسابي",
+    "code": "كود الشريك",
+    "name": "الاسم",
+    "type": "النوع",
+    "phone": "الهاتف",
+    "email": "البريد الإلكتروني",
+    "taxNumber": "الرقم الضريبي",
+    "creditLimit": "سقف الائتمان",
+    "currentBalance": "الرصيد الحالي",
+    "totalInvoiced": "إجمالي الفواتير",
+    "totalPaid": "إجمالي السدادات",
+    "totalOverdue": "إجمالي المتأخرات",
+    "openInvoicesCount": "عدد الفواتير القائمة",
+    "openInvoicesTotal": "إجمالي مستحقات الفواتير المفتوحة",
+    "bothRole": "عميل ومورد معاً",
+    "salesSide": "حساب المبيعات (كعميل)",
+    "purchasesSide": "حساب المشتريات (كمورد)",
+    "netRunningBalance": "صافي الرصيد الحالي الكلي",
+    "openInvoicesList": "قائمة الفواتير المفتوحة المعلقة",
+    "viewAccountStatement": "عرض كشف الحساب التفصيلي",
+    "close": "إغلاق"
+  },
+  "paymentSettings": {
+    "title": "إعدادات مدفوعات شركاء الأعمال",
+    "subtitle": "التحكم في سياسات اعتماد السداد وترحيل الحسابات والتخصيص",
+    "desc": "حدد الخيارات الخاصة بكيفية معالجة سندات القبض والصرف وتأثيرها المالي المباشر على رصيد الشريك",
+    "autoApprovePayments": "اعتماد السدادات وتأثيرها على الرصيد تلقائياً عند الحفظ",
+    "autoApprovePaymentsHint": "عند تفعيل هذا الخيار، يتم حفظ أي إيصال قبض أو صرف بحالة معتمدة تلقائياً وتسجيل المعاملة فوراً بدفتر الأستاذ وتعديل رصيد الشريك، أما عند إيقافه فتحفظ بحالة معلقة وتنتظر موافقة مدير السداد قبل التثبيت.",
+    "statusAutoApproveActive": "الموافقة والتسجيل بدفتر الأستاذ تلقائي ومباشر فور الحفظ (الافتراضي)",
+    "statusManualVerificationRequired": "تتطلب المعاملات مراجعة واعتماد يدوي من مسؤول السداد قبل الترحيل بالدفتر",
+    "allowOverAllocation": "السماح بالتوزيع الزائد على الفواتير",
+    "allowOverAllocationHint": "يتيح تخصيص مبالغ أكبر من المتبقي بالفواتير عند استخدام خاصية التوزيع"
   }
 }

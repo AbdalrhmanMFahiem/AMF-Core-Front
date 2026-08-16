@@ -7,6 +7,7 @@ import { NotificationDropdownComponent } from '../../components/header/notificat
 import { UserDropdownComponent } from '../../components/header/user-dropdown/user-dropdown.component';
 import { LanguageDropdownComponent } from '../../components/header/language-dropdown/language-dropdown.component';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { matchSearchQuery } from '../../utils/arabic-search.utils';
 import { SafeHtmlPipe } from '../../pipe/safe-html.pipe';
 
 @Component({
@@ -46,35 +47,33 @@ export class AppHeaderComponent implements OnInit {
     this.flatRoutes = this.getFlatRoutes([...this.sidebarService.navItems, ...this.sidebarService.othersItems]);
   }
 
-  private getFlatRoutes(items: NavItem[], parentIcon?: string): NavItem[] {
+  private getFlatRoutes(items: NavItem[], parentIcon?: string, parentAliases: string[] = []): NavItem[] {
     let result: NavItem[] = [];
     for (const item of items) {
       const currentIcon = item.icon || parentIcon;
+      const combinedAliases = [...(item.aliases || []), ...parentAliases];
       if (item.path) {
-        result.push({ ...item, icon: currentIcon });
+        result.push({ ...item, icon: currentIcon, aliases: combinedAliases });
       }
       if (item.subItems) {
-        result = [...result, ...this.getFlatRoutes(item.subItems, currentIcon)];
+        result = [...result, ...this.getFlatRoutes(item.subItems, currentIcon, combinedAliases)];
       }
     }
     return result;
   }
 
   onSearch(event: any) {
-    const query = event.target.value?.toLowerCase() || '';
+    const query = event.target.value || '';
     this.searchQuery = query;
-    if (!query) {
+    if (!query.trim()) {
       this.showDropdown = false;
       this.searchResults = [];
       return;
     }
     
-    this.searchResults = this.flatRoutes.filter(route => {
-      const nameMatch = route.name?.toLowerCase().includes(query);
-      const translatedName = route.translationKey ? this.translateService.instant(route.translationKey)?.toLowerCase() : '';
-      const translationMatch = translatedName.includes(query);
-      return nameMatch || translationMatch;
-    }).slice(0, 8); // max 8 results
+    this.searchResults = this.flatRoutes
+      .filter(route => matchSearchQuery(route, query, this.translateService))
+      .slice(0, 10);
     
     this.showDropdown = true;
   }
@@ -94,7 +93,7 @@ export class AppHeaderComponent implements OnInit {
   }
 
   handleToggle() {
-    if (window.innerWidth >= 1280) {
+    if (window.innerWidth >= 1024) {
       this.sidebarService.toggleExpanded();
     } else {
       this.sidebarService.toggleMobileOpen();

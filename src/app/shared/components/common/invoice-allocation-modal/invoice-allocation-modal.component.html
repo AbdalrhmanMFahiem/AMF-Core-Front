@@ -1,0 +1,96 @@
+<app-modal [isOpen]="isOpen" (close)="onClose()" [className]="'max-w-3xl'">
+  <!-- Modal Header -->
+  <div class="px-6 py-5 border-b border-gray-100 dark:border-white/5 flex justify-between items-center bg-white dark:bg-gray-900 rounded-t-2xl">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-full bg-brand-50 dark:bg-brand-500/10 flex items-center justify-center text-brand-600 dark:text-brand-400">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+        </svg>
+      </div>
+      <div>
+        <h3 class="text-lg font-bold text-gray-900 dark:text-white">
+          {{ 'payments.allocationsTitle' | translate }}
+        </h3>
+        <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+          {{ 'payments.allocateModalHint' | translate }}
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="p-6 bg-gray-50/40 dark:bg-gray-900/50 rounded-b-2xl space-y-4 max-h-[75vh] overflow-y-auto">
+    <!-- Toolbar Actions -->
+    <div class="flex flex-wrap items-center justify-between gap-3 p-3.5 bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm text-xs">
+      <div class="flex items-center gap-2">
+        <button type="button" (click)="autoAllocate()"
+          class="px-3 py-1.5 font-bold text-white bg-brand-600 rounded-lg hover:bg-brand-700 transition-colors shadow-xs flex items-center gap-1">
+          ⚡ {{ 'payments.autoAllocateBtn' | translate }}
+        </button>
+        <button type="button" (click)="clearSelection()"
+          class="px-3 py-1.5 font-semibold text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700 transition-colors">
+          🧹 {{ 'payments.clearSelection' | translate }}
+        </button>
+      </div>
+
+      <div class="flex items-center gap-4 text-xs font-bold">
+        <span class="text-gray-600 dark:text-gray-300">
+          {{ 'payments.totalAllocated' | translate }}:
+          <strong class="text-brand-600 dark:text-brand-400 text-sm font-black dir-ltr inline-block">{{ totalAllocated | number:'1.2-2' }}</strong>
+        </span>
+      </div>
+    </div>
+
+    <div *ngIf="loading" class="flex justify-center p-12">
+      <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-500"></div>
+    </div>
+
+    <!-- Invoices List Table -->
+    <div *ngIf="!loading && invoices.length > 0" class="overflow-hidden rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
+      <table class="w-full text-xs text-right">
+        <thead class="bg-gray-50 dark:bg-gray-800 text-gray-500 dark:text-gray-400 uppercase font-bold">
+          <tr>
+            <th class="px-3 py-2 text-center w-10">#</th>
+            <th class="px-3 py-2">{{ 'payments.invoiceCode' | translate }}</th>
+            <th class="px-3 py-2">{{ 'payments.invoiceRemaining' | translate }}</th>
+            <th class="px-3 py-2 w-44">{{ 'payments.allocatedAmount' | translate }}</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-100 dark:divide-gray-800 font-medium">
+          <tr *ngFor="let inv of invoices" [ngClass]="inv.selected ? 'bg-brand-50/40 dark:bg-brand-500/10' : 'hover:bg-gray-50/50 dark:hover:bg-gray-800/50'">
+            <td class="px-3 py-2 text-center">
+              <input type="checkbox" [checked]="inv.selected" (change)="toggleInvoice(inv)"
+                class="rounded border-gray-300 text-brand-600 focus:ring-brand-500 w-4 h-4 cursor-pointer" />
+            </td>
+            <td class="px-3 py-2 font-mono font-bold text-gray-900 dark:text-white">
+              #{{ inv.invoiceCode }}
+            </td>
+            <td class="px-3 py-2 font-extrabold text-warning-600 dark:text-warning-400">
+              {{ inv.invoiceRemaining | number:'1.2-2' }}
+            </td>
+            <td class="px-3 py-2">
+              <input type="number" [(ngModel)]="inv.allocationAmount" (ngModelChange)="onAmountChange(inv)" min="0" [max]="inv.invoiceRemaining" step="0.01"
+                class="w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-transparent px-2.5 py-1 text-xs font-mono font-bold outline-none focus:border-brand-500 dir-ltr text-left"
+                placeholder="0.00" />
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div *ngIf="!loading && invoices.length === 0" class="text-center p-8 text-xs text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800">
+      {{ 'payments.partnerSummary.noOpenInvoices' | translate }}
+    </div>
+
+    <!-- Actions -->
+    <div class="flex items-center justify-end gap-3 pt-3 border-t border-gray-100 dark:border-gray-800">
+      <button type="button" (click)="onClose()"
+        class="px-4 py-2 text-xs font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700 transition-colors">
+        {{ 'common.cancel' | translate }}
+      </button>
+      <button type="button" (click)="onConfirm()"
+        class="px-5 py-2 text-xs font-bold text-white bg-brand-600 rounded-lg hover:bg-brand-700 transition-colors shadow-sm">
+        {{ 'payments.confirmAllocation' | translate }}
+      </button>
+    </div>
+  </div>
+</app-modal>

@@ -89,6 +89,7 @@ export class BusinessPartnerFormComponent implements OnInit {
   salesReps: any[] = [];
   loadingSalesReps = false;
   savingSalesRep = false;
+  primarySalesRepUserId: string | null = null;
   salesRepModel: any = { userId: null, assignmentDate: null, isPrimary: false, commissionPercentage: null };
 
   ngOnInit(): void {
@@ -318,8 +319,27 @@ export class BusinessPartnerFormComponent implements OnInit {
       next: (res: any[]) => {
         this.salesReps = res;
         this.loadingSalesReps = false;
+        const primary = this.salesReps.find(x => x.isPrimary && !x.endDate);
+        if (primary) {
+          this.primarySalesRepUserId = primary.userId;
+        }
       },
       error: () => this.loadingSalesReps = false
+    });
+  }
+
+  onPrimarySalesRepChange(userId: string): void {
+    if (!this.id || !userId) return;
+    const existing = this.salesReps.find(x => x.userId === userId && !x.endDate);
+    const payload = {
+      userId: userId,
+      assignmentDate: existing?.assignmentDate || new Date().toISOString(),
+      isPrimary: true,
+      salesRole: existing?.salesRole || null,
+      commissionPercentage: existing?.commissionPercentage || null
+    };
+    this.businessPartnerService.assignSalesRep(this.id, payload).subscribe({
+      next: () => this.loadSalesReps()
     });
   }
 

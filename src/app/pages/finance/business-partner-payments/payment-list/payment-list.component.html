@@ -1,0 +1,134 @@
+<div class="flex items-center justify-between mb-4">
+  <app-page-breadcrumb [pageTitle]="'payments.list.title'"></app-page-breadcrumb>
+  <button (click)="onOpenSettings()" class="px-3.5 py-2 text-xs font-bold text-gray-700 bg-white border border-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors flex items-center gap-1.5 shadow-xs">
+    ⚙️ {{ 'paymentSettings.title' | translate }}
+  </button>
+</div>
+
+<app-crud-list
+  [pageTitle]="'payments.list.title'"
+  [addBtnText]="'payments.addNew'"
+  [columns]="columns"
+  [data]="data"
+  [filters]="filters"
+  [isLoading]="loading"
+  [showIncludeDisabledToggle]="false"
+  [hideEdit]="true"
+  [hideToggleStatus]="true"
+  [customActions]="customActions"
+  [hasAdvancedFilters]="true"
+  (search)="onSearch()"
+  (pageChange)="onPageChange($event)"
+  (add)="onAdd()"
+  (view)="onView($event)"
+  (customAction)="onCustomAction($event)">
+
+  <!-- Advanced Filters -->
+  <div advanced-filters class="grid grid-cols-1 sm:grid-cols-3 gap-4 p-4 bg-gray-50 dark:bg-gray-800/50 rounded-xl border border-gray-100 dark:border-white/5 mb-4">
+    <div>
+      <label class="mb-1 block text-xs font-medium text-gray-700 dark:text-gray-400">
+        {{ 'payments.fields.partner' | translate }}
+      </label>
+      <app-searchable-select
+        [(ngModel)]="filters.businessPartnerId"
+        [options]="partnerOptions"
+        placeholder="common.select">
+      </app-searchable-select>
+    </div>
+
+    <div>
+      <label class="mb-1 block text-xs font-medium text-gray-700 dark:text-gray-400">
+        {{ 'common.date' | translate }} ({{ 'common.from' | translate }})
+      </label>
+      <app-date-picker
+        id="dateFrom"
+        name="dateFrom"
+        [(ngModel)]="filters.dateFrom"
+        [placeholder]="'common.selectDate' | translate">
+      </app-date-picker>
+    </div>
+
+    <div>
+      <label class="mb-1 block text-xs font-medium text-gray-700 dark:text-gray-400">
+        {{ 'common.date' | translate }} ({{ 'common.to' | translate }})
+      </label>
+      <app-date-picker
+        id="dateTo"
+        name="dateTo"
+        [(ngModel)]="filters.dateTo"
+        [placeholder]="'common.selectDate' | translate">
+      </app-date-picker>
+    </div>
+
+    <div class="sm:col-span-3 flex justify-end gap-2 pt-2">
+      <button (click)="onSearch()" class="px-4 py-2 text-xs font-semibold text-white bg-brand-500 rounded-lg hover:bg-brand-600">
+        {{ 'common.search' | translate }}
+      </button>
+    </div>
+  </div>
+</app-crud-list>
+
+<!-- Allocation Modal -->
+<app-allocation-modal
+  [isOpen]="isAllocationModalOpen"
+  [paymentId]="selectedPaymentId"
+  [businessPartnerId]="selectedPartnerId"
+  [unallocatedAmount]="selectedUnallocatedAmount"
+  (close)="isAllocationModalOpen = false"
+  (allocated)="loadData()">
+</app-allocation-modal>
+
+<!-- Verify Payment Modal -->
+<app-modal [isOpen]="isVerifyModalOpen" (close)="isVerifyModalOpen = false" [className]="'max-w-md'">
+  <div class="px-6 py-5 border-b border-gray-100 dark:border-white/5 flex justify-between items-center bg-white dark:bg-gray-900 rounded-t-2xl">
+    <h3 class="text-lg font-bold text-gray-900 dark:text-white">{{ 'payments.verifyTitle' | translate }}</h3>
+  </div>
+
+  <div class="p-6 space-y-4">
+    <p class="text-sm text-gray-600 dark:text-gray-400">{{ 'payments.verifyPrompt' | translate }}</p>
+
+    <div>
+      <label class="mb-1 block text-xs font-medium text-gray-700 dark:text-gray-400">
+        {{ 'payments.rejectionReason' | translate }} ({{ 'payments.optionalIfApprove' | translate }})
+      </label>
+      <textarea [(ngModel)]="rejectionReason" rows="3"
+        class="w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm outline-none focus:border-brand-500 dark:border-gray-700 dark:text-white"></textarea>
+    </div>
+
+    <div class="flex justify-end gap-3 pt-3 border-t border-gray-100 dark:border-gray-800">
+      <button type="button" (click)="onVerify(false)"
+        class="px-4 py-2 text-xs font-semibold text-white bg-error-500 rounded-lg hover:bg-error-600">
+        {{ 'payments.reject' | translate }}
+      </button>
+      <button type="button" (click)="onVerify(true)"
+        class="px-4 py-2 text-xs font-semibold text-white bg-success-500 rounded-lg hover:bg-success-600">
+        {{ 'payments.approve' | translate }}
+      </button>
+    </div>
+  </div>
+</app-modal>
+
+<!-- Cancel Payment Confirmation Modal -->
+<app-confirmation-modal
+  [isOpen]="isCancelModalOpen"
+  [isLoading]="cancellingPayment"
+  title="payments.confirmCancelTitle"
+  message="payments.confirmCancelText"
+  confirmText="common.confirm"
+  cancelText="common.cancel"
+  type="danger"
+  (confirm)="onConfirmCancel()"
+  (cancel)="isCancelModalOpen = false">
+
+  <span *ngIf="itemToCancel" class="font-bold text-gray-800 dark:text-white mt-4 block text-sm bg-gray-50 dark:bg-gray-800/60 p-3.5 rounded-2xl border border-gray-100 dark:border-gray-700/80 shadow-inner text-start">
+    <span class="block text-xs font-mono font-bold text-brand-600 dark:text-brand-400 mb-1">
+      {{ itemToCancel.code }}
+    </span>
+    <span class="block text-xs text-gray-700 dark:text-gray-300 font-semibold leading-relaxed">
+      {{ itemToCancel.businessPartnerName }}
+    </span>
+    <span class="block text-xs text-gray-500 dark:text-gray-400 mt-1">
+      {{ 'payments.fields.totalAmount' | translate }}: <strong class="text-gray-900 dark:text-white font-bold">{{ itemToCancel.totalAmount | number:'1.2-2' }}</strong>
+    </span>
+  </span>
+</app-confirmation-modal>

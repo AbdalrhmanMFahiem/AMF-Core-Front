@@ -45,6 +45,10 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
         return throwError(() => error);
       }
 
+      if (req.headers.has('X-Skip-Toast') || req.headers.has('x-skip-toast') || req.headers.has('Skip-Toast')) {
+        return throwError(() => error);
+      }
+
       if (error.error && Array.isArray(error.error.errors)) {
         const errors = error.error.errors;
         const errorTitle = translate.instant('errors.generic') || 'Error';

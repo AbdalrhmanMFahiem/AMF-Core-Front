@@ -42,14 +42,18 @@ AMFCore-Front-Temp/public/
 └── en.json    (English translations)
 ```
 
-### ⚠️ CRITICAL RULES
+### ⚠️ CRITICAL TRANSLATION RULES & GOTCHAS
 
-1. **NEVER hardcode text.** Every visible string MUST use a translation key. Everything in the UI will have a translation.
-2. **REUSE EXISTING TRANSLATIONS as much as possible.** Check `common.*`, `crud.*`, etc., before creating a new key to avoid redundancy.
-3. **ALWAYS add translation keys to BOTH `ar.json` AND `en.json` simultaneously.**
-4. **Follow the existing key structure.** Use nested keys grouped by feature/page.
-5. In templates, use the `translate` pipe: `{{ 'key.path' | translate }}`
-6. In TypeScript, inject `TranslateService` and use `this.translate.instant('key.path')`
+1. **SEARCH FIRST BEFORE CREATING NEW KEYS:** Always search `public/ar.json` and `public/en.json` before introducing any new translation key. If a term already exists (e.g., `common.*`, `validation.*`, `errors.*`), **REUSE IT** to maintain consistency and prevent duplication.
+2. **KEY NAMING CONVENTION (`camelCase`):** If a new translation key MUST be added, it MUST follow **camelCase** naming (e.g., `addNew`, `fixedCommission`, `invoiceCode`, `eWalletProviders`, `businessPartnerPayments`). The first word starts with a lowercase letter, and each subsequent word starts with a capital letter.
+3. **ALWAYS UPDATE BOTH FILES:** Every new key must be added to BOTH `public/ar.json` AND `public/en.json` at the exact same location.
+4. **NEVER HARDCODE STRINGS:** All user-facing text in templates, components, and messages MUST use translation keys.
+5. **PREVENT THE DOUBLE-TRANSLATION BUG (`translate.instant` vs `| translate` Pipe):**
+   - **CRITICAL RULE:** **NEVER** pass `translate.instant('some.key')` to component input properties (such as `[addBtnText]`) if the receiving component internally pipes that property with `| translate`!
+   - **Why it breaks:** `translate.instant('eWalletProviders.addNew')` evaluates to Arabic text `"إضافة مزود محفظة جديد"`. When `CrudListComponent` renders `{{ addBtnText | translate }}`, ngx-translate treats `"إضافة مزود محفظة جديد"` as a translation key name, searches `ar.json` for a key with that exact Arabic text, fails to find it, and logs `[Missing Translation] The key 'إضافة مزود محفظة جديد' is missing in the translation file.`.
+   - **CORRECT USAGE:** Always pass raw translation keys into input properties:
+     - `[addBtnText]="'eWalletProviders.addNew'"` or `addBtnText="eWalletProviders.addNew"`
+     - In TS when displaying toasts or alerts: `this.toastr.success(this.translate.instant('common.savedSuccessfully'))`
 
 ### Existing Reusable Translation Keys
 
@@ -653,7 +657,9 @@ export class MyEntityFormComponent implements OnInit {
 
 > **⚠️ Banners Rule:** 
 > - **Success:** When saving is successful, set `this.saveSuccess = true` to trigger `<app-success-redirect-banner>`. This component automatically redirects to the list view after a 5-second countdown.
-> - **Error / Validation:** When validation fails or API returns errors, populate `this.validationErrors` array. This triggers `<app-error-banner>` at the bottom of the template. Always use proper translation variables like `this.translate.instant('common.fieldRequired', { field: fieldName })` to display user-friendly error messages (e.g. "The Code field is required").
+> - **Error / Validation:** When validation fails or API returns errors, populate `this.validationErrors` array. This triggers `<app-error-banner>` as a fixed, glassmorphic bottom banner.
+> - **NO Duplicate Toast Alerts:** NEVER call `this.toastr.error()` inside form component submission error handlers. Form write requests MUST pass `headers: new HttpHeaders({ 'X-Skip-Toast': 'true' })` to suppress interceptor toasts and rely exclusively on `<app-error-banner>`.
+> - **Error Code Badges:** Always preserve and format backend error codes as `[e.code] e.description` (e.g. `[PAY.6502] كود الدفعة موجود مسبقاً.`). `<app-error-banner>` automatically renders `[CODE]` in a distinct, selectable monospace badge.
 ```
 
 **Form Template:**
@@ -1201,6 +1207,55 @@ Find the relevant group (e.g., "Inventory", "Master Data") and add a new `subIte
 </label>
 ```
 
+### 🔢 Auto-Generated Code Badge Input Pattern
+
+When creating a form for an entity that has a `code` field:
+1. **Auto-Populate Next Code:** In `ngOnInit`, when `mode === 'add'`, call `service.getNextCode()` to pre-fill `model.code`.
+2. **Code Badge Input UI (Editable):** Use the Code Badge in the form header. The code is auto-generated but allows user editing unless `mode === 'view'`.
+
+```html
+<!-- Header with Code Badge & Action Buttons -->
+<div class="flex flex-wrap items-center justify-between gap-4 border-b border-gray-100 pb-5 dark:border-white/5">
+  <!-- Code Badge -->
+  <div
+    class="flex items-center gap-2 rounded-lg border border-brand-100 bg-brand-50 px-3 py-2 shadow-theme-xs dark:border-brand-500/20 dark:bg-brand-500/10">
+    <svg class="h-4 w-4 text-brand-600 dark:text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+        d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+    </svg>
+    <span
+      class="whitespace-nowrap text-xs font-semibold uppercase tracking-wider text-brand-600 dark:text-brand-400">
+      {{ 'common.code' | translate }}
+    </span>
+    <div class="mx-1 h-4 w-px bg-brand-200 dark:bg-brand-500/30"></div>
+    <input type="text" [(ngModel)]="model.code" name="code" required [disabled]="mode === 'view'"
+      class="w-32 bg-transparent p-0 font-mono text-sm font-bold text-gray-900 outline-none placeholder:text-gray-400 disabled:opacity-70 dark:text-white dark:placeholder:text-gray-500"
+      placeholder="---" />
+  </div>
+
+  <!-- Action Buttons (Cancel / Save) -->
+</div>
+```
+
+```typescript
+// In Form Component TypeScript:
+ngOnInit(): void {
+  const idParam = this.route.snapshot.paramMap.get('id');
+  if (idParam) {
+    this.id = +idParam;
+    this.loadRecord(this.id);
+  } else if (this.mode === 'add') {
+    this.getNextCode();
+  }
+}
+
+getNextCode(): void {
+  this.service.getNextCode().subscribe(res => {
+    this.model.code = res.nextCode;
+  });
+}
+```
+
 ### Tabs Pattern (for forms with multiple sections)
 
 ```html
@@ -1234,24 +1289,42 @@ validate(): boolean {
 
 ### Server Error Handling (Copy-Paste Ready)
 
+> **CRITICAL RULE:** Preserve backend error codes `[e.code]` so they render as distinct monospace badges in `<app-error-banner>`. DO NOT call `this.toastr.error()` in error handlers.
+
 ```typescript
 error: (err: any) => {
   this.saving = false;
-  if (err?.error?.message) {
-    this.validationErrors = [err.error.message];
-  } else if (err?.error?.errors) {
-    if (Array.isArray(err.error.errors)) {
-      this.validationErrors = err.error.errors.map((e: any) =>
-        e.description || e.errorMessage || (typeof e === 'string' ? e : JSON.stringify(e))
-      );
-    } else {
-      this.validationErrors = Object.values(err.error.errors).flat() as string[];
+  const mapErrorItem = (e: any) => {
+    if (typeof e === 'object' && e !== null) {
+      const codeStr = e.code ? `[${e.code}] ` : '';
+      const msgStr = e.description || e.errorMessage || e.message || JSON.stringify(e);
+      return `${codeStr}${msgStr}`;
     }
+    return typeof e === 'string' ? e : JSON.stringify(e);
+  };
+
+  if (err?.error?.errors) {
+    this.validationErrors = Array.isArray(err.error.errors)
+      ? err.error.errors.map(mapErrorItem)
+      : Object.values(err.error.errors).flat().map(mapErrorItem);
+  } else if (err?.error?.message) {
+    const codeStr = err.error.code ? `[${err.error.code}] ` : '';
+    this.validationErrors = [`${codeStr}${err.error.message}`];
+  } else if (err?.error?.title) {
+    const codeStr = err.error.code ? `[${err.error.code}] ` : '';
+    this.validationErrors = [`${codeStr}${err.error.title}`];
   } else {
     this.validationErrors = [this.translate.instant('errors.generic')];
   }
 }
 ```
+
+### 🛑 Unified System Error Display Rules (MANDATORY SYSTEM-WIDE)
+
+1. **Fixed Footer-like Error Banner:** All form screens MUST place `<app-error-banner [isVisible]="validationErrors.length > 0" [errors]="validationErrors" (close)="validationErrors = []"></app-error-banner>`. The banner renders at the bottom of the screen (`fixed bottom-4 z-9999`) with glassmorphic styling and hover-pause animation.
+2. **Error Code Badges:** Backend API errors returning `{ code: "PAY.6502", description: "..." }` are formatted as `[PAY.6502] description`. `<app-error-banner>` automatically renders the error code in a high-visibility, selectable monospace badge next to the message.
+3. **Suppress Duplicate Toasts (`X-Skip-Toast`):** Write operations called from form components must pass `headers: new HttpHeaders({ 'X-Skip-Toast': 'true' })` to prevent `errorInterceptor` from spawning duplicate Toast notifications alongside the Error Banner.
+4. **No Forced Scroll-to-Top:** Do NOT call `window.scrollTo({ top: 0 })` when validation errors occur, as the Error Banner is sticky/fixed at the bottom of the viewport.
 
 ---
 
@@ -1582,7 +1655,7 @@ Before creating any screen, verify:
 - [ ] Popups/Modals use `<app-modal>` with the lookup pattern
 - [ ] CRUD screens follow List + Form pattern
 - [ ] List screen uses `CrudListComponent` (not custom table)
-- [ ] Form uses `<app-error-banner>` and `<app-success-redirect-banner>`
+- [ ] Form uses `<app-error-banner>` (with `X-Skip-Toast: true` header & error code badges `[CODE]`) and `<app-success-redirect-banner>`
 - [ ] View mode disables all inputs with `[disabled]="mode === 'view'"`
 - [ ] Model + Service created following standard patterns
 - [ ] Routes added to `app.routes.ts` with lazy loading
