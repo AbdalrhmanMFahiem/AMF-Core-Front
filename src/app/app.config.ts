@@ -3,7 +3,7 @@ import { provideRouter } from '@angular/router';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { DATE_PIPE_DEFAULT_OPTIONS } from '@angular/common';
 import { provideTranslateService, MissingTranslationHandler, TranslateLoader } from '@ngx-translate/core';
-import { Observable, of } from 'rxjs';
+import { Observable, of, firstValueFrom } from 'rxjs';
 import arTranslations from '../../public/i18n/ar.json';
 import enTranslations from '../../public/i18n/en.json';
 
@@ -27,25 +27,18 @@ import { authInterceptor } from './core/interceptors/auth.interceptor';
 import { CustomMissingTranslationHandler } from './core/handlers/missing-translation.handler';
 import { PermissionsService } from './core/services/permissions.service';
 import { AuthService } from './core/services/auth.service';
+import { AppConfigService } from './core/services/app-config.service';
 
-import { environment } from '../environments/environment';
-
-export function initializeApp(permissionsService: PermissionsService, authService: AuthService) {
+export function initializeApp(appConfigService: AppConfigService, permissionsService: PermissionsService, authService: AuthService) {
   return () => {
-    return fetch('/config.json')
-      .then(res => res.json())
-      .then(config => {
-        if (config && config.apiUrl) {
-          environment.apiUrl = config.apiUrl;
-        }
-      })
-      .catch(err => console.warn('Could not load config.json, using environment fallback', err))
-      .finally(() => {
+    return appConfigService.loadConfig()
+      .then(() => {
         if (authService.getToken()) {
-          return permissionsService.loadPermissions();
+          return firstValueFrom(permissionsService.loadPermissions());
         }
-        return Promise.resolve();
-      });
+        return Promise.resolve([]);
+      })
+      .then(() => {});
   };
 }
 
@@ -75,7 +68,7 @@ export const appConfig: ApplicationConfig = {
     {
       provide: APP_INITIALIZER,
       useFactory: initializeApp,
-      deps: [PermissionsService, AuthService],
+      deps: [AppConfigService, PermissionsService, AuthService],
       multi: true
     }
   ]

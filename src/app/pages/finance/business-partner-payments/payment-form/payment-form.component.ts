@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
-import { environment } from '../../../../../environments/environment';
+import { AppConfigService } from '../../../../core/services/app-config.service';
 import { ComponentCardComponent } from '../../../../shared/components/common/component-card/component-card.component';
 import { PageBreadcrumbComponent } from '../../../../shared/components/common/page-breadcrumb/page-breadcrumb.component';
 import { SuccessRedirectBannerComponent } from '../../../../shared/components/common/success-redirect-banner/success-redirect-banner.component';
@@ -56,6 +56,7 @@ export class PaymentFormComponent implements OnInit {
   private toastr = inject(ToastrService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
+  private configService = inject(AppConfigService);
 
   id: number | null = null;
   mode: 'add' | 'view' = 'add';
@@ -482,7 +483,7 @@ export class PaymentFormComponent implements OnInit {
     if (path.startsWith('http://') || path.startsWith('https://') || path.startsWith('data:')) {
       return path;
     }
-    const baseUrl = environment.apiUrl.replace(/\/api\/?$/i, '');
+    const baseUrl = this.configService.apiUrl.replace(/\/api\/?$/i, '');
     const cleanPath = path.startsWith('/') ? path : `/${path}`;
     return `${baseUrl}${cleanPath}`;
   }

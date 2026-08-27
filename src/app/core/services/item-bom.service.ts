@@ -4,14 +4,15 @@ import { Observable } from 'rxjs';
 import { ItemBomResponse, ItemBomBasicResponse, ItemBomRequest, ItemBomFilters, BomComponentLookupResponse } from '../models/item-bom.model';
 import { IdNameResponse, LookupsFilters, IntIdCodeNameResponse, ItemLookupResponse, ItemLookupsFilters } from '../models/lookup.model';
 import { PaginatedList } from '../models/pagination.model';
-import { environment } from '../../../environments/environment';
+import { AppConfigService } from './app-config.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ItemBomService {
   private http = inject(HttpClient);
-  private apiUrl = `${environment.apiUrl}/api/ItemBoms`;
+  private config = inject(AppConfigService);
+  private get apiUrl() { return `${this.config.apiUrl}/api/ItemBoms`; }
 
   getAll(filters: ItemBomFilters, includeDisabled: boolean = false): Observable<PaginatedList<ItemBomBasicResponse>> {
     let params = new HttpParams()

@@ -4,14 +4,15 @@ import { Observable, forkJoin } from 'rxjs';
 import { PaginatedList, RequestFilters } from '../models/pagination.model';
 import { UnitOfMeasure, UnitOfMeasureRequest, UomType, UnitOfMeasureFilters, PendingDerivedUnit } from '../models/uom.model';
 import { NextCodeResponse } from '../models/lookup.model';
-import { environment } from '../../../environments/environment';
+import { AppConfigService } from './app-config.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UnitOfMeasureService {
   private http = inject(HttpClient);
-  private apiUrl = `${environment.apiUrl}/api/inventory/unit-of-measures`;
+  private config = inject(AppConfigService);
+  private get apiUrl() { return `${this.config.apiUrl}/api/inventory/unit-of-measures`; }
 
   getUnitOfMeasures(filter: UnitOfMeasureFilters, includeDisabled: boolean = false): Observable<PaginatedList<UnitOfMeasure>> {
     let params = new HttpParams();

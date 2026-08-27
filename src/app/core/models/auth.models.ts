@@ -50,6 +50,7 @@ export interface AuthResponse {
   companyLogoPath?: string;
   permissions?: string[];
   backendUrl?: string;
+  mustChangePassword?: boolean;
 }
 
 

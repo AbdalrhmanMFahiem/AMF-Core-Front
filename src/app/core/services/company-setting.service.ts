@@ -1,16 +1,16 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from '../../../environments/environment';
+import { AppConfigService } from './app-config.service';
 import { CompanySettingRequest, CompanySettingResponse } from '../models/company-setting.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CompanySettingService {
-  private apiUrl = `${environment.apiUrl}/api/configuration/CompanySettings`;
-
-  constructor(private http: HttpClient) {}
+  private http = inject(HttpClient);
+  private config = inject(AppConfigService);
+  private get apiUrl() { return `${this.config.apiUrl}/api/configuration/CompanySettings`; }
 
   getSettings(): Observable<CompanySettingResponse> {
     return this.http.get<CompanySettingResponse>(this.apiUrl);

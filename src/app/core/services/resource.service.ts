@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from '../../../environments/environment';
+import { AppConfigService } from './app-config.service';
 import { PaginatedList } from '../models/pagination.model';
 import { IdNameResponse } from '../models/lookup.model';
 import { ResourceRequest, ResourceResponse, ResourceBasicResponse, ResourceFilters } from '../models/resource.model';
@@ -11,7 +11,8 @@ import { ResourceRequest, ResourceResponse, ResourceBasicResponse, ResourceFilte
 })
 export class ResourceService {
   private http = inject(HttpClient);
-  private apiUrl = `${environment.apiUrl}/api/Resources`;
+  private config = inject(AppConfigService);
+  private get apiUrl() { return `${this.config.apiUrl}/api/Resources`; }
 
   getAll(filters: ResourceFilters, includeDisabled: boolean = false): Observable<PaginatedList<ResourceBasicResponse>> {
     let params = new HttpParams()

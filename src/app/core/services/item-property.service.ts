@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from '../../../environments/environment';
+import { AppConfigService } from './app-config.service';
 import { RequestFilters, PaginatedList } from '../models/pagination.model';
 import { ItemPropertyResponse, ItemPropertyRequest } from '../models/item-property.model';
 import { NextCodeResponse } from '../models/lookup.model';
@@ -11,7 +11,8 @@ import { NextCodeResponse } from '../models/lookup.model';
 })
 export class ItemPropertyService {
   private readonly http = inject(HttpClient);
-  private readonly baseUrl = `${environment.apiUrl}/api/ItemProperties`;
+  private readonly config = inject(AppConfigService);
+  private get baseUrl() { return `${this.config.apiUrl}/api/ItemProperties`; }
 
   getAll(filters: RequestFilters, includeDisabled: boolean = false): Observable<PaginatedList<ItemPropertyResponse>> {
     let params = new HttpParams()

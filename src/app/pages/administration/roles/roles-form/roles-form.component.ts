@@ -47,6 +47,7 @@ export class RolesFormComponent implements OnInit, HasUnsavedChanges {
   filteredTree: PermissionNodeResponse[] = [];
   selectedPermissions: Set<string> = new Set<string>();
   searchTerm = '';
+  selectedModuleKey = 'all';
 
   ngOnInit(): void {
     this.id = this.route.snapshot.paramMap.get('id');
@@ -133,18 +134,91 @@ export class RolesFormComponent implements OnInit, HasUnsavedChanges {
     });
   }
 
+  get availableModules(): Array<{ key: string; label: string; count: number }> {
+    const moduleMap = new Map<string, number>();
+    this.collectModuleCounts(this.permissionsTree, moduleMap);
+
+    const isAr = (this.translate.currentLang || 'ar') === 'ar';
+    const list: Array<{ key: string; label: string; count: number }> = [];
+
+    moduleMap.forEach((count, key) => {
+      let label = key;
+      const lKey = key.toLowerCase();
+      if (lKey === 'core' || lKey === 'admin') label = isAr ? 'إدارة النظام' : 'Administration';
+      else if (lKey.includes('inv') || lKey.includes('item') || lKey.includes('stock') || lKey.includes('ware')) label = isAr ? 'المخزون والمنتجات' : 'Inventory & Products';
+      else if (lKey.includes('sale') || lKey.includes('cust') || lKey.includes('pos')) label = isAr ? 'المبيعات والعملاء' : 'Sales & Customers';
+      else if (lKey.includes('purch') || lKey.includes('vend') || lKey.includes('supp')) label = isAr ? 'المشتريات والموردين' : 'Purchases & Vendors';
+      else if (lKey.includes('prod') || lKey.includes('mfg') || lKey.includes('plan')) label = isAr ? 'التصنيع والإنتاج' : 'Manufacturing';
+      else if (lKey.includes('acc') || lKey.includes('fin')) label = isAr ? 'الحسابات والمالية' : 'Accounting & Finance';
+
+      list.push({ key, label, count });
+    });
+
+    return list;
+  }
+
+  private collectModuleCounts(nodes: PermissionNodeResponse[], map: Map<string, number>): void {
+    for (const node of nodes) {
+      if (node.module) {
+        const keys = this.getAllPermissionKeys(node);
+        const current = map.get(node.module) || 0;
+        map.set(node.module, current + keys.length);
+      }
+      if (node.children) {
+        this.collectModuleCounts(node.children, map);
+      }
+    }
+  }
+
+  filterByModule(moduleKey: string): void {
+    this.selectedModuleKey = moduleKey;
+    this.filterTree();
+  }
+
   onSearchChange(event: Event): void {
     const target = event.target as HTMLInputElement;
     this.searchTerm = target.value ? target.value.trim().toLowerCase() : '';
     this.filterTree();
   }
 
+  clearSearch(): void {
+    this.searchTerm = '';
+    this.filterTree();
+  }
+
   filterTree(): void {
-    if (!this.searchTerm) {
-      this.filteredTree = [...this.permissionsTree];
-      return;
+    let tree = [...this.permissionsTree];
+
+    if (this.selectedModuleKey && this.selectedModuleKey !== 'all') {
+      tree = this.filterNodesByModule(tree, this.selectedModuleKey);
     }
-    this.filteredTree = this.filterNodes(this.permissionsTree, this.searchTerm);
+
+    if (this.searchTerm) {
+      tree = this.filterNodes(tree, this.searchTerm);
+    } else if (this.selectedModuleKey && this.selectedModuleKey !== 'all') {
+      tree = tree.map(n => ({ ...n, collapsed: false }));
+    }
+
+    this.filteredTree = tree;
+  }
+
+  private filterNodesByModule(nodes: PermissionNodeResponse[], moduleKey: string): PermissionNodeResponse[] {
+    const result: PermissionNodeResponse[] = [];
+    const targetModule = moduleKey.toLowerCase();
+
+    for (const node of nodes) {
+      const isNodeModuleMatch = node.module?.toLowerCase() === targetModule;
+      const matchingChildren = node.children ? this.filterNodesByModule(node.children, moduleKey) : [];
+
+      if (isNodeModuleMatch || matchingChildren.length > 0) {
+        result.push({
+          ...node,
+          collapsed: false,
+          children: matchingChildren.length > 0 ? matchingChildren : node.children
+        });
+      }
+    }
+    return result;
   }
 
   private filterNodes(nodes: PermissionNodeResponse[], term: string): PermissionNodeResponse[] {
@@ -171,6 +245,58 @@ export class RolesFormComponent implements OnInit, HasUnsavedChanges {
       }
     }
     return result;
+  }
+
+  getActionBadge(permKey: string): { label: string; bgClass: string; textClass: string; borderClass: string } {
+    const k = permKey.toLowerCase();
+    const isAr = (this.translate.currentLang || 'ar') === 'ar';
+
+    if (k.endsWith('.read') || k.endsWith('.view') || k.endsWith('.get') || k.includes('search')) {
+      return {
+        label: isAr ? 'عرض' : 'View',
+        bgClass: 'bg-blue-50 dark:bg-blue-500/10',
+        textClass: 'text-blue-700 dark:text-blue-400',
+        borderClass: 'border-blue-200 dark:border-blue-500/20'
+      };
+    }
+    if (k.endsWith('.create') || k.endsWith('.add') || k.endsWith('.post')) {
+      return {
+        label: isAr ? 'إضافة' : 'Create',
+        bgClass: 'bg-emerald-50 dark:bg-emerald-500/10',
+        textClass: 'text-emerald-700 dark:text-emerald-400',
+        borderClass: 'border-emerald-200 dark:border-emerald-500/20'
+      };
+    }
+    if (k.endsWith('.update') || k.endsWith('.edit') || k.endsWith('.put') || k.includes('change')) {
+      return {
+        label: isAr ? 'تعديل' : 'Edit',
+        bgClass: 'bg-amber-50 dark:bg-amber-500/10',
+        textClass: 'text-amber-700 dark:text-amber-400',
+        borderClass: 'border-amber-200 dark:border-amber-500/20'
+      };
+    }
+    if (k.endsWith('.delete') || k.endsWith('.remove')) {
+      return {
+        label: isAr ? 'حذف' : 'Delete',
+        bgClass: 'bg-red-50 dark:bg-red-500/10',
+        textClass: 'text-red-700 dark:text-red-400',
+        borderClass: 'border-red-200 dark:border-red-500/20'
+      };
+    }
+    if (k.includes('export') || k.includes('print') || k.includes('report')) {
+      return {
+        label: isAr ? 'تصدير' : 'Export',
+        bgClass: 'bg-purple-50 dark:bg-purple-500/10',
+        textClass: 'text-purple-700 dark:text-purple-400',
+        borderClass: 'border-purple-200 dark:border-purple-500/20'
+      };
+    }
+    return {
+      label: isAr ? 'إجراء' : 'Action',
+      bgClass: 'bg-gray-100 dark:bg-gray-800',
+      textClass: 'text-gray-700 dark:text-gray-300',
+      borderClass: 'border-gray-200 dark:border-gray-700'
+    };
   }
 
   get totalPermissionsCount(): number {
@@ -232,15 +358,21 @@ export class RolesFormComponent implements OnInit, HasUnsavedChanges {
     return this.selectedPermissions.has(key);
   }
 
-  onPermissionToggle(key: string, event: Event): void {
+  togglePermission(key: string, event?: Event): void {
     if (this.isViewMode) return;
-    const isChecked = (event.target as HTMLInputElement).checked;
-    if (isChecked) {
-      this.selectedPermissions.add(key);
-    } else {
+    if (event) {
+      event.stopPropagation();
+    }
+    if (this.selectedPermissions.has(key)) {
       this.selectedPermissions.delete(key);
+    } else {
+      this.selectedPermissions.add(key);
     }
     this.form.markAsDirty();
+  }
+
+  onPermissionToggle(key: string, event: Event): void {
+    this.togglePermission(key, event);
   }
 
   isNodeFullySelected(node: PermissionNodeResponse): boolean {
@@ -256,16 +388,87 @@ export class RolesFormComponent implements OnInit, HasUnsavedChanges {
     return selectedCount > 0 && selectedCount < allKeys.length;
   }
 
-  onNodeToggle(node: PermissionNodeResponse, event: Event): void {
+  toggleNodeSelection(node: PermissionNodeResponse, event?: Event): void {
     if (this.isViewMode) return;
-    const isChecked = (event.target as HTMLInputElement).checked;
-    const allKeys = this.getAllPermissionKeys(node);
-
-    if (isChecked) {
-      allKeys.forEach(k => this.selectedPermissions.add(k));
-    } else {
-      allKeys.forEach(k => this.selectedPermissions.delete(k));
+    if (event) {
+      event.stopPropagation();
     }
+    const isCurrentlyFull = this.isNodeFullySelected(node);
+    const allKeys = this.getAllPermissionKeys(node);
+    if (isCurrentlyFull) {
+      allKeys.forEach(k => this.selectedPermissions.delete(k));
+    } else {
+      allKeys.forEach(k => this.selectedPermissions.add(k));
+    }
+    this.form.markAsDirty();
+  }
+
+  onNodeToggle(node: PermissionNodeResponse, event: Event): void {
+    this.toggleNodeSelection(node, event);
+  }
+
+  get selectionPercentage(): number {
+    const total = this.totalPermissionsCount;
+    return total > 0 ? Math.round((this.totalSelectedCount / total) * 100) : 0;
+  }
+
+  getModuleStats(moduleKey: string): { selected: number; total: number } {
+    if (!moduleKey || moduleKey === 'all') {
+      return { selected: this.totalSelectedCount, total: this.totalPermissionsCount };
+    }
+    const matchingNodes = this.filterNodesByModule(this.permissionsTree, moduleKey);
+    const keys = this.getAllPermissionKeysFromNodes(matchingNodes);
+    const selected = keys.filter(k => this.selectedPermissions.has(k)).length;
+    return { selected, total: keys.length };
+  }
+
+  selectByAction(actionType: 'view' | 'create' | 'edit' | 'delete' | 'export'): void {
+    if (this.isViewMode) return;
+    const allKeys = this.getAllPermissionKeysFromNodes(this.permissionsTree);
+    allKeys.forEach(k => {
+      const badge = this.getActionBadge(k);
+      const label = badge.label.toLowerCase();
+      const match = (actionType === 'view' && (label === 'عرض' || label === 'view')) ||
+                    (actionType === 'create' && (label === 'إضافة' || label === 'create')) ||
+                    (actionType === 'edit' && (label === 'تعديل' || label === 'edit')) ||
+                    (actionType === 'delete' && (label === 'حذف' || label === 'delete')) ||
+                    (actionType === 'export' && (label === 'تصدير' || label === 'export'));
+      if (match) {
+        this.selectedPermissions.add(k);
+      }
+    });
+    this.form.markAsDirty();
+  }
+
+  deselectByAction(actionType: 'view' | 'create' | 'edit' | 'delete' | 'export'): void {
+    if (this.isViewMode) return;
+    const allKeys = this.getAllPermissionKeysFromNodes(this.permissionsTree);
+    allKeys.forEach(k => {
+      const badge = this.getActionBadge(k);
+      const label = badge.label.toLowerCase();
+      const match = (actionType === 'view' && (label === 'عرض' || label === 'view')) ||
+                    (actionType === 'create' && (label === 'إضافة' || label === 'create')) ||
+                    (actionType === 'edit' && (label === 'تعديل' || label === 'edit')) ||
+                    (actionType === 'delete' && (label === 'حذف' || label === 'delete')) ||
+                    (actionType === 'export' && (label === 'تصدير' || label === 'export'));
+      if (match) {
+        this.selectedPermissions.delete(k);
+      }
+    });
+    this.form.markAsDirty();
+  }
+
+  selectNodePermissions(node: PermissionNodeResponse): void {
+    if (this.isViewMode) return;
+    const keys = this.getAllPermissionKeys(node);
+    keys.forEach(k => this.selectedPermissions.add(k));
+    this.form.markAsDirty();
+  }
+
+  deselectNodePermissions(node: PermissionNodeResponse): void {
+    if (this.isViewMode) return;
+    const keys = this.getAllPermissionKeys(node);
+    keys.forEach(k => this.selectedPermissions.delete(k));
     this.form.markAsDirty();
   }
 

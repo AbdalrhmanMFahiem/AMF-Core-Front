@@ -4,14 +4,15 @@ import { Observable } from 'rxjs';
 import { DistrictRequest, DistrictResponse, DistrictBasicResponse, DistrictFilters } from '../models/district.model';
 import { PaginatedList, RequestFilters } from '../models/pagination.model';
 import { IdNameResponse, NextCodeResponse } from '../models/lookup.model';
-import { environment } from '../../../environments/environment';
+import { AppConfigService } from './app-config.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DistrictService {
   private http = inject(HttpClient);
-  private apiUrl = `${environment.apiUrl}/api/administration/District`;
+  private config = inject(AppConfigService);
+  private get apiUrl() { return `${this.config.apiUrl}/api/administration/District`; }
 
   getAll(filters: DistrictFilters, includeDisabled: boolean = false): Observable<PaginatedList<DistrictBasicResponse>> {
     let params = new HttpParams()

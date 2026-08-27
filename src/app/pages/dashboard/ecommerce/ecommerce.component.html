@@ -1,58 +1,58 @@
-<div class="space-y-8 pb-10">
+<div class="space-y-4 pb-6">
 
   <!-- ========================================== -->
   <!-- 🔘 Section Switcher Sub-Navbar             -->
   <!-- ========================================== -->
-  <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 p-2 rounded-2xl shadow-sm flex flex-wrap items-center justify-between gap-3">
+  <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 p-1.5 rounded-xl shadow-xs flex flex-wrap items-center justify-between gap-2.5">
     <div class="flex items-center gap-2">
-      <div class="p-2 rounded-xl bg-brand-500/10 text-brand-500">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div class="p-1.5 rounded-lg bg-brand-500/10 text-brand-500">
+        <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path>
         </svg>
       </div>
       <div>
-        <h1 class="text-base font-extrabold text-gray-900 dark:text-white">
+        <h1 class="text-sm font-extrabold text-gray-900 dark:text-white">
           {{ 'dashboard.erpDashboard' | translate }}
         </h1>
-        <p class="text-xs text-gray-500 dark:text-gray-400">
+        <p class="text-[11px] text-gray-500 dark:text-gray-400">
           {{ 'dashboard.subtitle' | translate }}
         </p>
       </div>
     </div>
 
     <!-- Section Navigation Buttons -->
-    <div class="flex items-center p-1 bg-gray-100 dark:bg-gray-800/80 rounded-xl overflow-x-auto max-w-full">
+    <div class="flex items-center p-0.5 bg-gray-100 dark:bg-gray-800/80 rounded-lg overflow-x-auto max-w-full">
       <button (click)="setSection('all')"
-              [class]="activeSection === 'all' ? 'bg-white dark:bg-gray-700 text-brand-500 shadow-sm' : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'"
-              class="px-3.5 py-1.5 text-xs font-bold rounded-lg transition-all duration-200 whitespace-nowrap flex items-center gap-1.5">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              [class]="activeSection === 'all' ? 'bg-white dark:bg-gray-700 text-brand-500 shadow-xs' : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'"
+              class="px-3 py-1 text-xs font-bold rounded-md transition-all duration-200 whitespace-nowrap flex items-center gap-1.5">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
         </svg>
         {{ 'dashboard.allSections' | translate }}
       </button>
 
       <button (click)="setSection('sales')"
-              [class]="activeSection === 'sales' ? 'bg-white dark:bg-gray-700 text-blue-500 shadow-sm' : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'"
-              class="px-3.5 py-1.5 text-xs font-bold rounded-lg transition-all duration-200 whitespace-nowrap flex items-center gap-1.5">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              [class]="activeSection === 'sales' ? 'bg-white dark:bg-gray-700 text-blue-500 shadow-xs' : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'"
+              class="px-3 py-1 text-xs font-bold rounded-md transition-all duration-200 whitespace-nowrap flex items-center gap-1.5">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
         </svg>
         {{ 'dashboard.salesAndCustomers' | translate }}
       </button>
 
       <button (click)="setSection('purchases')"
-              [class]="activeSection === 'purchases' ? 'bg-white dark:bg-gray-700 text-emerald-500 shadow-sm' : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'"
-              class="px-3.5 py-1.5 text-xs font-bold rounded-lg transition-all duration-200 whitespace-nowrap flex items-center gap-1.5">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              [class]="activeSection === 'purchases' ? 'bg-white dark:bg-gray-700 text-emerald-500 shadow-xs' : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'"
+              class="px-3 py-1 text-xs font-bold rounded-md transition-all duration-200 whitespace-nowrap flex items-center gap-1.5">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
         </svg>
         {{ 'dashboard.purchasesAndSuppliers' | translate }}
       </button>
 
       <button (click)="setSection('inventory')"
-              [class]="activeSection === 'inventory' ? 'bg-white dark:bg-gray-700 text-purple-500 shadow-sm' : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'"
-              class="px-3.5 py-1.5 text-xs font-bold rounded-lg transition-all duration-200 whitespace-nowrap flex items-center gap-1.5">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              [class]="activeSection === 'inventory' ? 'bg-white dark:bg-gray-700 text-purple-500 shadow-xs' : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'"
+              class="px-3 py-1 text-xs font-bold rounded-md transition-all duration-200 whitespace-nowrap flex items-center gap-1.5">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
         </svg>
         {{ 'dashboard.inventoryAndWarehouses' | translate }}
@@ -63,10 +63,10 @@
   <!-- ========================================== -->
   <!-- 📌 SECTION 1: Overview & KPI Metrics       -->
   <!-- ========================================== -->
-  <div *ngIf="activeSection === 'all'" class="space-y-6">
+  <div *ngIf="activeSection === 'all'" class="space-y-4">
     <div>
       <app-ecommerce-metrics [metrics]="metrics" *ngIf="!loadingMetrics" />
-      <div *ngIf="loadingMetrics" class="animate-pulse bg-gray-200 dark:bg-gray-800 h-32 rounded-2xl w-full"></div>
+      <div *ngIf="loadingMetrics" class="animate-pulse bg-gray-200 dark:bg-gray-800 h-24 rounded-xl w-full"></div>
     </div>
 
     <!-- Quick Action Bar -->
@@ -78,7 +78,7 @@
   <!-- ========================================== -->
   <!-- 🛍️ SECTION 2: Sales & Customers           -->
   <!-- ========================================== -->
-  <div *ngIf="activeSection === 'all' || activeSection === 'sales'" class="space-y-6">
+  <div *ngIf="activeSection === 'all' || activeSection === 'sales'" class="space-y-4">
     <app-section-header
       [title]="'dashboard.salesAndCustomers' | translate"
       [subtitle]="'dashboard.topSoldItemsSub' | translate"
@@ -88,7 +88,7 @@
       </svg>
     </app-section-header>
 
-    <div class="grid grid-cols-12 gap-6">
+    <div class="grid grid-cols-12 gap-4">
       <!-- Top Sold Items (Quantities ONLY - NO Price) -->
       <div class="col-span-12 lg:col-span-6 xl:col-span-6">
         <app-top-sold-items [items]="topSoldItems" [loading]="loadingSold" />
@@ -102,7 +102,7 @@
       <!-- Monthly Sales Chart -->
       <div class="col-span-12">
         <app-monthly-sales-chart [chartData]="chartData" *ngIf="!loadingChart" />
-        <div *ngIf="loadingChart" class="animate-pulse bg-gray-200 dark:bg-gray-800 h-64 rounded-2xl w-full"></div>
+        <div *ngIf="loadingChart" class="animate-pulse bg-gray-200 dark:bg-gray-800 h-56 rounded-xl w-full"></div>
       </div>
     </div>
   </div>
@@ -110,7 +110,7 @@
   <!-- ========================================== -->
   <!-- 📦 SECTION 3: Purchases & Suppliers        -->
   <!-- ========================================== -->
-  <div *ngIf="activeSection === 'all' || activeSection === 'purchases'" class="space-y-6">
+  <div *ngIf="activeSection === 'all' || activeSection === 'purchases'" class="space-y-4">
     <app-section-header
       [title]="'dashboard.purchasesAndSuppliers' | translate"
       [subtitle]="'dashboard.topPurchasedItemsSub' | translate"
@@ -120,7 +120,7 @@
       </svg>
     </app-section-header>
 
-    <div class="grid grid-cols-12 gap-6">
+    <div class="grid grid-cols-12 gap-4">
       <!-- Top Purchased Items -->
       <div class="col-span-12 lg:col-span-6">
         <app-top-purchased-items [items]="topPurchasedItems" [loading]="loadingPurchased" />
@@ -129,7 +129,7 @@
       <!-- Recent Transactions -->
       <div class="col-span-12 lg:col-span-6">
         <app-recent-orders [transactions]="recentTransactions" *ngIf="!loadingTransactions" />
-        <div *ngIf="loadingTransactions" class="animate-pulse bg-gray-200 dark:bg-gray-800 h-64 rounded-2xl w-full"></div>
+        <div *ngIf="loadingTransactions" class="animate-pulse bg-gray-200 dark:bg-gray-800 h-56 rounded-xl w-full"></div>
       </div>
     </div>
   </div>
@@ -137,7 +137,7 @@
   <!-- ========================================== -->
   <!-- 🏬 SECTION 4: Inventory & Warehouses       -->
   <!-- ========================================== -->
-  <div *ngIf="activeSection === 'all' || activeSection === 'inventory'" class="space-y-6">
+  <div *ngIf="activeSection === 'all' || activeSection === 'inventory'" class="space-y-4">
     <app-section-header
       [title]="'dashboard.inventoryAndWarehouses' | translate"
       [subtitle]="'dashboard.topStockItemsSub' | translate"
@@ -147,7 +147,7 @@
       </svg>
     </app-section-header>
 
-    <div class="grid grid-cols-12 gap-6">
+    <div class="grid grid-cols-12 gap-4">
       <!-- Top 10 Stock Items -->
       <div class="col-span-12">
         <app-top-stock-items [items]="topStockItems" [loading]="loadingStock" />

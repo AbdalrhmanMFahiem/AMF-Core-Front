@@ -11,7 +11,7 @@
     'translate-x-0': isMobileOpen$ | async,
     'ltr:-translate-x-full rtl:translate-x-full': !(isMobileOpen$ | async),
     'lg:translate-x-0!': true
-  }" (mouseenter)="onSidebarMouseEnter()" (mouseleave)="sidebarService.setHovered(false)">
+  }" (mouseenter)="onSidebarMouseEnter()" (mouseleave)="onSidebarMouseLeave()">
   <!-- Sidebar Mobile Close Header -->
   <div class="py-2 flex justify-end items-center relative lg:hidden mb-2">
     <!-- Mobile Close Button -->
@@ -22,8 +22,9 @@
     </button>
   </div>
 
-  <!-- Mobile Search -->
-  <div class="mb-4 lg:hidden relative z-50">
+  <!-- Sidebar Search (visible when expanded/hovered/mobile) -->
+  @if ((isExpanded$ | async) || (isHovered$ | async) || (isMobileOpen$ | async)) {
+  <div class="mb-4 relative z-50">
     <div class="relative w-full">
       <span class="absolute -translate-y-1/2 pointer-events-none ltr:left-3 rtl:right-3 top-1/2">
         <!-- Search Icon -->
@@ -41,10 +42,15 @@
       <ul class="max-h-60 overflow-y-auto p-1.5 space-y-0.5 no-scrollbar">
         <li *ngFor="let result of searchResults">
           <a href="javascript:void(0)" (click)="goToRoute(result.path!)" class="flex items-center gap-3 px-2 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800/80 text-sm text-gray-700 dark:text-gray-200 transition-colors group cursor-pointer">
-            <div class="flex items-center justify-center w-7 h-7 rounded-lg bg-gray-50 dark:bg-gray-800 group-hover:bg-brand-50 dark:group-hover:bg-brand-500/10 text-gray-500 dark:text-gray-400 group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors">
+            <div class="flex items-center justify-center w-7 h-7 rounded-lg bg-gray-50 dark:bg-gray-800 group-hover:bg-brand-50 dark:group-hover:bg-brand-500/10 text-gray-500 dark:text-gray-400 group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors shrink-0">
               <span class="w-4 h-4 flex items-center justify-center [&>svg]:w-4 [&>svg]:h-4" [innerHTML]="(result.icon || '') | safeHtml"></span>
             </div>
-            <span class="font-medium">{{ result.translationKey ? (result.translationKey | translate) : result.name }}</span>
+            <div class="flex flex-col min-w-0">
+              <span class="font-medium truncate" [innerHTML]="(result.translationKey ? (result.translationKey | translate) : result.name) | searchHighlight:searchQuery"></span>
+              @if (result.breadcrumb) {
+              <span class="text-xs text-gray-400 dark:text-gray-500 truncate">{{ result.breadcrumb }}</span>
+              }
+            </div>
           </a>
         </li>
       </ul>
@@ -60,8 +66,9 @@
       <p class="text-sm font-medium text-gray-800 dark:text-gray-200">{{ 'pages.noMenuResults' | translate }}</p>
     </div>
   </div>
+  }
 
-  <div class="flex flex-col overflow-y-auto duration-300 ease-linear no-scrollbar">
+  <div class="flex-1 min-h-0 flex flex-col overflow-y-auto duration-300 ease-linear custom-scrollbar pe-1">
     <nav class="mb-6">
       <div class="flex flex-col gap-4">
         <!-- Menu Section -->
@@ -75,12 +82,8 @@
             @if ((isExpanded$ | async) || (isHovered$ | async) || (isMobileOpen$ | async))
             { Menu }
             @else {
-            <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
-              class="size-6">
-              <path fill-rule="evenodd" clip-rule="evenodd"
-                d="M5.99915 10.2451C6.96564 10.2451 7.74915 11.0286 7.74915 11.9951V12.0051C7.74915 12.9716 6.96564 13.7551 5.99915 13.7551C5.03265 13.7551 4.24915 12.9716 4.24915 12.0051V11.9951C4.24915 11.0286 5.03265 10.2451 5.99915 10.2451ZM17.9991 10.2451C18.9656 10.2451 19.7491 11.0286 19.7491 11.9951V12.0051C19.7491 12.9716 18.9656 13.7551 17.9991 13.7551C17.0326 13.7551 16.2491 12.9716 16.2491 12.0051V11.9951C16.2491 11.0286 17.0326 10.2451 17.9991 10.2451ZM13.7491 11.9951C13.7491 11.0286 12.9656 10.2451 11.9991 10.2451C11.0326 10.2451 10.2491 11.0286 10.2491 11.9951V12.0051C10.2491 12.9716 11.0326 13.7551 11.9991 13.7551C12.9656 13.7551 13.7491 12.9716 13.7491 12.0051V11.9951Z"
-                fill="currentColor"></path>
-            </svg>
+            <!-- Collapsed separator line -->
+            <span class="w-6 h-px bg-gray-300 dark:bg-gray-700 rounded-full"></span>
             }
           </h2>
           <ul class="flex flex-col gap-1">
@@ -95,7 +98,8 @@
                     ),
                     'lg:justify-start':
                       (isExpanded$ | async) || (isHovered$ | async)
-                  }">
+                  }"
+                [attr.title]="getTooltip(nav)">
                 <span class="menu-item-icon-size" [class.menu-item-icon-active]="openSubmenu === 'main-' + i"
                   [class.menu-item-icon-inactive]="openSubmenu !== 'main-' + i" [innerHTML]="nav.icon! | safeHtml">
                 </span>
@@ -126,16 +130,15 @@
                 </svg>
                 }
               </button>
-              <div class="overflow-hidden transition-all duration-300" [id]="'main-' + i" [style.display]="
-                    (isExpanded$ | async) || (isHovered$ | async) || (isMobileOpen$ | async) 
-                      ? 'block' 
-                      : 'none'
-                  " [ngStyle]="{
-                    height:
-                      openSubmenu === 'main-' + i
-                        ? (subMenuHeights['main-' + i] || 0) + 'px'
-                        : '0px'
-                  }">
+              <div class="grid transition-[grid-template-rows] duration-300 ease-in-out" [id]="'main-' + i"
+                [class.grid-rows-1fr]="openSubmenu === 'main-' + i"
+                [class.grid-rows-0fr]="openSubmenu !== 'main-' + i"
+                [style.display]="
+                  (isExpanded$ | async) || (isHovered$ | async) || (isMobileOpen$ | async) 
+                    ? 'grid' 
+                    : 'none'
+                ">
+                <div class="overflow-hidden">
                 <ul class="mt-2 space-y-1 ltr:ml-9 rtl:mr-9">
                   @for (subItem of nav.subItems; track j; let j = $index) {
                   <li>
@@ -153,16 +156,15 @@
                       </svg>
                     </button>
                     <!-- Nested Items -->
-                    <div class="overflow-hidden transition-all duration-300" [id]="'main-' + i + '-' + j" [style.display]="
-                          (isExpanded$ | async) || (isHovered$ | async) || (isMobileOpen$ | async) 
-                            ? 'block' 
-                            : 'none'
-                        " [ngStyle]="{
-                          height:
-                            openNestedSubmenu === 'main-' + i + '-' + j
-                              ? (subMenuHeights['main-' + i + '-' + j] || 0) + 'px'
-                              : '0px'
-                        }">
+                    <div class="grid transition-[grid-template-rows] duration-300 ease-in-out" [id]="'main-' + i + '-' + j"
+                      [class.grid-rows-1fr]="openNestedSubmenu === 'main-' + i + '-' + j"
+                      [class.grid-rows-0fr]="openNestedSubmenu !== 'main-' + i + '-' + j"
+                      [style.display]="
+                        (isExpanded$ | async) || (isHovered$ | async) || (isMobileOpen$ | async) 
+                          ? 'grid' 
+                          : 'none'
+                      ">
+                      <div class="overflow-hidden">
                       <ul class="mt-1 mb-2 space-y-1 ltr:ml-4 rtl:mr-4 ltr:border-l rtl:border-r border-gray-200 dark:border-gray-800 ltr:pl-3 rtl:pr-3">
                         @for (nestedItem of subItem.subItems; track $index) {
                         <li>
@@ -177,6 +179,7 @@
                         </li>
                         }
                       </ul>
+                      </div>
                     </div>
                     } @else {
                     <a [routerLink]="subItem.path" routerLinkActive="" (click)="onSubmenuClick()"
@@ -217,6 +220,7 @@
                   </li>
                   }
                 </ul>
+                </div>
               </div>
               } @else {
               @if (nav.path) {
@@ -225,7 +229,8 @@
                 [ngClass]="{ 
                   'menu-item-inactive': !isActive(nav.path),
                   'pointer-events-none opacity-50': !hasPermission(nav.permissionKey)
-                }">
+                }"
+                [attr.title]="getTooltip(nav)">
                 <span class="menu-item-icon-size" [ngClass]="{
                       'menu-item-icon-active': isActive(nav.path),
                       'menu-item-icon-inactive': !isActive(nav.path)
@@ -264,12 +269,8 @@
             ) {
             Others
             } @else {
-            <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
-              class="size-6">
-              <path fill-rule="evenodd" clip-rule="evenodd"
-                d="M5.99915 10.2451C6.96564 10.2451 7.74915 11.0286 7.74915 11.9951V12.0051C7.74915 12.9716 6.96564 13.7551 5.99915 13.7551C5.03265 13.7551 4.24915 12.9716 4.24915 12.0051V11.9951C4.24915 11.0286 5.03265 10.2451 5.99915 10.2451ZM17.9991 10.2451C18.9656 10.2451 19.7491 11.0286 19.7491 11.9951V12.0051C19.7491 12.9716 18.9656 13.7551 17.9991 13.7551C17.0326 13.7551 16.2491 12.9716 16.2491 12.0051V11.9951C16.2491 11.0286 17.0326 10.2451 17.9991 10.2451ZM13.7491 11.9951C13.7491 11.0286 12.9656 10.2451 11.9991 10.2451C11.0326 10.2451 10.2491 11.0286 10.2491 11.9951V12.0051C10.2491 12.9716 11.0326 13.7551 11.9991 13.7551C12.9656 13.7551 13.7491 12.9716 13.7491 12.0051V11.9951Z"
-                fill="currentColor"></path>
-            </svg>
+            <!-- Collapsed separator line -->
+            <span class="w-6 h-px bg-gray-300 dark:bg-gray-700 rounded-full"></span>
             }
           </h2>
 
@@ -285,7 +286,8 @@
                     ),
                     'lg:justify-start':
                       (isExpanded$ | async) || (isHovered$ | async)
-                  }">
+                  }"
+                [attr.title]="getTooltip(nav)">
                 <span class="menu-item-icon-size" [ngClass]="{
                       'menu-item-icon-active': openSubmenu === 'others-' + i,
                       'menu-item-icon-inactive': openSubmenu !== 'others-' + i,
@@ -318,16 +320,15 @@
                 </svg>
                 }
               </button>
-              <div class="overflow-hidden transition-all duration-300" [id]="'others-' + i" [style.display]="
-                    (isExpanded$ | async) || (isHovered$ | async) || (isMobileOpen$ | async) 
-                      ? 'block' 
-                      : 'none'
-                  " [ngStyle]="{
-                    height:
-                      openSubmenu === 'others-' + i
-                        ? (subMenuHeights['others-' + i] || 0) + 'px'
-                        : '0px'
-                  }">
+              <div class="grid transition-[grid-template-rows] duration-300 ease-in-out" [id]="'others-' + i"
+                [class.grid-rows-1fr]="openSubmenu === 'others-' + i"
+                [class.grid-rows-0fr]="openSubmenu !== 'others-' + i"
+                [style.display]="
+                  (isExpanded$ | async) || (isHovered$ | async) || (isMobileOpen$ | async) 
+                    ? 'grid' 
+                    : 'none'
+                ">
+                <div class="overflow-hidden">
                 <ul class="mt-2 space-y-1 ltr:ml-9 rtl:mr-9">
                   @for (subItem of nav.subItems; track j; let j = $index) {
                   <li>
@@ -345,16 +346,15 @@
                       </svg>
                     </button>
                     <!-- Nested Items -->
-                    <div class="overflow-hidden transition-all duration-300" [id]="'others-' + i + '-' + j" [style.display]="
-                          (isExpanded$ | async) || (isHovered$ | async) || (isMobileOpen$ | async) 
-                            ? 'block' 
-                            : 'none'
-                        " [ngStyle]="{
-                          height:
-                            openNestedSubmenu === 'others-' + i + '-' + j
-                              ? (subMenuHeights['others-' + i + '-' + j] || 0) + 'px'
-                              : '0px'
-                        }">
+                    <div class="grid transition-[grid-template-rows] duration-300 ease-in-out" [id]="'others-' + i + '-' + j"
+                      [class.grid-rows-1fr]="openNestedSubmenu === 'others-' + i + '-' + j"
+                      [class.grid-rows-0fr]="openNestedSubmenu !== 'others-' + i + '-' + j"
+                      [style.display]="
+                        (isExpanded$ | async) || (isHovered$ | async) || (isMobileOpen$ | async) 
+                          ? 'grid' 
+                          : 'none'
+                      ">
+                      <div class="overflow-hidden">
                       <ul class="mt-1 mb-2 space-y-1 ltr:ml-4 rtl:mr-4 ltr:border-l rtl:border-r border-gray-200 dark:border-gray-800 ltr:pl-3 rtl:pr-3">
                         @for (nestedItem of subItem.subItems; track $index) {
                         <li>
@@ -368,6 +368,7 @@
                         </li>
                         }
                       </ul>
+                      </div>
                     </div>
                     } @else {
                     <a [routerLink]="subItem.path" routerLinkActive="" (click)="onSubmenuClick()"
@@ -407,12 +408,14 @@
                   </li>
                   }
                 </ul>
+                </div>
               </div>
               } @else {
               @if (nav.path) {
               <a [routerLink]="nav.path" routerLinkActive="menu-item-active"
                 [routerLinkActiveOptions]="{exact: nav.path === '/'}" class="menu-item group"
-                [ngClass]="{ 'menu-item-inactive': !isActive(nav.path) }">
+                [ngClass]="{ 'menu-item-inactive': !isActive(nav.path) }"
+                [attr.title]="getTooltip(nav)">
                 <span class="menu-item-icon-size" [ngClass]="{
                       'menu-item-icon-active': isActive(nav.path),
                       'menu-item-icon-inactive': !isActive(nav.path)

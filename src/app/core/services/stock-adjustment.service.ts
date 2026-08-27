@@ -1,7 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
-import { environment } from '../../../environments/environment';
+import { AppConfigService } from './app-config.service';
 import { PaginatedList } from '../models/pagination.model';
 import { StockAdjustmentRequest, StockAdjustmentResponse } from '../models/inventory.model';
 import { NextCodeResponse } from '../models/lookup.model';
@@ -11,7 +11,8 @@ import { NextCodeResponse } from '../models/lookup.model';
 })
 export class StockAdjustmentService {
   private http = inject(HttpClient);
-  private apiUrl = `${environment.apiUrl}/api/inventory/stock-adjustments`;
+  private config = inject(AppConfigService);
+  private get apiUrl() { return `${this.config.apiUrl}/api/inventory/stock-adjustments`; }
 
   getAll(pageNumber?: number, pageSize?: number, searchValue?: string): Observable<PaginatedList<StockAdjustmentResponse>> {
     let params = new HttpParams();

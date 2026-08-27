@@ -5,15 +5,16 @@ import { tap } from 'rxjs/operators';
 import { LookupsFilters, IdNameResponse, IntIdCodeNameResponse, InvoiceCostElementDropdown, ItemLookupResponse, ItemLookupsFilters, StringIdNameResponse, StringIdCodeNameResponse } from '../models/lookup.model';
 import { UnitOfMeasureBasicResponse, UomType } from '../models/uom.model';
 import { PaginatedList } from '../models/pagination.model';
-import { environment } from '../../../environments/environment';
+import { AppConfigService } from './app-config.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class LookupService {
   private http = inject(HttpClient);
-  private apiUrl = `${environment.apiUrl}/api/lookups`;
-  private invCostElementsApiUrl = `${environment.apiUrl}/api/md/invoice-cost-elements`;
+  private config = inject(AppConfigService);
+  private get apiUrl() { return `${this.config.apiUrl}/api/lookups`; }
+  private get invCostElementsApiUrl() { return `${this.config.apiUrl}/api/md/invoice-cost-elements`; }
 
   private getOptions(filters?: LookupsFilters | ItemLookupsFilters) {
     let params = new HttpParams();
@@ -103,19 +104,19 @@ export class LookupService {
 
   getSalesInvoicesLookup(filters?: LookupsFilters): Observable<IdNameResponse[]> {
     // Note: The controller defines this under api/invoices/sales/lookup
-    return this.http.get<IdNameResponse[]>(`${environment.apiUrl}/api/invoices/sales/lookup`, this.getOptions(filters));
+    return this.http.get<IdNameResponse[]>(`${this.config.apiUrl}/api/invoices/sales/lookup`, this.getOptions(filters));
   }
 
   getItemsLookup(filters?: ItemLookupsFilters): Observable<PaginatedList<ItemLookupResponse>> {
-    return this.http.get<PaginatedList<ItemLookupResponse>>(`${environment.apiUrl}/api/inventory/lookups/items`, this.getOptions(filters));
+    return this.http.get<PaginatedList<ItemLookupResponse>>(`${this.config.apiUrl}/api/inventory/lookups/items`, this.getOptions(filters));
   }
 
   getRoles(filters?: LookupsFilters): Observable<StringIdCodeNameResponse[]> {
-    return this.http.get<StringIdCodeNameResponse[]>(`${environment.apiUrl}/api/roles/lookups/role`, this.getOptions(filters));
+    return this.http.get<StringIdCodeNameResponse[]>(`${this.config.apiUrl}/api/roles/lookups/role`, this.getOptions(filters));
   }
 
   getUsers(filters?: LookupsFilters): Observable<StringIdNameResponse[]> {
-    return this.http.get<StringIdNameResponse[]>(`${environment.apiUrl}/api/users/lookups/users`, this.getOptions(filters));
+    return this.http.get<StringIdNameResponse[]>(`${this.config.apiUrl}/api/users/lookups/users`, this.getOptions(filters));
   }
 
   getCountries(filters?: LookupsFilters): Observable<IdNameResponse[]> {
@@ -171,6 +172,6 @@ export class LookupService {
   }
 
   getEWalletProviders(filters?: LookupsFilters): Observable<IntIdCodeNameResponse[]> {
-    return this.http.get<IntIdCodeNameResponse[]>(`${environment.apiUrl}/api/ewallet-providers`, this.getOptions(filters));
+    return this.http.get<IntIdCodeNameResponse[]>(`${this.config.apiUrl}/api/ewallet-providers`, this.getOptions(filters));
   }
 }

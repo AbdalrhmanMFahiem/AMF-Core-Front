@@ -31,6 +31,8 @@ export interface InvoiceBasicResponse {
   approvalStatus?: ApprovalStatus;
   paymentStatus?: PaymentStatus;
   businessPartnerName: string;
+  warehouseId?: number;
+  warehouseName?: string;
   invoiceDate: string;
   dueDate?: string;
   totalAmount: number;
@@ -224,7 +226,10 @@ export interface InvoicePaymentRequest {
 
 export interface InvoiceFilters extends RequestFilters {
   status?: DocumentStatus;
+  paymentStatus?: PaymentStatus;
   businessPartnerId?: number;
+  warehouseId?: number;
+  salesRepUserId?: string;
   invoiceDateFrom?: string;
   invoiceDateTo?: string;
   dueDateFrom?: string;

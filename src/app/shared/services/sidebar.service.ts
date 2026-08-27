@@ -11,14 +11,14 @@ export type NavItem = {
   pro?: boolean;
   permissionKey?: string;
   aliases?: string[];
-  subItems?: { 
-    name: string; 
-    translationKey?: string; 
-    path?: string; 
-    pro?: boolean; 
-    new?: boolean; 
-    icon?: string; 
-    subItems?: any[]; 
+  subItems?: {
+    name: string;
+    translationKey?: string;
+    path?: string;
+    pro?: boolean;
+    new?: boolean;
+    icon?: string;
+    subItems?: any[];
     permissionKey?: string;
     aliases?: string[];
   }[];
@@ -64,7 +64,7 @@ export class SidebarService {
       aliases: ['الإدارة', 'إدارة النظام', 'التهيئة', 'administration', 'admin', 'setup'],
       subItems: [
         {
-          name: "Users Management", 
+          name: "Users Management",
           translationKey: "pages.usersManagement",
           icon: `<svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>`,
           aliases: ['إدارة المستخدمين', 'المستخدمين والصلاحيات', 'users management'],
@@ -75,7 +75,7 @@ export class SidebarService {
           ]
         },
         {
-          name: "Configuration", 
+          name: "Configuration",
           translationKey: "pages.configuration",
           icon: `<svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path><circle cx="12" cy="12" r="3"></circle></svg>`,
           aliases: ['إعدادات', 'تهيئة', 'تكوين', 'settings', 'config'],
@@ -84,7 +84,8 @@ export class SidebarService {
             { name: "General Settings", translationKey: "pages.generalSettings", path: "/configuration/general-settings", permissionKey: Permissions.UpdateGeneralSettings, aliases: ['إعدادات عامة', 'الإعدادات العامة', 'general settings'] },
             { name: "Inventory Settings", translationKey: "pages.inventorySettings", path: "/configuration/inventory-settings", aliases: ['إعدادات المخزون', 'تهيئة المخازن', 'inventory settings'] },
             { name: "Invoice Settings", translationKey: "pages.invoiceSettings", path: "/configuration/invoice-settings", aliases: ['إعدادات الفواتير', 'تهيئة الفاتورة', 'invoice settings'] },
-            { name: "Payment Settings", translationKey: "pages.paymentSettings", path: "/configuration/payment-settings", aliases: ['إعدادات الدفع', 'تهيئة السداد', 'payment settings'] }
+            { name: "Payment Settings", translationKey: "pages.paymentSettings", path: "/configuration/payment-settings", aliases: ['إعدادات الدفع', 'تهيئة السداد', 'payment settings'] },
+            { name: "Print & Receipt Settings", translationKey: "printSettings.title", path: "/configurations/print-settings", permissionKey: Permissions.GetPrintSettings, aliases: ['إعدادات الطباعة', 'طباعة الفواتير', 'إعدادات الإيصال', 'print settings', 'receipt settings', 'pos receipt'] }
           ]
         }
       ],
@@ -95,27 +96,27 @@ export class SidebarService {
       icon: `<svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M3 5V19A9 3 0 0 0 21 19V5"></path><path d="M3 12A9 3 0 0 0 21 12"></path></svg>`,
       aliases: ['البيانات الأساسية', 'بيانات رئيسية', 'master data', 'basic data'],
       subItems: [
-        { 
-          name: "Business Partners", 
-          translationKey: "pages.businessPartners", 
-          path: "/master-data/business-partners", 
+        {
+          name: "Business Partners",
+          translationKey: "pages.businessPartners",
+          path: "/master-data/business-partners",
           permissionKey: Permissions.GetBusinessPartners,
           aliases: [
             'عميل', 'العميل', 'عملاء', 'العملاء', 'عملاء وموردين',
-            'مورد', 'المورد', 'موردين', 'الموردين', 'موردون', 'الموردون', 'زبون', 'زبائن', 
+            'مورد', 'المورد', 'موردين', 'الموردين', 'موردون', 'الموردون', 'زبون', 'زبائن',
             'شركاء العمل', 'شركاء الأعمال', 'شركاء', 'شركاء التداول',
             'customer', 'customers', 'vendor', 'vendors', 'supplier', 'suppliers', 'bp', 'business partner', 'partners'
           ]
         },
-        { 
-          name: "Invoice Cost Elements", 
-          translationKey: "pages.invoiceCostElements", 
-          path: "/inventory/invoice-cost-elements", 
+        {
+          name: "Invoice Cost Elements",
+          translationKey: "pages.invoiceCostElements",
+          path: "/inventory/invoice-cost-elements",
           permissionKey: Permissions.GetCostElements,
           aliases: ['عناصر تكلفة الفاتورة', 'مصاريف الفاتورة', 'تاريف التكلفة', 'cost elements', 'invoice costs']
         },
         {
-          name: "Geographic Hierarchy", 
+          name: "Geographic Hierarchy",
           translationKey: "pages.geographicHierarchy",
           icon: `<svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>`,
           aliases: ['الهيكل الجغرافي', 'المناطق والدول', 'geographic hierarchy', 'geography'],
@@ -137,6 +138,7 @@ export class SidebarService {
       subItems: [
         { name: "Sales Dashboard", translationKey: "salesDashboard.title", path: "/sales/dashboard", aliases: ['لوحة مبيعات', 'مؤشرات المبيعات', 'sales dashboard'] },
         { name: "Quick Sale POS", translationKey: "quickSale.title", path: "/sales/quick-sale", aliases: ['نقطة بيع', 'نقاط البيع', 'كاشير', 'بيع سريع', 'pos', 'quick sale', 'cashier'] },
+        { name: "My Invoices", translationKey: "salesRepInvoices.title", path: "/sales/my-invoices", aliases: ['فواتيري', 'فواتير المندوب', 'فواتير البيع السريع', 'my invoices', 'rep invoices'] },
         { name: "Sales Insights", translationKey: "salesInsights.title", path: "/sales/insights", aliases: ['تحليلات المبيعات', 'نظرة عامة على المبيعات', 'sales insights'] },
         { name: "Sales Quotations", translationKey: "salesQuotations.title", path: "/sales/sales-quotations", aliases: ['عرض سعر', 'عروض الأسعار', 'عرض أسعار مبيعات', 'sales quotation', 'sales quotations', 'quote'] },
         { name: "Sales Orders", translationKey: "salesOrders.title", path: "/sales/sales-orders", aliases: ['أمر بيع', 'أوامر البيع', 'طلب مبيعات', 'طلبات مبيعات', 'sales order', 'sales orders', 'so'] },
@@ -255,5 +257,18 @@ export class SidebarService {
 
   setHovered(val: boolean) {
     this.isHoveredSubject.next(val);
+  }
+
+  // Direct value getters (avoid subscribe/unsubscribe anti-pattern)
+  get isExpandedValue(): boolean {
+    return this.isExpandedSubject.value;
+  }
+
+  get isMobileOpenValue(): boolean {
+    return this.isMobileOpenSubject.value;
+  }
+
+  get isHoveredValue(): boolean {
+    return this.isHoveredSubject.value;
   }
 }

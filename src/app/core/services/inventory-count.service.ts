@@ -2,14 +2,15 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { PaginatedList } from '../models/pagination.model';
-import { environment } from '../../../environments/environment';
+import { AppConfigService } from './app-config.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class InventoryCountService {
   private http = inject(HttpClient);
-  private apiUrl = `${environment.apiUrl}/api/inventory/inventory-counts`;
+  private config = inject(AppConfigService);
+  private get apiUrl() { return `${this.config.apiUrl}/api/inventory/inventory-counts`; }
 
   getAll(pageNumber: number = 1, pageSize: number = 10, searchValue?: string): Observable<PaginatedList<any>> {
     let params = new HttpParams()

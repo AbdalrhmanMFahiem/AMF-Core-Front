@@ -4,14 +4,15 @@ import { Observable } from 'rxjs';
 import { RoleResponse, RoleWithPermissionsResponse, RoleRequest, AllPermissionsResponse } from '../models/role.model';
 import { NextCodeResponse } from '../models/lookup.model';
 import { PaginatedList, RequestFilters } from '../models/pagination.model';
-import { environment } from '../../../environments/environment';
+import { AppConfigService } from './app-config.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class RoleService {
   private http = inject(HttpClient);
-  private apiUrl = `${environment.apiUrl}/api/Roles`;
+  private config = inject(AppConfigService);
+  private get apiUrl() { return `${this.config.apiUrl}/api/Roles`; }
 
   getAll(filters: RequestFilters, includeDisabled: boolean = false): Observable<PaginatedList<RoleResponse>> {
     let params = new HttpParams()

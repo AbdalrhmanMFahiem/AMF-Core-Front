@@ -1,13 +1,14 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, QueryList, ViewChildren, ChangeDetectorRef } from '@angular/core';
+import { Component, ElementRef, QueryList, ViewChildren, OnInit, OnDestroy } from '@angular/core';
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { SafeHtmlPipe } from '../../pipe/safe-html.pipe';
+import { SearchHighlightPipe } from '../../pipe/search-highlight.pipe';
 import { SidebarWidgetComponent } from './app-sidebar-widget.component';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { combineLatest, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 
 import { NavItem, SidebarService } from '../../services/sidebar.service';
-import { matchSearchQuery } from '../../utils/arabic-search.utils';
+import { SearchResult, getSearchScore, getFlatRoutesWithBreadcrumb } from '../../utils/arabic-search.utils';
 import { PermissionsService } from '../../../core/services/permissions.service';
 
 @Component({
@@ -16,20 +17,19 @@ import { PermissionsService } from '../../../core/services/permissions.service';
     CommonModule,
     RouterModule,
     SafeHtmlPipe,
+    SearchHighlightPipe,
     SidebarWidgetComponent,
     TranslateModule
   ],
   templateUrl: './app-sidebar.component.html',
 })
-export class AppSidebarComponent {
+export class AppSidebarComponent implements OnInit, OnDestroy {
 
   navItems: NavItem[] = [];
   othersItems: NavItem[] = [];
 
   openSubmenu: string | null = null;
   openNestedSubmenu: string | null = null;
-  subMenuHeights: { [key: string]: number } = {};
-  @ViewChildren('subMenu') subMenuRefs!: QueryList<ElementRef>;
 
   readonly isExpanded$;
   readonly isMobileOpen$;
@@ -37,10 +37,15 @@ export class AppSidebarComponent {
 
   private subscription: Subscription = new Subscription();
 
+  // Hover debounce
+  private hoverEnterTimer: any = null;
+  private hoverLeaveTimer: any = null;
+  private readonly HOVER_ENTER_DELAY = 150;
+  private readonly HOVER_LEAVE_DELAY = 300;
+
   constructor(
     public sidebarService: SidebarService,
     private router: Router,
-    private cdr: ChangeDetectorRef,
     private permissionsService: PermissionsService,
     private translateService: TranslateService
   ) {
@@ -53,24 +58,9 @@ export class AppSidebarComponent {
 
   searchQuery = '';
   showDropdown = false;
-  searchResults: NavItem[] = [];
-  private flatRoutes: NavItem[] = [];
+  searchResults: SearchResult[] = [];
+  private flatRoutes: SearchResult[] = [];
   @ViewChildren('searchInput') searchInput!: QueryList<ElementRef>;
-
-  private getFlatRoutes(items: NavItem[], parentIcon?: string, parentAliases: string[] = []): NavItem[] {
-    let result: NavItem[] = [];
-    for (const item of items) {
-      const currentIcon = item.icon || parentIcon;
-      const combinedAliases = [...(item.aliases || []), ...parentAliases];
-      if (item.path) {
-        result.push({ ...item, icon: currentIcon, aliases: combinedAliases });
-      }
-      if (item.subItems) {
-        result = [...result, ...this.getFlatRoutes(item.subItems, currentIcon, combinedAliases)];
-      }
-    }
-    return result;
-  }
 
   onSearch(event: any) {
     const query = event.target.value || '';
@@ -81,8 +71,14 @@ export class AppSidebarComponent {
       return;
     }
     
+    // Score and sort results
     this.searchResults = this.flatRoutes
-      .filter(route => matchSearchQuery(route, query, this.translateService))
+      .map(route => ({
+        ...route,
+        matchScore: getSearchScore(route, query, this.translateService)
+      }))
+      .filter(route => route.matchScore! > 0)
+      .sort((a, b) => b.matchScore! - a.matchScore!)
       .slice(0, 10);
     
     this.showDropdown = true;
@@ -110,12 +106,13 @@ export class AppSidebarComponent {
   }
 
   ngOnInit() {
-    this.flatRoutes = this.getFlatRoutes([...this.navItems, ...this.othersItems]);
+    this.flatRoutes = getFlatRoutesWithBreadcrumb(
+      [...this.navItems, ...this.othersItems],
+      this.translateService
+    );
 
     // Initial active menu setup
-    setTimeout(() => {
-      this.setActiveMenuFromRoute(this.router.url);
-    }, 100);
+    this.setActiveMenuFromRoute(this.router.url);
 
     // Subscribe to router events
     this.subscription.add(
@@ -125,32 +122,13 @@ export class AppSidebarComponent {
         }
       })
     );
-
-    // Subscribe to combined observables to close submenus when all are false
-    this.subscription.add(
-      combineLatest([this.isExpanded$, this.isMobileOpen$, this.isHovered$]).subscribe(
-        ([isExpanded, isMobileOpen, isHovered]) => {
-          if (!isExpanded && !isMobileOpen && !isHovered) {
-            // this.openSubmenu = null;
-            // this.savedSubMenuHeights = { ...this.subMenuHeights };
-            // this.subMenuHeights = {};
-            this.cdr.detectChanges();
-          } else {
-            // Restore saved heights when reopening
-            // this.subMenuHeights = { ...this.savedSubMenuHeights };
-            // this.cdr.detectChanges();
-          }
-        }
-      )
-    );
-
-    // Initial load
-    this.setActiveMenuFromRoute(this.router.url);
   }
 
   ngOnDestroy() {
-    // Clean up subscriptions
     this.subscription.unsubscribe();
+    // Clear any pending debounce timers
+    if (this.hoverEnterTimer) clearTimeout(this.hoverEnterTimer);
+    if (this.hoverLeaveTimer) clearTimeout(this.hoverLeaveTimer);
   }
 
   isActive(path: string): boolean {
@@ -162,74 +140,54 @@ export class AppSidebarComponent {
 
   toggleSubmenu(section: string, index: number) {
     const key = `${section}-${index}`;
-
     if (this.openSubmenu === key) {
       this.openSubmenu = null;
-      this.openNestedSubmenu = null; // Close nested when main closes
-      this.subMenuHeights[key] = 0;
+      this.openNestedSubmenu = null;
     } else {
       this.openSubmenu = key;
-
-      setTimeout(() => {
-        const el = document.getElementById(key);
-        if (el) {
-          this.subMenuHeights[key] = el.scrollHeight;
-          this.cdr.detectChanges(); // Ensure UI updates
-        }
-      });
+      this.openNestedSubmenu = null;
     }
   }
 
   toggleNestedSubmenu(section: string, index: number, nestedIndex: number) {
     const key = `${section}-${index}-${nestedIndex}`;
-    const parentKey = `${section}-${index}`;
-
     if (this.openNestedSubmenu === key) {
-      const el = document.getElementById(key);
-      const childHeight = el ? el.scrollHeight : 0;
-
       this.openNestedSubmenu = null;
-      this.subMenuHeights[key] = 0;
-
-      const parentEl = document.getElementById(parentKey);
-      if (parentEl) {
-        this.subMenuHeights[parentKey] = Math.max(0, parentEl.scrollHeight - childHeight);
-      }
     } else {
-      let prevChildHeight = 0;
-      if (this.openNestedSubmenu && this.openNestedSubmenu.startsWith(`${section}-${index}-`)) {
-        const prevEl = document.getElementById(this.openNestedSubmenu);
-        if (prevEl) prevChildHeight = prevEl.scrollHeight;
-        this.subMenuHeights[this.openNestedSubmenu] = 0;
-      } else if (this.openNestedSubmenu) {
-        this.subMenuHeights[this.openNestedSubmenu] = 0;
-      }
-
       this.openNestedSubmenu = key;
-
-      setTimeout(() => {
-        const el = document.getElementById(key);
-        if (el) {
-          const childHeight = el.scrollHeight;
-          this.subMenuHeights[key] = childHeight;
-
-          const parentEl = document.getElementById(parentKey);
-          if (parentEl) {
-            const baseHeight = parentEl.scrollHeight - prevChildHeight;
-            this.subMenuHeights[parentKey] = baseHeight + childHeight;
-          }
-          this.cdr.detectChanges();
-        }
-      });
     }
   }
 
   onSidebarMouseEnter() {
-    this.isExpanded$.subscribe(expanded => {
-      if (!expanded) {
+    if (this.hoverLeaveTimer) {
+      clearTimeout(this.hoverLeaveTimer);
+      this.hoverLeaveTimer = null;
+    }
+    if (!this.sidebarService.isExpandedValue) {
+      this.hoverEnterTimer = setTimeout(() => {
         this.sidebarService.setHovered(true);
-      }
-    }).unsubscribe();
+      }, this.HOVER_ENTER_DELAY);
+    }
+  }
+
+  onSidebarMouseLeave() {
+    if (this.hoverEnterTimer) {
+      clearTimeout(this.hoverEnterTimer);
+      this.hoverEnterTimer = null;
+    }
+    this.hoverLeaveTimer = setTimeout(() => {
+      this.sidebarService.setHovered(false);
+    }, this.HOVER_LEAVE_DELAY);
+  }
+
+  getTooltip(nav: NavItem): string {
+    if (this.sidebarService.isExpandedValue || this.sidebarService.isHoveredValue || this.sidebarService.isMobileOpenValue) {
+      return '';
+    }
+    if (nav.translationKey) {
+      return this.translateService.instant(nav.translationKey) || nav.name;
+    }
+    return nav.name;
   }
 
   private setActiveMenuFromRoute(currentUrl: string) {
@@ -242,67 +200,16 @@ export class AppSidebarComponent {
       group.items.forEach((nav, i) => {
         if (nav.subItems) {
           nav.subItems.forEach((subItem, j) => {
-            // Check for nested subItems
             if (subItem.subItems) {
               subItem.subItems.forEach((nestedItem: any) => {
                 if (currentUrl === nestedItem.path || (nestedItem.path !== '/' && currentUrl.startsWith(nestedItem.path + '/'))) {
-                  const parentKey = `${group.prefix}-${i}`;
-                  const nestedKey = `${group.prefix}-${i}-${j}`;
-
-                  if (this.openSubmenu === parentKey && this.openNestedSubmenu === nestedKey) {
-                    return;
-                  }
-
-                  let prevChildHeight = 0;
-                  if (this.openNestedSubmenu && this.openNestedSubmenu.startsWith(`${group.prefix}-${i}-`)) {
-                    const prevEl = document.getElementById(this.openNestedSubmenu);
-                    if (prevEl) prevChildHeight = prevEl.scrollHeight;
-                  }
-                  if (this.openNestedSubmenu) {
-                    this.subMenuHeights[this.openNestedSubmenu] = 0;
-                  }
-
-                  this.openSubmenu = parentKey;
-                  this.openNestedSubmenu = nestedKey;
-
-                  setTimeout(() => {
-                    const nestedEl = document.getElementById(nestedKey);
-                    let nestedHeight = 0;
-                    if (nestedEl) {
-                      nestedHeight = nestedEl.scrollHeight;
-                      this.subMenuHeights[nestedKey] = nestedHeight;
-                    }
-                    const parentEl = document.getElementById(parentKey);
-                    if (parentEl) {
-                      const baseHeight = parentEl.scrollHeight - prevChildHeight;
-                      this.subMenuHeights[parentKey] = baseHeight + nestedHeight;
-                    }
-                    this.cdr.detectChanges();
-                  });
+                  this.openSubmenu = `${group.prefix}-${i}`;
+                  this.openNestedSubmenu = `${group.prefix}-${i}-${j}`;
                 }
               });
             } else {
               if (currentUrl === subItem.path || (subItem.path !== '/' && currentUrl.startsWith(subItem.path! + '/'))) {
-                const key = `${group.prefix}-${i}`;
-
-                if (this.openSubmenu === key && !this.openNestedSubmenu) {
-                  return;
-                }
-
-                if (this.openNestedSubmenu) {
-                  this.subMenuHeights[this.openNestedSubmenu] = 0;
-                  this.openNestedSubmenu = null;
-                }
-
-                this.openSubmenu = key;
-
-                setTimeout(() => {
-                  const el = document.getElementById(key);
-                  if (el) {
-                    this.subMenuHeights[key] = el.scrollHeight;
-                    this.cdr.detectChanges(); // Ensure UI updates
-                  }
-                });
+                this.openSubmenu = `${group.prefix}-${i}`;
               }
             }
           });
@@ -312,13 +219,9 @@ export class AppSidebarComponent {
   }
 
   onSubmenuClick() {
-    // console.log('click submenu');
-    this.isMobileOpen$.subscribe(isMobile => {
-      if (isMobile) {
-        this.sidebarService.setMobileOpen(false);
-      }
-    }).unsubscribe();
+    if (this.sidebarService.isMobileOpenValue) {
+      this.sidebarService.setMobileOpen(false);
+    }
   }
-
 
 }

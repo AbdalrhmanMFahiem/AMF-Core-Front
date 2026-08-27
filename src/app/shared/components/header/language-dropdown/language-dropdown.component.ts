@@ -9,7 +9,7 @@ import { TranslateService } from '@ngx-translate/core';
   imports: [CommonModule, DropdownComponent]
 })
 export class LanguageDropdownComponent {
-  @Input() sizeClass = 'w-10 h-10';
+  @Input() sizeClass = 'h-10 w-10 lg:h-11 lg:w-11';
   @Input() openUp = false;
 
   isOpen = false;
@@ -103,19 +103,3 @@ export class LanguageDropdownComponent {
     }
   }
 }
-
-//     setTimeout(() => {
-//       window.location.reload();
-//     }, 1500);
-//   }
-
-//   private setDirection(lang: string) {
-//     if (lang === 'ar') {
-//       document.documentElement.dir = 'rtl';
-//       document.documentElement.lang = 'ar';
-//     } else {
-//       document.documentElement.dir = 'ltr';
-//       document.documentElement.lang = 'en';
-//     }
-//   }
-// }

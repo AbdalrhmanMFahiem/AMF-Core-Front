@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from '../../../environments/environment';
+import { AppConfigService } from './app-config.service';
 
 import { PaginatedList } from '../models/pagination.model';
 
@@ -49,7 +49,8 @@ export interface WarehouseItemsStockResponse {
 })
 export class ReportService {
   private readonly http = inject(HttpClient);
-  private readonly baseUrl = `${environment.apiUrl}/api/v1/reports`;
+  private readonly config = inject(AppConfigService);
+  private get baseUrl() { return `${this.config.apiUrl}/api/v1/reports`; }
 
   getSalesReport(filters: any): Observable<PaginatedList<InvoiceReportResponse>> {
     let params = new HttpParams();

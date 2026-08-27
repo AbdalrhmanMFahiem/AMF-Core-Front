@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from '../../../environments/environment';
+import { AppConfigService } from './app-config.service';
 import { PaginatedList } from '../models/pagination.model';
 import { RequestFilters } from '../models/pagination.model';
 import { IdNameResponse } from '../models/lookup.model';
@@ -12,7 +12,8 @@ import { WarehouseRequest, WarehouseResponse, WarehouseBasicResponse } from '../
 })
 export class WarehouseService {
   private http = inject(HttpClient);
-  private apiUrl = `${environment.apiUrl}/api/Warehouses`;
+  private config = inject(AppConfigService);
+  private get apiUrl() { return `${this.config.apiUrl}/api/Warehouses`; }
 
   getAll(filters: RequestFilters, includeDisabled: boolean = false): Observable<PaginatedList<WarehouseBasicResponse>> {
     let params: any = { ...filters, includeDisabled };

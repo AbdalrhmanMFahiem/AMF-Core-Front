@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from '../../../environments/environment';
+import { AppConfigService } from './app-config.service';
 import { PaginatedList } from '../models/pagination.model';
 import { NextCodeResponse } from '../models/lookup.model';
 import { 
@@ -17,7 +17,8 @@ import {
 })
 export class PurchaseOrderService {
   private http = inject(HttpClient);
-  private apiUrl = `${environment.apiUrl}/api/purchaseOrders`;
+  private config = inject(AppConfigService);
+  private get apiUrl() { return `${this.config.apiUrl}/api/purchaseOrders`; }
 
   private getOptions(filters?: PurchaseOrderFilters) {
     let params = new HttpParams();

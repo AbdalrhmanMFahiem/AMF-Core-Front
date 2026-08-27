@@ -5,14 +5,15 @@ import { ItemResponse, ItemBasicResponse, ItemRequest, ItemFilters, ItemUnitOfMe
 import { ItemBomLineResponse } from '../models/item-bom.model';
 import { NextCodeResponse } from '../models/lookup.model';
 import { PaginatedList } from '../models/pagination.model';
-import { environment } from '../../../environments/environment';
+import { AppConfigService } from './app-config.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ItemService {
   private http = inject(HttpClient);
-  private apiUrl = `${environment.apiUrl}/api/Items`;
+  private config = inject(AppConfigService);
+  private get apiUrl() { return `${this.config.apiUrl}/api/Items`; }
 
   getAll(filters: ItemFilters, includeDisabled: boolean = false): Observable<PaginatedList<ItemBasicResponse>> {
     let params = new HttpParams()

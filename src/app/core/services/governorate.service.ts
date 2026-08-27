@@ -4,14 +4,15 @@ import { Observable } from 'rxjs';
 import { GovernorateRequest, GovernorateResponse, GovernorateBasicResponse } from '../models/governorate.model';
 import { PaginatedList, RequestFilters } from '../models/pagination.model';
 import { IdNameResponse, NextCodeResponse } from '../models/lookup.model';
-import { environment } from '../../../environments/environment';
+import { AppConfigService } from './app-config.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class GovernorateService {
   private http = inject(HttpClient);
-  private apiUrl = `${environment.apiUrl}/api/administration/Governorate`;
+  private config = inject(AppConfigService);
+  private get apiUrl() { return `${this.config.apiUrl}/api/administration/Governorate`; }
 
   getAll(filters: RequestFilters, includeDisabled: boolean = false): Observable<PaginatedList<GovernorateBasicResponse>> {
     let params = new HttpParams()

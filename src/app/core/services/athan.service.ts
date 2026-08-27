@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { environment } from '../../../environments/environment';
+import { AppConfigService } from './app-config.service';
 import { Observable } from 'rxjs';
 import { AthanDto, AthanSettingsDto } from '../models/athan.models';
 
@@ -9,7 +9,8 @@ import { AthanDto, AthanSettingsDto } from '../models/athan.models';
 })
 export class AthanService {
   private http = inject(HttpClient);
-  private apiUrl = `${environment.apiUrl}/api/athan`;
+  private config = inject(AppConfigService);
+  private get apiUrl() { return `${this.config.apiUrl}/api/athan`; }
 
   getDefaultSettings(): Observable<AthanSettingsDto> {
     return this.http.get<AthanSettingsDto>(`${this.apiUrl}/settings/default`);

@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
-import { environment } from '../../../environments/environment';
+import { AppConfigService } from './app-config.service';
 
 export interface ConfigInventoryResponse {
   allowNegativeStock: boolean;
@@ -27,7 +27,8 @@ export interface ConfigInventoryRequest {
 })
 export class ConfigInventoryService {
   private http = inject(HttpClient);
-  private apiUrl = `${environment.apiUrl}/api/configuration/inventory`;
+  private config = inject(AppConfigService);
+  private get apiUrl() { return `${this.config.apiUrl}/api/configuration/inventory`; }
 
   getSettings(): Observable<ConfigInventoryResponse> {
     return this.http.get<ConfigInventoryResponse>(this.apiUrl);

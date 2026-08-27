@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from '../../../environments/environment';
+import { AppConfigService } from './app-config.service';
 
 export interface DashboardMetricsResponse {
   totalSalesThisMonth: number;
@@ -68,7 +68,8 @@ export interface TopPartnerResponse {
 })
 export class DashboardService {
   private http = inject(HttpClient);
-  private apiUrl = `${environment.apiUrl}/api/v1/dashboard`;
+  private config = inject(AppConfigService);
+  private get apiUrl() { return `${this.config.apiUrl}/api/v1/dashboard`; }
 
   getMetrics(): Observable<DashboardMetricsResponse> {
     return this.http.get<DashboardMetricsResponse>(`${this.apiUrl}/metrics`);

@@ -165,3 +165,6 @@
 
   </div>
 </div>
+
+<app-error-banner [isVisible]="validationErrors.length > 0" [errors]="validationErrors"
+  (close)="validationErrors = []"></app-error-banner>

@@ -1,7 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
-import { environment } from '../../../environments/environment';
+import { AppConfigService } from './app-config.service';
 import { PaginatedList } from '../models/pagination.model';
 import { StockTransactionFilters, StockTransactionResponse } from '../models/inventory.model';
 
@@ -10,7 +10,8 @@ import { StockTransactionFilters, StockTransactionResponse } from '../models/inv
 })
 export class StockTransactionService {
   private http = inject(HttpClient);
-  private apiUrl = `${environment.apiUrl}/api/inventory/stock-transactions`;
+  private config = inject(AppConfigService);
+  private get apiUrl() { return `${this.config.apiUrl}/api/inventory/stock-transactions`; }
 
   getAll(filters: StockTransactionFilters): Observable<PaginatedList<StockTransactionResponse>> {
     let params = new HttpParams();

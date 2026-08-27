@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from '../../../environments/environment';
+import { AppConfigService } from './app-config.service';
 import { PaginatedList } from '../models/pagination.model';
 import { RequestFilters } from '../models/pagination.model';
 import { IdNameResponse } from '../models/lookup.model';
@@ -12,7 +12,8 @@ import { LocationRequest, LocationResponse, LocationBasicResponse } from '../mod
 })
 export class LocationService {
   private http = inject(HttpClient);
-  private apiUrl = `${environment.apiUrl}/api/Locations`;
+  private config = inject(AppConfigService);
+  private get apiUrl() { return `${this.config.apiUrl}/api/Locations`; }
 
   getAll(filters: RequestFilters, includeDisabled: boolean = false): Observable<PaginatedList<LocationBasicResponse>> {
     let params: any = { ...filters, includeDisabled };

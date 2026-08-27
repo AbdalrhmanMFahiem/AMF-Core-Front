@@ -188,9 +188,13 @@
   }
   body {
     @apply relative font-normal font-outfit z-1 bg-gray-50;
+    height: 100%;
+    overflow: hidden;
   }
   html {
     font-size: 76.5%;
+    height: 100%;
+    overflow: hidden;
   }
   html:not(.dark) input, html:not(.dark) textarea, html:not(.dark) select {
     color: #101828 !important;
@@ -202,6 +206,14 @@
 
 @utility menu-item {
   @apply relative flex items-center w-full gap-3 px-3 py-2 font-medium rounded-lg text-theme-sm;
+}
+
+@utility grid-rows-1fr {
+  grid-template-rows: 1fr;
+}
+
+@utility grid-rows-0fr {
+  grid-template-rows: 0fr;
 }
 
 @utility menu-item-active {
@@ -583,7 +595,7 @@ span.flatpickr-weekday,
   @apply max-w-full overflow-x-auto custom-scrollbar;
 }
 .fc-dayGridMonth-view.fc-view.fc-daygrid {
-  @apply min-w-[718px];
+  @apply min-w-179.5;
 }
 .fc .fc-scrollgrid-section > * {
   border-right-width: 0;

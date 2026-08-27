@@ -1,29 +1,96 @@
 <div class="relative">
-  <button (click)="toggleDropdown()" [ngClass]="['flex items-center justify-center text-gray-500 border-gray-200 rounded-full dropdown-toggle bg-gray-50 hover:bg-gray-100 hover:text-gray-700 dark:border-gray-800 dark:bg-white/3 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300', sizeClass]">
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <circle cx="12" cy="12" r="10"></circle>
-      <line x1="2" y1="12" x2="22" y2="12"></line>
-      <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
-    </svg>
+  <button (click)="toggleDropdown()"
+    [ngClass]="['relative flex items-center justify-center text-gray-500 transition-colors bg-white border border-gray-200 rounded-full dropdown-toggle hover:text-gray-700 hover:bg-gray-100 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-white cursor-pointer active:scale-95 shrink-0', sizeClass]">
+    
+    <!-- Flag / Globe Icon inside round button -->
+    @if (currentLang === 'ar') {
+      <!-- Saudi Arabia Flag SVG -->
+      <svg class="w-5 h-5 rounded-full shadow-xs border border-emerald-600/40 overflow-hidden shrink-0" viewBox="0 0 36 36" fill="none">
+        <rect width="36" height="36" fill="#006C35"/>
+        <path d="M7 14.5H29M10 12H26M13 17.5H23" stroke="white" stroke-width="1.8" stroke-linecap="round"/>
+        <path d="M8 21H25C26.5 21 27.5 20 27.5 20M21 19.5V22.5" stroke="white" stroke-width="1.4" stroke-linecap="round"/>
+      </svg>
+    } @else {
+      <!-- UK Flag SVG -->
+      <svg class="w-5 h-5 rounded-full shadow-xs border border-blue-600/30 overflow-hidden shrink-0" viewBox="0 0 32 32">
+        <rect width="32" height="32" fill="#012169"/>
+        <path d="M0 0l32 32M32 0L0 32" stroke="#FFF" stroke-width="4"/>
+        <path d="M0 0l32 32M32 0L0 32" stroke="#C8102E" stroke-width="2"/>
+        <path d="M16 0v32M0 16h32" stroke="#FFF" stroke-width="7"/>
+        <path d="M16 0v32M0 16h32" stroke="#C8102E" stroke-width="4"/>
+      </svg>
+    }
   </button>
 
   <app-dropdown [isOpen]="isOpen" (close)="closeDropdown()"
-    [className]="'absolute ltr:right-0 rtl:left-0 rtl:right-auto flex w-[150px] flex-col rounded-2xl border border-gray-200 bg-white p-2 shadow-theme-lg dark:border-gray-800 dark:bg-gray-dark ' + (openUp ? 'bottom-full mb-2' : 'mt-[17px]')">
+    [className]="'absolute ltr:right-0 rtl:left-0 rtl:right-auto flex w-44 flex-col rounded-2xl border border-gray-200/80 bg-white/95 backdrop-blur-md p-2 shadow-theme-xl dark:border-gray-800 dark:bg-gray-900/95 z-50 ' + (openUp ? 'bottom-full mb-2' : 'mt-2')">
+    
+    <!-- Dropdown Header -->
+    <div class="px-2.5 py-1.5 mb-1 text-[11px] font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500 border-b border-gray-100 dark:border-gray-800/80 flex items-center justify-between">
+      <span>{{ currentLang === 'ar' ? 'اختر اللغة' : 'Select Language' }}</span>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="opacity-60">
+        <circle cx="12" cy="12" r="10"></circle>
+        <line x1="2" y1="12" x2="22" y2="12"></line>
+        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+      </svg>
+    </div>
+
     <ul class="flex flex-col gap-1">
-      <li>
-        <button (click)="changeLanguage('en')"
-          class="flex items-center w-full gap-3 px-3 py-2 font-medium text-gray-700 rounded-lg group text-theme-sm hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
-          [class.bg-gray-100]="currentLang === 'en'"
-          [class.dark:bg-white/5]="currentLang === 'en'">
-          English
-        </button>
-      </li>
+      <!-- Arabic Option -->
       <li>
         <button (click)="changeLanguage('ar')"
-          class="flex items-center w-full gap-3 px-3 py-2 font-medium text-gray-700 rounded-lg group text-theme-sm hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
-          [class.bg-gray-100]="currentLang === 'ar'"
-          [class.dark:bg-white/5]="currentLang === 'ar'">
-          العربية
+          class="flex items-center justify-between w-full px-2.5 py-2 text-sm font-medium rounded-xl transition-all duration-150 group cursor-pointer"
+          [ngClass]="{
+            'bg-brand-50 text-brand-600 dark:bg-brand-500/15 dark:text-brand-400 font-semibold': currentLang === 'ar',
+            'text-gray-700 hover:bg-gray-100/80 dark:text-gray-300 dark:hover:bg-white/5': currentLang !== 'ar'
+          }">
+          <div class="flex items-center gap-2.5">
+            <svg class="w-5 h-5 rounded-full shadow-xs border border-emerald-600/40 overflow-hidden shrink-0" viewBox="0 0 36 36" fill="none">
+              <rect width="36" height="36" fill="#006C35"/>
+              <path d="M7 14.5H29M10 12H26M13 17.5H23" stroke="white" stroke-width="1.8" stroke-linecap="round"/>
+              <path d="M8 21H25C26.5 21 27.5 20 27.5 20M21 19.5V22.5" stroke="white" stroke-width="1.4" stroke-linecap="round"/>
+            </svg>
+            <div class="flex flex-col text-start">
+              <span class="text-xs font-bold leading-tight">العربية</span>
+              <span class="text-[10px] text-gray-400 dark:text-gray-500 font-normal">Arabic</span>
+            </div>
+          </div>
+          <!-- Active Checkmark -->
+          @if (currentLang === 'ar') {
+            <svg class="w-4 h-4 text-brand-600 dark:text-brand-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+          }
+        </button>
+      </li>
+
+      <!-- English Option -->
+      <li>
+        <button (click)="changeLanguage('en')"
+          class="flex items-center justify-between w-full px-2.5 py-2 text-sm font-medium rounded-xl transition-all duration-150 group cursor-pointer"
+          [ngClass]="{
+            'bg-brand-50 text-brand-600 dark:bg-brand-500/15 dark:text-brand-400 font-semibold': currentLang === 'en',
+            'text-gray-700 hover:bg-gray-100/80 dark:text-gray-300 dark:hover:bg-white/5': currentLang !== 'en'
+          }">
+          <div class="flex items-center gap-2.5">
+            <svg class="w-5 h-5 rounded-full shadow-xs border border-blue-600/30 overflow-hidden shrink-0" viewBox="0 0 32 32">
+              <rect width="32" height="32" fill="#012169"/>
+              <path d="M0 0l32 32M32 0L0 32" stroke="#FFF" stroke-width="4"/>
+              <path d="M0 0l32 32M32 0L0 32" stroke="#C8102E" stroke-width="2"/>
+              <path d="M16 0v32M0 16h32" stroke="#FFF" stroke-width="7"/>
+              <path d="M16 0v32M0 16h32" stroke="#C8102E" stroke-width="4"/>
+            </svg>
+            <div class="flex flex-col text-start">
+              <span class="text-xs font-bold leading-tight">English</span>
+              <span class="text-[10px] text-gray-400 dark:text-gray-500 font-normal">الإنجليزية</span>
+            </div>
+          </div>
+          <!-- Active Checkmark -->
+          @if (currentLang === 'en') {
+            <svg class="w-4 h-4 text-brand-600 dark:text-brand-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+          }
         </button>
       </li>
     </ul>

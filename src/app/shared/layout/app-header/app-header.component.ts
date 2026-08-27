@@ -1,14 +1,12 @@
-import { Component, ElementRef, ViewChild, OnInit } from '@angular/core';
-import { SidebarService, NavItem } from '../../services/sidebar.service';
+import { Component, OnInit } from '@angular/core';
+import { SidebarService } from '../../services/sidebar.service';
 import { CommonModule } from '@angular/common';
-import { RouterModule, Router } from '@angular/router';
+import { RouterModule } from '@angular/router';
 import { ThemeToggleButtonComponent } from '../../components/common/theme-toggle/theme-toggle-button.component';
 import { NotificationDropdownComponent } from '../../components/header/notification-dropdown/notification-dropdown.component';
 import { UserDropdownComponent } from '../../components/header/user-dropdown/user-dropdown.component';
 import { LanguageDropdownComponent } from '../../components/header/language-dropdown/language-dropdown.component';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { matchSearchQuery } from '../../utils/arabic-search.utils';
-import { SafeHtmlPipe } from '../../pipe/safe-html.pipe';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-header',
@@ -19,78 +17,21 @@ import { SafeHtmlPipe } from '../../pipe/safe-html.pipe';
     NotificationDropdownComponent,
     LanguageDropdownComponent,
     UserDropdownComponent,
-    TranslateModule,
-    SafeHtmlPipe
+    TranslateModule
   ],
   templateUrl: './app-header.component.html',
 })
 export class AppHeaderComponent implements OnInit {
   isApplicationMenuOpen = false;
   readonly isMobileOpen$;
-  
-  searchQuery = '';
-  showDropdown = false;
-  searchResults: NavItem[] = [];
-  private flatRoutes: NavItem[] = [];
-
-  @ViewChild('searchInput') searchInput!: ElementRef<HTMLInputElement>;
 
   constructor(
-    public sidebarService: SidebarService,
-    private translateService: TranslateService,
-    private router: Router
+    public sidebarService: SidebarService
   ) {
     this.isMobileOpen$ = this.sidebarService.isMobileOpen$;
   }
 
-  ngOnInit() {
-    this.flatRoutes = this.getFlatRoutes([...this.sidebarService.navItems, ...this.sidebarService.othersItems]);
-  }
-
-  private getFlatRoutes(items: NavItem[], parentIcon?: string, parentAliases: string[] = []): NavItem[] {
-    let result: NavItem[] = [];
-    for (const item of items) {
-      const currentIcon = item.icon || parentIcon;
-      const combinedAliases = [...(item.aliases || []), ...parentAliases];
-      if (item.path) {
-        result.push({ ...item, icon: currentIcon, aliases: combinedAliases });
-      }
-      if (item.subItems) {
-        result = [...result, ...this.getFlatRoutes(item.subItems, currentIcon, combinedAliases)];
-      }
-    }
-    return result;
-  }
-
-  onSearch(event: any) {
-    const query = event.target.value || '';
-    this.searchQuery = query;
-    if (!query.trim()) {
-      this.showDropdown = false;
-      this.searchResults = [];
-      return;
-    }
-    
-    this.searchResults = this.flatRoutes
-      .filter(route => matchSearchQuery(route, query, this.translateService))
-      .slice(0, 10);
-    
-    this.showDropdown = true;
-  }
-
-  closeDropdown() {
-    setTimeout(() => { this.showDropdown = false; }, 200);
-  }
-
-  goToRoute(path: string) {
-    this.router.navigate([path]);
-    this.showDropdown = false;
-    this.searchQuery = '';
-    if (this.searchInput) {
-      this.searchInput.nativeElement.value = '';
-      this.searchInput.nativeElement.blur();
-    }
-  }
+  ngOnInit() {}
 
   handleToggle() {
     if (window.innerWidth >= 1024) {
@@ -103,19 +44,4 @@ export class AppHeaderComponent implements OnInit {
   toggleApplicationMenu() {
     this.isApplicationMenuOpen = !this.isApplicationMenuOpen;
   }
-
-  ngAfterViewInit() {
-    document.addEventListener('keydown', this.handleKeyDown);
-  }
-
-  ngOnDestroy() {
-    document.removeEventListener('keydown', this.handleKeyDown);
-  }
-
-  handleKeyDown = (event: KeyboardEvent) => {
-    if ((event.metaKey || event.ctrlKey) && event.key === 'k') {
-      event.preventDefault();
-      this.searchInput?.nativeElement.focus();
-    }
-  };
 }

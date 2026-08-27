@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from '../../../environments/environment';
+import { AppConfigService } from './app-config.service';
 import { PaginatedList } from '../models/pagination.model';
 import { NextCodeResponse } from '../models/lookup.model';
 import {
@@ -18,7 +18,8 @@ import {
 @Injectable({ providedIn: 'root' })
 export class BusinessPartnerPaymentService {
   private readonly http = inject(HttpClient);
-  private readonly baseUrl = `${environment.apiUrl}/api/business-partner-payments`;
+  private readonly config = inject(AppConfigService);
+  private get baseUrl() { return `${this.config.apiUrl}/api/business-partner-payments`; }
 
   getAll(filters: PaymentFilters): Observable<PaginatedList<BusinessPartnerPaymentBasicResponse>> {
     let params = new HttpParams()
@@ -82,7 +83,7 @@ export class BusinessPartnerPaymentService {
   }
 
   getPartnerBalanceSummary(businessPartnerId: number): Observable<BalanceSummaryResponse> {
-    return this.http.get<BalanceSummaryResponse>(`${environment.apiUrl}/api/md/business-partner/${businessPartnerId}/balance-summary`);
+    return this.http.get<BalanceSummaryResponse>(`${this.config.apiUrl}/api/md/business-partner/${businessPartnerId}/balance-summary`);
   }
 
   cancel(id: number): Observable<void> {

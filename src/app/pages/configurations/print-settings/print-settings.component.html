@@ -1,0 +1,588 @@
+<div
+  class="p-3 sm:p-4 md:p-6 bg-gray-50 dark:bg-gray-950 min-h-screen text-gray-900 dark:text-gray-100 transition-colors">
+
+  <!-- Header & Actions -->
+  <div
+    class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 bg-white dark:bg-gray-900/90 backdrop-blur border border-gray-200/80 dark:border-gray-800 p-4 sm:p-5 rounded-2xl shadow-xs">
+    <div class="flex items-center gap-3.5">
+      <div
+        class="w-12 h-12 rounded-2xl bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200/60 dark:border-indigo-800/60 flex items-center justify-center text-indigo-600 dark:text-indigo-400 shrink-0 shadow-2xs">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+        </svg>
+      </div>
+      <div>
+        <h1 class="text-lg sm:text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+          <span>{{ 'printSettings.title' | translate }}</span>
+        </h1>
+        <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{{ 'printSettings.subtitle' | translate }}</p>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="flex items-center gap-2.5 w-full sm:w-auto">
+      <button type="button" (click)="resetToDefaults()"
+        class="px-3.5 py-2 rounded-xl border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 text-xs font-semibold transition-colors cursor-pointer">
+        {{ 'printSettings.resetDefaults' | translate }}
+      </button>
+
+      <button type="button" (click)="saveSettings()" [disabled]="saving"
+        class="inline-flex items-center justify-center gap-2 px-5 py-2 rounded-xl bg-brand-600 hover:bg-brand-700 active:bg-brand-800 disabled:opacity-50 text-white text-xs sm:text-sm font-bold shadow-xs hover:shadow-md transition-all cursor-pointer">
+        <svg *ngIf="saving" class="animate-spin -ms-1 me-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor"
+            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+          </path>
+        </svg>
+        <svg *ngIf="!saving" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+        </svg>
+        <span>{{ 'common.save' | translate }}</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Main Grid: Left Controls (7 cols), Right Live Preview (5 cols) -->
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+
+    <!-- LEFT COLUMN: Configuration Tabs & Forms -->
+    <div class="lg:col-span-7 space-y-6">
+
+      <!-- Navigation Tabs -->
+      <div class="flex items-center gap-2 border-b border-gray-200 dark:border-gray-800 pb-1">
+        <button type="button" (click)="activeTab = 'receipt'; previewMode = 'receipt'"
+          [class.text-brand-600]="activeTab === 'receipt'" [class.border-brand-600]="activeTab === 'receipt'"
+          [class.dark:text-brand-400]="activeTab === 'receipt'" [class.dark:border-brand-400]="activeTab === 'receipt'"
+          class="flex items-center gap-2 px-4 py-2.5 border-b-2 font-bold text-xs sm:text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors border-transparent cursor-pointer">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+          <span>{{ 'printSettings.receiptTab' | translate }}</span>
+        </button>
+
+        <button type="button" (click)="activeTab = 'invoice'; previewMode = 'invoice'"
+          [class.text-brand-600]="activeTab === 'invoice'" [class.border-brand-600]="activeTab === 'invoice'"
+          [class.dark:text-brand-400]="activeTab === 'invoice'" [class.dark:border-brand-400]="activeTab === 'invoice'"
+          class="flex items-center gap-2 px-4 py-2.5 border-b-2 font-bold text-xs sm:text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors border-transparent cursor-pointer">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+          </svg>
+          <span>{{ 'printSettings.invoiceTab' | translate }}</span>
+        </button>
+
+        <button type="button" (click)="activeTab = 'company'" [class.text-brand-600]="activeTab === 'company'"
+          [class.border-brand-600]="activeTab === 'company'" [class.dark:text-brand-400]="activeTab === 'company'"
+          [class.dark:border-brand-400]="activeTab === 'company'"
+          class="flex items-center gap-2 px-4 py-2.5 border-b-2 font-bold text-xs sm:text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors border-transparent cursor-pointer">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+          </svg>
+          <span>{{ 'printSettings.companyTab' | translate }}</span>
+        </button>
+      </div>
+
+      <!-- TAB 1: POS Receipt Settings -->
+      <div *ngIf="activeTab === 'receipt'" class="space-y-5">
+
+        <!-- Header & Texts Section -->
+        <div
+          class="bg-white dark:bg-gray-900/90 border border-gray-200/80 dark:border-gray-800 rounded-2xl p-4 sm:p-5 shadow-xs space-y-4">
+          <h3 class="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-brand-500"></span>
+            {{ 'printSettings.receiptTextSection' | translate }}
+          </h3>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">
+                {{ 'printSettings.receiptHeaderTitle' | translate }}
+              </label>
+              <input type="text" [(ngModel)]="model.receiptHeaderTitle"
+                class="w-full bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-xl px-3 py-2 text-xs sm:text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20" />
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">
+                {{ 'printSettings.receiptHeaderSubtitle' | translate }}
+              </label>
+              <input type="text" [(ngModel)]="model.receiptHeaderSubtitle"
+                [placeholder]="'printSettings.optional' | translate"
+                class="w-full bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-xl px-3 py-2 text-xs sm:text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20" />
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">
+              {{ 'printSettings.receiptFooterMessage' | translate }}
+            </label>
+            <input type="text" [(ngModel)]="model.receiptFooterMessage"
+              class="w-full bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-xl px-3 py-2 text-xs sm:text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20" />
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">
+              {{ 'printSettings.receiptReturnPolicy' | translate }}
+            </label>
+            <textarea [(ngModel)]="model.receiptReturnPolicy" rows="2"
+              class="w-full bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-xl px-3 py-2 text-xs sm:text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20"></textarea>
+          </div>
+
+          <!-- Paper Width Selector -->
+          <div>
+            <label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">
+              {{ 'printSettings.receiptPaperWidth' | translate }}
+            </label>
+            <div class="grid grid-cols-2 gap-3">
+              <label
+                class="flex items-center gap-3 p-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/60 cursor-pointer transition-all"
+                [class.border-brand-500]="model.receiptPaperWidthMm === 80"
+                [class.bg-brand-50/30]="model.receiptPaperWidthMm === 80">
+                <input type="radio" name="paperWidth" [value]="80" [(ngModel)]="model.receiptPaperWidthMm"
+                  class="text-brand-600 focus:ring-brand-500" />
+                <div>
+                  <div class="text-xs font-bold text-gray-900 dark:text-white">80mm (Standard POS)</div>
+                  <div class="text-[11px] text-gray-500">طابعات نقاط البيع والكاشير المعتادة</div>
+                </div>
+              </label>
+
+              <label
+                class="flex items-center gap-3 p-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/60 cursor-pointer transition-all"
+                [class.border-brand-500]="model.receiptPaperWidthMm === 57"
+                [class.bg-brand-50/30]="model.receiptPaperWidthMm === 57">
+                <input type="radio" name="paperWidth" [value]="57" [(ngModel)]="model.receiptPaperWidthMm"
+                  class="text-brand-600 focus:ring-brand-500" />
+                <div>
+                  <div class="text-xs font-bold text-gray-900 dark:text-white">57mm / 58mm (Mobile POS)</div>
+                  <div class="text-[11px] text-gray-500">طابعات البلوتوث المحمولة للمناديب</div>
+                </div>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Toggles Section for Receipt -->
+        <div
+          class="bg-white dark:bg-gray-900/90 border border-gray-200/80 dark:border-gray-800 rounded-2xl p-4 sm:p-5 shadow-xs space-y-4">
+          <h3 class="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+            {{ 'printSettings.receiptTogglesSection' | translate }}
+          </h3>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+            <!-- Sales Person in Footer -->
+            <label
+              class="flex items-center justify-between p-3 rounded-xl bg-gray-50 dark:bg-gray-800/50 border border-gray-200/70 dark:border-gray-700/70 cursor-pointer">
+              <span class="text-xs font-semibold text-gray-800 dark:text-gray-200">{{
+                'printSettings.showSalesPersonInFooter' | translate }}</span>
+              <input type="checkbox" [(ngModel)]="model.receiptShowSalesPersonInFooter"
+                class="w-4 h-4 rounded text-brand-600 focus:ring-brand-500" />
+            </label>
+
+            <!-- Printed By in Footer -->
+            <label
+              class="flex items-center justify-between p-3 rounded-xl bg-gray-50 dark:bg-gray-800/50 border border-gray-200/70 dark:border-gray-700/70 cursor-pointer">
+              <span class="text-xs font-semibold text-gray-800 dark:text-gray-200">{{
+                'printSettings.showPrintedByInFooter' | translate }}</span>
+              <input type="checkbox" [(ngModel)]="model.receiptShowPrintedByInFooter"
+                class="w-4 h-4 rounded text-brand-600 focus:ring-brand-500" />
+            </label>
+
+            <!-- Customer -->
+            <label
+              class="flex items-center justify-between p-3 rounded-xl bg-gray-50 dark:bg-gray-800/50 border border-gray-200/70 dark:border-gray-700/70 cursor-pointer">
+              <span class="text-xs font-semibold text-gray-800 dark:text-gray-200">{{ 'printSettings.showCustomer' |
+                translate }}</span>
+              <input type="checkbox" [(ngModel)]="model.receiptShowCustomer"
+                class="w-4 h-4 rounded text-brand-600 focus:ring-brand-500" />
+            </label>
+
+            <!-- Warehouse -->
+            <label
+              class="flex items-center justify-between p-3 rounded-xl bg-gray-50 dark:bg-gray-800/50 border border-gray-200/70 dark:border-gray-700/70 cursor-pointer">
+              <span class="text-xs font-semibold text-gray-800 dark:text-gray-200">{{ 'printSettings.showWarehouse' |
+                translate }}</span>
+              <input type="checkbox" [(ngModel)]="model.receiptShowWarehouse"
+                class="w-4 h-4 rounded text-brand-600 focus:ring-brand-500" />
+            </label>
+
+            <!-- Barcode -->
+            <label
+              class="flex items-center justify-between p-3 rounded-xl bg-gray-50 dark:bg-gray-800/50 border border-gray-200/70 dark:border-gray-700/70 cursor-pointer">
+              <span class="text-xs font-semibold text-gray-800 dark:text-gray-200">{{ 'printSettings.showBarcode' |
+                translate }}</span>
+              <input type="checkbox" [(ngModel)]="model.receiptShowBarcode"
+                class="w-4 h-4 rounded text-brand-600 focus:ring-brand-500" />
+            </label>
+
+            <!-- Tax Breakdown -->
+            <label
+              class="flex items-center justify-between p-3 rounded-xl bg-gray-50 dark:bg-gray-800/50 border border-gray-200/70 dark:border-gray-700/70 cursor-pointer">
+              <span class="text-xs font-semibold text-gray-800 dark:text-gray-200">{{ 'printSettings.showTaxBreakdown' |
+                translate }}</span>
+              <input type="checkbox" [(ngModel)]="model.receiptShowTaxBreakdown"
+                class="w-4 h-4 rounded text-brand-600 focus:ring-brand-500" />
+            </label>
+
+            <!-- Discount -->
+            <label
+              class="flex items-center justify-between p-3 rounded-xl bg-gray-50 dark:bg-gray-800/50 border border-gray-200/70 dark:border-gray-700/70 cursor-pointer">
+              <span class="text-xs font-semibold text-gray-800 dark:text-gray-200">{{ 'printSettings.showDiscount' |
+                translate }}</span>
+              <input type="checkbox" [(ngModel)]="model.receiptShowDiscount"
+                class="w-4 h-4 rounded text-brand-600 focus:ring-brand-500" />
+            </label>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- TAB 2: Standard A4 Invoice Settings -->
+      <div *ngIf="activeTab === 'invoice'" class="space-y-5">
+        <div
+          class="bg-white dark:bg-gray-900/90 border border-gray-200/80 dark:border-gray-800 rounded-2xl p-4 sm:p-5 shadow-xs space-y-4">
+          <h3 class="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+            {{ 'printSettings.invoiceGeneralSection' | translate }}
+          </h3>
+
+          <div>
+            <label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">
+              {{ 'printSettings.invoiceFooterNotes' | translate }}
+            </label>
+            <textarea [(ngModel)]="model.invoiceFooterNotes" rows="3"
+              class="w-full bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-xl px-3 py-2 text-xs sm:text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20"></textarea>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+            <!-- Printed By in Footer -->
+            <label
+              class="flex items-center justify-between p-3 rounded-xl bg-gray-50 dark:bg-gray-800/50 border border-gray-200/70 dark:border-gray-700/70 cursor-pointer">
+              <span class="text-xs font-semibold text-gray-800 dark:text-gray-200">{{
+                'printSettings.showPrintedByInFooter' | translate }}</span>
+              <input type="checkbox" [(ngModel)]="model.invoiceShowPrintedByInFooter"
+                class="w-4 h-4 rounded text-brand-600 focus:ring-brand-500" />
+            </label>
+
+            <!-- Sales Person in Footer -->
+            <label
+              class="flex items-center justify-between p-3 rounded-xl bg-gray-50 dark:bg-gray-800/50 border border-gray-200/70 dark:border-gray-700/70 cursor-pointer">
+              <span class="text-xs font-semibold text-gray-800 dark:text-gray-200">{{
+                'printSettings.showSalesPersonInFooter' | translate }}</span>
+              <input type="checkbox" [(ngModel)]="model.invoiceShowSalesPersonInFooter"
+                class="w-4 h-4 rounded text-brand-600 focus:ring-brand-500" />
+            </label>
+
+            <!-- Company Address in Footer -->
+            <label
+              class="flex items-center justify-between p-3 rounded-xl bg-gray-50 dark:bg-gray-800/50 border border-gray-200/70 dark:border-gray-700/70 cursor-pointer">
+              <span class="text-xs font-semibold text-gray-800 dark:text-gray-200">{{
+                'printSettings.showCompanyAddressInFooter' | translate }}</span>
+              <input type="checkbox" [(ngModel)]="model.invoiceShowCompanyAddressInFooter"
+                class="w-4 h-4 rounded text-brand-600 focus:ring-brand-500" />
+            </label>
+
+            <!-- Customer Code -->
+            <label
+              class="flex items-center justify-between p-3 rounded-xl bg-gray-50 dark:bg-gray-800/50 border border-gray-200/70 dark:border-gray-700/70 cursor-pointer">
+              <span class="text-xs font-semibold text-gray-800 dark:text-gray-200">{{ 'printSettings.showCustomerCode' |
+                translate }}</span>
+              <input type="checkbox" [(ngModel)]="model.invoiceShowCustomerCode"
+                class="w-4 h-4 rounded text-brand-600 focus:ring-brand-500" />
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 3: Company & Branding Settings -->
+      <div *ngIf="activeTab === 'company'" class="space-y-5">
+        <div
+          class="bg-white dark:bg-gray-900/90 border border-gray-200/80 dark:border-gray-800 rounded-2xl p-4 sm:p-5 shadow-xs space-y-4">
+          <h3 class="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-purple-500"></span>
+            {{ 'printSettings.brandingSection' | translate }}
+          </h3>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+            <!-- Logo -->
+            <label
+              class="flex items-center justify-between p-3 rounded-xl bg-gray-50 dark:bg-gray-800/50 border border-gray-200/70 dark:border-gray-700/70 cursor-pointer">
+              <span class="text-xs font-semibold text-gray-800 dark:text-gray-200">{{ 'printSettings.showLogo' |
+                translate }}</span>
+              <input type="checkbox" [(ngModel)]="model.showLogo"
+                class="w-4 h-4 rounded text-brand-600 focus:ring-brand-500" />
+            </label>
+
+            <!-- Company Name -->
+            <label
+              class="flex items-center justify-between p-3 rounded-xl bg-gray-50 dark:bg-gray-800/50 border border-gray-200/70 dark:border-gray-700/70 cursor-pointer">
+              <span class="text-xs font-semibold text-gray-800 dark:text-gray-200">{{ 'printSettings.showCompanyName' |
+                translate }}</span>
+              <input type="checkbox" [(ngModel)]="model.showCompanyName"
+                class="w-4 h-4 rounded text-brand-600 focus:ring-brand-500" />
+            </label>
+
+            <!-- Tax Number -->
+            <label
+              class="flex items-center justify-between p-3 rounded-xl bg-gray-50 dark:bg-gray-800/50 border border-gray-200/70 dark:border-gray-700/70 cursor-pointer">
+              <span class="text-xs font-semibold text-gray-800 dark:text-gray-200">{{ 'printSettings.showTaxNumber' |
+                translate }}</span>
+              <input type="checkbox" [(ngModel)]="model.showTaxNumber"
+                class="w-4 h-4 rounded text-brand-600 focus:ring-brand-500" />
+            </label>
+
+            <!-- Registration Number -->
+            <label
+              class="flex items-center justify-between p-3 rounded-xl bg-gray-50 dark:bg-gray-800/50 border border-gray-200/70 dark:border-gray-700/70 cursor-pointer">
+              <span class="text-xs font-semibold text-gray-800 dark:text-gray-200">{{
+                'printSettings.showRegistrationNumber' | translate }}</span>
+              <input type="checkbox" [(ngModel)]="model.showRegistrationNumber"
+                class="w-4 h-4 rounded text-brand-600 focus:ring-brand-500" />
+            </label>
+
+            <!-- Address -->
+            <label
+              class="flex items-center justify-between p-3 rounded-xl bg-gray-50 dark:bg-gray-800/50 border border-gray-200/70 dark:border-gray-700/70 cursor-pointer">
+              <span class="text-xs font-semibold text-gray-800 dark:text-gray-200">{{ 'printSettings.showAddress' |
+                translate }}</span>
+              <input type="checkbox" [(ngModel)]="model.showAddress"
+                class="w-4 h-4 rounded text-brand-600 focus:ring-brand-500" />
+            </label>
+
+            <!-- Phone -->
+            <label
+              class="flex items-center justify-between p-3 rounded-xl bg-gray-50 dark:bg-gray-800/50 border border-gray-200/70 dark:border-gray-700/70 cursor-pointer">
+              <span class="text-xs font-semibold text-gray-800 dark:text-gray-200">{{ 'printSettings.showPhone' |
+                translate }}</span>
+              <input type="checkbox" [(ngModel)]="model.showPhone"
+                class="w-4 h-4 rounded text-brand-600 focus:ring-brand-500" />
+            </label>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT COLUMN: Real-Time Live Preview Canvas (5 cols) -->
+    <div class="lg:col-span-5 sticky top-6 space-y-3">
+
+      <!-- Preview Mode Switcher -->
+      <div
+        class="flex items-center justify-between bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 p-2 rounded-xl shadow-2xs">
+        <span class="text-xs font-bold text-gray-700 dark:text-gray-300 px-2 flex items-center gap-1.5">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+          {{ 'printSettings.livePreview' | translate }}
+        </span>
+        <div class="flex items-center gap-1 bg-gray-100 dark:bg-gray-800 p-1 rounded-lg">
+          <button type="button" (click)="previewMode = 'receipt'" [class.bg-white]="previewMode === 'receipt'"
+            [class.dark:bg-gray-700]="previewMode === 'receipt'" [class.shadow-2xs]="previewMode === 'receipt'"
+            class="px-2.5 py-1 text-xs font-semibold rounded-md transition-colors cursor-pointer">
+            80mm
+          </button>
+          <button type="button" (click)="previewMode = 'invoice'" [class.bg-white]="previewMode === 'invoice'"
+            [class.dark:bg-gray-700]="previewMode === 'invoice'" [class.shadow-2xs]="previewMode === 'invoice'"
+            class="px-2.5 py-1 text-xs font-semibold rounded-md transition-colors cursor-pointer">
+            A4
+          </button>
+        </div>
+      </div>
+
+      <!-- Live Preview Container -->
+      <div
+        class="bg-gray-200 dark:bg-gray-900/60 p-4 rounded-2xl flex justify-center border border-gray-300/80 dark:border-gray-800 overflow-y-auto max-h-[82vh]">
+
+        <!-- Thermal Receipt Canvas -->
+        <div *ngIf="previewMode === 'receipt'"
+          class="bg-white text-gray-900 p-4 rounded-lg shadow-md font-mono text-[11px] space-y-2.5 border border-dashed border-gray-300 w-full transition-all"
+          [style.max-width.px]="model.receiptPaperWidthMm === 57 ? 240 : 320">
+          <!-- Logo & Header -->
+          <div class="text-center space-y-1">
+            <div *ngIf="model.showLogo"
+              class="w-10 h-10 mx-auto rounded-full bg-gray-100 border border-gray-200 flex items-center justify-center font-bold text-gray-500 text-xs mb-1">
+              LOGO
+            </div>
+            <div *ngIf="model.showCompanyName" class="font-bold text-sm text-black">
+              {{ getCompanyName() }}
+            </div>
+            <div *ngIf="model.showTaxNumber && companyTaxNumber" class="text-[10px] text-gray-600">
+              الرقم الضريبي: {{ companyTaxNumber }}
+            </div>
+            <div *ngIf="model.showPhone && companyPhone" class="text-[10px] text-gray-600">
+              Tel: {{ companyPhone }}
+            </div>
+            <div *ngIf="model.showAddress && companyAddress" class="text-[9px] text-gray-500">
+              {{ companyAddress }}
+            </div>
+          </div>
+
+          <div class="border-t border-b border-gray-400 py-1 text-center font-bold text-xs">
+            {{ model.receiptHeaderTitle || 'إيصال استلام - نقطة بيع' }}
+          </div>
+
+          <div *ngIf="model.receiptHeaderSubtitle" class="text-center text-[10px] text-gray-600">
+            {{ model.receiptHeaderSubtitle }}
+          </div>
+
+          <!-- Invoice Details -->
+          <div class="space-y-0.5 text-[10px] border-b border-gray-200 pb-1.5">
+            <div class="flex justify-between font-bold">
+              <span>الفاتورة: INV-00042</span>
+              <span>{{ todayDate | date:'yyyy-MM-dd HH:mm' }}</span>
+            </div>
+            <div *ngIf="model.receiptShowCustomer">
+              العميل: شركة الأمل للتجارة
+            </div>
+            <div *ngIf="model.receiptShowWarehouse">
+              المخزن: المخزن الرئيسي
+            </div>
+          </div>
+
+          <!-- Items Mock Table -->
+          <div class="border-b border-gray-300 pb-1.5 space-y-1 text-[10px]">
+            <div class="flex justify-between font-bold text-gray-700 border-b border-gray-200 pb-0.5">
+              <span>الصنف</span>
+              <span class="text-center">الكمية</span>
+              <span class="text-end">الإجمالي</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="truncate max-w-30">شاي أسود فاخر 250جم</span>
+              <span class="text-center">2</span>
+              <span class="text-end font-bold">70.00</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="truncate max-w-30">زيت دوار الشمس 1 لتر</span>
+              <span class="text-center">1</span>
+              <span class="text-end font-bold">65.00</span>
+            </div>
+          </div>
+
+          <!-- Totals -->
+          <div class="space-y-0.5 text-[10px]">
+            <div class="flex justify-between text-gray-600">
+              <span>المجموع الفرعي:</span>
+              <span>135.00</span>
+            </div>
+            <div *ngIf="model.receiptShowDiscount" class="flex justify-between text-gray-600">
+              <span>الخصم:</span>
+              <span>-5.00</span>
+            </div>
+            <div *ngIf="model.receiptShowTaxBreakdown" class="flex justify-between text-gray-600">
+              <span>الضريبة:</span>
+              <span>18.20</span>
+            </div>
+            <div class="flex justify-between font-bold text-xs border-t border-black pt-1">
+              <span>الإجمالي الصافي:</span>
+              <span>148.20 ج.م</span>
+            </div>
+            <div class="flex justify-between font-semibold text-gray-700">
+              <span>المسدد (نقداً):</span>
+              <span>150.00</span>
+            </div>
+          </div>
+
+          <!-- Dynamic Footer -->
+          <div class="border-t border-gray-300 pt-2 space-y-1.5 text-center text-[10px]">
+
+            <!-- Sales Person in Footer -->
+            <div *ngIf="model.receiptShowSalesPersonInFooter"
+              class="text-start font-semibold text-black bg-gray-50 p-1 rounded border border-gray-200">
+              مسؤول البيع / الكاشير: أحمد محمود
+            </div>
+
+            <!-- Printed By -->
+            <div *ngIf="model.receiptShowPrintedByInFooter" class="text-[9px] text-gray-500 text-start">
+              طُبعت بواسطة: أحمد محمود • {{ todayDate | date:'yyyy-MM-dd HH:mm' }}
+            </div>
+
+            <!-- Barcode -->
+            <div *ngIf="model.receiptShowBarcode" class="py-1 font-mono tracking-widest font-bold text-xs">
+              * INV-00042 *
+            </div>
+
+            <!-- Return Policy -->
+            <div *ngIf="model.receiptReturnPolicy"
+              class="text-[8.5px] text-gray-600 border-t border-dotted border-gray-300 pt-1">
+              {{ model.receiptReturnPolicy }}
+            </div>
+
+            <!-- Thank You Message -->
+            <div *ngIf="model.receiptFooterMessage" class="font-bold text-xs pt-0.5">
+              {{ model.receiptFooterMessage }}
+            </div>
+          </div>
+
+        </div>
+
+        <!-- A4 Invoice Canvas Mock -->
+        <div *ngIf="previewMode === 'invoice'"
+          class="bg-white text-gray-900 p-5 rounded-lg shadow-md text-[11px] space-y-3 w-full max-w-100 border border-gray-300">
+          <!-- Header -->
+          <div class="flex justify-between items-start border-b pb-2">
+            <div>
+              <div *ngIf="model.showCompanyName" class="font-bold text-sm text-blue-900">{{ getCompanyName() }}</div>
+              <div *ngIf="model.showTaxNumber" class="text-[10px] text-gray-500">الرقم الضريبي: {{ companyTaxNumber || '123-456-789' }}</div>
+            </div>
+            <div class="text-end">
+              <div class="font-bold text-xs text-blue-800">فاتورة مبيعات ضريبية</div>
+              <div class="text-[10px] text-gray-600 font-mono">INV-00042</div>
+            </div>
+          </div>
+
+          <!-- Info Boxes -->
+          <div class="grid grid-cols-2 gap-2 text-[10px] bg-gray-50 p-2 rounded border border-gray-200">
+            <div>
+              <div class="font-bold text-gray-700">بيانات العميل:</div>
+              <div>شركة الأمل للتجارة</div>
+            </div>
+            <div class="text-end">
+              <div class="font-bold text-gray-700">التاريخ:</div>
+              <div>{{ todayDate | date:'yyyy-MM-dd' }}</div>
+            </div>
+          </div>
+
+          <!-- Table -->
+          <div class="border rounded overflow-hidden text-[10px]">
+            <table class="w-full text-start">
+              <thead class="bg-blue-50 text-blue-900 font-bold border-b">
+                <tr>
+                  <th class="p-1 text-start">الصنف</th>
+                  <th class="p-1 text-center">الكمية</th>
+                  <th class="p-1 text-end">الإجمالي</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="border-b">
+                  <td class="p-1">شاي أسود فاخر</td>
+                  <td class="p-1 text-center">2</td>
+                  <td class="p-1 text-end">70.00</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Footer Notes & Signatures -->
+          <div class="border-t pt-2 space-y-1 text-[9px] text-gray-600">
+            <div *ngIf="model.invoiceFooterNotes">{{ model.invoiceFooterNotes }}</div>
+
+            <div class="flex justify-between items-center pt-2 text-[10px] text-gray-700 border-t border-dashed">
+              <span *ngIf="model.invoiceShowSalesPersonInFooter">مسؤول البيع: أحمد محمود</span>
+              <span *ngIf="model.invoiceShowPrintedByInFooter">طُبعت بواسطة: أحمد محمود</span>
+            </div>
+
+            <div *ngIf="model.invoiceShowCompanyAddressInFooter && companyAddress"
+              class="text-center text-[9px] text-gray-400 pt-1">
+              {{ companyAddress }} • {{ companyPhone }}
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

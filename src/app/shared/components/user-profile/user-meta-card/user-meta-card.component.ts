@@ -2,7 +2,7 @@ import { Component, Input, Output, EventEmitter, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { ProfileService, UserProfileData } from '../../../../core/services/profile.service';
-import { environment } from '../../../../../environments/environment';
+import { AppConfigService } from '../../../../core/services/app-config.service';
 
 @Component({
   selector: 'app-user-meta-card',
@@ -12,6 +12,7 @@ import { environment } from '../../../../../environments/environment';
 })
 export class UserMetaCardComponent {
   private profileService = inject(ProfileService);
+  private configService = inject(AppConfigService);
 
   @Input() profile: UserProfileData | null = null;
   @Output() profileUpdated = new EventEmitter<void>();
@@ -24,7 +25,7 @@ export class UserMetaCardComponent {
       if (this.profile.photoPath.startsWith('http')) {
         return this.profile.photoPath;
       }
-      return `${environment.apiUrl.replace('/api/v1', '')}/${this.profile.photoPath}`;
+      return `${this.configService.apiUrl.replace('/api/v1', '')}/${this.profile.photoPath}`;
     }
     return '/images/user/owner.jpg';
   }

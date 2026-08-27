@@ -1,17 +1,18 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { UserBasicResponse, UserResponse, UserRequest } from '../models/user.model';
+import { UserBasicResponse, UserResponse, UserRequest, AdminResetPasswordRequest } from '../models/user.model';
 import { NextCodeResponse } from '../models/lookup.model';
 import { PaginatedList, RequestFilters } from '../models/pagination.model';
-import { environment } from '../../../environments/environment';
+import { AppConfigService } from './app-config.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
   private http = inject(HttpClient);
-  private apiUrl = `${environment.apiUrl}/api/Users`;
+  private config = inject(AppConfigService);
+  private get apiUrl() { return `${this.config.apiUrl}/api/Users`; }
 
   getAll(filters: RequestFilters, includeDisabled: boolean = false): Observable<PaginatedList<UserBasicResponse>> {
     let params = new HttpParams()
@@ -81,5 +82,11 @@ export class UserService {
 
   unlock(id: string): Observable<void> {
     return this.http.put<void>(`${this.apiUrl}/${id}/unlock`, {});
+  }
+
+  adminResetPassword(id: string, data: AdminResetPasswordRequest): Observable<void> {
+    return this.http.put<void>(`${this.apiUrl}/${id}/reset-password`, data, {
+      headers: new HttpHeaders({ 'X-Skip-Toast': 'true' })
+    });
   }
 }

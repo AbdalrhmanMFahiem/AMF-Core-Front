@@ -3,11 +3,12 @@ import { LabelComponent } from '../../form/label/label.component';
 import { CheckboxComponent } from '../../form/input/checkbox.component';
 import { ButtonComponent } from '../../ui/button/button.component';
 import { InputFieldComponent } from '../../form/input/input-field.component';
+import { ErrorBannerComponent } from '../../common/error-banner/error-banner.component';
 import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../../../core/services/auth.service';
 import { PermissionsService } from '../../../../core/services/permissions.service';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { AdminTenantResponse, TenantBranchResponse } from '../../../../core/models/auth.models';
 import { CommonModule } from '@angular/common';
 
@@ -19,6 +20,7 @@ import { CommonModule } from '@angular/common';
     CheckboxComponent,
     ButtonComponent,
     InputFieldComponent,
+    ErrorBannerComponent,
     RouterModule,
     FormsModule,
     TranslateModule
@@ -44,18 +46,55 @@ export class SigninFormComponent {
   selectedTenantId: string | null = null;
   selectedBranchId: number | null = null;
 
+  validationErrors: string[] = [];
+
   private authService = inject(AuthService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private permissionsService = inject(PermissionsService);
+  private translate = inject(TranslateService);
 
   togglePasswordVisibility() {
     this.showPassword = !this.showPassword;
   }
 
+  private handleError(err: any): void {
+    this.isLoading = false;
+    const mapErrorItem = (e: any) => {
+      if (typeof e === 'object' && e !== null) {
+        const codeStr = e.code ? `[${e.code}] ` : '';
+        const msgStr = e.description || e.errorMessage || e.message || JSON.stringify(e);
+        return `${codeStr}${msgStr}`;
+      }
+      return typeof e === 'string' ? e : JSON.stringify(e);
+    };
+
+    if (err?.error?.errors) {
+      this.validationErrors = Array.isArray(err.error.errors)
+        ? err.error.errors.map(mapErrorItem)
+        : Object.values(err.error.errors).flat().map(mapErrorItem);
+    } else if (err?.error?.message) {
+      const codeStr = err.error.code ? `[${err.error.code}] ` : '';
+      this.validationErrors = [`${codeStr}${err.error.message}`];
+    } else if (err?.error?.title) {
+      const codeStr = err.error.code ? `[${err.error.code}] ` : '';
+      this.validationErrors = [`${codeStr}${err.error.title}`];
+    } else {
+      this.validationErrors = [this.translate.instant('errors.generic') || 'An unexpected error occurred.'];
+    }
+  }
+
   onVerifyCredentials() {
+    this.validationErrors = [];
     if (!this.email || !this.password) {
-      alert('Please enter email and password');
+      if (!this.email) {
+        const emailLabel = this.translate.instant('login.emailLabel') || 'Email';
+        this.validationErrors.push(this.translate.instant('common.fieldRequired', { field: emailLabel }) || `${emailLabel} is required`);
+      }
+      if (!this.password) {
+        const passwordLabel = this.translate.instant('login.passwordLabel') || 'Password';
+        this.validationErrors.push(this.translate.instant('common.fieldRequired', { field: passwordLabel }) || `${passwordLabel} is required`);
+      }
       return;
     }
 
@@ -84,8 +123,7 @@ export class SigninFormComponent {
         }
       },
       error: (err) => {
-        this.isLoading = false;
-        console.error('Verify error', err);
+        this.handleError(err);
       }
     });
   }
@@ -99,6 +137,7 @@ export class SigninFormComponent {
     if (!tenantId) return;
 
     this.isLoading = true;
+    this.validationErrors = [];
     this.authService.getTenantBranches({ email: this.email, password: this.password, tenantId }).subscribe({
       next: (res) => {
         this.isLoading = false;
@@ -109,8 +148,7 @@ export class SigninFormComponent {
         }
       },
       error: (err) => {
-        this.isLoading = false;
-        console.error('Failed to load branches', err);
+        this.handleError(err);
       }
     });
   }
@@ -121,13 +159,14 @@ export class SigninFormComponent {
       return;
     }
 
+    this.validationErrors = [];
     if (!this.selectedBranchId) {
-      alert('Please select a branch before signing in');
+      this.validationErrors = [this.translate.instant('login.chooseBranch') || 'Please select a branch before signing in'];
       return;
     }
     
     if (this.isAdmin && !this.selectedTenantId) {
-      alert('Please select a company before signing in');
+      this.validationErrors = [this.translate.instant('login.chooseCompany') || 'Please select a company before signing in'];
       return;
     }
 
@@ -161,13 +200,13 @@ export class SigninFormComponent {
 
       },
       error: (err) => {
-        this.isLoading = false;
-        console.error('Login error', err);
+        this.handleError(err);
       }
     });
   }
   
   goBack() {
+    this.validationErrors = [];
     this.step = 'credentials';
     this.selectedTenantId = null;
     this.selectedBranchId = null;

@@ -10,6 +10,7 @@ export const AppPages = {
   CompanySettings: 'companySettings',
   IntegrationSettings: 'integrationSettings',
   DesignSettings: 'designSettings',
+  PrintSettings: 'printSettings',
   PlanningSettings: 'planningSettings',
   ProductionSettings: 'productionSettings',
   ChangeResourceSettings: 'changeResourceSettings',

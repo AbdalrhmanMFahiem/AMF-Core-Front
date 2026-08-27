@@ -22,3 +22,20 @@ export interface SalesRepWarehouseResponse {
   name: string;
   isDefault: boolean;
 }
+
+export interface QuickSaleItemResponse {
+  id: number;
+  code: string;
+  aName?: string;
+  eName?: string;
+  barcode?: string;
+  price: number;
+  availableQuantity: number;
+  salesUomId?: number;
+  salesUomName?: string;
+  inventoryUomId?: number;
+  inventoryUomName?: string;
+  itemGroupName?: string;
+  isActive: boolean;
+}
+

@@ -86,6 +86,11 @@ export class BusinessPartnerFormComponent implements OnInit {
   savingOpeningBalance = false;
   openingBalanceSuccess = false;
 
+  canEditOpeningBalance = true;
+  hasOpeningBalance = false;
+  currentBalance = 0;
+  existingOpeningBalanceRecord: any = null;
+
   salesReps: any[] = [];
   loadingSalesReps = false;
   savingSalesRep = false;
@@ -135,6 +140,7 @@ export class BusinessPartnerFormComponent implements OnInit {
         this.loading = false;
         this.loadLedger();
         this.loadSalesReps();
+        this.loadOpeningBalanceAndBalanceSummary();
       },
       error: () => this.loading = false
     });
@@ -209,6 +215,63 @@ export class BusinessPartnerFormComponent implements OnInit {
     }
   }
 
+  isOpeningBalanceEntry(type: any): boolean {
+    if (type === null || type === undefined) return false;
+    if (type === LedgerEntryType.OpeningBalance || type === 5 || type === '5') return true;
+    if (typeof type === 'string') {
+      const s = type.toLowerCase().trim();
+      return s === 'openingbalance' || s === 'opening_balance' || s === '5';
+    }
+    return false;
+  }
+
+  loadOpeningBalanceAndBalanceSummary(): void {
+    if (!this.id) return;
+
+    this.businessPartnerService.getBalanceSummary(this.id).subscribe({
+      next: (res) => {
+        if (res && res.currentBalance !== undefined) {
+          this.currentBalance = res.currentBalance;
+        }
+      }
+    });
+
+    this.businessPartnerService.getLedger(this.id, { pageNumber: 1, pageSize: 100 }).subscribe({
+      next: (res) => {
+        const totalRecords = res.totalRecords;
+        const items = res.items || [];
+        const obRecord = items.find(x => this.isOpeningBalanceEntry(x.entryType));
+
+        if (totalRecords === 0) {
+          this.canEditOpeningBalance = true;
+          this.hasOpeningBalance = false;
+          this.existingOpeningBalanceRecord = null;
+        } else if (totalRecords === 1 && items[0] && this.isOpeningBalanceEntry(items[0].entryType)) {
+          this.canEditOpeningBalance = true;
+          this.hasOpeningBalance = true;
+          this.existingOpeningBalanceRecord = items[0];
+        } else {
+          this.canEditOpeningBalance = false;
+          if (obRecord) {
+            this.hasOpeningBalance = true;
+            this.existingOpeningBalanceRecord = obRecord;
+          } else {
+            this.hasOpeningBalance = false;
+            this.existingOpeningBalanceRecord = null;
+          }
+        }
+
+        if (this.existingOpeningBalanceRecord) {
+          this.openingBalanceModel.amount = Math.abs(this.existingOpeningBalanceRecord.amount);
+          this.openingBalanceModel.date = this.existingOpeningBalanceRecord.entryDate
+            ? this.existingOpeningBalanceRecord.entryDate.split('T')[0]
+            : null;
+          this.obType = this.existingOpeningBalanceRecord.amount >= 0 ? 'debit' : 'credit';
+        }
+      }
+    });
+  }
+
   loadLedger(): void {
     if (!this.id) return;
     this.loadingLedger = true;
@@ -219,17 +282,6 @@ export class BusinessPartnerFormComponent implements OnInit {
         this.ledgerTotalPages = res.totalPages;
         this.ledgerHasNextPage = res.hasNextPage;
         this.ledgerHasPreviousPage = res.hasPreviousPage;
-        
-        // Extract existing opening balance if it's the only record (or we want to show it anyway)
-        if (this.ledgerData.length > 0) {
-           const obRecord = this.ledgerData.find(x => x.entryType === LedgerEntryType.OpeningBalance);
-           if (obRecord) {
-              this.openingBalanceModel.amount = Math.abs(obRecord.amount);
-              this.openingBalanceModel.date = obRecord.entryDate;
-              this.obType = obRecord.amount >= 0 ? 'debit' : 'credit';
-           }
-        }
-
         this.loadingLedger = false;
       },
       error: () => {
@@ -274,29 +326,61 @@ export class BusinessPartnerFormComponent implements OnInit {
   }
 
   getEntryTypeName(type: string | number): string {
-    if (typeof type === 'string') {
-      const key = type.charAt(0).toLowerCase() + type.slice(1);
-      return `ledger.typeEnum.${key}`;
-    }
-    const map: Record<number, string> = {
-      1: 'ledger.typeEnum.invoice',
-      2: 'ledger.typeEnum.return',
-      3: 'ledger.typeEnum.payment',
-      4: 'ledger.typeEnum.adjustment',
-      5: 'ledger.typeEnum.openingBalance'
+    if (type === null || type === undefined) return '';
+
+    const numMap: Record<number, string> = {
+      1: 'reports.businessPartnerStatement.entryTypes.invoice',
+      2: 'reports.businessPartnerStatement.entryTypes.return',
+      3: 'reports.businessPartnerStatement.entryTypes.payment',
+      4: 'reports.businessPartnerStatement.entryTypes.adjustment',
+      5: 'reports.businessPartnerStatement.entryTypes.openingbalance',
+      6: 'reports.businessPartnerStatement.entryTypes.partnerpayment',
+      7: 'reports.businessPartnerStatement.entryTypes.receipt',
+      8: 'reports.businessPartnerStatement.entryTypes.manualjournal'
     };
-    return map[type] || `ledger.typeEnum.${type}`;
+
+    const num = Number(type);
+    if (!isNaN(num) && numMap[num]) {
+      return numMap[num];
+    }
+
+    const strKey = String(type).toLowerCase().replace(/[^a-z0-9]/g, '');
+    const strMap: Record<string, string> = {
+      'invoice': 'reports.businessPartnerStatement.entryTypes.invoice',
+      'return': 'reports.businessPartnerStatement.entryTypes.return',
+      'payment': 'reports.businessPartnerStatement.entryTypes.payment',
+      'adjustment': 'reports.businessPartnerStatement.entryTypes.adjustment',
+      'openingbalance': 'reports.businessPartnerStatement.entryTypes.openingbalance',
+      'partnerpayment': 'reports.businessPartnerStatement.entryTypes.partnerpayment',
+      'receipt': 'reports.businessPartnerStatement.entryTypes.receipt',
+      'manualjournal': 'reports.businessPartnerStatement.entryTypes.manualjournal'
+    };
+
+    return strMap[strKey] || String(type);
   }
 
   submitOpeningBalance(): void {
-    if (!this.id || !this.openingBalanceModel.amount) return;
-    this.savingOpeningBalance = true;
+    if (!this.id) return;
     this.validationErrors = [];
+
+    if (this.openingBalanceModel.amount === null || this.openingBalanceModel.amount === undefined || this.openingBalanceModel.amount === '') {
+      const fieldName = this.translate.instant('businessPartners.fields.openingBalance');
+      this.validationErrors.push(this.translate.instant('common.fieldRequired', { field: fieldName }) || 'مبلغ الرصيد الافتتاحي مطلوب');
+      return;
+    }
+
+    if (!this.openingBalanceModel.date) {
+      const fieldName = this.translate.instant('businessPartners.fields.openingBalanceDate');
+      this.validationErrors.push(this.translate.instant('common.fieldRequired', { field: fieldName }) || 'تاريخ الرصيد الافتتاحي مطلوب');
+      return;
+    }
+
+    this.savingOpeningBalance = true;
     
-    // Apply sign based on obType
+    const numericAmount = Math.abs(Number(this.openingBalanceModel.amount) || 0);
     const payload = {
-       ...this.openingBalanceModel,
-       amount: this.obType === 'credit' ? -Math.abs(this.openingBalanceModel.amount) : Math.abs(this.openingBalanceModel.amount)
+       amount: this.obType === 'credit' ? -numericAmount : numericAmount,
+       date: this.openingBalanceModel.date
     };
 
     this.businessPartnerService.addOpeningBalance(this.id, payload).subscribe({
@@ -304,10 +388,22 @@ export class BusinessPartnerFormComponent implements OnInit {
         this.savingOpeningBalance = false;
         this.openingBalanceSuccess = true;
         setTimeout(() => this.openingBalanceSuccess = false, 3000);
-        this.loadLedger(); // Refresh ledger
+        this.loadOpeningBalanceAndBalanceSummary();
+        this.loadLedger();
       },
       error: (err: any) => {
         this.savingOpeningBalance = false;
+        if (err?.error?.message) {
+          this.validationErrors = [err.error.message];
+        } else if (err?.error?.errors) {
+          if (Array.isArray(err.error.errors)) {
+            this.validationErrors = err.error.errors.map((e: any) => e.description || e.errorMessage || (typeof e === 'string' ? e : JSON.stringify(e)));
+          } else {
+            this.validationErrors = Object.values(err.error.errors).flat() as string[];
+          }
+        } else {
+          this.validationErrors = [this.translate.instant('errors.generic')];
+        }
       }
     });
   }
@@ -460,18 +556,24 @@ export class BusinessPartnerFormComponent implements OnInit {
 
   private updateLedgerFiltersEntryType(): void {
     this.translate.get([
-      'ledger.typeEnum.payment',
-      'ledger.typeEnum.adjustment',
-      'ledger.typeEnum.invoice',
-      'ledger.typeEnum.return',
-      'ledger.typeEnum.openingBalance'
+      'reports.businessPartnerStatement.entryTypes.invoice',
+      'reports.businessPartnerStatement.entryTypes.return',
+      'reports.businessPartnerStatement.entryTypes.payment',
+      'reports.businessPartnerStatement.entryTypes.adjustment',
+      'reports.businessPartnerStatement.entryTypes.openingbalance',
+      'reports.businessPartnerStatement.entryTypes.partnerpayment',
+      'reports.businessPartnerStatement.entryTypes.receipt',
+      'reports.businessPartnerStatement.entryTypes.manualjournal'
     ]).subscribe(res => {
       this.ledgerFiltersEntryType = [
-        { value: LedgerEntryType.Payment, label: res['ledger.typeEnum.payment'] },
-        { value: LedgerEntryType.Adjustment, label: res['ledger.typeEnum.adjustment'] },
-        { value: LedgerEntryType.Invoice, label: res['ledger.typeEnum.invoice'] },
-        { value: LedgerEntryType.Return, label: res['ledger.typeEnum.return'] },
-        { value: LedgerEntryType.OpeningBalance, label: res['ledger.typeEnum.openingBalance'] },
+        { value: LedgerEntryType.Invoice, label: res['reports.businessPartnerStatement.entryTypes.invoice'] },
+        { value: LedgerEntryType.Return, label: res['reports.businessPartnerStatement.entryTypes.return'] },
+        { value: LedgerEntryType.Payment, label: res['reports.businessPartnerStatement.entryTypes.payment'] },
+        { value: LedgerEntryType.Adjustment, label: res['reports.businessPartnerStatement.entryTypes.adjustment'] },
+        { value: LedgerEntryType.OpeningBalance, label: res['reports.businessPartnerStatement.entryTypes.openingbalance'] },
+        { value: LedgerEntryType.PartnerPayment, label: res['reports.businessPartnerStatement.entryTypes.partnerpayment'] },
+        { value: LedgerEntryType.Receipt, label: res['reports.businessPartnerStatement.entryTypes.receipt'] },
+        { value: LedgerEntryType.ManualJournal, label: res['reports.businessPartnerStatement.entryTypes.manualjournal'] }
       ];
     });
   }

@@ -50,5 +50,6 @@ export const AppActions = {
   ConvertToProduction: 'convertToProduction',
   ChangeName: 'changeName',
   ChangePassword: 'changePassword',
+  ResetPassword: 'resetPassword',
   ViewCosting: 'viewCosting',
 };

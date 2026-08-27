@@ -16,7 +16,7 @@ import { DatePickerComponent } from '../../../../shared/components/form/date-pic
 import { SearchableOption, SearchableSelectComponent } from '../../../../shared/components/form/searchable-select/searchable-select.component';
 import { MultiSelectComponent, Option as MultiSelectOption } from '../../../../shared/components/form/multi-select/multi-select.component';
 import { LookupService } from '../../../../core/services/lookup.service';
-import { environment } from '../../../../../environments/environment';
+import { AppConfigService } from '../../../../core/services/app-config.service';
 
 @Component({
   selector: 'app-users-form',
@@ -28,6 +28,7 @@ export class UsersFormComponent implements OnInit, HasUnsavedChanges {
   private fb = inject(FormBuilder);
   private userService = inject(UserService);
   public lookupService = inject(LookupService);
+  private configService = inject(AppConfigService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private toastr = inject(ToastrService);
@@ -253,7 +254,7 @@ export class UsersFormComponent implements OnInit, HasUnsavedChanges {
         if (user.photoPath) {
           this.photoPreview = user.photoPath.startsWith('http')
             ? user.photoPath
-            : `${environment.apiUrl}${user.photoPath.startsWith('/') ? '' : '/'}${user.photoPath}`;
+            : `${this.configService.apiUrl}${user.photoPath.startsWith('/') ? '' : '/'}${user.photoPath}`;
         }
 
         if (user.userEmploymentInfo) {

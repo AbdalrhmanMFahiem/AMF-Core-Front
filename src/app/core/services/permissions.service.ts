@@ -1,14 +1,15 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, of, tap, catchError } from 'rxjs';
-import { environment } from '../../../environments/environment';
+import { AppConfigService } from './app-config.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PermissionsService {
   private http = inject(HttpClient);
-  private apiUrl = `${environment.apiUrl}/me/permissions`;
+  private config = inject(AppConfigService);
+  private get apiUrl() { return `${this.config.apiUrl}/me/permissions`; }
   
   private permissionsSubject = new BehaviorSubject<Set<string>>(new Set<string>());
   public permissions$ = this.permissionsSubject.asObservable();

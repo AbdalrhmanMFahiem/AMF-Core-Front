@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { environment } from '../../../environments/environment';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { AppConfigService } from './app-config.service';
 import { Observable } from 'rxjs';
 import { LoginRequest, AuthResponse, VerifyCredentialsRequest, VerifyCredentialsResponse, TenantBranchResponse, SetupCompanyRequest, SetupCompanyAdminRequest } from '../models/auth.models';
 
@@ -9,26 +9,28 @@ import { LoginRequest, AuthResponse, VerifyCredentialsRequest, VerifyCredentials
 })
 export class AuthService {
   private http = inject(HttpClient);
-  private apiUrl = `${environment.apiUrl}/Auth`;
+  private config = inject(AppConfigService);
+  private get apiUrl() { return `${this.config.apiUrl}/Auth`; }
+  private skipToastHeaders = { headers: new HttpHeaders({ 'X-Skip-Toast': 'true' }) };
 
   verifyCredentials(request: VerifyCredentialsRequest): Observable<VerifyCredentialsResponse> {
-    return this.http.post<VerifyCredentialsResponse>(`${this.apiUrl}/verify-credentials`, request);
+    return this.http.post<VerifyCredentialsResponse>(`${this.apiUrl}/verify-credentials`, request, this.skipToastHeaders);
   }
 
   getTenantBranches(request: LoginRequest): Observable<TenantBranchResponse[]> {
-    return this.http.post<TenantBranchResponse[]>(`${this.apiUrl}/tenant-branches`, request);
+    return this.http.post<TenantBranchResponse[]>(`${this.apiUrl}/tenant-branches`, request, this.skipToastHeaders);
   }
 
   login(request: LoginRequest): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(this.apiUrl, request);
+    return this.http.post<AuthResponse>(this.apiUrl, request, this.skipToastHeaders);
   }
 
   setupCompany(request: SetupCompanyRequest): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.apiUrl}/setup-company`, request);
+    return this.http.post<AuthResponse>(`${this.apiUrl}/setup-company`, request, this.skipToastHeaders);
   }
 
   setupCompanyAdmin(request: SetupCompanyAdminRequest): Observable<void> {
-    return this.http.post<void>(`${this.apiUrl}/setup-company-admin`, request);
+    return this.http.post<void>(`${this.apiUrl}/setup-company-admin`, request, this.skipToastHeaders);
   }
 
   setToken(token: string) {
@@ -76,13 +78,13 @@ export class AuthService {
 
   updateLandingPageOnServer(page: 'dashboard' | 'home'): Observable<void> {
     this.setLandingPagePreference(page);
-    return this.http.put<void>(`${environment.apiUrl}/me/landing-page`, { landingPage: page });
+    return this.http.put<void>(`${this.config.apiUrl}/me/landing-page`, { landingPage: page });
   }
 
   hasDashboardPermission(): boolean {
     const authData = this.getAuthResponse();
     if (!authData || !authData.token) return false;
-    
+
     const isRestricted = localStorage.getItem('restrictDashboard') === 'true';
     return !isRestricted;
   }
@@ -95,7 +97,7 @@ export class AuthService {
 
   logout(): Observable<void> {
     const authData = this.getAuthResponse();
-    
+
     return new Observable<void>(observer => {
       if (authData && authData.token && authData.refreshToken) {
         this.revokeRefreshToken({

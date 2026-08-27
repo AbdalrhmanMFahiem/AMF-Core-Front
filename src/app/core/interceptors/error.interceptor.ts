@@ -38,14 +38,15 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
         return throwError(() => error);
       }
 
-      if (error.status === 403) {
-        if (!router.url.includes('/unauthorized')) {
-          router.navigate(['/unauthorized'], { queryParams: { attemptedUrl: router.url } });
-        }
+      const skipToast = req.headers.has('X-Skip-Toast') || req.headers.has('x-skip-toast') || req.headers.has('Skip-Toast');
+      if (skipToast) {
         return throwError(() => error);
       }
 
-      if (req.headers.has('X-Skip-Toast') || req.headers.has('x-skip-toast') || req.headers.has('Skip-Toast')) {
+      if (error.status === 403 && !isAuthEndpoint) {
+        if (!router.url.includes('/unauthorized')) {
+          router.navigate(['/unauthorized'], { queryParams: { attemptedUrl: router.url } });
+        }
         return throwError(() => error);
       }
 

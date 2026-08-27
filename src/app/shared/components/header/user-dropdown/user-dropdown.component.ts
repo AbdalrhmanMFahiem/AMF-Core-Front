@@ -6,6 +6,7 @@ import { DropdownItemTwoComponent } from '../../ui/dropdown/dropdown-item/dropdo
 import { TranslateModule } from '@ngx-translate/core';
 import { AuthService } from '../../../../core/services/auth.service';
 import { AuthResponse } from '../../../../core/models/auth.models';
+import { AppConfigService } from '../../../../core/services/app-config.service';
 
 @Component({
   selector: 'app-user-dropdown',
@@ -14,6 +15,7 @@ import { AuthResponse } from '../../../../core/models/auth.models';
 })
 export class UserDropdownComponent implements OnInit {
   private authService = inject(AuthService);
+  private configService = inject(AppConfigService);
   private router = inject(Router);
   isOpen = false;
   userData: AuthResponse | null = null;
@@ -27,9 +29,7 @@ export class UserDropdownComponent implements OnInit {
         const baseUrl = this.userData.backendUrl || '';
         this.userImageUrl = `${baseUrl}${this.userData.photoPath}`;
       } else {
-        import('../../../../../environments/environment').then(m => {
-          this.userImageUrl = `${m.environment.apiUrl}/uploads/users/${this.userData?.id}.png`;
-        });
+        this.userImageUrl = `${this.configService.apiUrl}/uploads/users/${this.userData?.id}.png`;
       }
     }
   }

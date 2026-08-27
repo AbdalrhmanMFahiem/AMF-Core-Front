@@ -5,15 +5,15 @@ import { BusinessPartnerResponse, BusinessPartnerBasicResponse, BusinessPartnerR
 import { PaginatedList, RequestFilters } from '../models/pagination.model';
 import { NextCodeResponse } from '../models/lookup.model';
 import { BusinessPartnerLedgerResponse, LedgerFilters, BalanceSummaryResponse, AddOpeningBalanceRequest } from '../models/business-partner.model';
-import { environment } from '../../../environments/environment';
+import { AppConfigService } from './app-config.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class BusinessPartnerService {
   private http = inject(HttpClient);
-  private apiUrl = `${environment.apiUrl}/api/md/business-partner`;
-  // private reportUrl = `${environment.apiUrl}/api/Reports`;
+  private config = inject(AppConfigService);
+  private get apiUrl() { return `${this.config.apiUrl}/api/md/business-partner`; }
 
   getAll(filters: RequestFilters, includeDisabled: boolean = false): Observable<PaginatedList<BusinessPartnerBasicResponse>> {
     let params = new HttpParams()

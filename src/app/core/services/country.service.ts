@@ -4,14 +4,15 @@ import { Observable } from 'rxjs';
 import { CountryRequest, CountryResponse, CountryBasicResponse } from '../models/country.model';
 import { NextCodeResponse } from '../models/lookup.model';
 import { PaginatedList, RequestFilters } from '../models/pagination.model';
-import { environment } from '../../../environments/environment';
+import { AppConfigService } from './app-config.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CountryService {
   private http = inject(HttpClient);
-  private apiUrl = `${environment.apiUrl}/api/administration/Country`;
+  private config = inject(AppConfigService);
+  private get apiUrl() { return `${this.config.apiUrl}/api/administration/Country`; }
 
   getAll(filters: RequestFilters, includeDisabled: boolean = false): Observable<PaginatedList<CountryBasicResponse>> {
     let params = new HttpParams()

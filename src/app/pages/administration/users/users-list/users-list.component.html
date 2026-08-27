@@ -10,6 +10,7 @@
   [addBtnText]="'users.addNew'"
   [searchPlaceholder]="'common.search'"
   [hideToggleStatus]="false"
+  [customActions]="customActions"
   (search)="onSearch()"
   (pageChange)="onPageChange($event)"
   (includeDisabledChange)="onIncludeDisabledChanged($event)"
@@ -17,4 +18,12 @@
   (edit)="onEdit($event)"
   (view)="onView($event)"
   (toggleStatus)="onToggleStatus($event)"
+  (customAction)="onCustomAction($event)"
 ></app-crud-list>
+
+<app-reset-password-modal
+  [isOpen]="isResetPasswordModalOpen"
+  [user]="selectedUserForReset"
+  (close)="isResetPasswordModalOpen = false"
+  (success)="onResetPasswordSuccess()"
+></app-reset-password-modal>

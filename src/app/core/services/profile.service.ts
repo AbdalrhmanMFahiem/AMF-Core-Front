@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from '../../../environments/environment';
+import { AppConfigService } from './app-config.service';
 
 export interface UserProfileData {
   id: string;
@@ -47,7 +47,8 @@ export interface ChangePasswordRequestData {
 })
 export class ProfileService {
   private http = inject(HttpClient);
-  private apiUrl = `${environment.apiUrl}/me`;
+  private config = inject(AppConfigService);
+  private get apiUrl() { return `${this.config.apiUrl}/me`; }
 
   getProfile(): Observable<UserProfileData> {
     return this.http.get<UserProfileData>(this.apiUrl);

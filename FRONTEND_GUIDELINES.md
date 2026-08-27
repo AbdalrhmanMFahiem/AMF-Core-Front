@@ -1321,7 +1321,7 @@ error: (err: any) => {
 
 ### 🛑 Unified System Error Display Rules (MANDATORY SYSTEM-WIDE)
 
-1. **Fixed Footer-like Error Banner:** All form screens MUST place `<app-error-banner [isVisible]="validationErrors.length > 0" [errors]="validationErrors" (close)="validationErrors = []"></app-error-banner>`. The banner renders at the bottom of the screen (`fixed bottom-4 z-9999`) with glassmorphic styling and hover-pause animation.
+1. **Fixed Footer-like Error Banner:** All form screens MUST place `<app-error-banner [isVisible]="validationErrors.length > 0" [errors]="validationErrors" (close)="validationErrors = []"></app-error-banner>`. The banner renders at the bottom of the screen (`fixed bottom-4 z-[100000]`) with glassmorphic styling and hover-pause animation.
 2. **Error Code Badges:** Backend API errors returning `{ code: "PAY.6502", description: "..." }` are formatted as `[PAY.6502] description`. `<app-error-banner>` automatically renders the error code in a high-visibility, selectable monospace badge next to the message.
 3. **Suppress Duplicate Toasts (`X-Skip-Toast`):** Write operations called from form components must pass `headers: new HttpHeaders({ 'X-Skip-Toast': 'true' })` to prevent `errorInterceptor` from spawning duplicate Toast notifications alongside the Error Banner.
 4. **No Forced Scroll-to-Top:** Do NOT call `window.scrollTo({ top: 0 })` when validation errors occur, as the Error Banner is sticky/fixed at the bottom of the viewport.

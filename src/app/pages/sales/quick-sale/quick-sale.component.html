@@ -1,107 +1,242 @@
 <div class="p-3 sm:p-4 md:p-6 bg-gray-50 dark:bg-gray-950 min-h-screen text-gray-900 dark:text-gray-100 transition-colors">
+
   <!-- POS Header Bar -->
-  <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 mb-4 sm:mb-6 bg-white dark:bg-gray-900/90 backdrop-blur border border-gray-200 dark:border-gray-800 p-3.5 sm:p-5 rounded-2xl shadow-xs dark:shadow-lg">
-    <div class="flex items-center gap-3">
-      <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-emerald-500/10 dark:bg-emerald-500/20 border border-emerald-500/20 dark:border-emerald-500/30 flex items-center justify-center text-emerald-600 dark:text-emerald-400 shrink-0">
+  <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 mb-4 sm:mb-6 bg-white dark:bg-gray-900/90 backdrop-blur border border-gray-200/80 dark:border-gray-800 p-4 sm:p-5 rounded-2xl shadow-xs dark:shadow-lg">
+    <!-- Header Title & Subtitle -->
+    <div class="flex items-center gap-3.5">
+      <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-brand-50 dark:bg-brand-950/60 border border-brand-200/60 dark:border-brand-800/60 flex items-center justify-center text-brand-600 dark:text-brand-400 shrink-0 shadow-2xs">
         <svg class="w-6 h-6 sm:w-7 sm:h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
         </svg>
       </div>
       <div>
-        <h1 class="text-lg sm:text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
-          <span>نقطة بيع سريعة للمندوب</span>
-          <span class="text-[11px] font-normal px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20">متصل</span>
+        <h1 class="text-lg sm:text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2.5">
+          <span>{{ 'quickSale.title' | translate }}</span>
+          <span class="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/60 flex items-center gap-1.5 shadow-2xs">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span>{{ 'quickSale.available' | translate }}</span>
+          </span>
         </h1>
-        <p class="text-xs text-gray-500 dark:text-gray-400">إجراء بيع مباشر، تحديث رصيد المخزن تلقائياً وإصدار الفاتورة</p>
+        <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{{ 'quickSale.subtitle' | translate }}</p>
       </div>
     </div>
 
-    <!-- Warehouse & Customer Quick Selector Header controls -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3 w-full lg:w-auto">
+    <!-- Warehouse & Customer Selector Controls -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full lg:w-auto">
       <div>
-        <label class="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1">المخزن المختار:</label>
-        <select [(ngModel)]="selectedWarehouseId" class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-xl px-3 py-2 text-xs sm:text-sm text-gray-800 dark:text-gray-200 focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20">
-          <option [ngValue]="null" disabled>اختر المخزن...</option>
-          <option *ngFor="let w of warehouses" [ngValue]="w.id">{{ w.name }} ({{ w.code }})</option>
+        <label class="flex text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1 items-center gap-1.5">
+          <svg class="w-3.5 h-3.5 text-brand-500 dark:text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+          </svg>
+          <span>{{ 'quickSale.selectWarehouse' | translate }}: <span class="text-rose-500">*</span></span>
+        </label>
+        <select
+          id="warehouseSelect"
+          [value]="selectedWarehouseId"
+          (change)="onWarehouseChange($any($event.target).value)"
+          class="w-full bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-xl px-3 py-2 text-xs sm:text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all cursor-pointer font-medium"
+        >
+          <option [value]="null" disabled>{{ 'quickSale.warehousePlaceholder' | translate }}</option>
+          <option *ngFor="let w of warehouses" [value]="w.id">{{ w.name }} ({{ w.code }})</option>
         </select>
       </div>
+
       <div>
-        <label class="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1">العميل المستهدف:</label>
-        <select [(ngModel)]="selectedCustomerId" class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-xl px-3 py-2 text-xs sm:text-sm text-gray-800 dark:text-gray-200 focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20">
-          <option [ngValue]="null" disabled>اختر العميل...</option>
+        <label class="flex text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1 items-center gap-1.5">
+          <svg class="w-3.5 h-3.5 text-brand-500 dark:text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+          </svg>
+          <span>{{ 'quickSale.selectCustomer' | translate }}: <span class="text-rose-500">*</span></span>
+        </label>
+        <select
+          [(ngModel)]="selectedCustomerId"
+          class="w-full bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-xl px-3 py-2 text-xs sm:text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all cursor-pointer font-medium"
+        >
+          <option [ngValue]="null" disabled>{{ 'quickSale.customerPlaceholder' | translate }}</option>
           <option *ngFor="let c of customers" [ngValue]="c.id">{{ c.name }} ({{ c.code }})</option>
         </select>
       </div>
     </div>
   </div>
 
-  <!-- Error & Success Alerts -->
-  <div *ngIf="errorMessage" class="mb-4 p-3.5 sm:p-4 rounded-xl bg-rose-50 dark:bg-rose-500/10 border border-rose-200 dark:border-rose-500/30 text-rose-700 dark:text-rose-300 text-xs sm:text-sm flex items-center justify-between shadow-xs">
-    <div class="flex items-center gap-2">
-      <svg class="w-5 h-5 text-rose-500 dark:text-rose-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-      <span>{{ errorMessage }}</span>
+  <!-- Alerts Section -->
+  <div *ngIf="errorMessage" class="mb-4 p-3.5 sm:p-4 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800/60 text-rose-700 dark:text-rose-300 text-xs sm:text-sm flex items-center justify-between shadow-2xs animate-fadeIn">
+    <div class="flex items-center gap-2.5">
+      <svg class="w-5 h-5 text-rose-500 dark:text-rose-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+      </svg>
+      <span class="font-medium">{{ errorMessage }}</span>
     </div>
-    <button (click)="errorMessage = null" class="text-rose-500 hover:text-rose-700 dark:text-rose-400 dark:hover:text-rose-200 font-bold p-1">✕</button>
+    <button (click)="errorMessage = null" class="text-rose-500 hover:text-rose-700 dark:text-rose-400 dark:hover:text-rose-200 font-bold p-1 rounded-lg hover:bg-rose-100 dark:hover:bg-rose-900/40 transition-colors">✕</button>
   </div>
 
-  <div *ngIf="successMessage" class="mb-4 p-3.5 sm:p-4 rounded-xl bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/30 text-emerald-700 dark:text-emerald-300 text-xs sm:text-sm flex items-center justify-between shadow-xs">
-    <div class="flex items-center gap-2">
-      <svg class="w-5 h-5 text-emerald-600 dark:text-emerald-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-      <span>{{ successMessage }}</span>
+  <div *ngIf="successMessage && !isSuccessModalOpen" class="mb-4 p-3.5 sm:p-4 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/60 text-emerald-700 dark:text-emerald-300 text-xs sm:text-sm flex items-center justify-between shadow-2xs animate-fadeIn">
+    <div class="flex items-center gap-2.5">
+      <svg class="w-5 h-5 text-emerald-600 dark:text-emerald-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+      </svg>
+      <span class="font-medium">{{ successMessage }}</span>
     </div>
-    <button (click)="successMessage = null" class="text-emerald-600 hover:text-emerald-800 dark:text-emerald-400 dark:hover:text-emerald-200 font-bold p-1">✕</button>
+    <button (click)="successMessage = null" class="text-emerald-600 hover:text-emerald-800 dark:text-emerald-400 dark:hover:text-emerald-200 font-bold p-1 rounded-lg hover:bg-emerald-100 dark:hover:bg-emerald-900/40 transition-colors">✕</button>
   </div>
 
-  <!-- POS Main Layout: Left Cart, Right Catalog -->
+  <!-- Main POS Grid: Catalog (7 cols) & Cart (5 cols) -->
   <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6">
 
-    <!-- Catalog Side (Items) - 7 cols -->
+    <!-- Catalog Side (Items Search & Cards Grid) -->
     <div class="lg:col-span-7 space-y-3.5 sm:space-y-4">
-      <!-- Search Input -->
+      
+      <!-- Search Input Bar -->
       <div class="relative">
         <input
           type="text"
           [(ngModel)]="searchQuery"
           (input)="filterItems()"
-          placeholder="ابحث عن صنف بالاسم، الكود، أو الباركود..."
-          class="w-full bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-2xl px-4 py-3 pl-10 text-xs sm:text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 shadow-xs"
+          [placeholder]="'quickSale.searchPlaceholder' | translate"
+          class="w-full bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-2xl ps-10 pe-10 py-3 text-xs sm:text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 shadow-xs transition-all"
         />
-        <svg class="w-5 h-5 text-gray-400 absolute left-3.5 top-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <!-- Search Icon -->
+        <svg class="w-5 h-5 text-gray-400 dark:text-gray-500 absolute inset-s-3.5 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
         </svg>
+
+        <!-- Clear Search Button -->
+        <button
+          *ngIf="searchQuery"
+          (click)="clearSearch()"
+          class="absolute inset-e-3.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 p-1 rounded-md transition-colors"
+        >
+          ✕
+        </button>
       </div>
 
-      <!-- Item Grid -->
-      <div class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-2.5 sm:gap-3.5 max-h-[50vh] lg:max-h-[calc(100vh-270px)] overflow-y-auto pr-1">
-        <div *ngIf="loadingItems" class="col-span-full text-center py-12 text-gray-400 dark:text-gray-500 text-sm">
-          جاري تحميل قائمة الأصناف المتاحة...
+      <!-- Categories Filter Tabs -->
+      <div *ngIf="availableCategories.length > 0" class="flex items-center gap-2 overflow-x-auto pb-1 custom-scrollbar">
+        <button
+          (click)="selectCategory('all')"
+          [class.bg-brand-600]="selectedCategory === 'all'"
+          [class.text-white]="selectedCategory === 'all'"
+          [class.bg-white]="selectedCategory !== 'all'"
+          [class.dark:bg-gray-900]="selectedCategory !== 'all'"
+          [class.text-gray-700]="selectedCategory !== 'all'"
+          [class.dark:text-gray-300]="selectedCategory !== 'all'"
+          [class.border-brand-600]="selectedCategory === 'all'"
+          [class.border-gray-200]="selectedCategory !== 'all'"
+          [class.dark:border-gray-800]="selectedCategory !== 'all'"
+          class="px-3.5 py-1.5 rounded-xl border text-xs font-semibold whitespace-nowrap shadow-2xs transition-all cursor-pointer"
+        >
+          {{ 'quickSale.allCategories' | translate }}
+        </button>
+        <button
+          *ngFor="let cat of availableCategories"
+          (click)="selectCategory(cat)"
+          [class.bg-brand-600]="selectedCategory === cat"
+          [class.text-white]="selectedCategory === cat"
+          [class.bg-white]="selectedCategory !== cat"
+          [class.dark:bg-gray-900]="selectedCategory !== cat"
+          [class.text-gray-700]="selectedCategory !== cat"
+          [class.dark:text-gray-300]="selectedCategory !== cat"
+          [class.border-brand-600]="selectedCategory === cat"
+          [class.border-gray-200]="selectedCategory !== cat"
+          [class.dark:border-gray-800]="selectedCategory !== cat"
+          class="px-3.5 py-1.5 rounded-xl border text-xs font-semibold whitespace-nowrap shadow-2xs transition-all cursor-pointer"
+        >
+          {{ cat }}
+        </button>
+      </div>
+
+      <!-- No Warehouse Selected State -->
+      <div *ngIf="!selectedWarehouseId" class="text-center py-20 bg-white dark:bg-gray-900/60 rounded-2xl border border-dashed border-gray-300 dark:border-gray-800 p-8 shadow-xs">
+        <div class="w-16 h-16 rounded-full bg-amber-50 dark:bg-amber-950/40 text-amber-500 mx-auto flex items-center justify-center mb-3">
+          <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+          </svg>
+        </div>
+        <h3 class="font-bold text-gray-800 dark:text-gray-200 text-sm sm:text-base">{{ 'quickSale.warehouseRequiredFirst' | translate }}</h3>
+        <p class="text-xs text-gray-400 dark:text-gray-500 mt-1">{{ 'quickSale.warehousePlaceholder' | translate }}</p>
+      </div>
+
+      <!-- Item Grid Container -->
+      <div *ngIf="selectedWarehouseId" class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-2.5 sm:gap-3.5 max-h-[55vh] lg:max-h-[calc(100vh-270px)] overflow-y-auto pe-1 custom-scrollbar">
+        <!-- Loading State -->
+        <div *ngIf="loadingItems" class="col-span-full text-center py-16 text-gray-400 dark:text-gray-500 text-sm flex flex-col items-center justify-center gap-3">
+          <svg class="animate-spin h-8 w-8 text-brand-500" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          <span>{{ 'crud.loading' | translate }}</span>
         </div>
 
-        <div *ngIf="!loadingItems && filteredItems.length === 0" class="col-span-full text-center py-12 text-gray-400 dark:text-gray-500 bg-white dark:bg-gray-900/50 rounded-2xl border border-gray-200 dark:border-gray-800 text-xs sm:text-sm">
-          لا توجد أصناف مطابقة للبحث
+        <!-- Empty State -->
+        <div *ngIf="!loadingItems && filteredItems.length === 0" class="col-span-full text-center py-14 text-gray-400 dark:text-gray-500 bg-white dark:bg-gray-900/60 rounded-2xl border border-gray-200/80 dark:border-gray-800 text-xs sm:text-sm p-6 shadow-2xs">
+          <svg class="w-12 h-12 mx-auto text-gray-300 dark:text-gray-600 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/>
+          </svg>
+          <span>{{ 'quickSale.noItemsFound' | translate }}</span>
         </div>
 
+        <!-- Product Cards -->
         <div
           *ngFor="let item of filteredItems"
           (click)="addToCart(item)"
-          class="bg-white dark:bg-gray-900/90 hover:bg-emerald-50/50 dark:hover:bg-gray-800/90 border border-gray-200 dark:border-gray-800 hover:border-emerald-500/40 p-3 sm:p-3.5 rounded-2xl cursor-pointer transition-all duration-200 active:scale-[0.98] group flex flex-col justify-between shadow-xs hover:shadow-md"
+          [class.opacity-60]="item.availableQuantity <= 0"
+          [class.hover:border-rose-400]="item.availableQuantity <= 0"
+          class="bg-white dark:bg-gray-900/90 hover:bg-brand-50/30 dark:hover:bg-gray-800/90 border border-gray-200/80 dark:border-gray-800 hover:border-brand-500/40 dark:hover:border-brand-500/40 p-3 sm:p-3.5 rounded-2xl cursor-pointer transition-all duration-200 active:scale-[0.98] group flex flex-col justify-between shadow-xs hover:shadow-md relative overflow-hidden"
         >
+          <!-- Cart Quantity Indicator Badge -->
+          <div *ngIf="getItemQuantityInCart(item.id) > 0" class="absolute top-2.5 inset-e-2.5 bg-brand-600 text-white text-[11px] font-bold font-mono px-2 py-0.5 rounded-full shadow-xs flex items-center gap-1.5 z-10 animate-fadeIn">
+            <svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
+            </svg>
+            <span>{{ getItemQuantityInCart(item.id) }}</span>
+          </div>
+
           <div>
-            <div class="text-[11px] text-emerald-600 dark:text-emerald-400 font-mono mb-1">{{ item.code }}</div>
-            <div class="font-semibold text-gray-800 dark:text-gray-100 group-hover:text-emerald-700 dark:group-hover:text-white line-clamp-2 text-xs sm:text-sm mb-2">
-              {{ item.aName || item.name }}
+            <!-- Code Badge -->
+            <div class="flex items-center justify-between gap-1 mb-1.5">
+              <span class="text-[11px] text-brand-600 dark:text-brand-400 font-mono font-medium inline-block bg-brand-50 dark:bg-brand-950/60 px-2 py-0.5 rounded-md border border-brand-200/40 dark:border-brand-800/40">
+                {{ item.code }}
+              </span>
+              <span *ngIf="item.salesUomName" class="text-[10px] text-gray-500 dark:text-gray-400 font-medium bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">
+                {{ item.salesUomName }}
+              </span>
+            </div>
+
+            <!-- Item Name -->
+            <div class="font-semibold text-gray-900 dark:text-gray-100 group-hover:text-brand-600 dark:group-hover:text-brand-400 line-clamp-2 text-xs sm:text-sm mb-2 transition-colors">
+              {{ getItemDisplayName(item) }}
+            </div>
+
+            <!-- Stock Availability Badge -->
+            <div class="mb-2">
+              <span
+                *ngIf="item.availableQuantity > 0"
+                class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-semibold bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/50"
+              >
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                <span>{{ 'quickSale.inStock' | translate }}: {{ item.availableQuantity }}</span>
+              </span>
+              <span
+                *ngIf="item.availableQuantity <= 0"
+                class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-semibold bg-rose-50 dark:bg-rose-950/50 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-800/50"
+              >
+                <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
+                <span>{{ 'quickSale.outOfStock' | translate }}</span>
+              </span>
             </div>
           </div>
-          <div class="flex items-center justify-between mt-2 pt-2 border-t border-gray-100 dark:border-gray-800">
-            <span class="text-[11px] text-gray-400 dark:text-gray-500 font-medium">السعر</span>
-            <ng-container *ngIf="getItemPrice(item) > 0; else unpricedTag">
-              <span class="text-xs sm:text-sm font-bold text-emerald-600 dark:text-emerald-400 font-mono">
-                {{ getItemPrice(item) | number:'1.2-2' }} ج.م
+
+          <!-- Price Footer -->
+          <div class="flex items-center justify-between mt-1 pt-2 border-t border-gray-100 dark:border-gray-800/80">
+            <span class="text-[11px] text-gray-400 dark:text-gray-500 font-medium">{{ 'quickSale.price' | translate }}</span>
+            <ng-container *ngIf="item.price > 0; else unpricedTag">
+              <span class="text-xs sm:text-sm font-bold text-brand-600 dark:text-brand-400 font-mono">
+                {{ item.price | number:'1.2-2' }} <span class="text-[10px] text-gray-500 dark:text-gray-400 font-normal">{{ 'quickSale.egp' | translate }}</span>
               </span>
             </ng-container>
             <ng-template #unpricedTag>
-              <span class="text-[11px] font-bold px-2 py-0.5 rounded bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
-                غير مسعر
+              <span class="text-[11px] font-bold px-2 py-0.5 rounded-md bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 border border-amber-200 dark:border-amber-800/50">
+                {{ 'quickSale.unpriced' | translate }}
               </span>
             </ng-template>
           </div>
@@ -109,63 +244,121 @@
       </div>
     </div>
 
-    <!-- Cart & Payment Side - 5 cols -->
-    <div class="lg:col-span-5 flex flex-col justify-between bg-white dark:bg-gray-900/90 border border-gray-200 dark:border-gray-800 rounded-2xl p-4 sm:p-5 shadow-sm dark:shadow-xl">
+    <!-- Cart & Payment Side (5 cols) -->
+    <div class="lg:col-span-5 flex flex-col justify-between bg-white dark:bg-gray-900/90 border border-gray-200/80 dark:border-gray-800 rounded-2xl p-4 sm:p-5 shadow-xs dark:shadow-xl">
       <div>
-        <!-- Cart Title Bar -->
-        <div class="flex items-center justify-between border-b border-gray-200 dark:border-gray-800 pb-3 mb-3">
-          <div class="flex items-center gap-2">
-            <svg class="w-5 h-5 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
-            </svg>
-            <h2 class="font-bold text-gray-900 dark:text-white text-sm sm:text-base">سلة الفاتورة الحالية</h2>
-            <span class="text-xs px-2.5 py-0.5 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 font-mono font-medium">{{ cart.length }} عناصر</span>
+        <!-- Cart Header -->
+        <div class="flex items-center justify-between border-b border-gray-200/80 dark:border-gray-800 pb-3 mb-3.5">
+          <div class="flex items-center gap-2.5">
+            <div class="w-8 h-8 rounded-lg bg-brand-50 dark:bg-brand-950/60 border border-brand-200/50 dark:border-brand-800/50 flex items-center justify-center text-brand-600 dark:text-brand-400">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
+              </svg>
+            </div>
+            <h2 class="font-bold text-gray-900 dark:text-white text-sm sm:text-base">{{ 'quickSale.cart' | translate }}</h2>
+            <span class="text-xs px-2.5 py-0.5 rounded-full bg-brand-50 dark:bg-brand-950/60 text-brand-600 dark:text-brand-400 border border-brand-200/40 dark:border-brand-800/40 font-mono font-semibold">
+              {{ 'quickSale.cartItemsCount' | translate:{ count: cart.length } }}
+            </span>
           </div>
-          <button (click)="clearCart()" *ngIf="cart.length > 0" class="text-xs text-rose-500 hover:text-rose-700 dark:text-rose-400 dark:hover:text-rose-300 font-medium">مسح الكل</button>
+          <button
+            (click)="clearCart()"
+            *ngIf="cart.length > 0"
+            class="text-xs text-rose-500 hover:text-rose-700 dark:text-rose-400 dark:hover:text-rose-300 font-medium px-2 py-1 rounded-lg hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors flex items-center gap-1 cursor-pointer"
+          >
+            <span>{{ 'quickSale.clearCart' | translate }}</span>
+          </button>
         </div>
 
-        <!-- Cart Items List -->
-        <div class="max-h-72 sm:max-h-80 overflow-y-auto space-y-2.5 pr-1 mb-4">
-          <div *ngIf="cart.length === 0" class="text-center py-10 text-gray-400 dark:text-gray-500 text-xs sm:text-sm">
-            السلة فارغة. اضغط على أي صنف من القائمة لإضافته مباشرة.
+        <!-- Cart Items Scrollable Container -->
+        <div class="max-h-64 sm:max-h-72 lg:max-h-80 overflow-y-auto space-y-2.5 pe-1 custom-scrollbar mb-4">
+          <!-- Empty Cart State -->
+          <div *ngIf="cart.length === 0" class="text-center py-12 text-gray-400 dark:text-gray-500 text-xs sm:text-sm bg-gray-50/50 dark:bg-gray-950/40 rounded-xl border border-dashed border-gray-200 dark:border-gray-800 p-4">
+            <svg class="w-10 h-10 mx-auto text-gray-300 dark:text-gray-600 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+            </svg>
+            <span class="font-medium text-gray-600 dark:text-gray-300">{{ 'quickSale.emptyCart' | translate }}</span>
+            <p class="text-[11px] text-gray-400 dark:text-gray-500 mt-1">{{ 'quickSale.emptyCartHint' | translate }}</p>
           </div>
 
-          <div *ngFor="let item of cart; let i = index" class="bg-gray-50 dark:bg-gray-950/80 border border-gray-200 dark:border-gray-800/80 p-3 rounded-xl flex flex-col sm:flex-row items-start sm:items-center justify-between text-xs gap-2.5 shadow-2xs">
+          <!-- Cart Item Row -->
+          <div
+            *ngFor="let item of cart; let i = index"
+            class="bg-gray-50/90 dark:bg-gray-950/80 border border-gray-200/80 dark:border-gray-800/80 hover:border-brand-500/30 dark:hover:border-brand-500/30 p-3 rounded-xl flex flex-col sm:flex-row items-start sm:items-center justify-between text-xs gap-3 shadow-2xs transition-all"
+          >
             <div class="flex-1 min-w-0">
-              <div class="font-semibold text-gray-900 dark:text-slate-100 truncate text-xs sm:text-sm">{{ item.name }}</div>
-              <div class="text-gray-400 dark:text-slate-400 text-[10px] font-mono mb-1">{{ item.code }}</div>
+              <div class="font-semibold text-gray-900 dark:text-gray-100 truncate text-xs sm:text-sm">{{ item.name }}</div>
+              <div class="flex items-center gap-2 text-gray-400 dark:text-gray-500 text-[10px] font-mono mb-1.5">
+                <span>{{ item.code }}</span>
+                <span *ngIf="item.salesUomName" class="text-gray-500 bg-gray-200/60 dark:bg-gray-800 px-1 rounded">
+                  {{ item.salesUomName }}
+                </span>
+                <span class="text-emerald-600 dark:text-emerald-400">
+                  ({{ 'quickSale.inStock' | translate }}: {{ item.availableQuantity }})
+                </span>
+              </div>
               
-              <!-- Editable Unit Price Input -->
-              <div class="flex items-center gap-1.5 mt-1">
-                <span class="text-[11px] font-medium text-gray-600 dark:text-slate-300">سعر الوحدة:</span>
-                <input
-                  type="number"
-                  min="0"
-                  step="0.5"
-                  [(ngModel)]="item.unitPrice"
-                  (ngModelChange)="onUnitPriceChange(item)"
-                  placeholder="0.00"
-                  class="w-24 px-2 py-1 text-xs font-mono font-bold border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 rounded-lg text-emerald-600 dark:text-emerald-400 focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 text-center"
-                />
-                <span class="text-[10px] text-gray-500 dark:text-slate-400 font-medium">ج.م</span>
+              <!-- Editable Unit Price & Discount Inputs -->
+              <div class="flex flex-wrap items-center gap-2 mt-1">
+                <div class="flex items-center gap-1">
+                  <span class="text-[11px] font-medium text-gray-600 dark:text-gray-400">{{ 'quickSale.price' | translate }}:</span>
+                  <input
+                    type="number"
+                    min="0"
+                    step="0.5"
+                    [(ngModel)]="item.unitPrice"
+                    (ngModelChange)="onUnitPriceChange(item)"
+                    placeholder="0.00"
+                    class="w-20 px-2 py-0.5 text-xs font-mono font-bold border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 rounded-lg text-brand-600 dark:text-brand-400 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500/20 text-center"
+                  />
+                </div>
+                <div class="flex items-center gap-1">
+                  <span class="text-[11px] font-medium text-gray-600 dark:text-gray-400">{{ 'quickSale.discount' | translate }}:</span>
+                  <input
+                    type="number"
+                    min="0"
+                    step="0.5"
+                    [(ngModel)]="item.discountAmount"
+                    (ngModelChange)="onDiscountChange(item)"
+                    placeholder="0.00"
+                    class="w-16 px-1.5 py-0.5 text-xs font-mono font-bold border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 rounded-lg text-amber-600 dark:text-amber-400 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500/20 text-center"
+                  />
+                </div>
               </div>
             </div>
 
-            <div class="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end self-end sm:self-center">
-              <!-- Qty controls -->
-              <div class="flex items-center gap-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg px-1 py-0.5">
-                <button (click)="updateQuantity(item, -1)" class="w-6 h-6 flex items-center justify-center text-gray-700 dark:text-slate-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded font-bold text-sm">-</button>
-                <span class="w-6 text-center font-bold text-emerald-600 dark:text-emerald-400 font-mono">{{ item.quantity }}</span>
-                <button (click)="updateQuantity(item, 1)" class="w-6 h-6 flex items-center justify-center text-gray-700 dark:text-slate-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded font-bold text-sm">+</button>
+            <div class="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end self-end sm:self-center pt-2 sm:pt-0 border-t sm:border-t-0 border-gray-200/60 dark:border-gray-800">
+              <!-- Quantity Stepper Controls -->
+              <div class="flex items-center gap-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg p-0.5 shadow-2xs">
+                <button
+                  (click)="updateQuantity(item, -1)"
+                  class="w-6 h-6 flex items-center justify-center text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded font-bold text-sm transition-colors cursor-pointer"
+                >
+                  -
+                </button>
+                <span class="w-7 text-center font-bold text-brand-600 dark:text-brand-400 font-mono text-xs sm:text-sm">
+                  {{ item.quantity }}
+                </span>
+                <button
+                  (click)="updateQuantity(item, 1)"
+                  class="w-6 h-6 flex items-center justify-center text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded font-bold text-sm transition-colors cursor-pointer"
+                >
+                  +
+                </button>
               </div>
 
-              <!-- Total -->
-              <div class="text-right min-w-16">
-                <div class="font-bold text-gray-900 dark:text-white font-mono text-xs sm:text-sm">{{ item.subtotal | number:'1.2-2' }} ج.م</div>
+              <!-- Item Subtotal -->
+              <div class="text-end min-w-16">
+                <div class="font-bold text-gray-900 dark:text-white font-mono text-xs sm:text-sm">
+                  {{ item.subtotal | number:'1.2-2' }} <span class="text-[10px] text-gray-400 font-normal">{{ 'quickSale.egp' | translate }}</span>
+                </div>
               </div>
 
-              <!-- Remove Button -->
-              <button (click)="removeFromCart(i)" class="text-gray-400 hover:text-rose-500 dark:text-slate-500 dark:hover:text-rose-400 p-1 font-bold">
+              <!-- Remove Item Button -->
+              <button
+                (click)="removeFromCart(i)"
+                class="w-7 h-7 flex items-center justify-center rounded-lg text-gray-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors font-bold cursor-pointer"
+                [title]="'common.delete' | translate"
+              >
                 ✕
               </button>
             </div>
@@ -173,62 +366,252 @@
         </div>
       </div>
 
-      <!-- Payment & Checkout Summary -->
-      <div class="border-t border-gray-200 dark:border-gray-800 pt-3.5 space-y-3">
-        <!-- Financial Summary -->
-        <div class="space-y-1.5 text-xs">
-          <div class="flex justify-between text-gray-500 dark:text-slate-400">
-            <span>المجموع الفرعي:</span>
-            <span class="font-mono text-gray-800 dark:text-slate-200">{{ totalSubtotal | number:'1.2-2' }} ج.م</span>
+      <!-- Payment & Checkout Summary Section -->
+      <div class="border-t border-gray-200/80 dark:border-gray-800 pt-3.5 space-y-3">
+        
+        <!-- Financial Totals Summary Box -->
+        <div class="bg-gray-50/80 dark:bg-gray-950/60 border border-gray-200/70 dark:border-gray-800/80 rounded-xl p-3.5 space-y-2">
+          <div class="flex justify-between text-xs text-gray-500 dark:text-gray-400">
+            <span>{{ 'quickSale.totalSubtotal' | translate }}:</span>
+            <span class="font-mono font-medium text-gray-800 dark:text-gray-200">{{ totalSubtotal | number:'1.2-2' }} {{ 'quickSale.egp' | translate }}</span>
           </div>
-          <div class="flex justify-between text-gray-500 dark:text-slate-400">
-            <span>إجمالي الخصومات:</span>
-            <span class="font-mono text-amber-600 dark:text-amber-400">-{{ totalDiscount | number:'1.2-2' }} ج.م</span>
+          <div class="flex justify-between text-xs text-gray-500 dark:text-gray-400">
+            <span>{{ 'quickSale.totalDiscount' | translate }}:</span>
+            <span class="font-mono font-medium text-amber-600 dark:text-amber-400">-{{ totalDiscount | number:'1.2-2' }} {{ 'quickSale.egp' | translate }}</span>
           </div>
-          <div class="flex justify-between text-sm sm:text-base font-bold text-emerald-600 dark:text-emerald-400 pt-2 border-t border-gray-200 dark:border-gray-800">
-            <span>إجمالي الفاتورة المطلوب:</span>
-            <span class="font-mono text-base sm:text-lg">{{ grandTotal | number:'1.2-2' }} ج.م</span>
+          <div class="flex justify-between items-center text-sm sm:text-base font-bold text-brand-600 dark:text-brand-400 pt-2 border-t border-gray-200/80 dark:border-gray-800">
+            <span>{{ 'quickSale.grandTotal' | translate }}:</span>
+            <span class="font-mono text-base sm:text-xl font-bold text-brand-600 dark:text-brand-400">
+              {{ grandTotal | number:'1.2-2' }} <span class="text-xs font-normal">{{ 'quickSale.egp' | translate }}</span>
+            </span>
           </div>
         </div>
 
         <!-- Payment Mode & Paid Input -->
-        <div class="grid grid-cols-2 gap-2.5 pt-1">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
           <div>
-            <label class="block text-[11px] font-semibold text-gray-600 dark:text-slate-400 mb-1">طريقة الدفع:</label>
+            <label class="block text-[11px] font-semibold text-gray-700 dark:text-gray-300 mb-1">{{ 'quickSale.paymentMethod' | translate }}:</label>
             <select
               [(ngModel)]="paymentMethod"
               (change)="onPaymentMethodChange()"
-              class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-xl px-2.5 py-1.5 text-xs text-gray-900 dark:text-slate-200 focus:outline-none focus:border-emerald-500"
+              class="w-full bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-xl px-2.5 py-2 text-xs text-gray-900 dark:text-gray-100 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 cursor-pointer font-medium"
             >
-              <option value="cash">نقداً (Cash)</option>
-              <option value="bank">تحويل بنكي (Bank)</option>
-              <option value="ewallet">محفظة إلكترونية (E-Wallet)</option>
-              <option value="credit">آجل (On Credit)</option>
+              <option value="cash">{{ 'quickSale.cash' | translate }}</option>
+              <option value="bank">{{ 'quickSale.bank' | translate }}</option>
+              <option value="ewallet">{{ 'quickSale.ewallet' | translate }}</option>
+              <option value="check">{{ 'quickSale.check' | translate }}</option>
+              <option value="credit">{{ 'quickSale.credit' | translate }}</option>
             </select>
           </div>
 
           <div>
-            <label class="block text-[11px] font-semibold text-gray-600 dark:text-slate-400 mb-1">المبلغ المدفوع (ج.م):</label>
+            <label class="block text-[11px] font-semibold text-gray-700 dark:text-gray-300 mb-1">{{ 'quickSale.paidAmount' | translate }} ({{ 'quickSale.egp' | translate }}):</label>
             <input
               type="number"
               [(ngModel)]="paidAmount"
               [disabled]="paymentMethod === 'credit'"
-              class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-xl px-2.5 py-1.5 text-xs text-emerald-600 dark:text-emerald-400 font-mono font-bold focus:outline-none focus:border-emerald-500 disabled:opacity-50"
+              class="w-full bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-xl px-2.5 py-2 text-xs text-brand-600 dark:text-brand-400 font-mono font-bold focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 disabled:opacity-50"
             />
           </div>
         </div>
 
-        <!-- Complete Sale Button -->
+        <!-- Optional Invoice Notes -->
+        <div>
+          <input
+            type="text"
+            [(ngModel)]="notes"
+            [placeholder]="'quickSale.notesPlaceholder' | translate"
+            class="w-full bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-xl px-3 py-1.5 text-xs text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20"
+          />
+        </div>
+
+        <!-- Submit Checkout Action Button -->
         <button
           (click)="submitSale()"
           [disabled]="submitting || cart.length === 0"
-          class="w-full py-3.5 bg-emerald-600 hover:bg-emerald-500 active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold rounded-xl shadow-md hover:shadow-lg transition-all duration-200 flex items-center justify-center gap-2 text-xs sm:text-sm mt-2"
+          class="w-full py-3.5 px-4 bg-brand-600 hover:bg-brand-700 active:bg-brand-800 dark:bg-brand-500 dark:hover:bg-brand-600 text-white font-bold rounded-xl shadow-md hover:shadow-lg transition-all duration-200 flex items-center justify-center gap-2 text-xs sm:text-sm active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
         >
-          <svg *ngIf="submitting" class="animate-spin h-5 w-5 text-white" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-          <span>{{ submitting ? 'جاري إتمام البيع وتخفيض المخزن...' : 'إتمام عملية البيع وتصديق الفاتورة' }}</span>
+          <svg *ngIf="submitting" class="animate-spin h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          <svg *ngIf="!submitting" class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+          <span>{{ (submitting ? 'quickSale.submitting' : 'quickSale.submitSale') | translate }}</span>
+        </button>
+
+        <!-- Recent Invoices List with Quick Print Buttons -->
+        <div *ngIf="recentInvoices.length > 0" class="pt-3 border-t border-gray-100 dark:border-gray-800">
+          <div class="text-[11px] font-bold text-gray-500 dark:text-gray-400 mb-2 flex items-center gap-1.5">
+            <svg class="w-3.5 h-3.5 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            <span>{{ 'quickSale.recentInvoices' | translate }}</span>
+          </div>
+          <div class="space-y-1.5 max-h-48 overflow-y-auto custom-scrollbar">
+            <div *ngFor="let inv of recentInvoices" class="flex items-center justify-between text-[11px] p-2 bg-gray-50 dark:bg-gray-800/60 rounded-xl border border-gray-200/50 dark:border-gray-700/50 hover:border-brand-500/30 transition-all">
+              <div class="flex flex-col min-w-0 pr-1">
+                <span class="font-mono font-bold text-brand-600 dark:text-brand-400">{{ inv.code }}</span>
+                <span class="text-gray-600 dark:text-gray-300 truncate max-w-28 sm:max-w-36">{{ inv.customerName }}</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="font-mono font-semibold text-gray-800 dark:text-gray-200 text-xs">{{ inv.totalAmount | number:'1.2-2' }} <span class="text-[10px]">{{ 'quickSale.egp' | translate }}</span></span>
+                
+                <!-- Quick Print Standard (A4) -->
+                <button
+                  (click)="openStandardPrint(inv.id, inv.code)"
+                  class="p-1.5 rounded-lg text-gray-500 hover:text-brand-600 dark:text-gray-400 dark:hover:text-brand-400 hover:bg-brand-50 dark:hover:bg-brand-950/50 transition-colors"
+                  [title]="'quickSale.printStandard' | translate"
+                >
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                  </svg>
+                </button>
+
+                <!-- Quick Print Receipt (80mm) -->
+                <button
+                  (click)="openReceiptPrint(inv.id, inv.code)"
+                  class="p-1.5 rounded-lg text-gray-500 hover:text-emerald-600 dark:text-gray-400 dark:hover:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/50 transition-colors"
+                  [title]="'quickSale.printReceipt' | translate"
+                >
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Post-Sale Print & Options Modal -->
+  <div *ngIf="isSuccessModalOpen" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-xs animate-fadeIn">
+    <div class="bg-white dark:bg-gray-900 rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-gray-200/80 dark:border-gray-800 animate-scaleUp">
+      
+      <!-- Success Celebration Header -->
+      <div class="text-center pb-5 border-b border-gray-100 dark:border-gray-800">
+        <div class="w-16 h-16 rounded-full bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 mx-auto flex items-center justify-center mb-3.5 ring-8 ring-emerald-50/50 dark:ring-emerald-950/30">
+          <svg class="w-9 h-9" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+          </svg>
+        </div>
+        <h2 class="text-lg sm:text-xl font-bold text-gray-900 dark:text-white">
+          {{ 'quickSale.printOptionsTitle' | translate }}
+        </h2>
+        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1 max-w-xs mx-auto">
+          {{ 'quickSale.printOptionsSubtitle' | translate }}
+        </p>
+
+        <!-- Invoice Details Pill -->
+        <div *ngIf="lastCreatedInvoice" class="mt-4 inline-flex items-center gap-3 px-4 py-2 rounded-2xl bg-gray-50 dark:bg-gray-800/80 border border-gray-200 dark:border-gray-700">
+          <div class="text-start">
+            <div class="text-[10px] text-gray-400 dark:text-gray-500 font-medium">{{ 'quickSale.invoiceCode' | translate }}</div>
+            <div class="font-mono font-bold text-brand-600 dark:text-brand-400 text-xs sm:text-sm">{{ lastCreatedInvoice.code }}</div>
+          </div>
+          <div class="h-6 w-px bg-gray-200 dark:bg-gray-700"></div>
+          <div class="text-start">
+            <div class="text-[10px] text-gray-400 dark:text-gray-500 font-medium">{{ 'quickSale.invoiceTotal' | translate }}</div>
+            <div class="font-mono font-bold text-emerald-600 dark:text-emerald-400 text-xs sm:text-sm">
+              {{ lastCreatedInvoice.totalAmount | number:'1.2-2' }} <span class="text-[10px] font-normal">{{ 'quickSale.egp' | translate }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Two Main Print Format Cards -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5 my-5">
+        
+        <!-- Option 1: Standard A4 Invoice Card -->
+        <div
+          (click)="lastCreatedInvoice && openStandardPrint(lastCreatedInvoice.id, lastCreatedInvoice.code)"
+          class="bg-blue-50/50 dark:bg-blue-950/20 hover:bg-blue-50 dark:hover:bg-blue-950/40 border-2 border-blue-200 dark:border-blue-800/60 hover:border-blue-500 dark:hover:border-blue-500 p-4 rounded-2xl cursor-pointer transition-all duration-200 group flex flex-col justify-between shadow-2xs hover:shadow-md text-start"
+        >
+          <div>
+            <div class="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-900/60 text-blue-600 dark:text-blue-400 flex items-center justify-center mb-2.5 group-hover:scale-110 transition-transform">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+              </svg>
+            </div>
+            <div class="font-bold text-gray-900 dark:text-white text-xs sm:text-sm mb-1 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+              {{ 'quickSale.printStandard' | translate }}
+            </div>
+            <p class="text-[11px] text-gray-500 dark:text-gray-400 leading-relaxed">
+              {{ 'quickSale.printStandardDesc' | translate }}
+            </p>
+          </div>
+          <div class="mt-3 pt-2.5 border-t border-blue-200/60 dark:border-blue-800/40 flex items-center justify-between text-xs font-bold text-blue-600 dark:text-blue-400">
+            <span>{{ 'common.print' | translate }}</span>
+            <span>→</span>
+          </div>
+        </div>
+
+        <!-- Option 2: Thermal POS Receipt (80mm) Card -->
+        <div
+          (click)="lastCreatedInvoice && openReceiptPrint(lastCreatedInvoice.id, lastCreatedInvoice.code)"
+          class="bg-emerald-50/50 dark:bg-emerald-950/20 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 border-2 border-emerald-200 dark:border-emerald-800/60 hover:border-emerald-500 dark:hover:border-emerald-500 p-4 rounded-2xl cursor-pointer transition-all duration-200 group flex flex-col justify-between shadow-2xs hover:shadow-md text-start"
+        >
+          <div>
+            <div class="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-900/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mb-2.5 group-hover:scale-110 transition-transform">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
+              </svg>
+            </div>
+            <div class="font-bold text-gray-900 dark:text-white text-xs sm:text-sm mb-1 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
+              {{ 'quickSale.printReceipt' | translate }}
+            </div>
+            <p class="text-[11px] text-gray-500 dark:text-gray-400 leading-relaxed">
+              {{ 'quickSale.printReceiptDesc' | translate }}
+            </p>
+          </div>
+          <div class="mt-3 pt-2.5 border-t border-emerald-200/60 dark:border-emerald-800/40 flex items-center justify-between text-xs font-bold text-emerald-600 dark:text-emerald-400">
+            <span>{{ 'common.print' | translate }}</span>
+            <span>→</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Action Footer Buttons -->
+      <div class="flex flex-col sm:flex-row items-center gap-2.5 pt-2 border-t border-gray-100 dark:border-gray-800">
+        <button
+          *ngIf="lastCreatedInvoice"
+          (click)="viewInvoiceDetails(lastCreatedInvoice.id)"
+          class="w-full sm:w-1/2 py-2.5 px-4 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-200 font-semibold rounded-xl text-xs transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
+        >
+          <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+          </svg>
+          <span>{{ 'quickSale.viewInvoice' | translate }}</span>
+        </button>
+        <button
+          (click)="startNewSale()"
+          class="w-full sm:w-1/2 py-2.5 px-4 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-xl text-xs shadow-xs hover:shadow-md transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+        >
+          <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+          </svg>
+          <span>{{ 'quickSale.newSale' | translate }}</span>
         </button>
       </div>
 
     </div>
   </div>
+
+  <!-- PDF Print Preview & Direct Print Modal -->
+  <app-print-preview-modal
+    *ngIf="isPrintPreviewOpen"
+    [isOpen]="isPrintPreviewOpen"
+    [pdfBlobUrl]="pdfBlobUrl"
+    [loading]="pdfLoading"
+    [title]="printPreviewTitle"
+    (close)="closePrintPreview()"
+  >
+  </app-print-preview-modal>
+
 </div>

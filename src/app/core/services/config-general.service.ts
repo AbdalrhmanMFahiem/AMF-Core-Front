@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
-import { environment } from '../../../environments/environment';
+import { AppConfigService } from './app-config.service';
 
 export interface ConfigGeneralResponse {
   enableSapIntegration: boolean;
@@ -28,7 +28,8 @@ export interface ConfigGeneralRequest {
 })
 export class ConfigGeneralService {
   private http = inject(HttpClient);
-  private apiUrl = `${environment.apiUrl}/api/configuration/general`;
+  private config = inject(AppConfigService);
+  private get apiUrl() { return `${this.config.apiUrl}/api/configuration/general`; }
 
   getSettings(): Observable<ConfigGeneralResponse> {
     return this.http.get<ConfigGeneralResponse>(this.apiUrl);

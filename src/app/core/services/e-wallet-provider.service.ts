@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from '../../../environments/environment';
+import { AppConfigService } from './app-config.service';
 import { RequestFilters, PaginatedList } from '../models/pagination.model';
 import { NextCodeResponse, IntIdCodeNameResponse } from '../models/lookup.model';
 import {
@@ -13,7 +13,8 @@ import {
 @Injectable({ providedIn: 'root' })
 export class EWalletProviderService {
   private readonly http = inject(HttpClient);
-  private readonly baseUrl = `${environment.apiUrl}/api/ewallet-providers`;
+  private readonly config = inject(AppConfigService);
+  private get baseUrl() { return `${this.config.apiUrl}/api/ewallet-providers`; }
 
   getAll(filters: RequestFilters, includeDisabled: boolean = false): Observable<PaginatedList<EWalletProviderBasicResponse>> {
     let params = new HttpParams()

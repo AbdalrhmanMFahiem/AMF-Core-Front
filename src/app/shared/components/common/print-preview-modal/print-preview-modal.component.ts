@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output, ChangeDetectionStrategy, ViewChild, ElementRef, OnDestroy, OnChanges, SimpleChanges, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { ModalComponent } from '../../ui/modal/modal.component';
 
@@ -13,11 +13,22 @@ import { ModalComponent } from '../../ui/modal/modal.component';
 })
 export class PrintPreviewModalComponent implements OnDestroy, OnChanges {
   private sanitizer = inject(DomSanitizer);
+  private translate = inject(TranslateService);
 
   @Input() isOpen = false;
   @Input() pdfBlobUrl: string | null = null;
   @Input() loading = false;
   @Input() title = 'printPreview.title';
+
+  get displayTitle(): string {
+    if (!this.title) return '';
+    // If title contains spaces or Arabic characters or dashes, it is already a formatted title
+    if (/[\s\u0600-\u06FF\-]/.test(this.title)) {
+      return this.title;
+    }
+    const translated = this.translate.instant(this.title);
+    return translated || this.title;
+  }
 
   @Output() close = new EventEmitter<void>();
   @Output() print = new EventEmitter<void>();

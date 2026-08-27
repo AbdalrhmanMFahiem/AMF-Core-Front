@@ -10,14 +10,15 @@ import {
 } from '../models/invoice-cost-element.model';
 import { PaginatedList, RequestFilters } from '../models/pagination.model';
 import { NextCodeResponse, LookupsFilters } from '../models/lookup.model';
-import { environment } from '../../../environments/environment';
+import { AppConfigService } from './app-config.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class InvoiceCostElementService {
   private http = inject(HttpClient);
-  private apiUrl = `${environment.apiUrl}/api/md/invoice-cost-elements`;
+  private config = inject(AppConfigService);
+  private get apiUrl() { return `${this.config.apiUrl}/api/md/invoice-cost-elements`; }
 
   getAll(filters: RequestFilters, includeDisabled: boolean = false): Observable<PaginatedList<InvoiceCostElementBasicResponse>> {
     const params: any = { ...filters, includeDisabled };

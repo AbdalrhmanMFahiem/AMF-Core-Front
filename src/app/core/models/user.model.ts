@@ -120,3 +120,8 @@ export interface UserEmploymentInfoRequest {
   isDeployed: boolean;
   additionalInfo?: string;
 }
+
+export interface AdminResetPasswordRequest {
+  newPassword: string;
+  mustChangePasswordOnNextLogin: boolean;
+}

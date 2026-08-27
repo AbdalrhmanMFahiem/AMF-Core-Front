@@ -638,6 +638,11 @@ export const routes: Routes = [
         title: 'Quick Sale POS | AMF Core'
       },
       {
+        path: 'sales/my-invoices',
+        loadComponent: () => import('./pages/sales/sales-rep-invoices/sales-rep-invoices.component').then(c => c.SalesRepInvoicesComponent),
+        title: 'My Sales Invoices | AMF Core'
+      },
+      {
         path: 'sales/dashboard',
         loadComponent: () => import('./pages/sales/sales-rep-dashboard/sales-rep-dashboard.component').then(c => c.SalesRepDashboardComponent),
         title: 'Sales Rep Dashboard | AMF Core'
@@ -814,6 +819,11 @@ export const routes: Routes = [
         path: 'finance/business-partner-payments/view/:id',
         loadComponent: () => import('./pages/finance/business-partner-payments/payment-form/payment-form.component').then(c => c.PaymentFormComponent),
         title: 'View Partner Payment | AMF Core'
+      },
+      {
+        path: 'configurations/print-settings',
+        loadComponent: () => import('./pages/configurations/print-settings/print-settings.component').then(c => c.PrintSettingsComponent),
+        title: 'Print & Receipt Settings | AMF Core'
       },
     ]
   },

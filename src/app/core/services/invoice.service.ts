@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from '../../../environments/environment';
+import { AppConfigService } from './app-config.service';
 import { PaginatedList } from '../models/pagination.model';
 import {
   InvoiceFilters,
@@ -21,8 +21,9 @@ import { NextCodeResponse } from '../models/lookup.model';
 })
 export class InvoiceService {
   private http = inject(HttpClient);
+  private config = inject(AppConfigService);
   private getApiUrl(type: 'sales' | 'purchases'): string {
-    return `${environment.apiUrl}/api/invoices/${type}`;
+    return `${this.config.apiUrl}/api/invoices/${type}`;
   }
 
   private getOptions(filters?: InvoiceFilters) {
@@ -32,7 +33,10 @@ export class InvoiceService {
       if (filters.pageSize) params = params.set('pageSize', filters.pageSize.toString());
       if (filters.searchValue) params = params.set('searchValue', filters.searchValue);
       if (filters.status) params = params.set('status', filters.status);
+      if (filters.paymentStatus) params = params.set('paymentStatus', filters.paymentStatus);
       if (filters.businessPartnerId) params = params.set('businessPartnerId', filters.businessPartnerId.toString());
+      if (filters.warehouseId) params = params.set('warehouseId', filters.warehouseId.toString());
+      if (filters.salesRepUserId) params = params.set('salesRepUserId', filters.salesRepUserId);
       if (filters.invoiceDateFrom) params = params.set('invoiceDateFrom', filters.invoiceDateFrom);
       if (filters.invoiceDateTo) params = params.set('invoiceDateTo', filters.invoiceDateTo);
       if (filters.dueDateFrom) params = params.set('dueDateFrom', filters.dueDateFrom);
@@ -116,6 +120,12 @@ export class InvoiceService {
 
   printPdf(id: number, type: 'sales' | 'purchases' = 'sales'): Observable<Blob> {
     return this.http.get(`${this.getApiUrl(type)}/${id}/print-pdf`, {
+      responseType: 'blob'
+    });
+  }
+
+  printReceiptPdf(id: number, type: 'sales' | 'purchases' = 'sales'): Observable<Blob> {
+    return this.http.get(`${this.getApiUrl(type)}/${id}/print-receipt-pdf`, {
       responseType: 'blob'
     });
   }

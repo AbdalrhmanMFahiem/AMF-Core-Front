@@ -4,14 +4,15 @@ import { Observable } from 'rxjs';
 import { CityRequest, CityResponse, CityBasicResponse, CityFilters } from '../models/city.model';
 import { PaginatedList, RequestFilters } from '../models/pagination.model';
 import { IdNameResponse, NextCodeResponse } from '../models/lookup.model';
-import { environment } from '../../../environments/environment';
+import { AppConfigService } from './app-config.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CityService {
   private http = inject(HttpClient);
-  private apiUrl = `${environment.apiUrl}/api/administration/City`;
+  private config = inject(AppConfigService);
+  private get apiUrl() { return `${this.config.apiUrl}/api/administration/City`; }
 
   getAll(filters: CityFilters, includeDisabled: boolean = false): Observable<PaginatedList<CityBasicResponse>> {
     let params = new HttpParams()
