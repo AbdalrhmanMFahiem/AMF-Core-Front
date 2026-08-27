@@ -1,0 +1,280 @@
+<app-page-breadcrumb [pageTitle]="'documentSettings.title' | translate" [parentPageTitle]="'systemSettings' | translate" />
+
+<div class="space-y-6">
+  <!-- Top Action Card -->
+  <div class="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/3 lg:p-6 shadow-sm">
+    <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <div>
+        <h4 class="text-xl font-bold text-gray-800 dark:text-white/90">
+          {{ 'documentSettings.title' | translate }}
+        </h4>
+        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+          {{ 'documentSettings.subtitle' | translate }}
+        </p>
+      </div>
+      
+      <button
+        (click)="openModal()"
+        class="flex items-center justify-center gap-2 rounded-xl border border-gray-300 bg-white px-5 py-2.5 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 hover:text-brand-600 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-white/5 dark:hover:text-white transition-all duration-200"
+      >
+        <svg class="w-4 h-4 fill-current" viewBox="0 0 18 18">
+          <path fill-rule="evenodd" clip-rule="evenodd" d="M15.0911 2.78206C14.2125 1.90338 12.7878 1.90338 11.9092 2.78206L4.57524 10.116C4.26682 10.4244 4.0547 10.8158 3.96468 11.2426L3.31231 14.3352C3.25997 14.5833 3.33653 14.841 3.51583 15.0203C3.69512 15.1996 3.95286 15.2761 4.20096 15.2238L7.29355 14.5714C7.72031 14.4814 8.11172 14.2693 8.42013 13.9609L15.7541 6.62695C16.6327 5.74827 16.6327 4.32365 15.7541 3.44497L15.0911 2.78206ZM12.9698 3.84272C13.2627 3.54982 13.7376 3.54982 14.0305 3.84272L14.6934 4.50563C14.9863 4.79852 14.9863 5.2734 14.6934 5.56629L14.044 6.21573L12.3204 4.49215L12.9698 3.84272ZM11.2597 5.55281L5.6359 11.1766C5.53309 11.2794 5.46238 11.4099 5.43238 11.5522L5.01758 13.5185L6.98394 13.1037C7.1262 13.0737 7.25666 13.003 7.35947 12.9002L12.9833 7.27639L11.2597 5.55281Z" />
+        </svg>
+        {{ 'common.edit' | translate }}
+      </button>
+    </div>
+  </div>
+
+  <div *ngIf="isLoading" class="flex justify-center p-12">
+    <div class="h-8 w-8 animate-spin rounded-full border-4 border-solid border-brand-500 border-t-transparent"></div>
+  </div>
+
+  <div *ngIf="!isLoading" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <!-- Purchases Section Card -->
+    <div class="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/3 lg:p-6 shadow-sm">
+      <div class="flex items-center gap-3 mb-5 border-b border-gray-100 pb-3 dark:border-gray-800">
+        <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+          </svg>
+        </div>
+        <div>
+          <h3 class="text-base font-bold text-gray-800 dark:text-white/90">
+            {{ 'documentSettings.purchasesSection' | translate }}
+          </h3>
+          <p class="text-xs text-gray-500 dark:text-gray-400">
+            {{ 'documentSettings.purchasesSectionSubtitle' | translate }}
+          </p>
+        </div>
+      </div>
+
+      <div class="space-y-4">
+        <div class="flex items-center justify-between p-3 rounded-xl bg-gray-50 dark:bg-gray-800/50">
+          <div>
+            <p class="text-sm font-semibold text-gray-800 dark:text-white/90">
+              {{ 'documentSettings.autoApprovePurchaseOrders' | translate }}
+            </p>
+            <p class="text-xs text-gray-500 dark:text-gray-400">
+              {{ 'documentSettings.autoApprovePurchaseOrdersDesc' | translate }}
+            </p>
+          </div>
+          <span
+            [class]="settings.autoApprovePurchaseOrders ? 'bg-success-100 text-success-700 dark:bg-success-500/20 dark:text-success-400' : 'bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-400'"
+            class="px-2.5 py-1 text-xs font-semibold rounded-full"
+          >
+            {{ settings.autoApprovePurchaseOrders ? ('common.yes' | translate) : ('common.no' | translate) }}
+          </span>
+        </div>
+
+        <div class="flex items-center justify-between p-3 rounded-xl bg-gray-50 dark:bg-gray-800/50">
+          <div>
+            <p class="text-sm font-semibold text-gray-800 dark:text-white/90">
+              {{ 'documentSettings.autoApprovePurchaseInvoices' | translate }}
+            </p>
+            <p class="text-xs text-gray-500 dark:text-gray-400">
+              {{ 'documentSettings.autoApprovePurchaseInvoicesDesc' | translate }}
+            </p>
+          </div>
+          <span
+            [class]="settings.autoApprovePurchaseInvoices ? 'bg-success-100 text-success-700 dark:bg-success-500/20 dark:text-success-400' : 'bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-400'"
+            class="px-2.5 py-1 text-xs font-semibold rounded-full"
+          >
+            {{ settings.autoApprovePurchaseInvoices ? ('common.yes' | translate) : ('common.no' | translate) }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sales Section Card -->
+    <div class="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/3 lg:p-6 shadow-sm">
+      <div class="flex items-center gap-3 mb-5 border-b border-gray-100 pb-3 dark:border-gray-800">
+        <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        </div>
+        <div>
+          <h3 class="text-base font-bold text-gray-800 dark:text-white/90">
+            {{ 'documentSettings.salesSection' | translate }}
+          </h3>
+          <p class="text-xs text-gray-500 dark:text-gray-400">
+            {{ 'documentSettings.salesSectionSubtitle' | translate }}
+          </p>
+        </div>
+      </div>
+
+      <div class="space-y-4">
+        <div class="flex items-center justify-between p-3 rounded-xl bg-gray-50 dark:bg-gray-800/50">
+          <div>
+            <p class="text-sm font-semibold text-gray-800 dark:text-white/90">
+              {{ 'documentSettings.autoApproveSalesOrders' | translate }}
+            </p>
+            <p class="text-xs text-gray-500 dark:text-gray-400">
+              {{ 'documentSettings.autoApproveSalesOrdersDesc' | translate }}
+            </p>
+          </div>
+          <span
+            [class]="settings.autoApproveSalesOrders ? 'bg-success-100 text-success-700 dark:bg-success-500/20 dark:text-success-400' : 'bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-400'"
+            class="px-2.5 py-1 text-xs font-semibold rounded-full"
+          >
+            {{ settings.autoApproveSalesOrders ? ('common.yes' | translate) : ('common.no' | translate) }}
+          </span>
+        </div>
+
+        <div class="flex items-center justify-between p-3 rounded-xl bg-gray-50 dark:bg-gray-800/50">
+          <div>
+            <p class="text-sm font-semibold text-gray-800 dark:text-white/90">
+              {{ 'documentSettings.autoApproveSalesInvoices' | translate }}
+            </p>
+            <p class="text-xs text-gray-500 dark:text-gray-400">
+              {{ 'documentSettings.autoApproveSalesInvoicesDesc' | translate }}
+            </p>
+          </div>
+          <span
+            [class]="settings.autoApproveSalesInvoices ? 'bg-success-100 text-success-700 dark:bg-success-500/20 dark:text-success-400' : 'bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-400'"
+            class="px-2.5 py-1 text-xs font-semibold rounded-full"
+          >
+            {{ settings.autoApproveSalesInvoices ? ('common.yes' | translate) : ('common.no' | translate) }}
+          </span>
+        </div>
+
+
+
+        <div class="flex items-center justify-between p-3 rounded-xl bg-gray-50 dark:bg-gray-800/50">
+          <div>
+            <p class="text-sm font-semibold text-gray-800 dark:text-white/90">
+              {{ 'documentSettings.allowSaveInvoiceWithoutPayment' | translate }}
+            </p>
+          </div>
+          <span
+            [class]="settings.allowSaveInvoiceWithoutPayment ? 'bg-success-100 text-success-700 dark:bg-success-500/20 dark:text-success-400' : 'bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-400'"
+            class="px-2.5 py-1 text-xs font-semibold rounded-full"
+          >
+            {{ settings.allowSaveInvoiceWithoutPayment ? ('common.yes' | translate) : ('common.no' | translate) }}
+          </span>
+        </div>
+
+        <div class="flex items-center justify-between p-3 rounded-xl bg-gray-50 dark:bg-gray-800/50">
+          <div>
+            <p class="text-sm font-semibold text-gray-800 dark:text-white/90">
+              {{ 'documentSettings.requireCostElementPercentage' | translate }}
+            </p>
+          </div>
+          <span
+            [class]="settings.requireCostElementPercentage ? 'bg-success-100 text-success-700 dark:bg-success-500/20 dark:text-success-400' : 'bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-400'"
+            class="px-2.5 py-1 text-xs font-semibold rounded-full"
+          >
+            {{ settings.requireCostElementPercentage ? ('common.yes' | translate) : ('common.no' | translate) }}
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notes Card -->
+  <div *ngIf="!isLoading && settings.notes" class="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/3 lg:p-6 shadow-sm">
+    <h4 class="text-sm font-bold text-gray-800 dark:text-white/90 mb-2">
+      {{ 'common.notes' | translate }}
+    </h4>
+    <p class="text-sm text-gray-600 dark:text-gray-400">
+      {{ settings.notes }}
+    </p>
+  </div>
+</div>
+
+<!-- Modal -->
+<app-modal
+  [isOpen]="isOpen"
+  (close)="closeModal()"
+  className="max-w-2xl m-4"
+>
+  <div class="no-scrollbar relative w-full max-w-2xl overflow-y-auto rounded-3xl bg-white p-6 dark:bg-gray-900 lg:p-8">
+    <div class="pr-10 mb-6">
+      <h4 class="text-xl font-bold text-gray-800 dark:text-white/90">
+        {{ 'documentSettings.editTitle' | translate }}
+      </h4>
+      <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+        {{ 'documentSettings.editSubtitle' | translate }}
+      </p>
+    </div>
+    
+    <form class="flex flex-col gap-6" [formGroup]="form" (ngSubmit)="onSubmit()">
+      <div *ngIf="successMessage" class="rounded-xl bg-success-50 p-4 text-sm font-medium text-success-600 dark:bg-success-500/10 dark:text-success-400">
+        {{ successMessage }}
+      </div>
+
+      <div class="space-y-6 max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar">
+        <!-- Purchases Section Toggles -->
+        <div class="space-y-3">
+          <h5 class="text-sm font-bold text-blue-600 dark:text-blue-400 border-b border-gray-100 pb-1 dark:border-gray-800">
+            {{ 'documentSettings.purchasesSection' | translate }}
+          </h5>
+
+          <div class="flex items-center gap-3">
+            <input type="checkbox" formControlName="autoApprovePurchaseOrders" id="autoApprovePurchaseOrders" class="h-5 w-5 rounded border-gray-300 text-brand-500 focus:ring-brand-500 dark:border-gray-700 dark:bg-gray-900">
+            <label for="autoApprovePurchaseOrders" class="text-sm font-medium text-gray-800 dark:text-white/90 cursor-pointer">
+              {{ 'documentSettings.autoApprovePurchaseOrders' | translate }}
+            </label>
+          </div>
+
+          <div class="flex items-center gap-3">
+            <input type="checkbox" formControlName="autoApprovePurchaseInvoices" id="autoApprovePurchaseInvoices" class="h-5 w-5 rounded border-gray-300 text-brand-500 focus:ring-brand-500 dark:border-gray-700 dark:bg-gray-900">
+            <label for="autoApprovePurchaseInvoices" class="text-sm font-medium text-gray-800 dark:text-white/90 cursor-pointer">
+              {{ 'documentSettings.autoApprovePurchaseInvoices' | translate }}
+            </label>
+          </div>
+        </div>
+
+        <!-- Sales Section Toggles -->
+        <div class="space-y-3">
+          <h5 class="text-sm font-bold text-emerald-600 dark:text-emerald-400 border-b border-gray-100 pb-1 dark:border-gray-800">
+            {{ 'documentSettings.salesSection' | translate }}
+          </h5>
+
+          <div class="flex items-center gap-3">
+            <input type="checkbox" formControlName="autoApproveSalesOrders" id="autoApproveSalesOrders" class="h-5 w-5 rounded border-gray-300 text-brand-500 focus:ring-brand-500 dark:border-gray-700 dark:bg-gray-900">
+            <label for="autoApproveSalesOrders" class="text-sm font-medium text-gray-800 dark:text-white/90 cursor-pointer">
+              {{ 'documentSettings.autoApproveSalesOrders' | translate }}
+            </label>
+          </div>
+
+          <div class="flex items-center gap-3">
+            <input type="checkbox" formControlName="autoApproveSalesInvoices" id="autoApproveSalesInvoices" class="h-5 w-5 rounded border-gray-300 text-brand-500 focus:ring-brand-500 dark:border-gray-700 dark:bg-gray-900">
+            <label for="autoApproveSalesInvoices" class="text-sm font-medium text-gray-800 dark:text-white/90 cursor-pointer">
+              {{ 'documentSettings.autoApproveSalesInvoices' | translate }}
+            </label>
+          </div>
+
+
+
+          <div class="flex items-center gap-3">
+            <input type="checkbox" formControlName="allowSaveInvoiceWithoutPayment" id="allowSaveInvoiceWithoutPayment" class="h-5 w-5 rounded border-gray-300 text-brand-500 focus:ring-brand-500 dark:border-gray-700 dark:bg-gray-900">
+            <label for="allowSaveInvoiceWithoutPayment" class="text-sm font-medium text-gray-800 dark:text-white/90 cursor-pointer">
+              {{ 'documentSettings.allowSaveInvoiceWithoutPayment' | translate }}
+            </label>
+          </div>
+
+          <div class="flex items-center gap-3">
+            <input type="checkbox" formControlName="requireCostElementPercentage" id="requireCostElementPercentage" class="h-5 w-5 rounded border-gray-300 text-brand-500 focus:ring-brand-500 dark:border-gray-700 dark:bg-gray-900">
+            <label for="requireCostElementPercentage" class="text-sm font-medium text-gray-800 dark:text-white/90 cursor-pointer">
+              {{ 'documentSettings.requireCostElementPercentage' | translate }}
+            </label>
+          </div>
+        </div>
+
+        <!-- Notes -->
+        <div>
+          <app-label>{{ 'common.notes' | translate }}</app-label>
+          <textarea formControlName="notes" rows="3" class="w-full rounded-xl border border-gray-300 p-3 text-sm focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 dark:border-gray-700 dark:bg-gray-900 dark:text-white"></textarea>
+        </div>
+      </div>
+      
+      <div class="flex items-center justify-end gap-3 pt-4 border-t border-gray-100 dark:border-gray-800">
+        <app-button size="sm" variant="outline" (btnClick)="closeModal()" type="button">{{ 'common.cancel' | translate }}</app-button>
+        <app-button size="sm" [disabled]="isSaving" type="submit">
+          {{ isSaving ? ('common.saving' | translate) : ('common.save' | translate) }}
+        </app-button>
+      </div>
+    </form>
+  </div>
+</app-modal>

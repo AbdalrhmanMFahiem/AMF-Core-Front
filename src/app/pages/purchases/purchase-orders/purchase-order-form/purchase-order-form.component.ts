@@ -15,7 +15,6 @@ import { SearchableSelectComponent, SearchableOption } from '../../../../shared/
 import { DatePickerComponent } from '../../../../shared/components/form/date-picker/date-picker.component';
 import { ItemLookupModalComponent } from '../../../../shared/components/lookups/item-lookup-modal/item-lookup-modal.component';
 import { DocumentStatusBadgeComponent } from '../../../../shared/components/common/document-status-badge/document-status-badge.component';
-import { StatusBadgeComponent } from '../../../../shared/components/ui/status-badge/status-badge.component';
 import { PrintPreviewModalComponent } from '../../../../shared/components/common/print-preview-modal/print-preview-modal.component';
 import { ModalComponent } from '../../../../shared/components/ui/modal/modal.component';
 import { ConfirmationModalComponent } from '../../../../shared/components/common/confirmation-modal/confirmation-modal.component';
@@ -48,7 +47,6 @@ import { QuickVendorModalComponent } from '../../../../shared/components/quick-v
     DatePickerComponent,
     ItemLookupModalComponent,
     DocumentStatusBadgeComponent,
-    StatusBadgeComponent,
     PrintPreviewModalComponent,
     ConfirmationModalComponent,
     LineNotesModalComponent,
@@ -127,7 +125,7 @@ export class PurchaseOrderFormComponent implements OnInit, HasUnsavedChanges {
     dueDate: new Date().toISOString().split('T')[0],
     requiredDate: undefined,
     status: DocumentStatus.Draft,
-    approvalStatus: ApprovalStatus.Pending,
+    approvalStatus: ApprovalStatus.NotRequired,
     exchangeRate: 1,
     discountPercent: 0,
     discountAmount: 0,

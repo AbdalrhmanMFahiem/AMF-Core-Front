@@ -51,8 +51,6 @@
           <!-- Status Badges -->
           <ng-container *ngIf="mode === 'view' && viewResponse">
             <app-document-status-badge [status]="viewResponse.status"></app-document-status-badge>
-            <app-status-badge *ngIf="viewResponse.approvalStatus" [status]="viewResponse.approvalStatus"
-              [translationPrefix]="'common.approvalStatusEnum'"></app-status-badge>
             <app-status-badge *ngIf="viewResponse.paymentStatus" [status]="viewResponse.paymentStatus"
               [translationPrefix]="'common.paidStatusEnum'"></app-status-badge>
           </ng-container>

@@ -1,5 +1,4 @@
 import { DocumentStatusBadgeComponent } from '../../../../shared/components/common/document-status-badge/document-status-badge.component';
-import { StatusBadgeComponent } from '../../../../shared/components/ui/status-badge/status-badge.component';
 import { Component, inject, OnInit, ViewChild, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
@@ -37,7 +36,6 @@ import { ConfirmationModalComponent } from '../../../../shared/components/common
     DatePickerComponent,
     ItemLookupModalComponent,
     DocumentStatusBadgeComponent,
-    StatusBadgeComponent,
     ConfirmationModalComponent],
   templateUrl: './stock-adjustment-form.component.html',
 })

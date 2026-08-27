@@ -1,7 +1,7 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { ConfigInvoiceService } from '../../../core/services/config-invoice.service';
+import { ConfigDocumentService, ConfigDocumentResponse } from '../../../core/services/config-document.service';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { PageBreadcrumbComponent } from '../../../shared/components/common/page-breadcrumb/page-breadcrumb.component';
 import { ModalComponent } from '../../../shared/components/ui/modal/modal.component';
@@ -9,7 +9,7 @@ import { ButtonComponent } from '../../../shared/components/ui/button/button.com
 import { LabelComponent } from '../../../shared/components/form/label/label.component';
 
 @Component({
-  selector: 'app-invoice-settings',
+  selector: 'app-document-settings',
   standalone: true,
   imports: [
     CommonModule, 
@@ -20,21 +20,26 @@ import { LabelComponent } from '../../../shared/components/form/label/label.comp
     ButtonComponent,
     LabelComponent
   ],
-  templateUrl: './invoice-settings.component.html'
+  templateUrl: './document-settings.component.html'
 })
-export class InvoiceSettingsComponent implements OnInit {
+export class DocumentSettingsComponent implements OnInit {
   private fb = inject(FormBuilder);
-  private configInvoiceService = inject(ConfigInvoiceService);
+  private configDocumentService = inject(ConfigDocumentService);
   private translate = inject(TranslateService);
 
   form: FormGroup;
   isLoading = false;
   isSaving = false;
   successMessage = '';
-
   isOpen = false;
 
-  settings = {
+  settings: ConfigDocumentResponse = {
+    id: 0,
+    autoApprovePurchaseOrders: false,
+    autoApprovePurchaseInvoices: false,
+    autoApproveSalesOrders: false,
+    autoApproveSalesInvoices: false,
+    requireStockBeforeConfirm: true,
     allowSaveInvoiceWithoutPayment: false,
     requireCostElementPercentage: true,
     notes: ''
@@ -42,6 +47,11 @@ export class InvoiceSettingsComponent implements OnInit {
 
   constructor() {
     this.form = this.fb.group({
+      autoApprovePurchaseOrders: [false],
+      autoApprovePurchaseInvoices: [false],
+      autoApproveSalesOrders: [false],
+      autoApproveSalesInvoices: [false],
+      requireStockBeforeConfirm: [true],
       allowSaveInvoiceWithoutPayment: [false],
       requireCostElementPercentage: [true],
       notes: ['']
@@ -64,13 +74,20 @@ export class InvoiceSettingsComponent implements OnInit {
 
   loadSettings() {
     this.isLoading = true;
-    this.configInvoiceService.getSettings().subscribe({
+    this.configDocumentService.getSettings().subscribe({
       next: (res) => {
         if (res) {
           const data = (res as any).value || res;
           this.settings = {
-            allowSaveInvoiceWithoutPayment: data.allowSaveInvoiceWithoutPayment || false,
-            requireCostElementPercentage: data.requireCostElementPercentage || false,
+            id: data.id || 0,
+            autoApprovePurchaseOrders: data.autoApprovePurchaseOrders ?? false,
+            autoApprovePurchaseInvoices: data.autoApprovePurchaseInvoices ?? false,
+            autoApproveSalesOrders: data.autoApproveSalesOrders ?? false,
+            autoApproveSalesInvoices: data.autoApproveSalesInvoices ?? false,
+            requireStockBeforeConfirm: data.requireStockBeforeConfirm ?? true,
+            allowSaveInvoiceWithoutPayment: data.allowSaveInvoiceWithoutPayment ?? false,
+            requireCostElementPercentage: data.requireCostElementPercentage ?? true,
+            defaultWarehouseId: data.defaultWarehouseId,
             notes: data.notes || ''
           };
           this.form.patchValue(this.settings);
@@ -90,7 +107,7 @@ export class InvoiceSettingsComponent implements OnInit {
     this.isSaving = true;
     this.successMessage = '';
     
-    this.configInvoiceService.updateSettings(this.form.value).subscribe({
+    this.configDocumentService.updateSettings(this.form.value).subscribe({
       next: () => {
         this.settings = { ...this.settings, ...this.form.value, notes: this.form.value.notes || '' };
         this.isSaving = false;

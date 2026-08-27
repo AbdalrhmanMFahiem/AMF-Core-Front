@@ -257,7 +257,6 @@ export class PurchaseInvoicesListComponent implements OnInit {
     { field: 'totalAmountDisplay', header: 'purchaseInvoices.fields.totalAmount', type: 'text' },
     { field: 'remainingAmountDisplay', header: 'purchaseInvoices.fields.remainingAmount', type: 'text' },
     { field: 'statusDisplay', header: 'common.status', type: 'dynamic-badge' },
-    { field: 'approvalStatusDisplay', header: 'common.approvalStatus', type: 'dynamic-badge' },
     { field: 'paymentStatusDisplay', header: 'common.paymentStatus', type: 'dynamic-badge' }
   ];
 

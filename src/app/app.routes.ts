@@ -275,9 +275,9 @@ export const routes: Routes = [
         title: 'Inventory Settings | AMF Core'
       },
       {
-        path: 'configuration/invoice-settings',
-        loadComponent: () => import('./pages/configuration/invoice-settings/invoice-settings.component').then(c => c.InvoiceSettingsComponent),
-        title: 'Invoice Settings | AMF Core'
+        path: 'configuration/document-settings',
+        loadComponent: () => import('./pages/configuration/document-settings/document-settings.component').then(c => c.DocumentSettingsComponent),
+        title: 'Document Settings | AMF Core'
       },
       {
         path: 'configuration/general-settings',

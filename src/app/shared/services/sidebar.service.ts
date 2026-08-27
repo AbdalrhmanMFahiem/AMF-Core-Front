@@ -83,7 +83,7 @@ export class SidebarService {
             { name: "Company Settings", translationKey: "pages.companySettings", path: "/configuration/company-settings", permissionKey: Permissions.GetCompanySettings, aliases: ['إعدادات الشركة', 'بيانات الشركة', 'company settings', 'company profile'] },
             { name: "General Settings", translationKey: "pages.generalSettings", path: "/configuration/general-settings", permissionKey: Permissions.UpdateGeneralSettings, aliases: ['إعدادات عامة', 'الإعدادات العامة', 'general settings'] },
             { name: "Inventory Settings", translationKey: "pages.inventorySettings", path: "/configuration/inventory-settings", aliases: ['إعدادات المخزون', 'تهيئة المخازن', 'inventory settings'] },
-            { name: "Invoice Settings", translationKey: "pages.invoiceSettings", path: "/configuration/invoice-settings", aliases: ['إعدادات الفواتير', 'تهيئة الفاتورة', 'invoice settings'] },
+            { name: "Document Settings", translationKey: "pages.documentSettings", path: "/configuration/document-settings", aliases: ['إعدادات المستندات', 'إعدادات الفواتير', 'document settings', 'invoice settings'] },
             { name: "Payment Settings", translationKey: "pages.paymentSettings", path: "/configuration/payment-settings", aliases: ['إعدادات الدفع', 'تهيئة السداد', 'payment settings'] },
             { name: "Print & Receipt Settings", translationKey: "printSettings.title", path: "/configurations/print-settings", permissionKey: Permissions.GetPrintSettings, aliases: ['إعدادات الطباعة', 'طباعة الفواتير', 'إعدادات الإيصال', 'print settings', 'receipt settings', 'pos receipt'] }
           ]

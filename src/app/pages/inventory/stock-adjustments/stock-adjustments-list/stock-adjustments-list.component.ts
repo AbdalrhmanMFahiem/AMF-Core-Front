@@ -48,8 +48,7 @@ export class StockAdjustmentsListComponent implements OnInit {
     { field: 'warehouseName', header: 'stockAdjustments.warehouse', type: 'text' },
     { field: 'adjustmentType', header: 'stockAdjustments.type', type: 'adjustment-type' },
     { field: 'adjustmentDate', header: 'common.date', type: 'date' },
-    { field: 'status', header: 'common.status', type: 'document-status' },
-    { field: 'approvalStatusDisplay', header: 'common.approvalStatus', type: 'dynamic-badge' }
+    { field: 'status', header: 'common.status', type: 'document-status' }
   ];
 
   ngOnInit(): void {

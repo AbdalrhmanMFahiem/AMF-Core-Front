@@ -59,11 +59,6 @@ import { ToastrService } from 'ngx-toastr';
               [(ngModel)]="filters.status" (selectionChange)="loadData()"></app-searchable-select>
           </div>
           <div>
-            <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1.5">{{ 'salesQuotations.approvalStatus' | translate }}</label>
-            <app-searchable-select [options]="approvalStatusOptions" placeholder="common.all"
-              [(ngModel)]="filters.approvalStatus" (selectionChange)="loadData()"></app-searchable-select>
-          </div>
-          <div>
             <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1.5">{{ 'common.date' | translate }} ({{ 'common.from' | translate }})</label>
             <app-date-picker id="documentDateFrom" name="documentDateFrom" [(ngModel)]="filters.documentDateFrom" (ngModelChange)="loadData()" [placeholder]="'common.selectDate' | translate"></app-date-picker>
           </div>
@@ -115,7 +110,6 @@ export class SalesQuotationsListComponent implements OnInit {
     return !!(
       this.filters.businessPartnerId ||
       this.filters.status ||
-      this.filters.approvalStatus ||
       this.filters.documentDateFrom ||
       this.filters.documentDateTo ||
       this.filters.dueDateFrom ||
@@ -150,7 +144,7 @@ export class SalesQuotationsListComponent implements OnInit {
       label: 'salesQuotations.convertToInvoice',
       icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path></svg>',
       colorClass: 'text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-500/10',
-      visible: (item: any) => item.approvalStatus === 'Approved' && item.status !== 'Cancelled'
+      visible: (item: any) => item.status !== 'Cancelled'
     },
     {
       id: 'print',
@@ -174,8 +168,7 @@ export class SalesQuotationsListComponent implements OnInit {
     { field: 'businessPartnerName', header: 'common.customer', type: 'text' },
     { field: 'documentDate', header: 'common.date', type: 'date' },
     { field: 'totalAmountDisplay', header: 'salesInvoices.fields.totalAmount', type: 'text' },
-    { field: 'statusDisplay', header: 'common.status', type: 'dynamic-badge' },
-    { field: 'approvalStatusDisplay', header: 'salesQuotations.approvalStatus', type: 'dynamic-badge' }
+    { field: 'statusDisplay', header: 'common.status', type: 'dynamic-badge' }
   ];
 
   ngOnInit(): void {
@@ -213,7 +206,6 @@ export class SalesQuotationsListComponent implements OnInit {
       searchValue: '',
       businessPartnerId: undefined,
       status: undefined,
-      approvalStatus: undefined,
       documentDateFrom: undefined,
       documentDateTo: undefined,
       dueDateFrom: undefined,
