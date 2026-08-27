@@ -8,6 +8,106 @@
 
     <form *ngIf="!isLoading" [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-6">
 
+      <!-- SECTION: Commission Calculation Mode (خصم العمولة من أصل المبلغ أم إضافتها) -->
+      <div class="p-6 rounded-2xl border border-brand-200/70 dark:border-brand-500/30 bg-linear-to-br from-brand-50/20 via-white to-gray-50/30 dark:from-gray-900 dark:via-gray-900 dark:to-gray-900 shadow-xs space-y-4">
+        
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-gray-100 dark:border-gray-800 pb-3">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-brand-500/10 text-brand-600 dark:text-brand-400 flex items-center justify-center text-xl">
+              💳
+            </div>
+            <div>
+              <h4 class="text-base font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                {{ 'paymentSettings.commissionModeTitle' | translate }}
+              </h4>
+              <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                {{ 'paymentSettings.commissionModeDesc' | translate }}
+              </p>
+            </div>
+          </div>
+
+          <!-- Open Interactive Calculator Modal Button -->
+          <button type="button" (click)="openCalculatorModal()"
+            class="inline-flex items-center gap-2 px-4 py-2 text-xs font-bold text-brand-600 dark:text-brand-400 bg-brand-50 dark:bg-brand-500/10 hover:bg-brand-100 dark:hover:bg-brand-500/20 border border-brand-200 dark:border-brand-500/30 rounded-xl transition-all shadow-xs shrink-0 cursor-pointer">
+            <span>🧮</span>
+            <span>{{ 'paymentSettings.openCalculator' | translate }}</span>
+          </button>
+        </div>
+
+        <!-- Interactive Selection Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-1">
+
+          <!-- Option 1: Deduct from Amount (الخصم من أصل المبلغ) -->
+          <div (click)="setCommissionMode(CommissionModes.DeductFromAmount)"
+            class="relative p-5 rounded-2xl border-2 cursor-pointer transition-all duration-200 flex flex-col justify-between gap-3 group"
+            [ngClass]="form.value.commissionMode === CommissionModes.DeductFromAmount
+              ? 'border-brand-500 bg-white dark:bg-gray-800 shadow-md ring-4 ring-brand-500/10'
+              : 'border-gray-200 dark:border-gray-700 bg-white/70 dark:bg-gray-800/60 hover:border-gray-300 dark:hover:border-gray-600'">
+
+            <div class="space-y-2">
+              <div class="flex items-center justify-between gap-2">
+                <div class="flex items-center gap-2">
+                  <span class="w-4 h-4 rounded-full border-2 flex items-center justify-center transition-colors"
+                    [ngClass]="form.value.commissionMode === CommissionModes.DeductFromAmount ? 'border-brand-500 bg-brand-500' : 'border-gray-400'">
+                    <span *ngIf="form.value.commissionMode === CommissionModes.DeductFromAmount" class="w-1.5 h-1.5 rounded-full bg-white"></span>
+                  </span>
+                  <h5 class="text-sm font-extrabold text-gray-900 dark:text-white">
+                    {{ 'paymentSettings.commissionDeductTitle' | translate }}
+                  </h5>
+                </div>
+                <span class="px-2 py-0.5 text-[11px] font-bold rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-500/20 dark:text-emerald-300 dark:border-emerald-500/30">
+                  {{ 'paymentSettings.recommended' | translate }}
+                </span>
+              </div>
+
+              <p class="text-xs text-gray-600 dark:text-gray-300 leading-relaxed">
+                {{ 'paymentSettings.commissionDeductDesc' | translate }}
+              </p>
+            </div>
+
+            <!-- Visual Formula Badge -->
+            <div class="p-2.5 rounded-xl bg-emerald-50/60 dark:bg-emerald-500/10 border border-emerald-100 dark:border-emerald-500/20 text-xs text-emerald-800 dark:text-emerald-300 font-medium">
+              <span class="font-bold">💡 {{ 'paymentSettings.example' | translate }}:</span>
+              1,000 ج.م - 10 ج.م عمولة (1%) = <strong class="font-black text-emerald-700 dark:text-emerald-200">990 ج.م</strong> صافي السداد
+            </div>
+          </div>
+
+          <!-- Option 2: Add on Top of Amount (الإضافة على المبلغ) -->
+          <div (click)="setCommissionMode(CommissionModes.AddOnTop)"
+            class="relative p-5 rounded-2xl border-2 cursor-pointer transition-all duration-200 flex flex-col justify-between gap-3 group"
+            [ngClass]="form.value.commissionMode === CommissionModes.AddOnTop
+              ? 'border-brand-500 bg-white dark:bg-gray-800 shadow-md ring-4 ring-brand-500/10'
+              : 'border-gray-200 dark:border-gray-700 bg-white/70 dark:bg-gray-800/60 hover:border-gray-300 dark:hover:border-gray-600'">
+
+            <div class="space-y-2">
+              <div class="flex items-center justify-between gap-2">
+                <div class="flex items-center gap-2">
+                  <span class="w-4 h-4 rounded-full border-2 flex items-center justify-center transition-colors"
+                    [ngClass]="form.value.commissionMode === CommissionModes.AddOnTop ? 'border-brand-500 bg-brand-500' : 'border-gray-400'">
+                    <span *ngIf="form.value.commissionMode === CommissionModes.AddOnTop" class="w-1.5 h-1.5 rounded-full bg-white"></span>
+                  </span>
+                  <h5 class="text-sm font-extrabold text-gray-900 dark:text-white">
+                    {{ 'paymentSettings.commissionAddTitle' | translate }}
+                  </h5>
+                </div>
+              </div>
+
+              <p class="text-xs text-gray-600 dark:text-gray-300 leading-relaxed">
+                {{ 'paymentSettings.commissionAddDesc' | translate }}
+              </p>
+            </div>
+
+            <!-- Visual Formula Badge -->
+            <div class="p-2.5 rounded-xl bg-brand-50/60 dark:bg-brand-500/10 border border-brand-100 dark:border-brand-500/20 text-xs text-brand-800 dark:text-brand-300 font-medium">
+              <span class="font-bold">💡 {{ 'paymentSettings.example' | translate }}:</span>
+              1,000 ج.م + 10 ج.م عمولة (1%) = <strong class="font-black text-brand-700 dark:text-brand-200">1,010 ج.م</strong> إجمالي المطلوب
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
       <!-- Auto Approve Payments Toggle Card -->
       <div class="p-5 rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 shadow-xs transition-all hover:border-brand-300 dark:hover:border-brand-500/40">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -23,9 +123,9 @@
             </p>
           </div>
 
-          <label class="relative inline-flex items-center cursor-pointer shrink-0">
+          <label class="relative inline-flex items-center cursor-pointer shrink-0 group">
             <input type="checkbox" formControlName="autoApprovePayments" class="sr-only peer" />
-            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:inset-s-0.5 after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:after:border-gray-600 peer-checked:bg-brand-600"></div>
+            <div class="w-12 h-6.5 rounded-full transition-all duration-300 ease-in-out bg-gray-200 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 peer-focus:ring-2 peer-focus:ring-brand-500/30 peer-checked:bg-brand-600 dark:peer-checked:bg-brand-500 peer-checked:border-brand-600 dark:peer-checked:border-brand-500 peer-checked:shadow-sm dark:peer-checked:shadow-[0_0_14px_rgba(70,95,255,0.45)] after:content-[''] after:absolute after:top-0.75 after:inset-s-0.75 after:bg-white dark:after:bg-gray-100 after:rounded-full after:h-5 after:w-5 after:shadow-md dark:after:shadow-black/50 after:transition-all after:duration-300 after:ease-in-out peer-checked:after:translate-x-5.5 rtl:peer-checked:after:-translate-x-5.5 peer-checked:after:bg-white"></div>
           </label>
         </div>
 
@@ -54,9 +154,9 @@
             </p>
           </div>
 
-          <label class="relative inline-flex items-center cursor-pointer shrink-0">
+          <label class="relative inline-flex items-center cursor-pointer shrink-0 group">
             <input type="checkbox" formControlName="allowOverAllocation" class="sr-only peer" />
-            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:inset-s-0.5 after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:after:border-gray-600 peer-checked:bg-brand-600"></div>
+            <div class="w-12 h-6.5 rounded-full transition-all duration-300 ease-in-out bg-gray-200 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 peer-focus:ring-2 peer-focus:ring-brand-500/30 peer-checked:bg-brand-600 dark:peer-checked:bg-brand-500 peer-checked:border-brand-600 dark:peer-checked:border-brand-500 peer-checked:shadow-sm dark:peer-checked:shadow-[0_0_14px_rgba(70,95,255,0.45)] after:content-[''] after:absolute after:top-0.75 after:inset-s-0.75 after:bg-white dark:after:bg-gray-100 after:rounded-full after:h-5 after:w-5 after:shadow-md dark:after:shadow-black/50 after:transition-all after:duration-300 after:ease-in-out peer-checked:after:translate-x-5.5 rtl:peer-checked:after:-translate-x-5.5 peer-checked:after:bg-white"></div>
           </label>
         </div>
       </div>
@@ -68,13 +168,13 @@
         </label>
         <textarea formControlName="notes" rows="3"
           class="w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm outline-none focus:border-brand-500 dark:border-gray-800 dark:text-white"
-          placeholder="ملاحظات إضافية بخصوص سياسات السداد والتخصيص..."></textarea>
+          placeholder="ملاحظات إضافية بخصوص سياسات السداد والعمولات والتخصيص..."></textarea>
       </div>
 
       <!-- Action Buttons -->
       <div class="flex items-center justify-end gap-3 pt-4 border-t border-gray-100 dark:border-gray-800">
         <button type="submit" [disabled]="isSaving"
-          class="px-6 py-2.5 text-xs font-bold text-white bg-brand-600 rounded-xl hover:bg-brand-700 transition-colors shadow-sm disabled:opacity-50 flex items-center gap-2">
+          class="px-6 py-2.5 text-xs font-bold text-white bg-brand-600 rounded-xl hover:bg-brand-700 transition-colors shadow-sm disabled:opacity-50 flex items-center gap-2 cursor-pointer">
           <span *ngIf="isSaving" class="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full"></span>
           {{ 'common.save' | translate }}
         </button>
@@ -83,3 +183,136 @@
     </form>
   </app-component-card>
 </div>
+
+<!-- ========================================================================= -->
+<!-- LIVE COMMISSION CALCULATOR MODAL POPUP (حاسبة ومعاينة تجريبية حية) -->
+<!-- ========================================================================= -->
+<app-modal [isOpen]="isCalculatorModalOpen" (close)="closeCalculatorModal()" [className]="'max-w-xl p-6'">
+  <div class="space-y-5">
+
+    <!-- Modal Header -->
+    <div class="flex items-center justify-between border-b border-gray-100 dark:border-gray-800 pb-3">
+      <div class="flex items-center gap-2.5">
+        <div class="w-9 h-9 rounded-xl bg-brand-500/10 text-brand-600 dark:text-brand-400 flex items-center justify-center text-lg">
+          🧮
+        </div>
+        <div>
+          <h3 class="text-base font-bold text-gray-900 dark:text-white">
+            {{ 'paymentSettings.liveSimulationTitle' | translate }}
+          </h3>
+          <p class="text-xs text-gray-500 dark:text-gray-400">
+            {{ 'paymentSettings.commissionModeDesc' | translate }}
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mode Selector inside Calculator -->
+    <div class="p-4 rounded-xl bg-gray-50 dark:bg-gray-800/80 border border-gray-200 dark:border-gray-700 space-y-2">
+      <label class="block text-xs font-bold text-gray-700 dark:text-gray-300">
+        {{ 'paymentSettings.commissionModeTitle' | translate }}
+      </label>
+      <div class="grid grid-cols-2 gap-2">
+        <button type="button" (click)="setModalPreviewMode(CommissionModes.DeductFromAmount)"
+          class="p-2.5 rounded-xl border text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+          [ngClass]="modalPreviewMode === CommissionModes.DeductFromAmount
+            ? 'bg-emerald-600 text-white border-emerald-600 shadow-xs'
+            : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'">
+          <span>⬇️</span> {{ 'paymentSettings.commissionDeductTitle' | translate }}
+        </button>
+
+        <button type="button" (click)="setModalPreviewMode(CommissionModes.AddOnTop)"
+          class="p-2.5 rounded-xl border text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+          [ngClass]="modalPreviewMode === CommissionModes.AddOnTop
+            ? 'bg-brand-600 text-white border-brand-600 shadow-xs'
+            : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'">
+          <span>⬆️</span> {{ 'paymentSettings.commissionAddTitle' | translate }}
+        </button>
+      </div>
+    </div>
+
+    <!-- Inputs Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <div>
+        <label class="block text-xs font-semibold text-gray-600 dark:text-gray-300 mb-1">
+          {{ 'payments.fields.baseAmount' | translate }} (ج.م)
+        </label>
+        <input type="number" [(ngModel)]="previewBaseAmount" min="1" step="10"
+          class="w-full h-10 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 font-mono font-bold text-gray-900 dark:text-white outline-none focus:border-brand-500" />
+      </div>
+
+      <div>
+        <label class="block text-xs font-semibold text-gray-600 dark:text-gray-300 mb-1">
+          {{ 'payments.fields.commissionPercent' | translate }} (%)
+        </label>
+        <input type="number" [(ngModel)]="previewCommissionPercent" min="0" max="100" step="0.1"
+          class="w-full h-10 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 font-mono font-bold text-gray-900 dark:text-white outline-none focus:border-brand-500" />
+      </div>
+
+      <div>
+        <label class="block text-xs font-semibold text-gray-600 dark:text-gray-300 mb-1">
+          {{ 'payments.fields.fixedCommission' | translate }} (ج.م)
+        </label>
+        <input type="number" [(ngModel)]="previewFixedCommission" min="0" step="1"
+          class="w-full h-10 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 font-mono font-bold text-gray-900 dark:text-white outline-none focus:border-brand-500" />
+      </div>
+    </div>
+
+    <!-- Live Calculated Results Breakdown Card -->
+    <div class="p-5 rounded-2xl border transition-all space-y-4"
+      [ngClass]="modalPreviewMode === CommissionModes.DeductFromAmount
+        ? 'bg-emerald-50/50 dark:bg-emerald-500/10 border-emerald-200 dark:border-emerald-500/30'
+        : 'bg-brand-50/50 dark:bg-brand-500/10 border-brand-200 dark:border-brand-500/30'">
+
+      <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 text-xs">
+        <div>
+          <span class="block text-gray-500 dark:text-gray-400 mb-1">{{ 'payments.fields.baseAmount' | translate }}</span>
+          <span class="text-sm font-bold text-gray-800 dark:text-gray-200 font-mono">{{ previewBaseAmount | number:'1.2-2' }} ج.م</span>
+        </div>
+
+        <div>
+          <span class="block text-gray-500 dark:text-gray-400 mb-1">
+            {{ 'payments.fields.commissionAmount' | translate }}
+            <span *ngIf="previewCommissionPercent">({{ previewCommissionPercent }}%)</span>
+          </span>
+          <span class="text-sm font-bold text-red-600 dark:text-red-400 font-mono">{{ previewCommissionAmount | number:'1.2-2' }} ج.م</span>
+        </div>
+
+        <div class="col-span-2 sm:col-span-1">
+          <span class="block text-gray-500 dark:text-gray-400 mb-1">
+            {{ (modalPreviewMode === CommissionModes.DeductFromAmount ? 'paymentSettings.netFinalAmount' : 'payments.fields.totalWithCommission') | translate }}
+          </span>
+          <span class="text-base font-black font-mono"
+            [ngClass]="modalPreviewMode === CommissionModes.DeductFromAmount ? 'text-emerald-700 dark:text-emerald-400' : 'text-brand-700 dark:text-brand-400'">
+            {{ previewFinalAmount | number:'1.2-2' }} ج.م
+          </span>
+        </div>
+      </div>
+
+      <!-- Formula Line -->
+      <div class="pt-3 border-t border-gray-200 dark:border-gray-700/60 flex items-center justify-between text-xs">
+        <span class="font-medium text-gray-600 dark:text-gray-300">
+          📐 {{ 'paymentSettings.formulaLabel' | translate }}:
+        </span>
+        <span class="font-mono font-bold text-gray-800 dark:text-gray-200 dir-ltr">
+          {{ previewBaseAmount | number:'1.2-2' }} {{ modalPreviewMode === CommissionModes.DeductFromAmount ? '-' : '+' }} {{ previewCommissionAmount | number:'1.2-2' }} = {{ previewFinalAmount | number:'1.2-2' }} EGP
+        </span>
+      </div>
+    </div>
+
+    <!-- Modal Footer Actions -->
+    <div class="flex items-center justify-end gap-3 pt-3 border-t border-gray-100 dark:border-gray-800">
+      <button type="button" (click)="closeCalculatorModal()"
+        class="px-4 py-2 text-xs font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-xl transition-colors cursor-pointer">
+        {{ 'common.close' | translate }}
+      </button>
+
+      <button type="button" (click)="applyModalMode()"
+        class="px-5 py-2 text-xs font-bold text-white bg-brand-600 hover:bg-brand-700 rounded-xl transition-colors shadow-xs cursor-pointer flex items-center gap-1.5">
+        <span>✓</span>
+        <span>{{ 'paymentSettings.applyThisMode' | translate }}</span>
+      </button>
+    </div>
+
+  </div>
+</app-modal>

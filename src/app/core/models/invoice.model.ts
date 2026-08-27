@@ -30,6 +30,7 @@ export interface InvoiceBasicResponse {
   status: DocumentStatus;
   approvalStatus?: ApprovalStatus;
   paymentStatus?: PaymentStatus;
+  businessPartnerId: number;
   businessPartnerName: string;
   warehouseId?: number;
   warehouseName?: string;

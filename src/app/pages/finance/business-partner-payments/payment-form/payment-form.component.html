@@ -583,7 +583,7 @@
         <!-- EWallet Commission Recalculation & Override Panel -->
         <div *ngIf="+model.method === 7"
           class="sm:col-span-2 p-5 bg-brand-50/40 dark:bg-brand-500/10 border border-brand-200 dark:border-brand-500/30 rounded-xl space-y-4">
-          <div class="flex items-center justify-between border-b border-brand-200 dark:border-brand-500/20 pb-3">
+          <div class="flex flex-wrap items-center justify-between gap-3 border-b border-brand-200 dark:border-brand-500/20 pb-3">
             <span
               class="text-xs font-bold text-brand-800 dark:text-brand-300 uppercase tracking-wider flex items-center gap-2">
               <svg class="w-4 h-4 text-brand-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -592,6 +592,25 @@
               </svg>
               {{ 'eWalletProviders.commissionDetails' | translate }}
             </span>
+
+            <!-- Mode Switcher -->
+            <div class="inline-flex p-1 bg-white dark:bg-gray-800 rounded-xl border border-brand-200 dark:border-brand-500/30 text-xs">
+              <button type="button" (click)="setCommissionMode(1)"
+                class="px-3 py-1 rounded-lg font-bold transition-all flex items-center gap-1"
+                [ngClass]="+commissionMode === 1
+                  ? 'bg-emerald-600 text-white shadow-xs'
+                  : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'">
+                <span>⬇️</span> {{ 'paymentSettings.commissionDeductTitle' | translate }}
+              </button>
+              <button type="button" (click)="setCommissionMode(2)"
+                class="px-3 py-1 rounded-lg font-bold transition-all flex items-center gap-1 cursor-pointer"
+                [ngClass]="+commissionMode === 2
+                  ? 'bg-brand-600 text-white shadow-xs'
+                  : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'">
+                <span>⬆️</span> {{ 'paymentSettings.commissionAddTitle' | translate }}
+              </button>
+            </div>
+
             <div class="flex items-center gap-2 text-xs">
               <span
                 class="px-2.5 py-1 bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-gray-700 rounded-md font-medium">
@@ -630,11 +649,15 @@
             </div>
 
             <div>
-              <label class="block text-success-700 dark:text-success-400 font-bold mb-1">
-                {{ 'payments.fields.amountAfterCommission' | translate }}
+              <label class="block font-bold mb-1"
+                [ngClass]="+commissionMode === 1 ? 'text-emerald-700 dark:text-emerald-400' : 'text-brand-700 dark:text-brand-400'">
+                {{ (+commissionMode === 1 ? 'paymentSettings.netFinalAmount' : 'payments.fields.amountAfterCommission') | translate }}
               </label>
               <div
-                class="p-2 bg-success-50 dark:bg-success-500/10 border border-success-200 dark:border-success-500/30 rounded-lg text-sm font-black text-success-700 dark:text-success-400 dir-ltr text-center">
+                class="p-2 border rounded-lg text-sm font-black dir-ltr text-center"
+                [ngClass]="+commissionMode === 1
+                  ? 'bg-emerald-50 dark:bg-emerald-500/10 border-emerald-200 dark:border-emerald-500/30 text-emerald-700 dark:text-emerald-400'
+                  : 'bg-brand-50 dark:bg-brand-500/10 border-brand-200 dark:border-brand-500/30 text-brand-700 dark:text-brand-400'">
                 {{ totalAmountWithCommission | number:'1.2-2' }}
               </div>
             </div>

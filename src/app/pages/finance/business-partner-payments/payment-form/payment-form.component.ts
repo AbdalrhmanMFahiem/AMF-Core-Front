@@ -28,6 +28,8 @@ import { InvoiceAllocationModalComponent, SelectableInvoiceItem } from '../../..
 import { AllocationRequest } from '../../../../core/models/business-partner-payment.model';
 
 import { ModalComponent } from '../../../../shared/components/ui/modal/modal.component';
+import { ConfigPaymentService } from '../../../../core/services/config-payment.service';
+import { CommissionCalculationMode } from '../../../../core/models/config-payment.model';
 
 @Component({
   selector: 'app-payment-form',
@@ -52,11 +54,14 @@ export class PaymentFormComponent implements OnInit {
   private service = inject(BusinessPartnerPaymentService);
   private lookupService = inject(LookupService);
   private ewalletService = inject(EWalletProviderService);
+  private configPaymentService = inject(ConfigPaymentService);
   private translate = inject(TranslateService);
   private toastr = inject(ToastrService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private configService = inject(AppConfigService);
+
+  commissionMode: number = CommissionCalculationMode.DeductFromAmount;
 
   id: number | null = null;
   mode: 'add' | 'view' = 'add';
@@ -167,6 +172,11 @@ export class PaymentFormComponent implements OnInit {
     this.recalculateCommissionFromPercent();
   }
 
+  setCommissionMode(mode: number): void {
+    this.commissionMode = mode;
+    this.recalculateCommissionFromPercent();
+  }
+
   onCommissionAmountChange(amt: number): void {
     this.commissionAmount = Number(amt) || 0;
     const netBase = this.baseAmount;
@@ -176,7 +186,11 @@ export class PaymentFormComponent implements OnInit {
     } else {
       this.appliedCommissionPercent = 0;
     }
-    this.totalAmountWithCommission = netBase + this.commissionAmount;
+    if (+this.commissionMode === 1) {
+      this.totalAmountWithCommission = Number((netBase - this.commissionAmount).toFixed(2));
+    } else {
+      this.totalAmountWithCommission = Number((netBase + this.commissionAmount).toFixed(2));
+    }
     this.syncModelCommission();
   }
 
@@ -186,7 +200,11 @@ export class PaymentFormComponent implements OnInit {
     const fixed = this.appliedFixedCommission;
 
     this.commissionAmount = Number((fixed + (netBase * (pct / 100))).toFixed(2));
-    this.totalAmountWithCommission = Number((netBase + this.commissionAmount).toFixed(2));
+    if (+this.commissionMode === 1) { // Deduct from base amount
+      this.totalAmountWithCommission = Number((netBase - this.commissionAmount).toFixed(2));
+    } else { // Add on top
+      this.totalAmountWithCommission = Number((netBase + this.commissionAmount).toFixed(2));
+    }
     this.syncModelCommission();
   }
 
@@ -256,6 +274,7 @@ export class PaymentFormComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.loadPaymentSettings();
     this.route.url.subscribe(url => {
       const path = url[url.length - (this.route.snapshot.paramMap.has('id') ? 2 : 1)]?.path;
       if (path === 'view') this.mode = 'view';
@@ -272,6 +291,18 @@ export class PaymentFormComponent implements OnInit {
       this.loadBanks();
       this.loadEWalletProviders();
     }
+  }
+
+  loadPaymentSettings(): void {
+    this.configPaymentService.getSettings().subscribe({
+      next: (config) => {
+        if (config?.commissionMode) {
+          this.commissionMode = config.commissionMode;
+          this.recalculateCommissionFromPercent();
+        }
+      },
+      error: () => {}
+    });
   }
 
   getNextCode(): void {

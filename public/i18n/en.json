@@ -2386,8 +2386,10 @@
       "appliedCommission": "Applied Commission",
       "commissionPercent": "Commission %",
       "fixedCommission": "Fixed Commission",
-      "commissionAmount": "Total Commission Amount"
+      "commissionAmount": "Total Commission Amount",
+      "totalWithCommission": "Total with Commission"
     },
+    "uploadReceipt": "Upload Receipt / Transfer Proof",
     "allocationsTitle": "Allocate Payment to Partner Invoices",
     "allocateModalHint": "Select open pending invoices and specify allocation amount for each",
     "autoAllocateBtn": "Auto Allocate",
@@ -2452,6 +2454,22 @@
     "statusAutoApproveActive": "Automatic approval & immediate ledger posting active (Default)",
     "statusManualVerificationRequired": "Manual verification by payment manager required before posting to ledger",
     "allowOverAllocation": "Allow over-allocation on invoices",
-    "allowOverAllocationHint": "Permits allocating amounts larger than the invoice remaining balance"
+    "allowOverAllocationHint": "Permits allocating amounts larger than the invoice remaining balance",
+    "commissionModeTitle": "Payment Commission Calculation Mode",
+    "commissionModeDesc": "Configure whether provider and payment gateway commissions are deducted from base amount or added on top",
+    "commissionDeductTitle": "Deduct Commission from Base Amount (Net Amount)",
+    "commissionDeductDesc": "Deducts the commission from the base payment amount. Net received/paid equals base amount minus commission.",
+    "commissionAddTitle": "Add Commission on Top of Base Amount (Total Amount)",
+    "commissionAddDesc": "Adds the commission on top of the base amount. The customer/partner is charged extra for the commission.",
+    "recommended": "Recommended",
+    "example": "Example",
+    "liveSimulationTitle": "Live Interactive Simulation & Preview",
+    "modeDeductActive": "Active Mode: Deduct commission from base amount (Net = Base - Commission)",
+    "modeAddActive": "Active Mode: Add commission on top of base amount (Total = Base + Commission)",
+    "netFinalAmount": "Net Amount Received / Paid",
+    "openCalculator": "Test & Live Calculator",
+    "formulaLabel": "Calculation Formula",
+    "applyThisMode": "Apply this Mode to Settings",
+    "modeApplied": "Calculation mode applied successfully"
   }
 }
