@@ -1,0 +1,264 @@
+<div class="relative inline-flex items-center">
+  <!-- Trigger Button -->
+  <button (click)="toggleDropdown()" type="button" [attr.title]="'backendConnection.title' | translate" [ngClass]="[
+      'relative inline-flex items-center justify-center text-gray-500 transition-all bg-white border border-gray-200 rounded-full dropdown-toggle hover:text-brand-600 hover:border-brand-300 hover:bg-brand-50/50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-brand-400 dark:hover:border-brand-500/40 cursor-pointer active:scale-95 shrink-0 shadow-2xs group',
+      sizeClass
+    ]">
+    <!-- Server Stack / API Link Icon -->
+    <svg class="w-4 h-4 transition-transform duration-200 group-hover:scale-110" viewBox="0 0 24 24" fill="none"
+      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect>
+      <rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect>
+      <line x1="6" y1="6" x2="6.01" y2="6"></line>
+      <line x1="6" y1="18" x2="6.01" y2="18"></line>
+      <path d="M18 6h.01M18 18h.01M10 6h4M10 18h4"></path>
+    </svg>
+
+    <!-- Status Ping Dot on top edge -->
+    <span class="absolute -top-0.5 ltr:-right-0.5 rtl:-left-0.5 z-10 flex h-2.5 w-2.5">
+      @if (status === 'online') {
+      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+      <span
+        class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500 ring-2 ring-white dark:ring-gray-800"></span>
+      } @else if (status === 'checking') {
+      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+      <span
+        class="relative inline-flex rounded-full h-2.5 w-2.5 bg-amber-500 ring-2 ring-white dark:ring-gray-800"></span>
+      } @else if (status === 'offline') {
+      <span
+        class="relative inline-flex rounded-full h-2.5 w-2.5 bg-rose-500 ring-2 ring-white dark:ring-gray-800"></span>
+      } @else {
+      <span
+        class="relative inline-flex rounded-full h-2.5 w-2.5 bg-gray-400 ring-2 ring-white dark:ring-gray-800"></span>
+      }
+    </span>
+  </button>
+
+  <!-- Dropdown Popup -->
+  <app-dropdown [isOpen]="isOpen" (close)="closeDropdown()" [className]="
+      'absolute ltr:right-0 rtl:left-0 rtl:right-auto flex w-80 sm:w-96 flex-col rounded-2xl border border-gray-200/90 bg-white/95 backdrop-blur-xl p-4 shadow-2xl dark:border-gray-800 dark:bg-gray-900/95 z-50 transition-all duration-200 ' +
+      (openUp ? 'bottom-full! top-auto! mb-2.5 mt-0!' : 'mt-2.5')
+    ">
+    <!-- Header -->
+    <div class="flex items-center justify-between pb-3 mb-3 border-b border-gray-100 dark:border-gray-800">
+      <div class="flex items-center gap-2.5">
+        <div
+          class="flex items-center justify-center w-9 h-9 rounded-xl bg-linear-to-tr from-brand-600 to-indigo-600 text-white shadow-xs shrink-0">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M12 5l7 7-7 7" />
+          </svg>
+        </div>
+        <div class="flex flex-col text-start">
+          <h4 class="text-sm font-bold text-gray-900 dark:text-white leading-tight">
+            {{ 'backendConnection.title' | translate }}
+          </h4>
+          <span class="text-[11px] font-medium text-gray-400 dark:text-gray-500">
+            {{ 'backendConnection.configSource' | translate }}
+          </span>
+        </div>
+      </div>
+
+      <!-- Status Badge -->
+      <div>
+        @if (status === 'online') {
+        <span
+          class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 shadow-2xs">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+          {{ 'backendConnection.online' | translate }}
+        </span>
+        } @else if (status === 'checking') {
+        <span
+          class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 shadow-2xs">
+          <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-ping"></span>
+          {{ 'backendConnection.checking' | translate }}
+        </span>
+        } @else if (status === 'offline') {
+        <span
+          class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20 shadow-2xs">
+          <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
+          {{ 'backendConnection.offline' | translate }}
+        </span>
+        } @else {
+        <span
+          class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400">
+          {{ 'backendConnection.unknown' | translate }}
+        </span>
+        }
+      </div>
+    </div>
+
+    <!-- Main URL Box Card -->
+    <div
+      class="p-3 mb-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/60 shadow-2xs">
+      <div class="flex items-center justify-between mb-1.5">
+        <span
+          class="text-[11px] font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 flex items-center gap-1.5">
+          <svg class="w-3.5 h-3.5 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+          </svg>
+          {{ 'backendConnection.serverUrl' | translate }}
+        </span>
+
+        <!-- Secure SSL Badge -->
+        <span
+          [ngClass]="isSecure ? 'text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10' : 'text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-500/10'"
+          class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase tracking-wide">
+          @if (isSecure) {
+          <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+          </svg>
+          } @else {
+          <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z" />
+          </svg>
+          }
+          {{ parsedUrl.protocol }}
+        </span>
+      </div>
+
+      <!-- URL String with Copy Action -->
+      <div
+        class="flex items-center justify-between gap-2 p-2 rounded-lg bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700/80">
+        <span
+          class="font-mono text-xs sm:text-sm font-semibold text-gray-800 dark:text-gray-200 truncate select-all ltr:text-left rtl:text-left direction-ltr">
+          {{ apiUrl }}
+        </span>
+
+        <!-- Copy Button -->
+        <button (click)="copyUrl()" type="button" [attr.title]="'backendConnection.copyUrl' | translate"
+          class="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold rounded-md transition-all cursor-pointer shrink-0"
+          [ngClass]="
+            copied
+              ? 'bg-emerald-600 text-white shadow-xs'
+              : 'bg-gray-100 hover:bg-brand-50 hover:text-brand-600 text-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-brand-500/20 dark:hover:text-brand-400'
+          ">
+          @if (copied) {
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+          </svg>
+          <span>{{ 'backendConnection.copied' | translate }}</span>
+          } @else {
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+          </svg>
+          <span>{{ 'backendConnection.copyUrl' | translate }}</span>
+          }
+        </button>
+      </div>
+    </div>
+
+    <!-- Connected Database (Tenant ID) Box Card -->
+    @if (currentTenantId) {
+    <div
+      class="p-3 mb-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/60 shadow-2xs">
+      <div class="flex items-center justify-between mb-1.5">
+        <span
+          class="text-[11px] font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 flex items-center gap-1.5">
+          <span class="relative flex h-2 w-2 shrink-0">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+          </span>
+          {{ 'footer.connectedDb' | translate }}
+        </span>
+
+        <span
+          class="text-[10px] font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 px-2 py-0.5 rounded font-mono uppercase">
+          Tenant Active
+        </span>
+      </div>
+
+      <div
+        class="flex items-center justify-between gap-2 p-2 rounded-lg bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700/80">
+        <span
+          class="font-mono text-xs sm:text-sm font-semibold text-gray-800 dark:text-gray-200 truncate select-all ltr:text-left rtl:text-left direction-ltr">
+          {{ currentTenantId }}
+        </span>
+
+        <button (click)="copyTenantId()" type="button" [attr.title]="'backendConnection.copyUrl' | translate"
+          class="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold rounded-md transition-all cursor-pointer shrink-0"
+          [ngClass]="
+              tenantCopied
+                ? 'bg-emerald-600 text-white shadow-xs'
+                : 'bg-gray-100 hover:bg-brand-50 hover:text-brand-600 text-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-brand-500/20 dark:hover:text-brand-400'
+            ">
+          @if (tenantCopied) {
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+          </svg>
+          <span>{{ 'backendConnection.copied' | translate }}</span>
+          } @else {
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+          </svg>
+          <span>{{ 'backendConnection.copyUrl' | translate }}</span>
+          }
+        </button>
+      </div>
+    </div>
+    }
+
+    <!-- Technical Details Grid -->
+    <div class="grid grid-cols-2 gap-2 mb-3 text-xs">
+      <div class="p-2 rounded-lg bg-gray-50 dark:bg-gray-800/40 border border-gray-100 dark:border-gray-800">
+        <span class="block text-[10px] uppercase font-semibold text-gray-400 dark:text-gray-500">{{
+          'backendConnection.host' | translate }}</span>
+        <span class="font-mono font-bold text-gray-700 dark:text-gray-300 truncate block">{{ parsedUrl.host }}</span>
+      </div>
+
+      <div class="p-2 rounded-lg bg-gray-50 dark:bg-gray-800/40 border border-gray-100 dark:border-gray-800">
+        <span class="block text-[10px] uppercase font-semibold text-gray-400 dark:text-gray-500">{{
+          'backendConnection.port' | translate }}</span>
+        <span class="font-mono font-bold text-gray-700 dark:text-gray-300 block">{{ parsedUrl.port }}</span>
+      </div>
+
+      @if (latency !== null) {
+      <div
+        class="p-2 rounded-lg bg-emerald-50/50 dark:bg-emerald-950/20 border border-emerald-100 dark:border-emerald-900/30 col-span-2 flex items-center justify-between">
+        <div class="flex items-center gap-1.5 text-emerald-700 dark:text-emerald-400">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="10" stroke-width="2"></circle>
+            <polyline points="12 6 12 12 16 14" stroke-width="2"></polyline>
+          </svg>
+          <span class="text-[11px] font-medium">{{ 'backendConnection.latency' | translate }}:</span>
+          <span class="font-mono font-bold text-xs">{{ latency }} ms</span>
+        </div>
+
+        <div class="flex items-center gap-1.5 text-[11px] text-emerald-700 dark:text-emerald-400 font-mono"
+          *ngIf="pingData">
+          <span class="px-1.5 py-0.5 rounded bg-emerald-500/15 font-semibold">GET /ping</span>
+          <span class="font-bold">{{ pingData.message || 'Pong' }}</span>
+        </div>
+      </div>
+      }
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="flex items-center gap-2 pt-2 border-t border-gray-100 dark:border-gray-800">
+      <!-- Re-check connection button -->
+      <button (click)="checkConnection()" [disabled]="status === 'checking'" type="button"
+        class="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-semibold rounded-xl bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 transition-colors cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed">
+        <svg class="w-3.5 h-3.5" [ngClass]="{ 'animate-spin': status === 'checking' }" fill="none" stroke="currentColor"
+          viewBox="0 0 24 24" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+        </svg>
+        <span>{{ 'backendConnection.checkAgain' | translate }}</span>
+      </button>
+
+      <!-- Open in new tab -->
+      <button (click)="openUrl()" type="button"
+        class="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-semibold rounded-xl bg-brand-50 hover:bg-brand-100 dark:bg-brand-500/15 dark:hover:bg-brand-500/25 text-brand-600 dark:text-brand-400 transition-colors cursor-pointer">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+        </svg>
+        <span>{{ 'backendConnection.openInBrowser' | translate }}</span>
+      </button>
+    </div>
+  </app-dropdown>
+</div>

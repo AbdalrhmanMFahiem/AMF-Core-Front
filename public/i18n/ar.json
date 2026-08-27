@@ -1,4 +1,23 @@
 {
+  "backendConnection": {
+    "title": "اتصال السيرفر (Backend)",
+    "serverUrl": "رابط الاتصال (API URL)",
+    "status": "حالة الاتصال",
+    "online": "متصل ومتاح",
+    "offline": "غير متصل",
+    "checking": "جاري الفحص...",
+    "unknown": "غير محدد",
+    "copyUrl": "نسخ الرابط",
+    "copied": "تم النسخ بنجاح!",
+    "openInBrowser": "فتح الرابط",
+    "protocol": "البروتوكول",
+    "port": "المنفذ",
+    "host": "المضيف",
+    "source": "المصدر",
+    "checkAgain": "إعادة الفحص",
+    "latency": "زمن الاستجابة",
+    "configSource": "ملف الإعدادات (config.json)"
+  },
   "footer": {
     "company": "الشركة",
     "branch": "الفرع",

@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { AuthService } from '../../../core/services/auth.service';
 import { AuthResponse } from '../../../core/models/auth.models';
 import { TranslateModule } from '@ngx-translate/core';
+import { BackendConnectionDropdownComponent } from '../../components/header/backend-connection-dropdown/backend-connection-dropdown.component';
 
 @Component({
   selector: 'app-footer',
   standalone: true,
-  imports: [CommonModule, TranslateModule],
+  imports: [CommonModule, TranslateModule, BackendConnectionDropdownComponent],
   templateUrl: './app-footer.component.html',
 })
 export class AppFooterComponent implements OnInit {

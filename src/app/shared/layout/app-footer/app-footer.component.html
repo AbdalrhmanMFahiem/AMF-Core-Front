@@ -1,5 +1,5 @@
-<footer class="mt-auto w-full bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 py-4 px-6 transition-colors duration-300">
-  <div class="flex flex-col md:flex-row items-center justify-between gap-4" *ngIf="userData as user">
+<footer class="mt-auto w-full bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 py-3.5 px-6 transition-colors duration-300">
+  <div class="flex flex-col md:flex-row items-center justify-between gap-4" *ngIf="userData as user; else simpleFooter">
     <!-- Company & Branch Info -->
     <div class="flex flex-wrap items-center gap-4 text-sm text-gray-600 dark:text-gray-300 font-medium">
       <!-- Company Info -->
@@ -42,16 +42,28 @@
       </a>
     </div>
 
-    <!-- Database Info & Copyright -->
-    <div class="flex flex-col items-center md:items-end text-sm text-gray-500 dark:text-gray-400">
-      <div class="flex items-center gap-2 mb-1" *ngIf="user.tenantId">
-        <span class="relative flex h-2.5 w-2.5">
-          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-          <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-500"></span>
-        </span>
-        <span class="text-xs font-semibold">{{ 'footer.connectedDb' | translate }} <span class="font-mono text-gray-700 dark:text-gray-300">{{ user.tenantId }}</span></span>
-      </div>
+    <!-- Backend Status & Copyright -->
+    <div class="flex items-center gap-3 text-sm text-gray-500 dark:text-gray-400">
+      <app-backend-connection-dropdown [openUp]="true" sizeClass="h-7 w-7" />
       <p class="text-xs">&copy; {{ currentYear }} AMFCore. {{ 'footer.allRightsReserved' | translate }}</p>
     </div>
   </div>
+
+  <ng-template #simpleFooter>
+    <div class="flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-gray-500 dark:text-gray-400">
+      <!-- Powered by Section -->
+      <div class="flex items-center gap-2.5 px-3.5 py-1.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/60 shadow-2xs">
+        <span class="text-[11px] font-medium text-gray-400 uppercase tracking-wider">Powered by</span>
+        <a href="https://www.linkedin.com/in/abdalrhman-m-fahiem-b8aa5b1b6/" target="_blank" rel="noopener noreferrer" class="flex items-center group">
+          <img src="/images/logo/AMF-Core-Icon.png" alt="AMF Core Logo" class="h-6 w-auto dark:hidden object-contain" />
+          <img src="/images/logo/AMF-Core-Dark-mode.png" alt="AMF Core Logo" class="h-6 w-auto hidden dark:block object-contain" />
+        </a>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <app-backend-connection-dropdown [openUp]="true" sizeClass="h-7 w-7" />
+        <p class="text-xs">&copy; {{ currentYear }} AMFCore. {{ 'footer.allRightsReserved' | translate }}</p>
+      </div>
+    </div>
+  </ng-template>
 </footer>

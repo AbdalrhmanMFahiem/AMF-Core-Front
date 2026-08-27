@@ -1,4 +1,23 @@
 {
+  "backendConnection": {
+    "title": "Backend Connection",
+    "serverUrl": "API Connection URL",
+    "status": "Connection Status",
+    "online": "Connected & Online",
+    "offline": "Disconnected / Offline",
+    "checking": "Checking...",
+    "unknown": "Unknown",
+    "copyUrl": "Copy URL",
+    "copied": "Copied Successfully!",
+    "openInBrowser": "Open URL",
+    "protocol": "Protocol",
+    "port": "Port",
+    "host": "Host",
+    "source": "Source",
+    "checkAgain": "Re-check",
+    "latency": "Latency",
+    "configSource": "Configuration (config.json)"
+  },
   "footer": {
     "company": "Company",
     "branch": "Branch",
