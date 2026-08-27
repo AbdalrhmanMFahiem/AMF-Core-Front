@@ -594,57 +594,96 @@
     "title": "المحافظات",
     "addNew": "إضافة محافظة جديدة",
     "saveSuccess": "تم حفظ المحافظة بنجاح",
-    "add": { "title": "إضافة محافظة" },
-    "edit": { "title": "تعديل محافظة" },
-    "view": { "title": "عرض محافظة" },
+    "add": {
+      "title": "إضافة محافظة"
+    },
+    "edit": {
+      "title": "تعديل محافظة"
+    },
+    "view": {
+      "title": "عرض محافظة"
+    },
     "fields": {
-      "code": "الكود", "codePlaceholder": "أدخل الكود",
+      "code": "الكود",
+      "codePlaceholder": "أدخل الكود",
       "name": "الاسم",
-      "aName": "الاسم (عربي)", "aNamePlaceholder": "أدخل الاسم بالعربية",
-      "eName": "الاسم (إنجليزي)", "eNamePlaceholder": "أدخل الاسم بالإنجليزية",
-      "country": "الدولة", "countryPlaceholder": "اختر الدولة",
-      "notes": "ملاحظات", "notesPlaceholder": "أدخل الملاحظات",
+      "aName": "الاسم (عربي)",
+      "aNamePlaceholder": "أدخل الاسم بالعربية",
+      "eName": "الاسم (إنجليزي)",
+      "eNamePlaceholder": "أدخل الاسم بالإنجليزية",
+      "country": "الدولة",
+      "countryPlaceholder": "اختر الدولة",
+      "notes": "ملاحظات",
+      "notesPlaceholder": "أدخل الملاحظات",
       "status": "الحالة"
     },
-    "list": { "title": "قائمة المحافظات" },
+    "list": {
+      "title": "قائمة المحافظات"
+    },
     "searchPlaceholder": "البحث عن محافظات..."
   },
   "cities": {
     "title": "المدن",
     "addNew": "إضافة مدينة جديدة",
     "saveSuccess": "تم حفظ المدينة بنجاح",
-    "add": { "title": "إضافة مدينة" },
-    "edit": { "title": "تعديل مدينة" },
-    "view": { "title": "عرض مدينة" },
+    "add": {
+      "title": "إضافة مدينة"
+    },
+    "edit": {
+      "title": "تعديل مدينة"
+    },
+    "view": {
+      "title": "عرض مدينة"
+    },
     "fields": {
-      "code": "الكود", "codePlaceholder": "أدخل الكود",
+      "code": "الكود",
+      "codePlaceholder": "أدخل الكود",
       "name": "الاسم",
-      "aName": "الاسم (عربي)", "aNamePlaceholder": "أدخل الاسم بالعربية",
-      "eName": "الاسم (إنجليزي)", "eNamePlaceholder": "أدخل الاسم بالإنجليزية",
-      "governorate": "المحافظة", "governoratePlaceholder": "اختر المحافظة",
-      "notes": "ملاحظات", "notesPlaceholder": "أدخل الملاحظات",
+      "aName": "الاسم (عربي)",
+      "aNamePlaceholder": "أدخل الاسم بالعربية",
+      "eName": "الاسم (إنجليزي)",
+      "eNamePlaceholder": "أدخل الاسم بالإنجليزية",
+      "governorate": "المحافظة",
+      "governoratePlaceholder": "اختر المحافظة",
+      "notes": "ملاحظات",
+      "notesPlaceholder": "أدخل الملاحظات",
       "status": "الحالة"
     },
-    "list": { "title": "قائمة المدن" },
+    "list": {
+      "title": "قائمة المدن"
+    },
     "searchPlaceholder": "البحث عن مدن..."
   },
   "districts": {
     "title": "الأحياء",
     "addNew": "إضافة حي جديد",
     "saveSuccess": "تم حفظ الحي بنجاح",
-    "add": { "title": "إضافة حي" },
-    "edit": { "title": "تعديل حي" },
-    "view": { "title": "عرض حي" },
+    "add": {
+      "title": "إضافة حي"
+    },
+    "edit": {
+      "title": "تعديل حي"
+    },
+    "view": {
+      "title": "عرض حي"
+    },
     "fields": {
-      "code": "الكود", "codePlaceholder": "أدخل الكود",
+      "code": "الكود",
+      "codePlaceholder": "أدخل الكود",
       "name": "الاسم",
-      "aName": "الاسم (عربي)", "aNamePlaceholder": "أدخل الاسم بالعربية",
-      "eName": "الاسم (إنجليزي)", "eNamePlaceholder": "أدخل الاسم بالإنجليزية",
-      "city": "المدينة", "cityPlaceholder": "اختر المدينة",
-      "notes": "ملاحظات", "notesPlaceholder": "أدخل الملاحظات",
+      "aName": "الاسم (عربي)",
+      "aNamePlaceholder": "أدخل الاسم بالعربية",
+      "eName": "الاسم (إنجليزي)",
+      "eNamePlaceholder": "أدخل الاسم بالإنجليزية",
+      "city": "المدينة",
+      "cityPlaceholder": "اختر المدينة",
+      "notes": "ملاحظات",
+      "notesPlaceholder": "أدخل الملاحظات",
       "status": "الحالة"
     },
-    "list": { "title": "قائمة الأحياء" },
+    "list": {
+      "title": "قائمة الأحياء"
+    },
     "searchPlaceholder": "البحث عن أحياء..."
   },
   "warehouses": {
@@ -718,7 +757,6 @@
       "Other": "أخرى"
     }
   },
-
   "locations": {
     "title": "المواقع التخزينية",
     "subTitle": "إدارة المواقع ومساحات التخزين الداخلية.",
@@ -1389,12 +1427,21 @@
     "confirmText": "هل أنت متأكد من أنك تريد تأكيد أمر الشراء هذا؟",
     "cancelTitle": "إلغاء أمر الشراء",
     "cancelText": "هل أنت متأكد من أنك تريد إلغاء أمر الشراء هذا؟",
-    "convertTitle": "تحويل إلى فاتورة",
-    "convertText": "هل أنت متأكد من أنك تريد تحويل أمر الشراء هذا إلى فاتورة مشتريات؟",
+    "cancelDocument": "إلغاء الأمر",
+    "closeTitle": "إغلاق أمر الشراء",
+    "closeText": "هل أنت متأكد من أنك تريد إغلاق أمر الشراء هذا؟",
+    "closeDocument": "إغلاق الأمر",
+    "closedSuccess": "تم إغلاق أمر الشراء بنجاح",
+    "convertTitle": "تحويل إلى فاتورة مشتريات",
+    "convertText": "هل أنت متأكد من تحويل أمر الشراء إلى فاتورة؟",
     "convertToInvoice": "تحويل إلى فاتورة",
+    "conversionNotSupported": "التحويل إلى فاتورة مشتريات سيكون متاحاً قريباً.",
     "confirmedSuccess": "تم تأكيد أمر الشراء بنجاح",
     "cancelledSuccess": "تم إلغاء أمر الشراء بنجاح",
     "convertedSuccess": "تم تحويل أمر الشراء بنجاح",
+    "fields": {
+      "totalAmount": "إجمالي المبلغ"
+    },
     "importLines": "استيراد أصناف من أمر شراء",
     "importFromPO": "استيراد من أمر شراء",
     "openQty": "الكمية المتبقية",
@@ -1578,6 +1625,7 @@
     "addNew": "إضافة فاتورة جديدة",
     "view": "عرض الفاتورة",
     "addPayment": "إضافة دفعة",
+    "printInvoice": "طباعة الفاتورة",
     "addItems": "إضافة أصناف",
     "addCostElement": "إضافة عنصر تكلفة",
     "fields": {

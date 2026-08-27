@@ -82,7 +82,7 @@ export class PurchaseOrderFormComponent implements OnInit, HasUnsavedChanges {
   actionModalMessage = '';
   actionModalType: 'warning' | 'danger' | 'info' | 'success' = 'warning';
   actionModalConfirmText = '';
-  pendingAction: 'confirm' | 'cancel' | 'convert' | null = null;
+  pendingAction: 'confirm' | 'cancel' | 'convert' | 'close' | null = null;
 
   showLeaveConfirmation = false;
   private leaveConfirmationResolver: ((value: boolean) => void) | null = null;
@@ -567,7 +567,7 @@ export class PurchaseOrderFormComponent implements OnInit, HasUnsavedChanges {
     this.actionModalTitle = this.translate.instant('purchaseOrders.confirmTitle');
     this.actionModalMessage = this.translate.instant('purchaseOrders.confirmText');
     this.actionModalType = 'warning';
-    this.actionModalConfirmText = this.translate.instant('stockAdjustments.confirm');
+    this.actionModalConfirmText = this.translate.instant('common.confirm');
     this.pendingAction = 'confirm';
     this.isActionModalOpen = true;
   }
@@ -577,8 +577,18 @@ export class PurchaseOrderFormComponent implements OnInit, HasUnsavedChanges {
     this.actionModalTitle = this.translate.instant('purchaseOrders.cancelTitle');
     this.actionModalMessage = this.translate.instant('purchaseOrders.cancelText');
     this.actionModalType = 'danger';
-    this.actionModalConfirmText = this.translate.instant('common.delete');
+    this.actionModalConfirmText = this.translate.instant('purchaseOrders.cancelDocument');
     this.pendingAction = 'cancel';
+    this.isActionModalOpen = true;
+  }
+
+  onCloseDocument(): void {
+    if (!this.id) return;
+    this.actionModalTitle = this.translate.instant('purchaseOrders.closeTitle');
+    this.actionModalMessage = this.translate.instant('purchaseOrders.closeText');
+    this.actionModalType = 'warning';
+    this.actionModalConfirmText = this.translate.instant('purchaseOrders.closeDocument');
+    this.pendingAction = 'close';
     this.isActionModalOpen = true;
   }
 
@@ -616,8 +626,18 @@ export class PurchaseOrderFormComponent implements OnInit, HasUnsavedChanges {
         },
         error: () => this.isActionLoading = false
       });
+    } else if (this.pendingAction === 'close') {
+      this.purchaseOrderService.close(this.id).subscribe({
+        next: () => {
+          this.toastr.success(this.translate.instant('purchaseOrders.closedSuccess'));
+          this.loadRecord(this.id!);
+          this.isActionModalOpen = false;
+          this.isActionLoading = false;
+        },
+        error: () => this.isActionLoading = false
+      });
     } else if (this.pendingAction === 'convert') {
-      this.toastr.info('Conversion to Purchase Invoice will be supported soon.');
+      this.toastr.info(this.translate.instant('purchaseOrders.conversionNotSupported'));
       this.isActionModalOpen = false;
       this.isActionLoading = false;
     }
@@ -631,13 +651,18 @@ export class PurchaseOrderFormComponent implements OnInit, HasUnsavedChanges {
     if (!this.id) return;
     this.isPrintModalOpen = true;
     this.pdfLoading = true;
-    
-    // Placeholder for print
-    setTimeout(() => {
+    this.purchaseOrderService.printPdf(this.id).subscribe({
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+        this.pdfBlobUrl = url;
         this.pdfLoading = false;
-        this.toastr.info('Print preview is not implemented yet.');
+      },
+      error: () => {
+        this.toastr.error(this.translate.instant('errors.generic'));
+        this.pdfLoading = false;
         this.isPrintModalOpen = false;
-    }, 1000);
+      }
+    });
   }
 
   closePrintModal(): void {

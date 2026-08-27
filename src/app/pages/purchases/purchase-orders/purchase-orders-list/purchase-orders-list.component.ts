@@ -9,14 +9,14 @@ import { PageBreadcrumbComponent } from '../../../../shared/components/common/pa
 import { SearchableSelectComponent, SearchableOption } from '../../../../shared/components/form/searchable-select/searchable-select.component';
 import { DatePickerComponent } from '../../../../shared/components/form/date-picker/date-picker.component';
 import { LookupService } from '../../../../core/services/lookup.service';
+import { PrintPreviewModalComponent } from '../../../../shared/components/common/print-preview-modal/print-preview-modal.component';
 import { FormsModule } from '@angular/forms';
-import { ConfirmationModalComponent } from '../../../../shared/components/common/confirmation-modal/confirmation-modal.component';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-purchase-orders-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, TranslateModule, CrudListComponent, PageBreadcrumbComponent, SearchableSelectComponent, DatePickerComponent, ConfirmationModalComponent],
+  imports: [CommonModule, FormsModule, TranslateModule, CrudListComponent, PageBreadcrumbComponent, SearchableSelectComponent, DatePickerComponent, PrintPreviewModalComponent],
   template: `
     <app-page-breadcrumb [pageTitle]="'purchaseOrders.title'" />
     <div class="space-y-6">
@@ -35,7 +35,6 @@ import { ToastrService } from 'ngx-toastr';
         [hideEdit]="true"
         [hideToggleStatus]="isActionHidden"
         [customActions]="customActions"
-        (loadData)="loadData()"
         (search)="loadData()"
         (add)="onAdd()"
         (view)="onView($event)"
@@ -80,19 +79,17 @@ import { ToastrService } from 'ngx-toastr';
         </div>
 
       </app-crud-list>
-      <!-- Action Confirmation Modal -->
-      <app-confirmation-modal
-        [isOpen]="isActionModalOpen"
-        [isLoading]="isActionLoading"
-        [title]="actionModalTitle"
-        [message]="actionModalMessage"
-        [type]="actionModalType"
-        [confirmText]="actionModalConfirmText"
-        [cancelText]="'common.cancel' | translate"
-        (confirm)="executePendingAction()"
-        (cancel)="isActionModalOpen = false">
-      </app-confirmation-modal>
     </div>
+
+    <!-- Print Preview Modal -->
+    <app-print-preview-modal 
+      *ngIf="isPrintModalOpen"
+      [isOpen]="isPrintModalOpen" 
+      [pdfBlobUrl]="pdfBlobUrl" 
+      [loading]="pdfLoading"
+      [title]="('purchaseOrders.printOrder' | translate) + ' ' + (selectedItemForPrint?.code || '')"
+      (close)="closePrintModal()">
+    </app-print-preview-modal>
   `
 })
 export class PurchaseOrdersListComponent implements OnInit {
@@ -102,22 +99,17 @@ export class PurchaseOrdersListComponent implements OnInit {
   private translate = inject(TranslateService);
   private toastr = inject(ToastrService);
 
-  // Confirmation Modal State
-  isActionModalOpen = false;
-  isActionLoading = false;
-  actionModalTitle = '';
-  actionModalMessage = '';
-  actionModalType: 'warning' | 'danger' | 'info' | 'success' = 'warning';
-  actionModalConfirmText = '';
-  pendingAction: 'confirm' | 'cancel' | 'convert' | null = null;
-  selectedItemId: number | null = null;
-
   vendorsOptions: SearchableOption[] = [];
   statusOptions: SearchableOption[] = [];
   approvalStatusOptions: SearchableOption[] = [];
 
   loading = false;
   data: any = null;
+
+  isPrintModalOpen = false;
+  pdfBlobUrl: string | null = null;
+  pdfLoading = false;
+  selectedItemForPrint: any = null;
 
   get hasActiveAdvancedFilters(): boolean {
     return !!(
@@ -131,7 +123,43 @@ export class PurchaseOrdersListComponent implements OnInit {
     );
   }
 
-  customActions = [];
+  customActions = [
+    {
+      id: 'confirm',
+      label: 'purchaseOrders.confirmTitle',
+      icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>',
+      colorClass: 'text-success-600 dark:text-success-400 hover:bg-success-50 dark:hover:bg-success-500/10',
+      visible: (item: any) => item.status === 'Draft'
+    },
+    {
+      id: 'cancel',
+      label: 'purchaseOrders.cancelTitle',
+      icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>',
+      colorClass: 'text-error-600 dark:text-error-400 hover:bg-error-50 dark:hover:bg-error-500/10',
+      visible: (item: any) => item.status !== 'Cancelled' && item.status !== 'Closed' && item.status !== 'Open'
+    },
+    {
+      id: 'close',
+      label: 'purchaseOrders.closeDocument',
+      icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>',
+      colorClass: 'text-warning-600 dark:text-warning-400 hover:bg-warning-50 dark:hover:bg-warning-500/10',
+      visible: (item: any) => item.status === 'Open'
+    },
+    {
+      id: 'convert',
+      label: 'purchaseOrders.convertToInvoice',
+      icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path></svg>',
+      colorClass: 'text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-500/10',
+      visible: (item: any) => item.approvalStatus === 'Approved' && item.status !== 'Cancelled'
+    },
+    {
+      id: 'print',
+      label: 'purchaseOrders.printOrder',
+      icon: '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>',
+      colorClass: 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-500/10',
+      visible: () => true
+    }
+  ];
 
   isActionHidden = (item: any) => true;
 
@@ -145,7 +173,7 @@ export class PurchaseOrdersListComponent implements OnInit {
     { field: 'code', header: 'common.code', type: 'code' },
     { field: 'businessPartnerName', header: 'common.vendor', type: 'text' },
     { field: 'documentDate', header: 'common.date', type: 'date' },
-    { field: 'totalAmountDisplay', header: 'salesInvoices.fields.totalAmount', type: 'text' },
+    { field: 'totalAmountDisplay', header: 'purchaseOrders.fields.totalAmount', type: 'text' },
     { field: 'statusDisplay', header: 'common.status', type: 'dynamic-badge' },
     { field: 'approvalStatusDisplay', header: 'purchaseOrders.approvalStatus', type: 'dynamic-badge' }
   ];
@@ -202,7 +230,7 @@ export class PurchaseOrdersListComponent implements OnInit {
           switch (status) {
             case 'Draft': return 'warning';
             case 'Open': return 'success';
-            case 'Closed': return 'gray';
+            case 'Closed': return 'dark';
             case 'Cancelled': return 'error';
             default: return 'primary';
           }
@@ -249,63 +277,115 @@ export class PurchaseOrdersListComponent implements OnInit {
   }
 
   onCustomAction(event: { actionId: string, item: any }) {
-    this.selectedItemId = event.item.id;
     if (event.actionId === 'confirm') {
-      this.actionModalTitle = this.translate.instant('purchaseOrders.confirmTitle');
-      this.actionModalMessage = this.translate.instant('purchaseOrders.confirmText');
-      this.actionModalType = 'warning';
-      this.actionModalConfirmText = this.translate.instant('stockAdjustments.confirm');
-      this.pendingAction = 'confirm';
-      this.isActionModalOpen = true;
+      import('sweetalert2').then(Swal => {
+        Swal.default.fire({
+          title: this.translate.instant('purchaseOrders.confirmTitle'),
+          text: this.translate.instant('purchaseOrders.confirmText'),
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#10b981',
+          cancelButtonColor: '#6b7280',
+          confirmButtonText: this.translate.instant('common.confirm'),
+          cancelButtonText: this.translate.instant('common.cancel')
+        }).then((result) => {
+          if (result.isConfirmed) {
+            this.purchaseOrderService.confirm(event.item.id).subscribe({
+              next: () => {
+                this.loadData();
+              }
+            });
+          }
+        });
+      });
     } else if (event.actionId === 'cancel') {
-      this.actionModalTitle = this.translate.instant('purchaseOrders.cancelTitle');
-      this.actionModalMessage = this.translate.instant('purchaseOrders.cancelText');
-      this.actionModalType = 'danger';
-      this.actionModalConfirmText = this.translate.instant('stockAdjustments.cancelDocument');
-      this.pendingAction = 'cancel';
-      this.isActionModalOpen = true;
+      import('sweetalert2').then(Swal => {
+        Swal.default.fire({
+          title: this.translate.instant('purchaseOrders.cancelTitle'),
+          text: this.translate.instant('purchaseOrders.cancelText'),
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#ef4444',
+          cancelButtonColor: '#6b7280',
+          confirmButtonText: this.translate.instant('purchaseOrders.cancelDocument'),
+          cancelButtonText: this.translate.instant('common.cancel')
+        }).then((result) => {
+          if (result.isConfirmed) {
+            this.purchaseOrderService.cancel(event.item.id).subscribe({
+              next: () => {
+                this.loadData();
+              }
+            });
+          }
+        });
+      });
+    } else if (event.actionId === 'close') {
+      import('sweetalert2').then(Swal => {
+        Swal.default.fire({
+          title: this.translate.instant('purchaseOrders.closeTitle'),
+          text: this.translate.instant('purchaseOrders.closeText'),
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#f59e0b',
+          cancelButtonColor: '#6b7280',
+          confirmButtonText: this.translate.instant('purchaseOrders.closeDocument'),
+          cancelButtonText: this.translate.instant('common.cancel')
+        }).then((result) => {
+          if (result.isConfirmed) {
+            this.purchaseOrderService.close(event.item.id).subscribe({
+              next: () => {
+                this.loadData();
+              }
+            });
+          }
+        });
+      });
     } else if (event.actionId === 'convert') {
-      this.actionModalTitle = this.translate.instant('purchaseOrders.convertTitle');
-      this.actionModalMessage = this.translate.instant('purchaseOrders.convertText');
-      this.actionModalType = 'info';
-      this.actionModalConfirmText = this.translate.instant('purchaseOrders.convertToInvoice');
-      this.pendingAction = 'convert';
-      this.isActionModalOpen = true;
+      import('sweetalert2').then(Swal => {
+        Swal.default.fire({
+          title: this.translate.instant('purchaseOrders.convertTitle'),
+          text: this.translate.instant('purchaseOrders.convertText'),
+          icon: 'info',
+          showCancelButton: true,
+          confirmButtonColor: '#3b82f6',
+          cancelButtonColor: '#6b7280',
+          confirmButtonText: this.translate.instant('purchaseOrders.convertToInvoice'),
+          cancelButtonText: this.translate.instant('common.cancel')
+        }).then((result) => {
+          if (result.isConfirmed) {
+            this.toastr.info(this.translate.instant('purchaseOrders.conversionNotSupported'));
+          }
+        });
+      });
+    } else if (event.actionId === 'print') {
+      this.openPrintModal(event.item);
     }
   }
 
-  executePendingAction(): void {
-    if (!this.selectedItemId || !this.pendingAction) return;
-    this.isActionLoading = true;
+  openPrintModal(item: any): void {
+    this.selectedItemForPrint = item;
+    this.isPrintModalOpen = true;
+    this.pdfLoading = true;
 
-    if (this.pendingAction === 'confirm') {
-      this.purchaseOrderService.confirm(this.selectedItemId).subscribe({
-        next: () => {
-          this.toastr.success(this.translate.instant('purchaseOrders.confirmedSuccess'));
-          this.loadData();
-          this.isActionModalOpen = false;
-          this.isActionLoading = false;
-        },
-        error: () => {
-          this.isActionLoading = false;
-        }
-      });
-    } else if (this.pendingAction === 'cancel') {
-      this.purchaseOrderService.cancel(this.selectedItemId).subscribe({
-        next: () => {
-          this.toastr.success(this.translate.instant('purchaseOrders.cancelledSuccess'));
-          this.loadData();
-          this.isActionModalOpen = false;
-          this.isActionLoading = false;
-        },
-        error: () => {
-          this.isActionLoading = false;
-        }
-      });
-    } else if (this.pendingAction === 'convert') {
-      this.toastr.info('Conversion to Purchase Invoice will be supported soon.');
-      this.isActionModalOpen = false;
-      this.isActionLoading = false;
+    this.purchaseOrderService.printPdf(item.id).subscribe({
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+        this.pdfBlobUrl = url;
+        this.pdfLoading = false;
+      },
+      error: () => {
+        this.toastr.error(this.translate.instant('errors.generic'));
+        this.pdfLoading = false;
+        this.isPrintModalOpen = false;
+      }
+    });
+  }
+
+  closePrintModal(): void {
+    this.isPrintModalOpen = false;
+    if (this.pdfBlobUrl) {
+      window.URL.revokeObjectURL(this.pdfBlobUrl);
+      this.pdfBlobUrl = null;
     }
   }
 }

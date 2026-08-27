@@ -47,7 +47,7 @@
         <!-- Action Buttons -->
         <div class="flex items-center gap-3">
           <button
-            *ngIf="mode === 'view' && ($any(viewResponse?.status) === 'Draft' || $any(viewResponse?.status) === 'Open') && $any(viewResponse?.approvalStatus) !== 'Approved'"
+            *ngIf="mode === 'view' && $any(viewResponse?.status) === 'Draft'"
             type="button" (click)="onConfirm()"
             class="flex items-center gap-2 px-5 py-2.5 text-sm font-medium text-white bg-success-500 rounded-lg shadow-theme-xs hover:bg-success-600 transition-colors">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -57,13 +57,23 @@
           </button>
 
           <button
-            *ngIf="mode === 'view' && $any(viewResponse?.status) !== 'Cancelled' && $any(viewResponse?.status) !== 'Closed'"
+            *ngIf="mode === 'view' && $any(viewResponse?.status) !== 'Cancelled' && $any(viewResponse?.status) !== 'Closed' && $any(viewResponse?.status) !== 'Open'"
             type="button" (click)="onCancelDocument()"
             class="flex items-center gap-2 px-5 py-2.5 text-sm font-medium text-white bg-error-500 rounded-lg shadow-theme-xs hover:bg-error-600 transition-colors">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
             </svg>
-            {{ 'stockAdjustments.cancelDocument' | translate }}
+            {{ 'purchaseOrders.cancelDocument' | translate }}
+          </button>
+
+          <button
+            *ngIf="mode === 'view' && $any(viewResponse?.status) === 'Open'"
+            type="button" (click)="onCloseDocument()"
+            class="flex items-center gap-2 px-5 py-2.5 text-sm font-medium text-white bg-warning-500 rounded-lg shadow-theme-xs hover:bg-warning-600 transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+            {{ 'purchaseOrders.closeDocument' | translate }}
           </button>
 
           <button

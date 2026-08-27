@@ -19,7 +19,10 @@ import { CostElementLookupModalComponent } from '../../../../shared/components/l
 import { PaymentModalComponent } from '../payment-modal/payment-modal.component';
 import { DocumentStatusBadgeComponent } from '../../../../shared/components/common/document-status-badge/document-status-badge.component';
 import { StatusBadgeComponent } from '../../../../shared/components/ui/status-badge/status-badge.component';
+import { LineNotesModalComponent } from '../../../../shared/components/common/line-notes-modal/line-notes-modal.component';
+import { PrintPreviewModalComponent } from '../../../../shared/components/common/print-preview-modal/print-preview-modal.component';
 import { QuickVendorModalComponent } from '../../../../shared/components/quick-vendor-modal/quick-vendor-modal.component';
+import { ToastrService } from 'ngx-toastr';
 import { HasUnsavedChanges } from '../../../../core/guards/unsaved-changes.guard';
 import {
   InvoiceRequest,
@@ -52,7 +55,9 @@ import { ItemLookupResponse, InvoiceCostElementDropdown } from '../../../../core
     PaymentModalComponent,
     DocumentStatusBadgeComponent,
     StatusBadgeComponent,
-    QuickVendorModalComponent
+    QuickVendorModalComponent,
+    LineNotesModalComponent,
+    PrintPreviewModalComponent
   ],
   templateUrl: './purchase-invoice-form.component.html',
 })
@@ -62,6 +67,7 @@ export class PurchaseInvoiceFormComponent implements OnInit, HasUnsavedChanges {
   private lookupService = inject(LookupService);
   private itemService = inject(ItemService);
   private translate = inject(TranslateService);
+  private toastr = inject(ToastrService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
 
@@ -81,6 +87,18 @@ export class PurchaseInvoiceFormComponent implements OnInit, HasUnsavedChanges {
   isPoLinesModalOpen = false;
   isCostElementModalOpen = false;
   isPaymentModalOpen = false;
+
+  // Line Notes Modal
+  isLineNotesModalOpen = false;
+  currentLineNotesIndex = -1;
+  currentLineNotes = '';
+  currentLineItemCode?: string;
+  currentLineItemName?: string;
+
+  // Print Modal
+  isPrintModalOpen = false;
+  pdfBlobUrl: string | null = null;
+  pdfLoading = false;
 
   isQuickVendorModalOpen = false;
 
@@ -189,6 +207,7 @@ export class PurchaseInvoiceFormComponent implements OnInit, HasUnsavedChanges {
       lines: res.lines.map(l => ({
         itemId: l.itemId,
         uomId: l.uomId,
+        unitOfMeasureId: l.uomId,
         warehouseId: l.warehouseId,
         binLocationId: l.binLocationId,
         quantity: l.quantity,
@@ -202,6 +221,7 @@ export class PurchaseInvoiceFormComponent implements OnInit, HasUnsavedChanges {
         _itemCode: l.itemCode,
         _netAmount: l.netAmount,
         _baseUomType: this.uomOptions.find((u: any) => u.value === l.uomId)?.baseUomType,
+        _availableUomsOptions: l.uomId && l.uomName ? [{ value: l.uomId, label: l.uomName }] : undefined,
         _isFromPo: !!l.purchaseOrderLineId,
         _discountAmount: 0,
         _taxAmount: 0,
@@ -301,6 +321,9 @@ export class PurchaseInvoiceFormComponent implements OnInit, HasUnsavedChanges {
       return;
     }
 
+    const defaultUomId = item.purchaseUomId || undefined;
+    const defaultUomName = item.purchaseUomName || '';
+
     const newLine: any = {
       itemId: item.id,
       quantity: 1,
@@ -308,11 +331,14 @@ export class PurchaseInvoiceFormComponent implements OnInit, HasUnsavedChanges {
       discountPercent: 0,
       taxPercent: 0,
       lineOrder: this.model.lines.length + 1,
+      uomId: defaultUomId,
+      unitOfMeasureId: defaultUomId,
+      notes: '',
       // Internal properties for UI
       _itemCode: item.code,
       _itemName: item.name,
-      uomId: item.purchaseUomId,
       _baseUomType: item.baseUomType,
+      _availableUomsOptions: defaultUomId && defaultUomName ? [{ value: defaultUomId, label: defaultUomName }] : undefined,
       _isFromPo: false,
       _netAmount: 0,
       _discountAmount: 0,
@@ -321,7 +347,7 @@ export class PurchaseInvoiceFormComponent implements OnInit, HasUnsavedChanges {
       _taxFixedMode: 'percentage',
       _isLoading: true
     };
-    
+
     this.model.lines.push(newLine);
     this.form?.form.markAsDirty();
     this.recalculateTotals();
@@ -329,6 +355,7 @@ export class PurchaseInvoiceFormComponent implements OnInit, HasUnsavedChanges {
     this.itemService.getPurchasingDetails(item.id).subscribe({
       next: (details) => {
         newLine.uomId = details.purchaseUomId || newLine.uomId;
+        newLine.unitOfMeasureId = details.purchaseUomId || newLine.unitOfMeasureId;
         newLine._baseUomType = details.baseUomType || newLine._baseUomType;
         if (details.purchasePrice !== undefined && details.purchasePrice !== null) {
           newLine.unitPrice = details.purchasePrice;
@@ -376,6 +403,24 @@ export class PurchaseInvoiceFormComponent implements OnInit, HasUnsavedChanges {
     this.model.lines.splice(index, 1);
     this.form?.form.markAsDirty();
     this.recalculateTotals();
+  }
+
+  openLineNotesModal(index: number): void {
+    const line = this.model.lines[index] as any;
+    if (!line) return;
+    this.currentLineNotesIndex = index;
+    this.currentLineNotes = line.notes || '';
+    this.currentLineItemCode = line._itemCode;
+    this.currentLineItemName = line._itemName;
+    this.isLineNotesModalOpen = true;
+  }
+
+  onSaveLineNotes(updatedNotes: string): void {
+    if (this.currentLineNotesIndex >= 0 && this.model.lines[this.currentLineNotesIndex]) {
+      (this.model.lines[this.currentLineNotesIndex] as any).notes = updatedNotes;
+      this.form?.form.markAsDirty();
+    }
+    this.isLineNotesModalOpen = false;
   }
 
   // PO Import Actions
@@ -578,12 +623,14 @@ export class PurchaseInvoiceFormComponent implements OnInit, HasUnsavedChanges {
 
     // Clean up internal _ UI properties before sending
     const requestToSend = JSON.parse(JSON.stringify(this.model));
-    
+
     if (!requestToSend.dueDate || requestToSend.dueDate.trim() === '') {
       requestToSend.dueDate = null;
     }
 
     requestToSend.lines.forEach((l: any) => {
+      l.uomId = l.uomId || l.unitOfMeasureId;
+      delete l.unitOfMeasureId;
       delete l._itemName;
       delete l._itemCode;
       delete l._netAmount;
@@ -675,6 +722,33 @@ export class PurchaseInvoiceFormComponent implements OnInit, HasUnsavedChanges {
         }
       });
     });
+  }
+
+  onPrint(): void {
+    if (!this.id) return;
+    this.isPrintModalOpen = true;
+    this.pdfLoading = true;
+    this.invoiceService.printPdf(this.id, 'purchases').subscribe({
+      next: (blob) => {
+        if (this.pdfBlobUrl) window.URL.revokeObjectURL(this.pdfBlobUrl);
+        this.pdfBlobUrl = window.URL.createObjectURL(blob);
+        this.pdfLoading = false;
+      },
+      error: (err) => {
+        console.error('Error printing purchase invoice', err);
+        this.toastr.error(this.translate.instant('errors.generic'));
+        this.pdfLoading = false;
+        this.isPrintModalOpen = false;
+      }
+    });
+  }
+
+  closePrintModal(): void {
+    this.isPrintModalOpen = false;
+    if (this.pdfBlobUrl) {
+      window.URL.revokeObjectURL(this.pdfBlobUrl);
+      this.pdfBlobUrl = null;
+    }
   }
 
   onCancel(): void {

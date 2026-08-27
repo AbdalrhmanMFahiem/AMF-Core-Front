@@ -22,7 +22,8 @@
           <!-- Invoice Code -->
           <div
             class="flex items-center gap-2 px-3 py-2 bg-brand-50 dark:bg-brand-500/10 border border-brand-100 dark:border-brand-500/20 rounded-lg shadow-theme-xs">
-            <svg class="w-4 h-4 text-brand-600 dark:text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="w-4 h-4 text-brand-600 dark:text-brand-400" fill="none" stroke="currentColor"
+              viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                 d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
             </svg>
@@ -38,8 +39,10 @@
           <!-- Status Badges -->
           <ng-container *ngIf="mode === 'view' && viewResponse">
             <app-document-status-badge [status]="viewResponse.status"></app-document-status-badge>
-            <app-status-badge *ngIf="viewResponse.approvalStatus" [status]="viewResponse.approvalStatus" [translationPrefix]="'common.approvalStatusEnum'"></app-status-badge>
-            <app-status-badge *ngIf="viewResponse.paymentStatus" [status]="viewResponse.paymentStatus" [translationPrefix]="'common.paidStatusEnum'"></app-status-badge>
+            <app-status-badge *ngIf="viewResponse.approvalStatus" [status]="viewResponse.approvalStatus"
+              [translationPrefix]="'common.approvalStatusEnum'"></app-status-badge>
+            <app-status-badge *ngIf="viewResponse.paymentStatus" [status]="viewResponse.paymentStatus"
+              [translationPrefix]="'common.paidStatusEnum'"></app-status-badge>
           </ng-container>
         </div>
 
@@ -47,13 +50,19 @@
         <div class="flex items-center gap-3">
           <button *ngIf="mode === 'view' && $any(viewResponse?.status) === 'D'" type="button" (click)="onConfirm()"
             class="flex items-center gap-2 px-5 py-2.5 text-sm font-medium text-white bg-success-500 rounded-lg shadow-theme-xs hover:bg-success-600 transition-colors">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
             {{ 'stockAdjustments.confirm' | translate }}
           </button>
 
-          <button *ngIf="mode === 'view' && $any(viewResponse?.status) !== 'Cancelled' && $any(viewResponse?.status) !== 'FullyPaid'" type="button" (click)="onCancelDocument()"
+          <button
+            *ngIf="mode === 'view' && $any(viewResponse?.status) !== 'Cancelled' && $any(viewResponse?.status) !== 'FullyPaid'"
+            type="button" (click)="onCancelDocument()"
             class="flex items-center gap-2 px-5 py-2.5 text-sm font-medium text-white bg-error-500 rounded-lg shadow-theme-xs hover:bg-error-600 transition-colors">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
             {{ 'stockAdjustments.cancelDocument' | translate }}
           </button>
 
@@ -65,6 +74,15 @@
               </path>
             </svg>
             {{ 'purchaseInvoices.addPayment' | translate }}
+          </button>
+
+          <button *ngIf="mode === 'view'" type="button" (click)="onPrint()"
+            class="flex items-center gap-2 px-5 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-lg shadow-theme-xs hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700 dark:hover:bg-gray-700 transition-colors">
+            <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+            </svg>
+            {{ 'common.print' | translate }}
           </button>
 
           <button type="button" (click)="onCancel()"
@@ -126,8 +144,9 @@
             <label class="mb-2.5 block text-sm font-medium text-gray-800 dark:text-white/90">
               {{ 'purchaseInvoices.fields.warehouse' | translate }} <span class="text-error-500">*</span>
             </label>
-            <app-searchable-select [(ngModel)]="model.warehouseId" (ngModelChange)="onWarehouseChange($event)" name="warehouseId" required [options]="warehousesOptions"
-              [disabled]="mode === 'view'" placeholder="common.select">
+            <app-searchable-select [(ngModel)]="model.warehouseId" (ngModelChange)="onWarehouseChange($event)"
+              name="warehouseId" required [options]="warehousesOptions" [disabled]="mode === 'view'"
+              placeholder="common.select">
             </app-searchable-select>
           </div>
 
@@ -161,7 +180,8 @@
             </div>
             <div
               class="pt-4 mt-auto border-t border-gray-200 dark:border-gray-700/60 flex justify-between items-center">
-              <span class="text-base font-medium text-gray-900 dark:text-white">{{ 'purchaseInvoices.fields.totalAmount' |
+              <span class="text-base font-medium text-gray-900 dark:text-white">{{ 'purchaseInvoices.fields.totalAmount'
+                |
                 translate }}</span>
               <span class="text-xl font-bold text-brand-600 dark:text-brand-400">{{ netTotal | number:'1.2-2' }}</span>
             </div>
@@ -197,7 +217,8 @@
           <button type="button" (click)="openPoLinesModal()"
             class="flex items-center gap-2 px-4 py-2 text-sm font-medium text-brand-700 bg-brand-50 border border-brand-200 rounded-lg shadow-theme-xs hover:bg-brand-100 dark:bg-brand-500/10 dark:text-brand-400 dark:border-brand-500/20 dark:hover:bg-brand-500/20 transition-colors">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
             </svg>
             {{ 'purchaseOrders.importFromPO' | translate }}
           </button>
@@ -222,11 +243,11 @@
                     'invoices.item' | translate }}
                   </th>
                   <th class="px-4 py-3 font-medium text-gray-500 text-start text-xs dark:text-gray-400 uppercase w-32">
-                    {{ 'common.uom' | translate }}</th>
-                  <th class="px-4 py-3 font-medium text-gray-500 text-start text-xs dark:text-gray-400 uppercase w-32">
                     {{ 'invoices.qty' | translate }}</th>
                   <th class="px-4 py-3 font-medium text-gray-500 text-start text-xs dark:text-gray-400 uppercase w-32">
                     {{ 'invoices.price' | translate }}</th>
+                  <th class="px-4 py-3 font-medium text-gray-500 text-start text-xs dark:text-gray-400 uppercase w-32">
+                    {{ 'common.unitOfMeasure' | translate }}</th>
                   <th class="px-4 py-3 font-medium text-gray-500 text-start text-xs dark:text-gray-400 uppercase w-32">
                     <div class="flex flex-col gap-1">
                       <span>{{ 'invoices.discount' | translate }}</span>
@@ -242,6 +263,8 @@
                   <th class="px-4 py-3 font-medium text-gray-500 text-end text-xs dark:text-gray-400 uppercase w-32">{{
                     'invoices.netAmount' | translate }}
                   </th>
+                  <th class="px-4 py-3 font-medium text-gray-500 text-center text-xs dark:text-gray-400 uppercase w-32">
+                    {{ 'common.notes' | translate }}</th>
                   <th *ngIf="mode !== 'view'"
                     class="px-4 py-3 font-medium text-gray-500 text-center text-xs dark:text-gray-400 uppercase w-20">
                   </th>
@@ -285,15 +308,6 @@
                     </div>
                   </td>
 
-                  <!-- UoM -->
-                  <td class="px-4 py-2 min-w-32.5">
-                    <app-searchable-select
-                      [options]="line['_availableUomsOptions'] || getUomOptions(line['_baseUomType'])"
-                      [(ngModel)]="line.uomId" name="uom_{{i}}" [disabled]="mode === 'view' || line['_isFromPo']"
-                      [placeholder]="'common.select' | translate">
-                    </app-searchable-select>
-                  </td>
-
                   <!-- Quantity -->
                   <td class="px-4 py-2">
                     <input type="number" [(ngModel)]="line.quantity" name="qty_{{i}}"
@@ -306,6 +320,15 @@
                     <input type="number" [(ngModel)]="line.unitPrice" name="price_{{i}}"
                       (ngModelChange)="recalculateTotals()" [disabled]="mode === 'view'" min="0"
                       class="w-full min-w-25 rounded-md border border-gray-200 px-3 py-1.5 text-sm dark:bg-dark-900 dark:border-gray-700 dark:text-white" />
+                  </td>
+
+                  <!-- UoM -->
+                  <td class="px-4 py-2 min-w-32.5">
+                    <app-searchable-select
+                      [options]="line['_availableUomsOptions'] || getUomOptions(line['_baseUomType'])"
+                      [(ngModel)]="line.uomId" name="uom_{{i}}" [disabled]="mode === 'view' || line['_isFromPo']"
+                      [placeholder]="'common.select' | translate">
+                    </app-searchable-select>
                   </td>
 
                   <!-- Discount -->
@@ -351,6 +374,24 @@
                   <!-- Net -->
                   <td class="px-4 py-3 text-sm text-gray-800 dark:text-white/90 text-end font-medium">
                     {{ line['_netAmount'] | number:'1.2-2' }}
+                  </td>
+
+                  <!-- Line Notes -->
+                  <td class="px-4 py-3 text-center align-top pt-3.5">
+                    <button type="button" (click)="openLineNotesModal(i)"
+                      class="relative inline-flex items-center justify-center p-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700/50 hover:text-brand-500 dark:hover:text-brand-400 transition-colors shadow-xs group"
+                      [title]="'common.notes' | translate">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                          d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                      </svg>
+                      <span *ngIf="line.notes && line.notes.trim().length > 0"
+                        class="absolute -top-1 -right-1 flex h-2.5 w-2.5">
+                        <span
+                          class="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-400 opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-brand-500"></span>
+                      </span>
+                    </button>
                   </td>
 
                   <!-- Actions -->
@@ -472,25 +513,15 @@
   (close)="validationErrors = []"></app-error-banner>
 
 <!-- Modals -->
-<app-item-lookup-modal 
-  [isOpen]="isItemModalOpen" 
-  (close)="isItemModalOpen = false"
-  [usageType]="2"
-  [warehouseId]="model.warehouseId"
-  [checkWarehouseExistence]="false"
-  (selectItem)="onItemSelected($event)">
+<app-item-lookup-modal [isOpen]="isItemModalOpen" (close)="isItemModalOpen = false" [usageType]="2"
+  [warehouseId]="model.warehouseId" [checkWarehouseExistence]="false" (selectItem)="onItemSelected($event)">
 </app-item-lookup-modal>
 
-<app-po-lines-import-modal
-  [isOpen]="isPoLinesModalOpen"
-  [vendorId]="model.businessPartnerId"
-  (close)="isPoLinesModalOpen = false"
-  (importLines)="onPoLinesImported($event)">
+<app-po-lines-import-modal [isOpen]="isPoLinesModalOpen" [vendorId]="model.businessPartnerId"
+  (close)="isPoLinesModalOpen = false" (importLines)="onPoLinesImported($event)">
 </app-po-lines-import-modal>
 
-<app-cost-element-lookup-modal
-  [isOpen]="isCostElementModalOpen"
-  (close)="isCostElementModalOpen = false"
+<app-cost-element-lookup-modal [isOpen]="isCostElementModalOpen" (close)="isCostElementModalOpen = false"
   (selectElement)="onCostElementSelected($event)"></app-cost-element-lookup-modal>
 <app-payment-modal [isOpen]="isPaymentModalOpen" [invoice]="viewResponse || null" (close)="isPaymentModalOpen = false"
   (paymentAdded)="onPaymentAdded()"></app-payment-modal>
@@ -526,7 +557,22 @@
   </div>
 </div>
 
+<!-- Line Notes Modal Component -->
+<app-line-notes-modal [isOpen]="isLineNotesModalOpen" [notes]="currentLineNotes" [readonly]="mode === 'view'"
+  [itemCode]="currentLineItemCode" [itemName]="currentLineItemName" (close)="isLineNotesModalOpen = false"
+  (save)="onSaveLineNotes($event)">
+</app-line-notes-modal>
+
 <!-- Quick Vendor Modal -->
 <app-quick-vendor-modal [(isOpen)]="isQuickVendorModalOpen" (vendorCreated)="onVendorCreated($event)">
 </app-quick-vendor-modal>
 
+<!-- Print Preview Modal -->
+<app-print-preview-modal
+  *ngIf="isPrintModalOpen"
+  [isOpen]="isPrintModalOpen"
+  [pdfBlobUrl]="pdfBlobUrl"
+  [loading]="pdfLoading"
+  [title]="('purchaseInvoices.printInvoice' | translate) + ' ' + (model.code || '')"
+  (close)="closePrintModal()">
+</app-print-preview-modal>

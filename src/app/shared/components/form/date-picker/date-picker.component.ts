@@ -60,9 +60,11 @@ export class DatePickerComponent implements ControlValueAccessor, OnInit, AfterV
       enableTime: this.enableTime,
       defaultDate: (this.value && this.value !== 'undefined') ? this.value : ((this.defaultDate && this.defaultDate !== 'undefined') ? this.defaultDate : null),
       onChange: (selectedDates, dateStr, instance) => {
-        this.value = dateStr;
-        this.onChange(dateStr);
-        this.dateChange.emit({ selectedDates, dateStr, instance });
+        if (this.value !== dateStr) {
+          this.value = dateStr;
+          this.onChange(dateStr);
+          this.dateChange.emit({ selectedDates, dateStr, instance });
+        }
       }
     };
 
@@ -77,7 +79,7 @@ export class DatePickerComponent implements ControlValueAccessor, OnInit, AfterV
     this.value = val === undefined ? null : val;
     if (this.flatpickrInstance) {
       if (!this.value) {
-        this.flatpickrInstance.clear();
+        this.flatpickrInstance.clear(false);
       } else {
         this.flatpickrInstance.setDate(this.value, false);
       }

@@ -35,7 +35,6 @@ import { ToastrService } from 'ngx-toastr';
         [hideEdit]="true"
         [hideToggleStatus]="isActionHidden"
         [customActions]="customActions"
-        (loadData)="loadData()"
         (search)="loadData()"
         (add)="onAdd()"
         (view)="onView($event)"

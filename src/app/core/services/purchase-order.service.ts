@@ -69,12 +69,22 @@ export class PurchaseOrderService {
     return this.http.put<void>(`${this.apiUrl}/${id}/confirm`, {});
   }
 
-  getOpenLines(vendorId: number): Observable<OpenPurchaseOrderLineResponse[]> {
-    return this.http.get<OpenPurchaseOrderLineResponse[]>(`${this.apiUrl}/open-lines?vendorId=${vendorId}`);
-  }
-
-  // Placeholder for Cancel API if backend implements it.
+  // Cancel API
   cancel(id: number): Observable<void> {
     return this.http.put<void>(`${this.apiUrl}/${id}/cancel`, {});
+  }
+
+  // Close API
+  close(id: number): Observable<void> {
+    return this.http.put<void>(`${this.apiUrl}/${id}/close`, {});
+  }
+
+  // Print PDF API
+  printPdf(id: number): Observable<Blob> {
+    return this.http.get(`${this.apiUrl}/${id}/print-pdf`, { responseType: 'blob' });
+  }
+
+  getOpenLines(vendorId: number): Observable<OpenPurchaseOrderLineResponse[]> {
+    return this.http.get<OpenPurchaseOrderLineResponse[]>(`${this.apiUrl}/open-lines?vendorId=${vendorId}`);
   }
 }
