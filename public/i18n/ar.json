@@ -1,7 +1,7 @@
 {
   "backendConnection": {
-    "title": "اتصال السيرفر (Backend)",
-    "serverUrl": "رابط الاتصال (API URL)",
+    "title": "اتصال السيرفر",
+    "serverUrl": "رابط السيرفر",
     "status": "حالة الاتصال",
     "online": "متصل ومتاح",
     "offline": "غير متصل",
@@ -17,6 +17,29 @@
     "checkAgain": "إعادة الفحص",
     "latency": "زمن الاستجابة",
     "configSource": "ملف الإعدادات (config.json)"
+  },
+  "disconnected": {
+    "title": "تعذر الاتصال بالخادم",
+    "subtitle": "يبدو أن خادم النظام غير متاح حالياً أو هناك انقطاع في الاتصال بالشبكة.",
+    "checkingDescription": "جاري التحقق من إمكانية الوصول إلى الخادم وإعادة الاتصال تلقائياً...",
+    "offlineDescription": "يرجى التحقق من تشغيل السيرفر أو فحص اتصالك بالشبكة ثم إعادة المحاولة.",
+    "autoRetryCountdown": "إعادة المحاولة التلقائية بعد {{seconds}} ثانية",
+    "autoRetryAttempts": "المحاولة التلقائية ({{current}} من {{max}})",
+    "autoRetryExhausted": "تم استنفاد المحاولات التلقائية (3/3). يرجى التأكد من تشغيل السيرفر والمحاولة يدوياً.",
+    "manualMode": "وضع الفحص اليدوي",
+    "retryNow": "إعادة المحاولة الآن",
+    "checking": "جاري الفحص...",
+    "connectionRestored": "تم استعادة الاتصال بنجاح!",
+    "redirecting": "جاري إعادة التوجيه إلى صفحتك السابقة...",
+    "backToHome": "العودة للرئيسية",
+    "returnToPrevious": "العودة للصفحة السابقة",
+    "serverDetails": "بيانات وتشخيص الخادم",
+    "endpointUrl": "رابط الخادم",
+    "pingStatus": "إشارة الفحص (Ping Status)",
+    "latency": "سرعة الاستجابة",
+    "openInBrowser": "فتح الرابط في المتصفح",
+    "copyUrl": "نسخ الرابط",
+    "copied": "تم النسخ بنجاح!"
   },
   "footer": {
     "company": "الشركة",

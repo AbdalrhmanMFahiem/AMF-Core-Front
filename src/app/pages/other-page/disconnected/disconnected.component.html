@@ -1,0 +1,199 @@
+<div class="relative min-h-screen flex flex-col justify-between bg-slate-50 dark:bg-slate-950 text-gray-800 dark:text-gray-100 overflow-hidden px-4 py-8 sm:px-6 lg:px-8 selection:bg-brand-500 selection:text-white transition-colors duration-300">
+  <!-- Ambient background glow effects -->
+  <div class="ambient-glow ambient-glow-1"></div>
+  <div class="ambient-glow ambient-glow-2"></div>
+
+  <!-- Background decorative grid patterns -->
+  <div class="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-size-[28px_28px] pointer-events-none"></div>
+
+  <!-- Top Navigation / Brand Header -->
+  <header class="relative z-10 w-full max-w-5xl mx-auto flex items-center justify-between py-2">
+    <div class="flex items-center gap-3">
+      <!-- AMF Core Logo -->
+      <img src="/images/logo/AMF-Core-Icon.png" alt="AMF Core Logo" class="h-9 w-auto dark:hidden object-contain drop-shadow-sm" />
+      <img src="/images/logo/AMF-Core-Dark-mode.png" alt="AMF Core Logo" class="h-9 w-auto hidden dark:block object-contain drop-shadow-sm" />
+      <div class="flex flex-col text-start">
+        <span class="text-base font-black tracking-tight text-gray-900 dark:text-white">
+          <span class="text-brand-600 dark:text-brand-400">AMF</span> CORE
+        </span>
+        <span class="text-[10px] font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Enterprise ERP System</span>
+      </div>
+    </div>
+
+    <!-- Live Status Pill in Header -->
+    <div class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border border-gray-200/80 dark:border-gray-800 shadow-xs">
+      @if (status === 'online' || restored) {
+        <span class="relative flex h-2.5 w-2.5">
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+          <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+        </span>
+        <span class="text-xs font-bold text-emerald-600 dark:text-emerald-400">
+          {{ 'backendConnection.online' | translate }}
+        </span>
+      } @else if (status === 'checking' || isRetrying) {
+        <span class="relative flex h-2.5 w-2.5">
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+          <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-amber-500"></span>
+        </span>
+        <span class="text-xs font-bold text-amber-600 dark:text-amber-400">
+          {{ 'backendConnection.checking' | translate }}
+        </span>
+      } @else {
+        <span class="relative flex h-2.5 w-2.5">
+          <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-rose-500"></span>
+        </span>
+        <span class="text-xs font-bold text-rose-600 dark:text-rose-400">
+          {{ 'backendConnection.offline' | translate }}
+        </span>
+      }
+    </div>
+  </header>
+
+  <!-- Main Hero Card Container -->
+  <main class="relative z-10 w-full max-w-xl mx-auto my-auto py-6">
+    <div class="relative bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl rounded-3xl p-6 sm:p-8 md:p-10 shadow-2xl border border-gray-200/80 dark:border-gray-800 transition-all duration-300">
+      
+      <!-- Disconnected Animated Visual -->
+      <div class="relative flex items-center justify-center my-3">
+        <!-- Pulse Radar Rings -->
+        @if (status === 'offline' && !restored) {
+          <div class="radar-ring radar-ring-1"></div>
+          <div class="radar-ring radar-ring-2"></div>
+          <div class="radar-ring radar-ring-3"></div>
+        }
+
+        <!-- Outer Glowing Circle -->
+        <div class="relative flex items-center justify-center w-28 h-28 rounded-full shadow-lg transition-transform duration-500"
+             [ngClass]="{
+               'bg-linear-to-tr from-rose-500/15 via-red-500/10 to-orange-500/15 border-2 border-rose-500/30 text-rose-600 dark:text-rose-400': status === 'offline' && !restored,
+               'bg-linear-to-tr from-amber-500/15 via-yellow-500/10 to-orange-500/15 border-2 border-amber-500/30 text-amber-600 dark:text-amber-400': (status === 'checking' || isRetrying) && !restored,
+               'bg-linear-to-tr from-emerald-500/20 via-teal-500/15 to-emerald-500/20 border-2 border-emerald-500/40 text-emerald-600 dark:text-emerald-400 scale-105': restored
+             }">
+
+          @if (restored) {
+            <!-- Connection Restored Checkmark SVG -->
+            <svg class="w-14 h-14 animate-bounce" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20 6L9 17l-5-5"/>
+            </svg>
+          } @else if (status === 'checking' || isRetrying) {
+            <!-- Checking / Ping Radar SVG -->
+            <svg class="w-12 h-12 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+            </svg>
+          } @else {
+            <!-- Disconnected Server / Severed Plug SVG with animations -->
+            <svg class="w-13 h-13 spark-dot" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <!-- Server Stack Box with break line -->
+              <rect x="2" y="2" width="20" height="7" rx="2" ry="2"></rect>
+              <rect x="2" y="15" width="20" height="7" rx="2" ry="2"></rect>
+              <line x1="6" y1="5.5" x2="6.01" y2="5.5" stroke-width="2.5"></line>
+              <line x1="6" y1="18.5" x2="6.01" y2="18.5" stroke-width="2.5"></line>
+              <!-- Disconnected / severed slash -->
+              <path d="M10 12l4 0" class="severed-line" stroke="currentColor" stroke-width="2"></path>
+              <line x1="2" y1="2" x2="22" y2="22" stroke="currentColor" stroke-width="2" class="text-rose-500 dark:text-rose-400"></line>
+            </svg>
+          }
+        </div>
+      </div>
+
+      <!-- Header & Status Message -->
+      <div class="text-center mt-6">
+        @if (restored) {
+          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 mb-3 animate-pulse">
+            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+            {{ 'disconnected.connectionRestored' | translate }}
+          </span>
+          <h1 class="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white tracking-tight">
+            {{ 'disconnected.connectionRestored' | translate }}
+          </h1>
+          <p class="mt-2 text-sm text-gray-600 dark:text-gray-300 font-medium">
+            {{ 'disconnected.redirecting' | translate }}
+          </p>
+        } @else {
+          <!-- Offline / Checking Status Badge -->
+          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold mb-3 border shadow-2xs"
+                [ngClass]="status === 'checking' || isRetrying 
+                  ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20' 
+                  : 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20'">
+            <span class="w-2 h-2 rounded-full"
+                  [ngClass]="status === 'checking' || isRetrying ? 'bg-amber-500 animate-ping' : 'bg-rose-500'"></span>
+            {{ (status === 'checking' || isRetrying ? 'disconnected.checking' : 'backendConnection.offline') | translate }}
+          </span>
+
+          <h1 class="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white tracking-tight">
+            {{ 'disconnected.title' | translate }}
+          </h1>
+          <p class="mt-2 text-sm text-gray-600 dark:text-gray-300 leading-relaxed max-w-md mx-auto">
+            {{ 'disconnected.subtitle' | translate }}
+          </p>
+        }
+      </div>
+
+      <!-- Diagnostics & Details Box (Progress & Attempts only) -->
+      @if (!restored) {
+        <div class="mt-6 p-4 rounded-2xl bg-slate-50/90 dark:bg-gray-800/60 border border-slate-200/80 dark:border-gray-700/60 shadow-inner">
+          @if (!autoRetryExhausted) {
+            <div class="flex items-center justify-between text-xs font-medium text-gray-500 dark:text-gray-400 mb-2">
+              <span class="flex items-center gap-1.5 font-semibold text-gray-700 dark:text-gray-300">
+                <svg class="w-4 h-4 text-brand-500 animate-spin-slow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span>{{ 'disconnected.autoRetryAttempts' | translate:{ current: (autoRetryCount + 1 > MAX_AUTO_RETRIES ? MAX_AUTO_RETRIES : autoRetryCount + 1), max: MAX_AUTO_RETRIES } }}</span>
+              </span>
+              <span class="font-mono font-bold text-brand-600 dark:text-brand-400 text-xs">
+                {{ 'disconnected.autoRetryCountdown' | translate:{ seconds: countdown } }}
+              </span>
+            </div>
+
+            <!-- Animated Countdown Progress Bar -->
+            <div class="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+              <div class="h-full bg-linear-to-r from-brand-500 to-indigo-500 rounded-full progress-bar-fill"
+                   [style.width.%]="countdownProgress"></div>
+            </div>
+          } @else {
+            <!-- Manual Mode Info Notice after 3 attempts exhausted -->
+            <div class="flex items-center gap-2.5 p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-800 dark:text-amber-300 text-xs">
+              <svg class="w-5 h-5 text-amber-600 dark:text-amber-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <div class="flex-1 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1.5">
+                <span class="leading-relaxed">{{ 'disconnected.autoRetryExhausted' | translate }}</span>
+                <span class="font-bold text-[11px] px-2.5 py-1 rounded-md bg-amber-500/20 text-amber-700 dark:text-amber-300 whitespace-nowrap self-start sm:self-auto shadow-2xs">
+                  {{ 'disconnected.manualMode' | translate }}
+                </span>
+              </div>
+            </div>
+          }
+        </div>
+      }
+
+      <!-- Action Buttons -->
+      @if (!restored) {
+        <div class="mt-6 flex flex-col sm:flex-row items-center gap-3">
+          <!-- Retry Connection Now Button -->
+          <button (click)="checkConnectionNow()" [disabled]="isRetrying" type="button"
+                  class="w-full sm:flex-1 inline-flex items-center justify-center gap-2 py-3 px-5 rounded-xl font-bold text-sm text-white bg-linear-to-r from-brand-600 to-indigo-600 hover:from-brand-700 hover:to-indigo-700 shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-500 transition-all cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed active:scale-[0.99]">
+            <svg class="w-4 h-4" [ngClass]="{ 'animate-spin': isRetrying }" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            </svg>
+            <span>{{ (isRetrying ? 'disconnected.checking' : 'disconnected.retryNow') | translate }}</span>
+          </button>
+
+          <!-- Back / Home Button -->
+          <button (click)="goBack()" type="button"
+                  class="w-full sm:w-auto inline-flex items-center justify-center gap-2 py-3 px-5 rounded-xl font-semibold text-sm text-gray-700 dark:text-gray-200 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-400 transition-all cursor-pointer active:scale-[0.99]">
+            <svg class="w-4 h-4 rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            <span>{{ (returnUrl ? 'disconnected.returnToPrevious' : 'disconnected.backToHome') | translate }}</span>
+          </button>
+        </div>
+      }
+    </div>
+  </main>
+
+  <!-- Footer Copyright & Info -->
+  <footer class="relative z-10 w-full max-w-5xl mx-auto flex items-center justify-center py-3 text-xs text-gray-400 dark:text-gray-500">
+    <span>&copy; {{ currentYear }} AMF Core. {{ 'footer.allRightsReserved' | translate }}</span>
+  </footer>
+</div>

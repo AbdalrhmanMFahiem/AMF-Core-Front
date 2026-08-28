@@ -1,18 +1,11 @@
-import { Component, inject, Input, OnInit } from '@angular/core';
+import { Component, inject, Input, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
+import { Subscription } from 'rxjs';
 import { DropdownComponent } from '../../ui/dropdown/dropdown.component';
-import { AppConfigService } from '../../../../core/services/app-config.service';
 import { AuthService } from '../../../../core/services/auth.service';
-
-export type ConnectionStatus = 'online' | 'offline' | 'checking' | 'idle';
-
-export interface PingResponse {
-  message?: string;
-  timestamp?: string;
-  status?: string;
-}
+import { BackendConnectionService, ConnectionStatus, PingResponse } from '../../../../core/services/backend-connection.service';
 
 @Component({
   selector: 'app-backend-connection-dropdown',
@@ -20,12 +13,12 @@ export interface PingResponse {
   imports: [CommonModule, TranslateModule, DropdownComponent],
   templateUrl: './backend-connection-dropdown.component.html',
 })
-export class BackendConnectionDropdownComponent implements OnInit {
+export class BackendConnectionDropdownComponent implements OnInit, OnDestroy {
   @Input() sizeClass = 'h-10 w-10 lg:h-11 lg:w-11';
   @Input() openUp = false;
   @Input() tenantId?: string;
 
-  private appConfigService = inject(AppConfigService);
+  public connectionService = inject(BackendConnectionService);
   private authService = inject(AuthService, { optional: true });
   private toastr = inject(ToastrService, { optional: true });
 
@@ -34,8 +27,9 @@ export class BackendConnectionDropdownComponent implements OnInit {
   tenantCopied = false;
   status: ConnectionStatus = 'idle';
   latency: number | null = null;
-  lastChecked: Date | null = null;
   pingData: PingResponse | null = null;
+
+  private subs = new Subscription();
 
   get currentTenantId(): string | null {
     if (this.tenantId) return this.tenantId;
@@ -43,12 +37,11 @@ export class BackendConnectionDropdownComponent implements OnInit {
   }
 
   get apiUrl(): string {
-    return this.appConfigService.apiUrl || 'http://localhost:7218';
+    return this.connectionService.apiUrl;
   }
 
   get pingUrl(): string {
-    const base = (this.apiUrl || '').replace(/\/+$/, '');
-    return `${base}/ping`;
+    return this.connectionService.pingUrl;
   }
 
   get parsedUrl(): { protocol: string; host: string; port: string; pathname: string } {
@@ -75,8 +68,28 @@ export class BackendConnectionDropdownComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // Perform initial ping check
-    this.checkConnection();
+    this.subs.add(
+      this.connectionService.status$.subscribe(s => {
+        this.status = s;
+      })
+    );
+
+    this.subs.add(
+      this.connectionService.latency$.subscribe(l => {
+        this.latency = l;
+      })
+    );
+
+    this.subs.add(
+      this.connectionService.pingData$.subscribe(p => {
+        this.pingData = p;
+      })
+    );
+
+    // Initial check if not checked yet
+    if (this.connectionService.currentStatus === 'idle') {
+      this.checkConnection();
+    }
   }
 
   toggleDropdown(): void {
@@ -107,7 +120,7 @@ export class BackendConnectionDropdownComponent implements OnInit {
 
       this.copied = true;
       if (this.toastr) {
-        this.toastr.success(this.apiUrl, 'Backend URL Copied', { timeOut: 2000 });
+        this.toastr.success(this.apiUrl, 'Server URL Copied', { timeOut: 2000 });
       }
 
       setTimeout(() => {
@@ -149,69 +162,16 @@ export class BackendConnectionDropdownComponent implements OnInit {
   }
 
   async checkConnection(): Promise<void> {
-    if (!this.apiUrl) return;
-
-    this.status = 'checking';
-    const startTime = performance.now();
-
-    try {
-      // Send a ping request to PingController (/ping)
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 4000);
-
-      const response = await fetch(this.pingUrl, {
-        method: 'GET',
-        headers: {
-          'Accept': 'application/json',
-        },
-        signal: controller.signal,
-        cache: 'no-store'
-      });
-
-      clearTimeout(timeoutId);
-
-      if (response.ok) {
-        this.latency = Math.round(performance.now() - startTime);
-        this.status = 'online';
-        this.lastChecked = new Date();
-        try {
-          this.pingData = await response.json();
-        } catch {
-          this.pingData = { message: 'Pong', status: 'Healthy' };
-        }
-      } else {
-        this.status = 'offline';
-        this.latency = null;
-        this.lastChecked = new Date();
-        this.pingData = null;
-      }
-    } catch (error: any) {
-      // Fallback test on base API URL
-      try {
-        const fallbackController = new AbortController();
-        const fallbackTimeout = setTimeout(() => fallbackController.abort(), 2000);
-        await fetch(this.apiUrl, {
-          method: 'GET',
-          mode: 'no-cors',
-          signal: fallbackController.signal,
-          cache: 'no-store'
-        });
-        clearTimeout(fallbackTimeout);
-        this.latency = Math.round(performance.now() - startTime);
-        this.status = 'online';
-        this.lastChecked = new Date();
-      } catch {
-        this.status = 'offline';
-        this.latency = null;
-        this.lastChecked = new Date();
-        this.pingData = null;
-      }
-    }
+    await this.connectionService.checkConnection({ force: true });
   }
 
   openUrl(): void {
     if (this.apiUrl) {
       window.open(this.apiUrl, '_blank', 'noopener,noreferrer');
     }
+  }
+
+  ngOnDestroy(): void {
+    this.subs.unsubscribe();
   }
 }

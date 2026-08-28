@@ -5,11 +5,13 @@ import { ToastrService } from 'ngx-toastr';
 import { TranslateService } from '@ngx-translate/core';
 import { catchError } from 'rxjs/operators';
 import { throwError } from 'rxjs';
+import { BackendConnectionService } from '../services/backend-connection.service';
 
 export const errorInterceptor: HttpInterceptorFn = (req, next) => {
   const toastr = inject(ToastrService);
   const router = inject(Router);
   const translate = inject(TranslateService);
+  const connectionService = inject(BackendConnectionService);
 
   return next(req).pipe(
     catchError((error: HttpErrorResponse) => {
@@ -35,6 +37,21 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
         if (!router.url.includes('/signin')) {
           router.navigate(['/signin']);
         }
+        return throwError(() => error);
+      }
+
+      // Check for true backend disconnection on network error (status 0)
+      // Note: Status 500 is specifically treated as an internal server error / exception, NOT a disconnection
+      if (error.status === 0 && !req.url.toLowerCase().includes('/ping')) {
+        connectionService.handlePotentialDisconnection(router.url).then(isOnline => {
+          if (isOnline) {
+            // Ping succeeded: server is actually reachable, only this request encountered network issue
+            toastr.error(
+              translate.instant('errors.networkError') || 'Unable to connect to the server. Please check your connection.',
+              translate.instant('errors.networkErrorTitle') || 'Network Error'
+            );
+          }
+        });
         return throwError(() => error);
       }
 
@@ -79,3 +96,4 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
     })
   );
 };
+

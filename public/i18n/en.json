@@ -1,7 +1,7 @@
 {
   "backendConnection": {
-    "title": "Backend Connection",
-    "serverUrl": "API Connection URL",
+    "title": "Server Connection",
+    "serverUrl": "Server URL",
     "status": "Connection Status",
     "online": "Connected & Online",
     "offline": "Disconnected / Offline",
@@ -17,6 +17,29 @@
     "checkAgain": "Re-check",
     "latency": "Latency",
     "configSource": "Configuration (config.json)"
+  },
+  "disconnected": {
+    "title": "Server Connection Lost",
+    "subtitle": "Unable to reach the server. The server might be unreachable or you may have lost network connectivity.",
+    "checkingDescription": "Checking server reachability and attempting to reconnect automatically...",
+    "offlineDescription": "Please verify that the server is running and check your network connection, then try again.",
+    "autoRetryCountdown": "Auto-retrying in {{seconds}}s",
+    "autoRetryAttempts": "Auto-retry ({{current}} of {{max}})",
+    "autoRetryExhausted": "Automatic retries exhausted (3/3). Please check server and click Retry manually.",
+    "manualMode": "Manual Check Mode",
+    "retryNow": "Retry Connection Now",
+    "checking": "Checking...",
+    "connectionRestored": "Connection Restored Successfully!",
+    "redirecting": "Redirecting back to your previous page...",
+    "backToHome": "Back to Home",
+    "returnToPrevious": "Return to Previous Page",
+    "serverDetails": "Server Diagnostics & Details",
+    "endpointUrl": "Server URL",
+    "pingStatus": "Ping Status",
+    "latency": "Response Latency",
+    "openInBrowser": "Open URL in Browser",
+    "copyUrl": "Copy URL",
+    "copied": "Copied Successfully!"
   },
   "footer": {
     "company": "Company",

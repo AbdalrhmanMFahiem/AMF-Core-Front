@@ -851,6 +851,11 @@ export const routes: Routes = [
     title: 'Unauthorized | AMF Core'
   },
   {
+    path: 'disconnected',
+    loadComponent: () => import('./pages/other-page/disconnected/disconnected.component').then(c => c.DisconnectedComponent),
+    title: 'Server Disconnected | AMF Core'
+  },
+  {
     path: '**',
     component: NotFoundComponent,
     title: 'Angular NotFound Dashboard | TailAdmin - Angular Admin Dashboard Template'
