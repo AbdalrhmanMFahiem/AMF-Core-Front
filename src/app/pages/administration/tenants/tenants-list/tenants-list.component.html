@@ -1,0 +1,404 @@
+<div class="space-y-6">
+  <!-- Page Header & Action -->
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <app-page-breadcrumb 
+      [pageTitle]="'tenants.pageTitle' | translate">
+    </app-page-breadcrumb>
+
+    <div class="flex items-center gap-3">
+      <button 
+        (click)="onAddNewCompany()"
+        type="button" 
+        class="inline-flex items-center gap-2 px-4 py-2.5 bg-brand-500 hover:bg-brand-600 active:scale-95 text-white text-xs font-bold rounded-xl shadow-lg shadow-brand-500/25 transition-all">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+        </svg>
+        <span>{{ 'tenants.addNewCompany' | translate }}</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- KPI Summary Cards -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    <!-- Total Companies -->
+    <div class="relative overflow-hidden rounded-2xl bg-white dark:bg-gray-800 p-5 border border-gray-100 dark:border-gray-700/60 shadow-sm">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-xs font-semibold text-gray-500 dark:text-gray-400">
+            {{ 'tenants.stats.totalCompanies' | translate }}
+          </p>
+          <h3 class="text-2xl font-black text-gray-900 dark:text-white mt-1">
+            {{ stats?.totalTenants ?? '—' }}
+          </h3>
+          <div class="flex items-center gap-2 mt-2">
+            <span class="inline-flex items-center gap-1 text-[11px] font-medium text-emerald-600 dark:text-emerald-400">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+              {{ stats?.activeTenants ?? 0 }} {{ 'tenants.stats.active' | translate }}
+            </span>
+            <span *ngIf="stats && stats.inactiveTenants > 0" class="inline-flex items-center gap-1 text-[11px] font-medium text-rose-500">
+              &bull; {{ stats.inactiveTenants }} {{ 'tenants.stats.inactive' | translate }}
+            </span>
+          </div>
+        </div>
+        <div class="w-12 h-12 rounded-xl bg-brand-50 dark:bg-brand-500/10 text-brand-500 flex items-center justify-center shadow-inner">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Total Users -->
+    <div class="relative overflow-hidden rounded-2xl bg-white dark:bg-gray-800 p-5 border border-gray-100 dark:border-gray-700/60 shadow-sm">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-xs font-semibold text-gray-500 dark:text-gray-400">
+            {{ 'tenants.stats.totalUsersAcrossSystem' | translate }}
+          </p>
+          <h3 class="text-2xl font-black text-gray-900 dark:text-white mt-1">
+            {{ stats?.totalUsersAcrossTenants ?? '—' }}
+          </h3>
+          <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-2">
+            {{ stats?.activeUsersAcrossTenants ?? 0 }} {{ 'tenants.stats.activeUsers' | translate }}
+          </p>
+        </div>
+        <div class="w-12 h-12 rounded-xl bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center shadow-inner">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Total Branches -->
+    <div class="relative overflow-hidden rounded-2xl bg-white dark:bg-gray-800 p-5 border border-gray-100 dark:border-gray-700/60 shadow-sm">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-xs font-semibold text-gray-500 dark:text-gray-400">
+            {{ 'tenants.stats.totalBranches' | translate }}
+          </p>
+          <h3 class="text-2xl font-black text-gray-900 dark:text-white mt-1">
+            {{ stats?.totalBranches ?? '—' }}
+          </h3>
+          <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-2">
+            {{ 'tenants.stats.acrossAllTenants' | translate }}
+          </p>
+        </div>
+        <div class="w-12 h-12 rounded-xl bg-purple-50 dark:bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center shadow-inner">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- License Expirations / Alerts -->
+    <div class="relative overflow-hidden rounded-2xl bg-white dark:bg-gray-800 p-5 border border-gray-100 dark:border-gray-700/60 shadow-sm">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-xs font-semibold text-gray-500 dark:text-gray-400">
+            {{ 'tenants.stats.licenseAlerts' | translate }}
+          </p>
+          <div class="flex items-baseline gap-2 mt-1">
+            <h3 class="text-2xl font-black" [ngClass]="(stats?.expiredCount ?? 0) > 0 ? 'text-rose-600 dark:text-rose-400' : 'text-gray-900 dark:text-white'">
+              {{ (stats?.expiringSoonCount ?? 0) + (stats?.expiredCount ?? 0) }}
+            </h3>
+            <span class="text-xs text-gray-400 font-medium">
+              ({{ stats?.expiringSoonCount ?? 0 }} {{ 'tenants.stats.expiringSoon' | translate }})
+            </span>
+          </div>
+          <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-2">
+            <span *ngIf="(stats?.expiredCount ?? 0) > 0" class="text-rose-500 font-semibold">
+              {{ stats?.expiredCount }} {{ 'tenants.stats.expired' | translate }}
+            </span>
+            <span *ngIf="(stats?.expiredCount ?? 0) === 0" class="text-emerald-500">
+              {{ 'tenants.stats.allLicensesHealthy' | translate }}
+            </span>
+          </p>
+        </div>
+        <div class="w-12 h-12 rounded-xl bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center shadow-inner">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content Card -->
+  <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700/60 shadow-sm overflow-hidden">
+    
+    <!-- Table Toolbar -->
+    <div class="p-5 border-b border-gray-100 dark:border-gray-700/60 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div class="relative flex-1 max-w-md">
+        <svg class="w-4 h-4 text-gray-400 absolute inset-s-3.5 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+        </svg>
+        <input 
+          type="text" 
+          [(ngModel)]="filters.searchValue" 
+          (keyup.enter)="onSearch()"
+          [placeholder]="'tenants.searchPlaceholder' | translate" 
+          class="w-full ps-10 pe-4 py-2.5 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-900 text-gray-900 dark:text-white placeholder-gray-400 focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 outline-none transition-all"
+        />
+      </div>
+
+      <div class="flex items-center gap-4">
+        <!-- Include Inactive Checkbox -->
+        <label class="inline-flex items-center gap-2 cursor-pointer text-xs font-medium text-gray-600 dark:text-gray-300 select-none">
+          <input 
+            type="checkbox" 
+            [checked]="includeInactive" 
+            (change)="onIncludeInactiveChanged(!includeInactive)"
+            class="rounded border-gray-300 dark:border-gray-700 text-brand-500 focus:ring-brand-500"
+          />
+          <span>{{ 'tenants.includeInactive' | translate }}</span>
+        </label>
+
+        <!-- Refresh Button -->
+        <button 
+          (click)="loadData()" 
+          [title]="'common.refresh' | translate"
+          type="button" 
+          class="p-2 rounded-xl border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-750 text-gray-500 hover:text-gray-700 dark:hover:text-gray-200 transition-colors">
+          <svg class="w-4 h-4" [ngClass]="{'animate-spin': loading}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Table -->
+    <div class="overflow-x-auto">
+      <table class="w-full text-start border-collapse">
+        <thead>
+          <tr class="border-b border-gray-100 dark:border-gray-700/60 bg-gray-50/40 dark:bg-gray-800/40 text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+            <th class="py-3.5 ps-6 pe-4 text-start">{{ 'tenants.company' | translate }}</th>
+            <th class="py-3.5 px-4 text-start">{{ 'tenants.usersCapacity' | translate }}</th>
+            <th class="py-3.5 px-4 text-start">{{ 'tenants.branchesAndWarehouses' | translate }}</th>
+            <th class="py-3.5 px-4 text-start">{{ 'tenants.supportExpiry' | translate }}</th>
+            <th class="py-3.5 px-4 text-start">{{ 'tenants.lastActivity' | translate }}</th>
+            <th class="py-3.5 px-4 text-center">{{ 'common.status' | translate }}</th>
+            <th class="py-3.5 ps-4 pe-6 text-end">{{ 'common.actions' | translate }}</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-50 dark:divide-gray-750 text-xs">
+          <!-- Loading State -->
+          <tr *ngIf="loading">
+            <td colspan="7" class="py-12 text-center">
+              <div class="flex flex-col items-center justify-center gap-3">
+                <svg class="w-8 h-8 text-brand-500 animate-spin" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+                </svg>
+                <span class="text-xs text-gray-500 dark:text-gray-400">{{ 'common.loading' | translate }}</span>
+              </div>
+            </td>
+          </tr>
+
+          <!-- Empty State -->
+          <tr *ngIf="!loading && (!data?.items || data!.items.length === 0)">
+            <td colspan="7" class="py-12 text-center">
+              <div class="w-12 h-12 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-400 flex items-center justify-center mx-auto mb-3">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                </svg>
+              </div>
+              <p class="text-sm font-semibold text-gray-700 dark:text-gray-300">{{ 'tenants.noTenantsFound' | translate }}</p>
+              <p class="text-xs text-gray-400 mt-1">{{ 'tenants.noTenantsFoundHint' | translate }}</p>
+            </td>
+          </tr>
+
+          <!-- Rows -->
+          <tr *ngFor="let item of data?.items" class="hover:bg-gray-50/70 dark:hover:bg-gray-750/50 transition-colors">
+            
+            <!-- Company Info -->
+            <td class="py-4 ps-6 pe-4">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-linear-to-br from-brand-500 to-indigo-600 text-white flex items-center justify-center font-bold text-xs shadow-sm uppercase">
+                  {{ (item.companyCode || item.name).substring(0, 2) }}
+                </div>
+                <div>
+                  <span class="font-bold text-gray-900 dark:text-white block">{{ item.name }}</span>
+                  <div class="flex items-center gap-2 mt-0.5 text-[11px] text-gray-400 font-mono">
+                    <span *ngIf="item.companyCode" class="px-1.5 py-0.2 rounded bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
+                      {{ item.companyCode }}
+                    </span>
+                    <span>{{ item.tenantId }}</span>
+                  </div>
+                </div>
+              </div>
+            </td>
+
+            <!-- Users Capacity Progress -->
+            <td class="py-4 px-4 min-w-40">
+              <div>
+                <div class="flex items-center justify-between text-[11px] mb-1">
+                  <span class="font-medium text-gray-700 dark:text-gray-300">
+                    <strong>{{ item.totalUsers }}</strong> / {{ item.maxUsers }}
+                  </span>
+                  <span class="font-mono text-gray-500 dark:text-gray-400">
+                    {{ getCapacityPercent(item) }}%
+                  </span>
+                </div>
+                <div class="w-full h-1.5 rounded-full bg-gray-100 dark:bg-gray-700 overflow-hidden">
+                  <div 
+                    class="h-full rounded-full transition-all duration-500" 
+                    [ngClass]="getCapacityColor(getCapacityPercent(item))"
+                    [style.width.%]="getCapacityPercent(item)">
+                  </div>
+                </div>
+                <span class="text-[10px] text-gray-400 mt-1 block">
+                  {{ item.activeUsers }} {{ 'tenants.activeUsers' | translate }}
+                </span>
+              </div>
+            </td>
+
+            <!-- Branches & Warehouses -->
+            <td class="py-4 px-4">
+              <div class="flex items-center gap-3 text-xs">
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-gray-100 dark:bg-gray-750 text-gray-700 dark:text-gray-300">
+                  <svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z"/>
+                  </svg>
+                  <strong>{{ item.branchesCount }}</strong> {{ 'tenants.branches' | translate }}
+                </span>
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-gray-100 dark:bg-gray-750 text-gray-700 dark:text-gray-300">
+                  <svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+                  </svg>
+                  <strong>{{ item.warehousesCount }}</strong> {{ 'tenants.warehouses' | translate }}
+                </span>
+              </div>
+            </td>
+
+            <!-- Support Expiry -->
+            <td class="py-4 px-4">
+              <div *ngIf="item.supportExpiryDate" class="flex flex-col">
+                <span class="font-mono text-gray-800 dark:text-gray-200 font-medium">
+                  {{ item.supportExpiryDate | date:'yyyy-MM-dd' }}
+                </span>
+                <div class="mt-1">
+                  <span *ngIf="item.licenseStatus === 'Valid'" class="px-2 py-0.5 rounded-md text-[10px] font-semibold bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+                    {{ 'tenants.licenseValid' | translate }} ({{ item.daysUntilExpiry }} {{ 'tenants.daysLeft' | translate }})
+                  </span>
+                  <span *ngIf="item.licenseStatus === 'ExpiringSoon'" class="px-2 py-0.5 rounded-md text-[10px] font-semibold bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400 animate-pulse">
+                    {{ 'tenants.licenseExpiringSoon' | translate }} ({{ item.daysUntilExpiry }} {{ 'tenants.daysLeft' | translate }})
+                  </span>
+                  <span *ngIf="item.licenseStatus === 'Expired'" class="px-2 py-0.5 rounded-md text-[10px] font-semibold bg-rose-50 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400">
+                    {{ 'tenants.licenseExpired' | translate }}
+                  </span>
+                </div>
+              </div>
+              <span *ngIf="!item.supportExpiryDate" class="text-gray-400 text-xs italic">
+                {{ 'tenants.unlimitedSupport' | translate }}
+              </span>
+            </td>
+
+            <!-- Last Activity -->
+            <td class="py-4 px-4">
+              <div *ngIf="item.lastActivityOn" class="flex flex-col">
+                <span class="font-medium text-gray-800 dark:text-gray-200 flex items-center gap-1.5">
+                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                  {{ item.lastActivityOn | date:'yyyy-MM-dd HH:mm' }}
+                </span>
+                <span class="text-[10px] text-gray-400 mt-0.5">
+                  {{ 'tenants.lastLogin' | translate }}
+                </span>
+              </div>
+              <span *ngIf="!item.lastActivityOn" class="text-gray-400 italic text-[11px]">
+                {{ 'tenants.noActivityYet' | translate }}
+              </span>
+            </td>
+
+            <!-- Active Status Toggle -->
+            <td class="py-4 px-4 text-center">
+              <button 
+                (click)="onToggleStatus(item, $event)"
+                type="button" 
+                class="relative inline-flex items-center cursor-pointer"
+                [title]="item.isActive ? ('tenants.clickToDeactivate' | translate) : ('tenants.clickToActivate' | translate)">
+                <div 
+                  class="w-9 h-5 rounded-full transition-colors relative"
+                  [ngClass]="item.isActive ? 'bg-brand-500' : 'bg-gray-300 dark:bg-gray-600'">
+                  <div 
+                    class="w-4 h-4 bg-white rounded-full transition-transform absolute top-0.5 inset-s-0.5 shadow-sm"
+                    [ngClass]="item.isActive ? 'translate-x-4 rtl:-translate-x-4' : 'translate-x-0'">
+                  </div>
+                </div>
+              </button>
+            </td>
+
+            <!-- Actions -->
+            <td class="py-4 ps-4 pe-6 text-end">
+              <div class="flex items-center justify-end gap-1.5">
+                <!-- View Users Button -->
+                <button 
+                  (click)="onViewUsers(item)"
+                  [title]="'tenants.viewUsers' | translate"
+                  type="button" 
+                  class="p-2 rounded-xl text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-500/10 transition-colors">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+                  </svg>
+                </button>
+
+                <!-- Edit Tenant Details Button -->
+                <button 
+                  (click)="onEditTenant(item)"
+                  [title]="'tenants.editCompany' | translate"
+                  type="button" 
+                  class="p-2 rounded-xl text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-500/10 transition-colors">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                  </svg>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination -->
+    <div *ngIf="data && data.totalPages > 1" class="p-4 border-t border-gray-100 dark:border-gray-700/60 flex items-center justify-between text-xs text-gray-500">
+      <div>
+        {{ 'common.showing' | translate }} 
+        <strong>{{ (data.pageIndex - 1) * filters.pageSize + 1 }}</strong> - 
+        <strong>{{ data.pageIndex * filters.pageSize > data.totalRecords ? data.totalRecords : data.pageIndex * filters.pageSize }}</strong> 
+        {{ 'common.of' | translate }} <strong>{{ data.totalRecords }}</strong>
+      </div>
+      <div class="flex items-center gap-2">
+        <button 
+          (click)="onPageChange(data.pageIndex - 1)" 
+          [disabled]="!data.hasPreviousPage"
+          class="px-3 py-1.5 rounded-lg border border-gray-200 dark:border-gray-700 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-50 dark:hover:bg-gray-750 transition-colors">
+          {{ 'common.previous' | translate }}
+        </button>
+        <span class="font-bold text-gray-800 dark:text-gray-200 px-2">
+          {{ data.pageIndex }} / {{ data.totalPages }}
+        </span>
+        <button 
+          (click)="onPageChange(data.pageIndex + 1)" 
+          [disabled]="!data.hasNextPage"
+          class="px-3 py-1.5 rounded-lg border border-gray-200 dark:border-gray-700 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-50 dark:hover:bg-gray-750 transition-colors">
+          {{ 'common.next' | translate }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modals -->
+  <app-tenant-edit-modal 
+    [isOpen]="isEditModalOpen" 
+    [tenant]="selectedTenant"
+    (close)="isEditModalOpen = false; selectedTenant = null"
+    (saved)="onTenantSaved($event)">
+  </app-tenant-edit-modal>
+
+  <app-tenant-users-modal 
+    [isOpen]="isUsersModalOpen" 
+    [tenant]="selectedTenant"
+    (close)="isUsersModalOpen = false; selectedTenant = null">
+  </app-tenant-users-modal>
+</div>

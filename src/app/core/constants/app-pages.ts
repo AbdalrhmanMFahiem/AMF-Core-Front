@@ -5,6 +5,8 @@ export const AppPages = {
   Users: 'users',
   Roles: 'roles',
   Profile: 'profile',
+  Tenants: 'tenants',
+  TenantActivity: 'tenantActivity',
   ReportLogHistory: 'reportLogHistory',
   GeneralSettings: 'generalSettings',
   CompanySettings: 'companySettings',

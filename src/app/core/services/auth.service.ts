@@ -53,7 +53,7 @@ export class AuthService {
     return data ? JSON.parse(data) : null;
   }
 
-  setLandingPagePreference(page: 'dashboard' | 'home') {
+  setLandingPagePreference(page: 'dashboard' | 'home' | 'pos') {
     localStorage.setItem('userLandingPage', page);
     const authData = this.getAuthResponse();
     if (authData) {
@@ -62,9 +62,13 @@ export class AuthService {
     }
   }
 
-  getLandingPagePreference(): 'dashboard' | 'home' {
+  getLandingPagePreference(): 'dashboard' | 'home' | 'pos' {
     const authData = this.getAuthResponse();
     const serverPref = authData?.defaultLandingPage?.trim().toLowerCase();
+
+    if (serverPref === 'pos' || serverPref === 'quicksale' || serverPref === 'cashier') {
+      return 'pos';
+    }
 
     // Only if server specifies 'dashboard' explicitly, return 'dashboard'
     if (serverPref === 'dashboard') {
@@ -75,8 +79,7 @@ export class AuthService {
     return 'home';
   }
 
-
-  updateLandingPageOnServer(page: 'dashboard' | 'home'): Observable<void> {
+  updateLandingPageOnServer(page: 'dashboard' | 'home' | 'pos'): Observable<void> {
     this.setLandingPagePreference(page);
     return this.http.put<void>(`${this.config.apiUrl}/me/landing-page`, { landingPage: page });
   }
@@ -87,6 +90,12 @@ export class AuthService {
 
     const isRestricted = localStorage.getItem('restrictDashboard') === 'true';
     return !isRestricted;
+  }
+
+  isSystemAdmin(): boolean {
+    const authData = this.getAuthResponse();
+    if (!authData) return false;
+    return authData.id === '6dc6528a-b280-4770-9eae-82671ee81ef7' || authData.code === '0' || !authData.tenantId;
   }
 
 

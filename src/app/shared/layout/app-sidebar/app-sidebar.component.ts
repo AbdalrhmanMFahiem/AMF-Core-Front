@@ -10,6 +10,7 @@ import { Subscription } from 'rxjs';
 import { NavItem, SidebarService } from '../../services/sidebar.service';
 import { SearchResult, getSearchScore, getFlatRoutesWithBreadcrumb } from '../../utils/arabic-search.utils';
 import { PermissionsService } from '../../../core/services/permissions.service';
+import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -47,7 +48,8 @@ export class AppSidebarComponent implements OnInit, OnDestroy {
     public sidebarService: SidebarService,
     private router: Router,
     private permissionsService: PermissionsService,
-    private translateService: TranslateService
+    private translateService: TranslateService,
+    private authService: AuthService
   ) {
     this.isExpanded$ = this.sidebarService.isExpanded$;
     this.isMobileOpen$ = this.sidebarService.isMobileOpen$;
@@ -105,9 +107,38 @@ export class AppSidebarComponent implements OnInit, OnDestroy {
     return this.permissionsService.hasPermission(key);
   }
 
+  isItemVisible(item?: { systemAdminOnly?: boolean }): boolean {
+    if (!item) return true;
+    if (item.systemAdminOnly) {
+      return this.authService.isSystemAdmin();
+    }
+    return true;
+  }
+
   ngOnInit() {
+    const isSysAdmin = this.authService.isSystemAdmin();
+    const filterAdminOnly = (items: NavItem[]): NavItem[] => {
+      if (isSysAdmin) return items;
+      return items
+        .filter(item => !item.systemAdminOnly)
+        .map(item => ({
+          ...item,
+          subItems: item.subItems 
+            ? item.subItems
+                .filter(sub => !sub.systemAdminOnly)
+                .map(sub => ({
+                  ...sub,
+                  subItems: sub.subItems ? sub.subItems.filter(nested => !nested.systemAdminOnly) : undefined
+                }))
+            : undefined
+        }));
+    };
+
+    const visibleNavItems = filterAdminOnly(this.navItems);
+    const visibleOthersItems = filterAdminOnly(this.othersItems);
+
     this.flatRoutes = getFlatRoutesWithBreadcrumb(
-      [...this.navItems, ...this.othersItems],
+      [...visibleNavItems, ...visibleOthersItems],
       this.translateService
     );
 

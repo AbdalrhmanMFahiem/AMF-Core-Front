@@ -10,6 +10,7 @@ export type NavItem = {
   new?: boolean;
   pro?: boolean;
   permissionKey?: string;
+  systemAdminOnly?: boolean;
   aliases?: string[];
   subItems?: {
     name: string;
@@ -20,6 +21,7 @@ export type NavItem = {
     icon?: string;
     subItems?: any[];
     permissionKey?: string;
+    systemAdminOnly?: boolean;
     aliases?: string[];
   }[];
 };
@@ -63,6 +65,17 @@ export class SidebarService {
       icon: `<svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M16 7C16 9.20914 14.2091 11 12 11C9.79086 11 8 9.20914 8 7C8 4.79086 9.79086 3 12 3C14.2091 3 16 4.79086 16 7ZM14 7C14 8.10457 13.1046 9 12 9C10.8954 9 10 8.10457 10 7C10 5.89543 10.8954 5 12 5C13.1046 5 14 5.89543 14 7Z" fill="currentColor"></path><path fill-rule="evenodd" clip-rule="evenodd" d="M16 15C16 14.4477 15.5523 14 15 14H9C8.44772 14 8 14.4477 8 15V16C8 17.6569 9.34315 19 11 19H13C14.6569 19 16 17.6569 16 16V15ZM6 15C6 13.3431 7.34315 12 9 12H15C16.6569 12 18 13.3431 18 15V16C18 18.7614 15.7614 21 13 21H11C8.23858 21 6 18.7614 6 16V15Z" fill="currentColor"></path></svg>`,
       aliases: ['الإدارة', 'إدارة النظام', 'التهيئة', 'administration', 'admin', 'setup'],
       subItems: [
+        {
+          name: "Multi-Tenant & System Oversight",
+          translationKey: "pages.tenantManagement",
+          systemAdminOnly: true,
+          icon: `<svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M19 21V5a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v5m-4 0h4"/></svg>`,
+          aliases: ['إدارة الشركات', 'الشركات', 'المستأجرين', 'نشاط الشركات', 'tenants', 'multi-tenant'],
+          subItems: [
+            { name: "Companies & Tenants", translationKey: "pages.tenants", path: "/administration/tenants", permissionKey: Permissions.GetTenants, systemAdminOnly: true, aliases: ['شركات', 'الشركات', 'المستأجرين', 'tenants', 'companies'] },
+            { name: "Activity & Login Audit", translationKey: "pages.tenantActivity", path: "/administration/tenant-activity", permissionKey: Permissions.ViewTenantActivity, systemAdminOnly: true, aliases: ['نشاط الشركات', 'سجل الدخول', 'حركات الدخول', 'login audit', 'activity'] }
+          ]
+        },
         {
           name: "Users Management",
           translationKey: "pages.usersManagement",

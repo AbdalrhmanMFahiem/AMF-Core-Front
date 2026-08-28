@@ -1,0 +1,129 @@
+<div *ngIf="isOpen" class="fixed inset-0 z-50 overflow-y-auto bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+  <div class="relative w-full max-w-lg rounded-2xl bg-white dark:bg-gray-800 shadow-2xl border border-gray-100 dark:border-gray-700 overflow-hidden transform transition-all duration-300">
+    
+    <!-- Modal Header -->
+    <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/50">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-brand-50 dark:bg-brand-500/10 text-brand-500 flex items-center justify-center shadow-inner">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+          </svg>
+        </div>
+        <div>
+          <h3 class="text-base font-bold text-gray-900 dark:text-white">
+            {{ 'tenants.editTitle' | translate }}
+          </h3>
+          <p class="text-xs text-gray-500 dark:text-gray-400 font-mono mt-0.5">
+            {{ tenant?.tenantId }}
+          </p>
+        </div>
+      </div>
+
+      <button (click)="onClose()" type="button" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Modal Form Body -->
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="p-6 space-y-5">
+      <!-- Tenant Name -->
+      <div>
+        <label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5">
+          {{ 'tenants.fields.name' | translate }} <span class="text-red-500">*</span>
+        </label>
+        <input 
+          type="text" 
+          formControlName="name"
+          [placeholder]="'tenants.fields.namePlaceholder' | translate"
+          class="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all outline-none"
+          [ngClass]="{'border-red-500 ring-1 ring-red-500': form.get('name')?.touched && form.get('name')?.invalid}"
+        />
+        <span *ngIf="form.get('name')?.touched && form.get('name')?.errors?.['required']" class="text-xs text-red-500 mt-1 block">
+          {{ 'common.fieldRequired' | translate: { field: ('tenants.fields.name' | translate) } }}
+        </span>
+      </div>
+
+      <!-- Max Allowed Users -->
+      <div>
+        <div class="flex items-center justify-between mb-1.5">
+          <label class="block text-xs font-semibold text-gray-700 dark:text-gray-300">
+            {{ 'tenants.fields.maxUsers' | translate }} <span class="text-red-500">*</span>
+          </label>
+          <span class="text-xs text-gray-500 dark:text-gray-400">
+            {{ 'tenants.currentUsersCount' | translate }}: <strong class="text-gray-800 dark:text-gray-200">{{ tenant?.totalUsers || 0 }}</strong>
+          </span>
+        </div>
+        <div class="relative">
+          <input 
+            type="number" 
+            formControlName="maxUsers"
+            min="1"
+            max="100000"
+            class="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all outline-none font-mono"
+            [ngClass]="{'border-red-500 ring-1 ring-red-500': form.get('maxUsers')?.touched && form.get('maxUsers')?.invalid}"
+          />
+          <div class="absolute inset-y-0 inset-e-0 flex items-center pe-3 pointer-events-none text-xs text-gray-400 font-medium">
+            {{ 'tenants.usersUnit' | translate }}
+          </div>
+        </div>
+        <span *ngIf="form.get('maxUsers')?.touched && form.get('maxUsers')?.errors?.['min']" class="text-xs text-red-500 mt-1 block">
+          {{ 'tenants.minUsersError' | translate }}
+        </span>
+      </div>
+
+      <!-- Support Expiry Date -->
+      <div>
+        <label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5">
+          {{ 'tenants.fields.supportExpiryDate' | translate }}
+        </label>
+        <input 
+          type="date" 
+          formControlName="supportExpiryDate"
+          class="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all outline-none font-mono"
+        />
+        <p class="text-[11px] text-gray-400 dark:text-gray-500 mt-1">
+          {{ 'tenants.supportExpiryHint' | translate }}
+        </p>
+      </div>
+
+      <!-- Active Toggle -->
+      <div class="flex items-center justify-between p-3.5 rounded-xl bg-gray-50 dark:bg-gray-750/50 border border-gray-100 dark:border-gray-700">
+        <div>
+          <span class="block text-xs font-bold text-gray-800 dark:text-gray-200">
+            {{ 'tenants.companyStatus' | translate }}
+          </span>
+          <span class="text-[11px] text-gray-500 dark:text-gray-400">
+            {{ form.get('isActive')?.value ? ('tenants.statusActiveDesc' | translate) : ('tenants.statusInactiveDesc' | translate) }}
+          </span>
+        </div>
+        <label class="relative inline-flex items-center cursor-pointer">
+          <input type="checkbox" formControlName="isActive" class="sr-only peer">
+          <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:inset-s-0.5 after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-500"></div>
+        </label>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="flex items-center justify-end gap-3 pt-3 border-t border-gray-100 dark:border-gray-700">
+        <button 
+          (click)="onClose()" 
+          type="button" 
+          class="px-4 py-2 text-xs font-semibold text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-xl transition-all">
+          {{ 'common.cancel' | translate }}
+        </button>
+        
+        <button 
+          type="submit" 
+          [disabled]="isSubmitting"
+          class="inline-flex items-center gap-2 px-5 py-2.5 text-xs font-bold text-white bg-brand-500 hover:bg-brand-600 active:scale-95 rounded-xl shadow-lg shadow-brand-500/25 transition-all disabled:opacity-50 disabled:cursor-not-allowed">
+          <svg *ngIf="isSubmitting" class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+          </svg>
+          {{ isSubmitting ? ('common.saving' | translate) : ('common.saveChanges' | translate) }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

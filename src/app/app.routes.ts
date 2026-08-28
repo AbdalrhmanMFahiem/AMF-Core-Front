@@ -13,6 +13,7 @@ import { BasicTablesComponent } from './pages/tables/basic-tables/basic-tables.c
 import { BlankComponent } from './pages/blank/blank.component';
 import { NotFoundComponent } from './pages/other-page/not-found/not-found.component';
 import { AppLayoutComponent } from './shared/layout/app-layout/app-layout.component';
+import { PosLayoutComponent } from './shared/layout/pos-layout/pos-layout.component';
 import { InvoicesComponent } from './pages/invoices/invoices.component';
 import { LineChartComponent } from './pages/charts/line-chart/line-chart.component';
 import { BarChartComponent } from './pages/charts/bar-chart/bar-chart.component';
@@ -95,6 +96,16 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/administration/users/users-form/users-form.component').then(c => c.UsersFormComponent),
         canDeactivate: [unsavedChangesGuard],
         title: 'View User | AMF Core'
+      },
+      {
+        path: 'administration/tenants',
+        loadComponent: () => import('./pages/administration/tenants/tenants-list/tenants-list.component').then(c => c.TenantsListComponent),
+        title: 'Tenants Management | AMF Core'
+      },
+      {
+        path: 'administration/tenant-activity',
+        loadComponent: () => import('./pages/administration/tenant-activity/tenant-activity.component').then(c => c.TenantActivityComponent),
+        title: 'Tenant Activity & Login Audit | AMF Core'
       },
       {
         path: 'administration/sales-reps',
@@ -825,6 +836,18 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/configurations/print-settings/print-settings.component').then(c => c.PrintSettingsComponent),
         title: 'Print & Receipt Settings | AMF Core'
       },
+    ]
+  },
+  {
+    path: 'pos',
+    component: PosLayoutComponent,
+    canActivate: [authGuard],
+    children: [
+      {
+        path: '',
+        loadComponent: () => import('./pages/sales/quick-sale/quick-sale.component').then(c => c.QuickSaleComponent),
+        title: 'POS Terminal | AMF Core'
+      }
     ]
   },
   {

@@ -1,0 +1,165 @@
+<div *ngIf="isOpen" class="fixed inset-0 z-50 overflow-y-auto bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+  <div class="relative w-full max-w-4xl rounded-2xl bg-white dark:bg-gray-800 shadow-2xl border border-gray-100 dark:border-gray-700 overflow-hidden flex flex-col max-h-[90vh]">
+    
+    <!-- Modal Header -->
+    <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/50 shrink-0">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center shadow-inner">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+          </svg>
+        </div>
+        <div>
+          <h3 class="text-base font-bold text-gray-900 dark:text-white flex items-center gap-2">
+            <span>{{ 'tenants.usersModalTitle' | translate }}</span>
+            <span class="text-xs px-2 py-0.5 rounded-md bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 font-normal">
+              {{ tenant?.name }}
+            </span>
+          </h3>
+          <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+            {{ 'tenants.tenantId' | translate }}: <span class="font-mono">{{ tenant?.tenantId }}</span> &bull; 
+            {{ 'tenants.capacityLabel' | translate }}: <strong class="text-gray-800 dark:text-gray-200">{{ users.length }} / {{ tenant?.maxUsers }}</strong>
+          </p>
+        </div>
+      </div>
+
+      <button (click)="onClose()" type="button" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Search & Filter bar -->
+    <div class="px-6 py-3 border-b border-gray-100 dark:border-gray-700/60 bg-white dark:bg-gray-800 flex items-center justify-between gap-4 shrink-0">
+      <div class="relative flex-1">
+        <svg class="w-4 h-4 text-gray-400 absolute inset-s-3.5 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+        </svg>
+        <input 
+          type="text" 
+          [(ngModel)]="searchQuery"
+          [placeholder]="'tenants.searchUsersPlaceholder' | translate"
+          class="w-full ps-10 pe-4 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-900 text-gray-900 dark:text-white placeholder-gray-400 focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 outline-none transition-all"
+        />
+      </div>
+      <span class="text-xs text-gray-500 dark:text-gray-400 whitespace-nowrap">
+        {{ 'common.showing' | translate }} <strong>{{ filteredUsers.length }}</strong> {{ 'tenants.usersUnit' | translate }}
+      </span>
+    </div>
+
+    <!-- Modal Table Content -->
+    <div class="overflow-y-auto p-6 flex-1">
+      <div *ngIf="loading" class="flex flex-col items-center justify-center py-12 gap-3">
+        <svg class="w-8 h-8 text-brand-500 animate-spin" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+        </svg>
+        <span class="text-xs text-gray-500 dark:text-gray-400">{{ 'common.loading' | translate }}</span>
+      </div>
+
+      <div *ngIf="!loading && filteredUsers.length === 0" class="text-center py-12">
+        <div class="w-12 h-12 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-400 flex items-center justify-center mx-auto mb-3">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+          </svg>
+        </div>
+        <p class="text-sm font-semibold text-gray-700 dark:text-gray-300">{{ 'tenants.noUsersFound' | translate }}</p>
+        <p class="text-xs text-gray-400 mt-1">{{ 'tenants.noUsersFoundHint' | translate }}</p>
+      </div>
+
+      <div *ngIf="!loading && filteredUsers.length > 0" class="overflow-x-auto">
+        <table class="w-full text-start border-collapse">
+          <thead>
+            <tr class="border-b border-gray-100 dark:border-gray-700 text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+              <th class="pb-3 text-start">{{ 'common.code' | translate }}</th>
+              <th class="pb-3 text-start">{{ 'common.name' | translate }}</th>
+              <th class="pb-3 text-start">{{ 'users.fields.email' | translate }}</th>
+              <th class="pb-3 text-start">{{ 'tenants.roles' | translate }}</th>
+              <th class="pb-3 text-start">{{ 'tenants.lastLogin' | translate }}</th>
+              <th class="pb-3 text-start">{{ 'common.status' | translate }}</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-50 dark:divide-gray-750 text-xs">
+            <tr *ngFor="let u of filteredUsers" class="hover:bg-gray-50/70 dark:hover:bg-gray-750/50 transition-colors">
+              <!-- Code -->
+              <td class="py-3.5 pe-4 font-mono font-medium text-gray-700 dark:text-gray-300">
+                {{ u.code }}
+              </td>
+
+              <!-- Name & Avatar -->
+              <td class="py-3.5 pe-4">
+                <div class="flex items-center gap-2.5">
+                  <div class="w-7 h-7 rounded-lg bg-linear-to-br from-brand-500 to-indigo-600 text-white flex items-center justify-center font-bold text-[11px] shadow-sm uppercase">
+                    {{ u.name.charAt(0) || 'U' }}
+                  </div>
+                  <div>
+                    <span class="font-semibold text-gray-900 dark:text-white block">{{ u.name }}</span>
+                    <span *ngIf="u.branches && u.branches.length > 0" class="text-[10px] text-gray-400 block">
+                      {{ u.branches.join(', ') }}
+                    </span>
+                  </div>
+                </div>
+              </td>
+
+              <!-- Email -->
+              <td class="py-3.5 pe-4 text-gray-600 dark:text-gray-400 font-mono text-[11px]">
+                {{ u.email || '—' }}
+              </td>
+
+              <!-- Roles -->
+              <td class="py-3.5 pe-4">
+                <div class="flex flex-wrap gap-1">
+                  <span *ngFor="let r of u.roles" class="px-2 py-0.5 text-[10px] font-medium rounded-md bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-100 dark:border-indigo-500/20">
+                    {{ r }}
+                  </span>
+                  <span *ngIf="!u.roles || u.roles.length === 0" class="text-gray-400 text-[11px]">
+                    —
+                  </span>
+                </div>
+              </td>
+
+              <!-- Last Login & IP -->
+              <td class="py-3.5 pe-4">
+                <div *ngIf="u.lastLoginOn" class="flex flex-col">
+                  <span class="font-medium text-gray-800 dark:text-gray-200 flex items-center gap-1.5">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                    {{ u.lastLoginOn | date:'yyyy-MM-dd HH:mm' }}
+                  </span>
+                  <span *ngIf="u.lastLoginIp" class="text-[10px] text-gray-400 font-mono ps-3">
+                    IP: {{ u.lastLoginIp }}
+                  </span>
+                </div>
+                <div *ngIf="!u.lastLoginOn" class="text-gray-400 italic text-[11px]">
+                  {{ 'tenants.neverLoggedIn' | translate }}
+                </div>
+              </td>
+
+              <!-- Status -->
+              <td class="py-3.5">
+                <span *ngIf="u.isActive" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-500/20">
+                  <span class="w-1 h-1 rounded-full bg-emerald-500"></span>
+                  {{ 'common.active' | translate }}
+                </span>
+                <span *ngIf="!u.isActive" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-rose-50 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-500/20">
+                  <span class="w-1 h-1 rounded-full bg-rose-500"></span>
+                  {{ 'common.inactive' | translate }}
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="px-6 py-3 border-t border-gray-100 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/50 flex items-center justify-end shrink-0">
+      <button 
+        (click)="onClose()" 
+        type="button" 
+        class="px-5 py-2 text-xs font-bold text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 border border-gray-200 dark:border-gray-600 rounded-xl transition-all shadow-sm">
+        {{ 'common.close' | translate }}
+      </button>
+    </div>
+  </div>
+</div>

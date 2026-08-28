@@ -143,6 +143,8 @@ export class UsersFormComponent implements OnInit, HasUnsavedChanges {
         isActive: [{ value: true, disabled: this.isViewMode }],
         changePassword: [{ value: false, disabled: this.isViewMode }],
         lockAccess: [{ value: false, disabled: this.isViewMode }],
+        isPosOnly: [{ value: false, disabled: this.isViewMode }],
+        defaultLandingPage: [{ value: 'dashboard', disabled: this.isViewMode }],
         notes: [{ value: '', disabled: this.isViewMode }],
         roles: [{ value: [], disabled: this.isViewMode }, [Validators.required, Validators.minLength(1)]],
         branchIds: [{ value: [], disabled: this.isViewMode }, [Validators.required, Validators.minLength(1)]],
@@ -176,6 +178,17 @@ export class UsersFormComponent implements OnInit, HasUnsavedChanges {
         isDeployed: [{ value: false, disabled: this.isViewMode }],
         additionalInfo: [{ value: '', disabled: this.isViewMode }]
       })
+    });
+
+    // Reactive listener for POS Only toggle
+    this.basicForm.get('isPosOnly')?.valueChanges.subscribe((isPos: boolean) => {
+      if (isPos) {
+        this.basicForm.patchValue({ defaultLandingPage: 'pos' }, { emitEvent: false });
+      } else {
+        if (this.basicForm.get('defaultLandingPage')?.value === 'pos') {
+          this.basicForm.patchValue({ defaultLandingPage: 'dashboard' }, { emitEvent: false });
+        }
+      }
     });
 
     // Reactive branch change listener to dynamically filter available warehouses
@@ -229,6 +242,7 @@ export class UsersFormComponent implements OnInit, HasUnsavedChanges {
     this.loading = true;
     this.userService.get(this.id!).subscribe({
       next: (user: UserResponse) => {
+        const isPos = user.defaultLandingPage === 'pos' || user.isPosOnly === true;
         this.basicForm.patchValue({
           code: user.code,
           firstAName: user.firstAName,
@@ -239,6 +253,8 @@ export class UsersFormComponent implements OnInit, HasUnsavedChanges {
           isActive: user.isActive,
           changePassword: user.changePassword,
           lockAccess: user.lockAccess,
+          isPosOnly: isPos,
+          defaultLandingPage: user.defaultLandingPage || (isPos ? 'pos' : 'dashboard'),
           notes: user.notes,
           roles: user.roles,
           branchIds: user.branchIds || [],
@@ -385,6 +401,8 @@ export class UsersFormComponent implements OnInit, HasUnsavedChanges {
       isActive: bValue.isActive,
       changePassword: bValue.changePassword,
       lockAccess: bValue.lockAccess,
+      isPosOnly: bValue.isPosOnly,
+      defaultLandingPage: bValue.isPosOnly ? 'pos' : (bValue.defaultLandingPage || 'dashboard'),
       notes: bValue.notes,
       roles: rolesArray,
       branchIds: branchIdsArray,

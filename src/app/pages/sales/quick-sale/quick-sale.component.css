@@ -1,12 +1,19 @@
 /* POS Custom Styles */
 :host {
   display: block;
+  height: 100%;
+  width: 100%;
+}
+
+.pos-container {
+  touch-action: manipulation;
+  -webkit-touch-callout: none;
 }
 
 /* Custom Thin Scrollbar for Item Grid & Cart List */
 .custom-scrollbar::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-track {
@@ -30,7 +37,7 @@
   background: rgba(75, 85, 99, 0.7);
 }
 
-/* Smooth Fade In Animation */
+/* Animations */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -43,5 +50,118 @@
 }
 
 .animate-fadeIn {
-  animation: fadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: fadeIn 0.18s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.animate-slideUp {
+  animation: slideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes scaleUp {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-scaleUp {
+  animation: scaleUp 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Touch Card Active Feedback */
+.pos-item-card {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.pos-item-card:active {
+  transform: scale(0.97);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════ */
+/* THERMAL PRINTING CSS FORMATS (58mm Handheld / PDA & 80mm POS Terminal)     */
+/* ═══════════════════════════════════════════════════════════════════════════ */
+
+.thermal-print-area {
+  display: none;
+}
+
+@media print {
+  body * {
+    visibility: hidden;
+  }
+
+  .thermal-print-area,
+  .thermal-print-area * {
+    visibility: visible;
+  }
+
+  .thermal-print-area {
+    display: block !important;
+    position: absolute;
+    left: 0;
+    top: 0;
+    margin: 0;
+    padding: 2mm;
+    color: #000;
+    background: #fff;
+    font-family: 'Courier New', Courier, monospace, 'Segoe UI', Tahoma, sans-serif;
+  }
+
+  /* 58mm Handheld thermal roll */
+  .receipt-58mm {
+    width: 48mm;
+    max-width: 48mm;
+    font-size: 9pt;
+    line-height: 1.2;
+  }
+
+  /* 80mm Desktop POS thermal roll */
+  .receipt-80mm {
+    width: 72mm;
+    max-width: 72mm;
+    font-size: 10pt;
+    line-height: 1.3;
+  }
+
+  .receipt-header h2 {
+    font-size: 12pt;
+    margin: 0;
+    text-align: center;
+  }
+
+  .receipt-divider {
+    text-align: center;
+    overflow: hidden;
+    margin: 2px 0;
+    white-space: nowrap;
+  }
+
+  .receipt-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 4px 0;
+  }
+
+  .receipt-table th,
+  .receipt-table td {
+    padding: 2px 0;
+  }
+
+  @page {
+    margin: 0;
+  }
 }

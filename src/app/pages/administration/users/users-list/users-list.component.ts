@@ -44,6 +44,7 @@ export class UsersListComponent implements OnInit {
     { field: 'code', header: 'common.code', type: 'code' },
     { field: 'name', header: 'common.name', type: 'text' },
     { field: 'email', header: 'users.fields.email', type: 'text' },
+    { field: 'lastLoginOn', header: 'tenants.lastLogin', type: 'date' },
     { field: 'isActive', header: 'common.status', type: 'badge' }
   ];
 

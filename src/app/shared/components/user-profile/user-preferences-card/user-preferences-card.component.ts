@@ -19,7 +19,7 @@ export class UserPreferencesCardComponent implements OnInit {
   @Input() profile: UserProfileData | null = null;
   @Output() profileUpdated = new EventEmitter<void>();
 
-  selectedPage: 'dashboard' | 'home' = 'dashboard';
+  selectedPage: 'dashboard' | 'home' | 'pos' = 'dashboard';
   savedMessage: string | null = null;
   landingErrorMessage: string | null = null;
 
@@ -39,7 +39,7 @@ export class UserPreferencesCardComponent implements OnInit {
     this.selectedPage = this.authService.getLandingPagePreference();
   }
 
-  selectPage(page: 'dashboard' | 'home') {
+  selectPage(page: 'dashboard' | 'home' | 'pos') {
     this.selectedPage = page;
     this.saveLandingPreference();
   }

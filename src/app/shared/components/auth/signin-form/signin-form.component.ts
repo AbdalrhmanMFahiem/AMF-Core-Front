@@ -189,7 +189,9 @@ export class SigninFormComponent {
               const landingPref = this.authService.getLandingPagePreference();
               const hasDashboardPermission = this.authService.hasDashboardPermission();
 
-              if (landingPref === 'dashboard' && hasDashboardPermission) {
+              if (landingPref === 'pos') {
+                this.router.navigate(['/pos']);
+              } else if (landingPref === 'dashboard' && hasDashboardPermission) {
                 this.router.navigate(['/dashboard']);
               } else {
                 this.router.navigate(['/']);

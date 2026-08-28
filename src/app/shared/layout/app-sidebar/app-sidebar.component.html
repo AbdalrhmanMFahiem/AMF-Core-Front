@@ -88,6 +88,7 @@
           </h2>
           <ul class="flex flex-col gap-1">
             @for (nav of navItems; track $index;let i = $index) {
+            @if (isItemVisible(nav)) {
             <li>
               @if (nav.subItems) {
               <button (click)="toggleSubmenu('main',i)" class="menu-item group cursor-pointer"
@@ -141,6 +142,7 @@
                 <div class="overflow-hidden">
                 <ul class="mt-2 space-y-1 ltr:ml-9 rtl:mr-9">
                   @for (subItem of nav.subItems; track j; let j = $index) {
+                  @if (isItemVisible(subItem)) {
                   <li>
                     @if (subItem.subItems) {
                     <!-- Collapsible Submenu Item -->
@@ -167,6 +169,7 @@
                       <div class="overflow-hidden">
                       <ul class="mt-1 mb-2 space-y-1 ltr:ml-4 rtl:mr-4 ltr:border-l rtl:border-r border-gray-200 dark:border-gray-800 ltr:pl-3 rtl:pr-3">
                         @for (nestedItem of subItem.subItems; track $index) {
+                        @if (isItemVisible(nestedItem)) {
                         <li>
                           <a [routerLink]="nestedItem.path" routerLinkActive="" (click)="onSubmenuClick()"
                             class="menu-dropdown-item text-[13.5px] py-1.5" [ngClass]="{
@@ -177,6 +180,7 @@
                             {{ nestedItem.translationKey ? (nestedItem.translationKey | translate) : nestedItem.name }}
                           </a>
                         </li>
+                        }
                         }
                       </ul>
                       </div>
@@ -219,6 +223,7 @@
                     }
                   </li>
                   }
+                  }
                 </ul>
                 </div>
               </div>
@@ -245,6 +250,7 @@
               }
               }
             </li>
+            }
             }
           </ul>
         </div>

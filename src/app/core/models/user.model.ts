@@ -9,6 +9,8 @@ export interface UserBasicResponse {
   email: string;
   isDisabled: boolean;
   roles: string[];
+  lastLoginOn?: string;
+  lastLoginIp?: string;
 }
 
 export interface UserResponse {
@@ -21,6 +23,8 @@ export interface UserResponse {
   isActive: boolean;
   changePassword: boolean;
   lockAccess: boolean;
+  defaultLandingPage?: string;
+  isPosOnly?: boolean;
   photoPath?: string;
   notes?: string;
   email: string;
@@ -31,6 +35,8 @@ export interface UserResponse {
   warehouseIds?: number[];
   defaultWarehouseId?: number;
   userEmploymentInfo?: UserEmploymentInfoResponse;
+  lastLoginOn?: string;
+  lastLoginIp?: string;
 }
 
 export interface UserEmploymentInfoResponse {
@@ -78,6 +84,8 @@ export interface UserRequest {
   lastEName?: string;
   changePassword: boolean;
   lockAccess: boolean;
+  defaultLandingPage?: string;
+  isPosOnly?: boolean;
   photo?: File;
   deletedPhoto?: string;
   notes?: string;
