@@ -91,9 +91,8 @@
   },
   "common": {
     "total": "Total",
-    "كشف حساب الشركاء": "Business Partner Statement",
-    "اختر": "Select",
-    "تقرير ربحية الفواتير والأصناف": "Invoices & Items Profitability Report",
+    "businessPartnerStatement": "Business Partner Statement",
+    "invoicesAndItemsProfitabilityReport": "Invoices & Items Profitability Report",
     "Search...": "Search...",
     "close": "Close",
     "group": "Group",
@@ -600,57 +599,96 @@
     "title": "Governorates",
     "addNew": "Add New Governorate",
     "saveSuccess": "Governorate saved successfully",
-    "add": { "title": "Add Governorate" },
-    "edit": { "title": "Edit Governorate" },
-    "view": { "title": "View Governorate" },
+    "add": {
+      "title": "Add Governorate"
+    },
+    "edit": {
+      "title": "Edit Governorate"
+    },
+    "view": {
+      "title": "View Governorate"
+    },
     "fields": {
-      "code": "Code", "codePlaceholder": "Enter Code",
+      "code": "Code",
+      "codePlaceholder": "Enter Code",
       "name": "Name",
-      "aName": "Name (Arabic)", "aNamePlaceholder": "Enter Arabic Name",
-      "eName": "Name (English)", "eNamePlaceholder": "Enter English Name",
-      "country": "Country", "countryPlaceholder": "Select Country",
-      "notes": "Notes", "notesPlaceholder": "Enter Notes",
+      "aName": "Name (Arabic)",
+      "aNamePlaceholder": "Enter Arabic Name",
+      "eName": "Name (English)",
+      "eNamePlaceholder": "Enter English Name",
+      "country": "Country",
+      "countryPlaceholder": "Select Country",
+      "notes": "Notes",
+      "notesPlaceholder": "Enter Notes",
       "status": "Status"
     },
-    "list": { "title": "Governorates List" },
+    "list": {
+      "title": "Governorates List"
+    },
     "searchPlaceholder": "Search governorates..."
   },
   "cities": {
     "title": "Cities",
     "addNew": "Add New City",
     "saveSuccess": "City saved successfully",
-    "add": { "title": "Add City" },
-    "edit": { "title": "Edit City" },
-    "view": { "title": "View City" },
+    "add": {
+      "title": "Add City"
+    },
+    "edit": {
+      "title": "Edit City"
+    },
+    "view": {
+      "title": "View City"
+    },
     "fields": {
-      "code": "Code", "codePlaceholder": "Enter Code",
+      "code": "Code",
+      "codePlaceholder": "Enter Code",
       "name": "Name",
-      "aName": "Name (Arabic)", "aNamePlaceholder": "Enter Arabic Name",
-      "eName": "Name (English)", "eNamePlaceholder": "Enter English Name",
-      "governorate": "Governorate", "governoratePlaceholder": "Select Governorate",
-      "notes": "Notes", "notesPlaceholder": "Enter Notes",
+      "aName": "Name (Arabic)",
+      "aNamePlaceholder": "Enter Arabic Name",
+      "eName": "Name (English)",
+      "eNamePlaceholder": "Enter English Name",
+      "governorate": "Governorate",
+      "governoratePlaceholder": "Select Governorate",
+      "notes": "Notes",
+      "notesPlaceholder": "Enter Notes",
       "status": "Status"
     },
-    "list": { "title": "Cities List" },
+    "list": {
+      "title": "Cities List"
+    },
     "searchPlaceholder": "Search cities..."
   },
   "districts": {
     "title": "Districts",
     "addNew": "Add New District",
     "saveSuccess": "District saved successfully",
-    "add": { "title": "Add District" },
-    "edit": { "title": "Edit District" },
-    "view": { "title": "View District" },
+    "add": {
+      "title": "Add District"
+    },
+    "edit": {
+      "title": "Edit District"
+    },
+    "view": {
+      "title": "View District"
+    },
     "fields": {
-      "code": "Code", "codePlaceholder": "Enter Code",
+      "code": "Code",
+      "codePlaceholder": "Enter Code",
       "name": "Name",
-      "aName": "Name (Arabic)", "aNamePlaceholder": "Enter Arabic Name",
-      "eName": "Name (English)", "eNamePlaceholder": "Enter English Name",
-      "city": "City", "cityPlaceholder": "Select City",
-      "notes": "Notes", "notesPlaceholder": "Enter Notes",
+      "aName": "Name (Arabic)",
+      "aNamePlaceholder": "Enter Arabic Name",
+      "eName": "Name (English)",
+      "eNamePlaceholder": "Enter English Name",
+      "city": "City",
+      "cityPlaceholder": "Select City",
+      "notes": "Notes",
+      "notesPlaceholder": "Enter Notes",
       "status": "Status"
     },
-    "list": { "title": "Districts List" },
+    "list": {
+      "title": "Districts List"
+    },
     "searchPlaceholder": "Search districts..."
   },
   "warehouses": {
@@ -724,7 +762,6 @@
       "Other": "Other"
     }
   },
-
   "locations": {
     "title": "Locations",
     "subTitle": "Manage bin locations and storage areas.",
