@@ -11,11 +11,23 @@ import { AuthService } from '../../../core/services/auth.service';
 import {
   SalesRepCustomerResponse,
   SalesRepWarehouseResponse,
-  QuickSaleItemResponse
+  QuickSaleItemResponse,
+  QuickSaleUomOption
 } from '../../../core/models/sales-rep.model';
 import { BusinessPartnerResponse } from '../../../core/models/business-partner.model';
+import { InvoiceResponse } from '../../../core/models/invoice.model';
+import { PrintSettingService } from '../../../core/services/print-setting.service';
+import { PrintSettingRequest } from '../../../core/models/print-setting.model';
 import { PrintPreviewModalComponent } from '../../../shared/components/common/print-preview-modal/print-preview-modal.component';
 import { QuickCustomerModalComponent } from '../../../shared/components/quick-customer-modal/quick-customer-modal.component';
+import { PaymentModalComponent } from '../invoices/payment-modal/payment-modal.component';
+
+export interface PosPrintPreferences {
+  enableThermal58: boolean;
+  enableThermal80: boolean;
+  enableA4: boolean;
+  autoPreviewSingleMethod: boolean;
+}
 
 export interface QuickSaleCartItem {
   itemId: number;
@@ -23,11 +35,14 @@ export interface QuickSaleCartItem {
   name: string;
   quantity: number;
   unitPrice: number;
+  basePrice: number;
   discountAmount: number;
   subtotal: number;
   availableQuantity: number;
   salesUomId?: number;
   salesUomName?: string;
+  salesUomConversionFactor: number;
+  availableUoms?: QuickSaleUomOption[];
   barcode?: string;
 }
 
@@ -39,6 +54,9 @@ export interface RecentInvoiceItem {
   date: Date;
   linesCount?: number;
   paymentMethod?: string;
+  paymentStatus?: string | number;
+  remainingAmount?: number;
+  businessPartnerId?: number;
 }
 
 export interface HeldOrder {
@@ -98,7 +116,8 @@ export interface LastSaleReceiptData {
     RouterModule,
     TranslateModule,
     PrintPreviewModalComponent,
-    QuickCustomerModalComponent
+    QuickCustomerModalComponent,
+    PaymentModalComponent
   ],
   templateUrl: './quick-sale.component.html',
   styleUrls: ['./quick-sale.component.css']
@@ -106,6 +125,7 @@ export interface LastSaleReceiptData {
 export class QuickSaleComponent implements OnInit, OnDestroy {
   private salesRepService = inject(SalesRepService);
   private invoiceService = inject(InvoiceService);
+  private printSettingService = inject(PrintSettingService);
   private authService = inject(AuthService);
   private router = inject(Router);
   public translate = inject(TranslateService);
@@ -144,6 +164,10 @@ export class QuickSaleComponent implements OnInit, OnDestroy {
   submitting: boolean = false;
   errorMessage: string | null = null;
   successMessage: string | null = null;
+
+  // Payment Modal Integration (Same as Sales Invoices)
+  isPaymentModalOpen: boolean = false;
+  selectedInvoiceForPayment: any = null;
 
   // Print & Post-Sale Actions Modal
   isSuccessModalOpen: boolean = false;
@@ -198,6 +222,20 @@ export class QuickSaleComponent implements OnInit, OnDestroy {
   // Keyboard Shortcuts Help Modal
   isShortcutsModalOpen: boolean = false;
 
+  // POS Print Preferences & Settings Modal
+  isPrintSettingsModalOpen: boolean = false;
+  posPrintPreferences: PosPrintPreferences = {
+    enableThermal58: true,
+    enableThermal80: true,
+    enableA4: true,
+    autoPreviewSingleMethod: true
+  };
+
+  // Dedicated POS Invoice Details Modal
+  isInvoiceDetailsModalOpen: boolean = false;
+  viewingInvoice: InvoiceResponse | null = null;
+  loadingViewingInvoice: boolean = false;
+
   // Sound Feedback
   soundEnabled: boolean = true;
   private audioCtx: AudioContext | null = null;
@@ -223,6 +261,7 @@ export class QuickSaleComponent implements OnInit, OnDestroy {
     this.initAudio();
     this.initShift();
     this.loadHeldOrders();
+    this.loadPrintPreferences();
     this.loadCustomers();
     this.loadWarehouses();
 
@@ -255,6 +294,9 @@ export class QuickSaleComponent implements OnInit, OnDestroy {
   }
 
   get canExitToDashboard(): boolean {
+    if (this.authService.isPosOnlyUser()) {
+      return false;
+    }
     return this.authService.hasDashboardPermission();
   }
 
@@ -383,6 +425,10 @@ export class QuickSaleComponent implements OnInit, OnDestroy {
     if (event.key === 'Escape') {
       if (this.isCameraScannerOpen) {
         this.stopCameraScan();
+        return;
+      }
+      if (this.isPaymentModalOpen) {
+        this.isPaymentModalOpen = false;
         return;
       }
       if (this.isShortcutsModalOpen) {
@@ -535,17 +581,22 @@ export class QuickSaleComponent implements OnInit, OnDestroy {
       existing.quantity += weight;
       this.recalculateLine(existing);
     } else {
+      const salesFactor = item.salesUomConversionFactor || 1;
+      const basePrice = item.basePrice || (salesFactor > 0 ? (item.price / salesFactor) : item.price) || item.price || 0;
       const cartItem: QuickSaleCartItem = {
         itemId: item.id,
         code: item.code,
         name: this.getItemDisplayName(item),
         quantity: weight,
         unitPrice: item.price || 0,
+        basePrice: basePrice,
         discountAmount: 0,
         subtotal: (item.price || 0) * weight,
         availableQuantity: item.availableQuantity,
         salesUomId: item.salesUomId,
         salesUomName: item.salesUomName || 'كجم',
+        salesUomConversionFactor: salesFactor,
+        availableUoms: item.availableUoms || [],
         barcode: item.barcode
       };
       this.cart.push(cartItem);
@@ -903,17 +954,22 @@ export class QuickSaleComponent implements OnInit, OnDestroy {
       this.selectedCartIndex = this.cart.indexOf(existing);
       this.playAudio('beep');
     } else {
+      const salesFactor = item.salesUomConversionFactor || 1;
+      const basePrice = item.basePrice || (salesFactor > 0 ? (item.price / salesFactor) : item.price) || item.price || 0;
       const cartItem: QuickSaleCartItem = {
         itemId: item.id,
         code: item.code,
         name: this.getItemDisplayName(item),
         quantity: 1,
         unitPrice: item.price || 0,
+        basePrice: basePrice,
         discountAmount: 0,
         subtotal: item.price || 0,
         availableQuantity: item.availableQuantity,
         salesUomId: item.salesUomId,
         salesUomName: item.salesUomName,
+        salesUomConversionFactor: salesFactor,
+        availableUoms: item.availableUoms || [],
         barcode: item.barcode
       };
       this.cart.push(cartItem);
@@ -921,6 +977,30 @@ export class QuickSaleComponent implements OnInit, OnDestroy {
       this.playAudio('beep');
     }
     this.updatePaidAmountDefault();
+  }
+
+  onItemUomChange(item: QuickSaleCartItem, uomIdValue: any): void {
+    const uomId = Number(uomIdValue);
+    if (!item.availableUoms || item.availableUoms.length === 0) return;
+
+    const targetUom = item.availableUoms.find(u => u.id === uomId);
+    if (!targetUom) return;
+
+    item.salesUomId = targetUom.id;
+    item.salesUomName = targetUom.name;
+    item.salesUomConversionFactor = targetUom.conversionFactor > 0 ? targetUom.conversionFactor : 1;
+
+    // Dynamically calculate unit price: UnitPrice = BasePrice * Factor
+    const newUnitPrice = Number((item.basePrice * item.salesUomConversionFactor).toFixed(2));
+    item.unitPrice = newUnitPrice;
+    this.recalculateLine(item);
+    this.updatePaidAmountDefault();
+    this.playAudio('beep');
+    this.toastr.info(
+      this.isRtl
+        ? `تم تحويل الوحدة إلى: ${targetUom.name} (السعر: ${newUnitPrice.toFixed(2)} ج.م)`
+        : `Unit changed to: ${targetUom.name} (Price: ${newUnitPrice.toFixed(2)})`
+    );
   }
 
   removeFromCart(index: number): void {
@@ -1304,12 +1384,25 @@ export class QuickSaleComponent implements OnInit, OnDestroy {
   }
 
   exitToDashboard(): void {
+    if (!this.canExitToDashboard) {
+      this.playAudio('warning');
+      this.toastr.warning(
+        this.isRtl
+          ? 'تم تقييد حساب الكاشير لشاشة نقطة البيع فقط ولا يمكن الخروج للوحة التحكم'
+          : 'Cashier account is restricted to POS Terminal only'
+      );
+      return;
+    }
     this.router.navigate(['/']);
   }
 
   // ── Submit Sale / Checkout ─────────────────────────────────────────────────
 
-  submitSale(): void {
+  submitQuickCashSale(): void {
+    this.submitSale(true);
+  }
+
+  submitSale(instantCash: boolean = false): void {
     this.errorMessage = null;
     this.successMessage = null;
 
@@ -1349,9 +1442,9 @@ export class QuickSaleComponent implements OnInit, OnDestroy {
     const saleTotal = this.grandTotal;
     const saleSubtotal = this.totalSubtotal;
     const saleDiscount = this.totalDiscount;
-    const salePaymentMethod = this.paymentMethod;
-    const salePaid = this.paidAmount;
-    const saleChange = this.changeDue;
+    const salePaid = instantCash ? saleTotal : 0;
+    const salePaymentMethod = instantCash ? 'cash' : 'credit';
+    const saleChange = 0;
     const saleNotes = this.notes;
     const currentLines = this.cart.map(c => ({
       name: c.name,
@@ -1371,15 +1464,16 @@ export class QuickSaleComponent implements OnInit, OnDestroy {
     const payload = {
       businessPartnerId: this.selectedCustomerId,
       warehouseId: this.selectedWarehouseId,
-      paymentMethod: this.paymentMethod,
-      paidAmount: this.paidAmount,
+      paymentMethod: salePaymentMethod,
+      paidAmount: salePaid,
       notes: this.notes,
       lines: this.cart.map(c => ({
         itemId: c.itemId,
         quantity: c.quantity,
         unitPrice: c.unitPrice,
         discountAmount: c.discountAmount,
-        uomId: c.salesUomId
+        uomId: c.salesUomId,
+        uomConversionFactor: c.salesUomConversionFactor || 1
       }))
     };
 
@@ -1388,13 +1482,7 @@ export class QuickSaleComponent implements OnInit, OnDestroy {
       next: (res: any) => {
         this.submitting = false;
         const invoiceCode = res.code || `INV-${res.id}`;
-        const msg = this.translate.instant('quickSale.saleSuccess', {
-          code: invoiceCode
-        });
-        this.successMessage = msg;
-        this.toastr.success(msg);
-        this.playAudio('success');
-
+        
         const newInvoiceRecord: RecentInvoiceItem = {
           id: res.id,
           code: invoiceCode,
@@ -1402,7 +1490,10 @@ export class QuickSaleComponent implements OnInit, OnDestroy {
           totalAmount: res.totalAmount || saleTotal,
           date: new Date(),
           linesCount: currentLines.length,
-          paymentMethod: salePaymentMethod
+          paymentMethod: salePaymentMethod,
+          paymentStatus: instantCash ? 'FullyPaid' : ((res.paidStatus || res.paymentStatus || 'Unpaid') as any),
+          remainingAmount: instantCash ? 0 : (res.remainingAmount || saleTotal),
+          businessPartnerId: this.selectedCustomerId || res.businessPartnerId
         };
 
         this.lastCreatedInvoice = newInvoiceRecord;
@@ -1428,19 +1519,30 @@ export class QuickSaleComponent implements OnInit, OnDestroy {
           lines: currentLines
         };
 
-        this.updateShiftWithSale(saleTotal, salePaymentMethod);
-
         this.cart = [];
         this.notes = '';
         this.selectedCartIndex = -1;
         this.isMobileCartOpen = false;
         this.isMobileCheckoutOpen = false;
-        this.updatePaidAmountDefault();
-
-        this.isSuccessModalOpen = true;
 
         if (this.selectedWarehouseId) {
           this.loadItemsForWarehouse(this.selectedWarehouseId);
+        }
+
+        if (instantCash) {
+          this.updateShiftWithSale(saleTotal, 'cash');
+          const msg = this.translate.instant('quickSale.saleSuccess', {
+            code: invoiceCode
+          });
+          this.successMessage = msg;
+          this.toastr.success(msg);
+          this.playAudio('success');
+          this.isSuccessModalOpen = true;
+          this.triggerAutoPrintIfEnabled(res.id, invoiceCode);
+        } else {
+          // Open the approved Payment Modal for this created invoice
+          this.selectedInvoiceForPayment = res;
+          this.isPaymentModalOpen = true;
         }
       },
       error: (err: any) => {
@@ -1454,6 +1556,66 @@ export class QuickSaleComponent implements OnInit, OnDestroy {
         this.toastr.error(msg);
       }
     });
+  }
+
+  // ── POS Payment Modal Handlers ───────────────────────────────────────────────
+
+  openPaymentModalForInvoice(inv: any): void {
+    this.selectedInvoiceForPayment = inv;
+    this.isPaymentModalOpen = true;
+  }
+
+  onPosPaymentSaved(): void {
+    this.isPaymentModalOpen = false;
+    this.playAudio('success');
+    this.toastr.success(this.translate.instant('quickSale.paymentCompleted'));
+
+    if (this.selectedInvoiceForPayment) {
+      const invId = this.selectedInvoiceForPayment.id;
+      const invCode = this.selectedInvoiceForPayment.code || `INV-${invId}`;
+      const total = Number(this.selectedInvoiceForPayment.totalAmount) || Number(this.selectedInvoiceForPayment.remainingAmount) || 0;
+
+      // Update in recent invoices
+      const rec = this.recentInvoices.find(r => r.id === invId);
+      if (rec) {
+        rec.paymentStatus = 'FullyPaid';
+        rec.remainingAmount = 0;
+      }
+
+      // Update shift
+      this.updateShiftWithSale(total, 'cash');
+
+      // If viewing in details modal, reload it
+      if (this.isInvoiceDetailsModalOpen && this.viewingInvoice?.id === invId) {
+        this.viewInvoiceDetails(invId);
+      } else {
+        // Show success modal & auto-print
+        this.isSuccessModalOpen = true;
+        this.triggerAutoPrintIfEnabled(invId, invCode);
+      }
+    }
+  }
+
+  onPaymentModalClosed(): void {
+    this.isPaymentModalOpen = false;
+    if (this.selectedInvoiceForPayment && !this.isInvoiceDetailsModalOpen) {
+      const code = this.selectedInvoiceForPayment.code || `INV-${this.selectedInvoiceForPayment.id}`;
+      this.toastr.info(this.translate.instant('quickSale.invoiceCreatedPendingPayment', { code }));
+      this.isSuccessModalOpen = true;
+    }
+  }
+
+  triggerAutoPrintIfEnabled(invoiceId: number, invoiceCode: string): void {
+    if (this.activePrintMethodsCount === 1 && this.posPrintPreferences.autoPreviewSingleMethod) {
+      const single = this.singleActivePrintMethod;
+      if (single === '80mm') {
+        this.openReceiptPrint(invoiceId, invoiceCode);
+      } else if (single === 'a4') {
+        this.openStandardPrint(invoiceId, invoiceCode);
+      } else if (single === '58mm') {
+        this.printDirectThermal('58mm');
+      }
+    }
   }
 
   // ── Printing Methods ───────────────────────────────────────────────────────
@@ -1515,9 +1677,143 @@ export class QuickSaleComponent implements OnInit, OnDestroy {
     }
   }
 
+  // ── POS Print Preferences & Settings ────────────────────────────────────────
+
+  savingPrintPreferences: boolean = false;
+
+  loadPrintPreferences(): void {
+    // 1. Immediate local cache fallback
+    const saved = localStorage.getItem('pos_print_preferences');
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        this.posPrintPreferences = {
+          enableThermal58: parsed.enableThermal58 ?? true,
+          enableThermal80: parsed.enableThermal80 ?? true,
+          enableA4: parsed.enableA4 ?? true,
+          autoPreviewSingleMethod: parsed.autoPreviewSingleMethod ?? true
+        };
+      } catch {
+        // default
+      }
+    }
+
+    // 2. Fetch official configuration from Database
+    this.printSettingService.getSettings().subscribe({
+      next: (setting) => {
+        if (setting) {
+          this.posPrintPreferences = {
+            enableThermal58: setting.posEnableThermal58 ?? true,
+            enableThermal80: setting.posEnableThermal80 ?? true,
+            enableA4: setting.posEnableA4 ?? true,
+            autoPreviewSingleMethod: setting.posAutoPreviewSingleMethod ?? true
+          };
+          localStorage.setItem('pos_print_preferences', JSON.stringify(this.posPrintPreferences));
+        }
+      },
+      error: () => {
+        // Continue with local cache fallback
+      }
+    });
+  }
+
+  savePrintPreferences(): void {
+    if (
+      !this.posPrintPreferences.enableThermal58 &&
+      !this.posPrintPreferences.enableThermal80 &&
+      !this.posPrintPreferences.enableA4
+    ) {
+      this.playAudio('warning');
+      this.toastr.warning(this.translate.instant('quickSale.atLeastOneMethodWarning'));
+      return;
+    }
+
+    // Save to local cache for instant UI feedback
+    localStorage.setItem('pos_print_preferences', JSON.stringify(this.posPrintPreferences));
+
+    // Persist to Database
+    this.savingPrintPreferences = true;
+    this.printSettingService.getSettings().subscribe({
+      next: (currentSetting) => {
+        const payload: PrintSettingRequest = {
+          ...currentSetting,
+          posEnableThermal58: this.posPrintPreferences.enableThermal58,
+          posEnableThermal80: this.posPrintPreferences.enableThermal80,
+          posEnableA4: this.posPrintPreferences.enableA4,
+          posAutoPreviewSingleMethod: this.posPrintPreferences.autoPreviewSingleMethod
+        };
+
+        this.printSettingService.updateSettings(payload).subscribe({
+          next: () => {
+            this.savingPrintPreferences = false;
+            this.playAudio('success');
+            this.toastr.success(this.translate.instant('quickSale.printSettingsSaved'));
+            this.isPrintSettingsModalOpen = false;
+          },
+          error: () => {
+            this.savingPrintPreferences = false;
+            this.playAudio('success');
+            this.toastr.success(this.translate.instant('quickSale.printSettingsSaved'));
+            this.isPrintSettingsModalOpen = false;
+          }
+        });
+      },
+      error: () => {
+        this.savingPrintPreferences = false;
+        this.playAudio('success');
+        this.toastr.success(this.translate.instant('quickSale.printSettingsSaved'));
+        this.isPrintSettingsModalOpen = false;
+      }
+    });
+  }
+
+  get activePrintMethodsCount(): number {
+    let count = 0;
+    if (this.posPrintPreferences.enableThermal58) count++;
+    if (this.posPrintPreferences.enableThermal80) count++;
+    if (this.posPrintPreferences.enableA4) count++;
+    return count;
+  }
+
+  get singleActivePrintMethod(): '58mm' | '80mm' | 'a4' | null {
+    if (this.activePrintMethodsCount !== 1) return null;
+    if (this.posPrintPreferences.enableThermal58) return '58mm';
+    if (this.posPrintPreferences.enableThermal80) return '80mm';
+    if (this.posPrintPreferences.enableA4) return 'a4';
+    return null;
+  }
+
+  openPrintSettingsModal(): void {
+    this.loadPrintPreferences();
+    this.isPrintSettingsModalOpen = true;
+  }
+
+  closePrintSettingsModal(): void {
+    this.isPrintSettingsModalOpen = false;
+  }
+
+  // ── Dedicated POS Invoice Details Modal ─────────────────────────────────────
+
   viewInvoiceDetails(invoiceId: number): void {
-    this.isSuccessModalOpen = false;
-    this.router.navigate(['/invoices/sales/view', invoiceId]);
+    this.isInvoiceDetailsModalOpen = true;
+    this.loadingViewingInvoice = true;
+    this.viewingInvoice = null;
+
+    this.invoiceService.get(invoiceId, 'sales').subscribe({
+      next: (res: InvoiceResponse) => {
+        this.viewingInvoice = res;
+        this.loadingViewingInvoice = false;
+      },
+      error: () => {
+        this.loadingViewingInvoice = false;
+        this.toastr.error(this.translate.instant('errors.generic'));
+      }
+    });
+  }
+
+  closeInvoiceDetailsModal(): void {
+    this.isInvoiceDetailsModalOpen = false;
+    this.viewingInvoice = null;
   }
 
   closeSuccessModal(): void {
@@ -1526,6 +1822,7 @@ export class QuickSaleComponent implements OnInit, OnDestroy {
 
   startNewSale(): void {
     this.isSuccessModalOpen = false;
+    this.isInvoiceDetailsModalOpen = false;
     this.cart = [];
     this.notes = '';
     this.selectedCartIndex = -1;

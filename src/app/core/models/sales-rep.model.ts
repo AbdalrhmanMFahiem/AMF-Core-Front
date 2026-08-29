@@ -23,6 +23,14 @@ export interface SalesRepWarehouseResponse {
   isDefault: boolean;
 }
 
+export interface QuickSaleUomOption {
+  id: number;
+  code: string;
+  name: string;
+  conversionFactor: number;
+  isBaseUnit: boolean;
+}
+
 export interface QuickSaleItemResponse {
   id: number;
   code: string;
@@ -30,12 +38,14 @@ export interface QuickSaleItemResponse {
   eName?: string;
   barcode?: string;
   price: number;
+  basePrice?: number;
   availableQuantity: number;
   salesUomId?: number;
   salesUomName?: string;
+  salesUomConversionFactor?: number;
   inventoryUomId?: number;
   inventoryUomName?: string;
   itemGroupName?: string;
   isActive: boolean;
+  availableUoms?: QuickSaleUomOption[];
 }
-

@@ -1,6 +1,6 @@
 import { RequestFilters } from './pagination.model';
-import { DocumentStatus, ApprovalStatus, PaymentStatus } from './document-status.model';
-export { DocumentStatus, ApprovalStatus, PaymentStatus };
+import { DocumentStatus, ApprovalStatus, PaymentStatus, PaidStatus } from './document-status.model';
+export { DocumentStatus, ApprovalStatus, PaymentStatus, PaidStatus };
 
 export enum InvoiceType {
   Sales = 'Sales',
@@ -29,7 +29,8 @@ export interface InvoiceBasicResponse {
   invoiceType: InvoiceType;
   status: DocumentStatus;
   approvalStatus?: ApprovalStatus;
-  paymentStatus?: PaymentStatus;
+  paymentStatus?: PaidStatus | PaymentStatus;
+  paidStatus?: PaidStatus;
   businessPartnerId: number;
   businessPartnerName: string;
   warehouseId?: number;
@@ -99,7 +100,8 @@ export interface InvoiceResponse {
   invoiceType: InvoiceType;
   status: DocumentStatus;
   approvalStatus?: ApprovalStatus;
-  paymentStatus?: PaymentStatus;
+  paymentStatus?: PaidStatus | PaymentStatus;
+  paidStatus?: PaidStatus;
   businessPartnerId: number;
   businessPartnerName: string;
   currencyId?: number;
@@ -227,7 +229,7 @@ export interface InvoicePaymentRequest {
 
 export interface InvoiceFilters extends RequestFilters {
   status?: DocumentStatus;
-  paymentStatus?: PaymentStatus;
+  paymentStatus?: PaidStatus | PaymentStatus;
   businessPartnerId?: number;
   warehouseId?: number;
   salesRepUserId?: string;

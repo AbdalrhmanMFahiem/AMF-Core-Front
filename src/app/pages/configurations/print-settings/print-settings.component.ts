@@ -67,7 +67,12 @@ export class PrintSettingsComponent implements OnInit {
     invoiceShowWarehouse: true,
     invoiceShowCostElements: true,
     invoiceShowQrCode: true,
-    accentColorHex: '#1E40AF'
+    accentColorHex: '#1E40AF',
+
+    posEnableThermal58: true,
+    posEnableThermal80: true,
+    posEnableA4: true,
+    posAutoPreviewSingleMethod: true
   };
 
   todayDate: Date = new Date();
@@ -123,7 +128,12 @@ export class PrintSettingsComponent implements OnInit {
             invoiceShowWarehouse: res.invoiceShowWarehouse ?? true,
             invoiceShowCostElements: res.invoiceShowCostElements ?? true,
             invoiceShowQrCode: res.invoiceShowQrCode ?? true,
-            accentColorHex: res.accentColorHex || '#1E40AF'
+            accentColorHex: res.accentColorHex || '#1E40AF',
+
+            posEnableThermal58: res.posEnableThermal58 ?? true,
+            posEnableThermal80: res.posEnableThermal80 ?? true,
+            posEnableA4: res.posEnableA4 ?? true,
+            posAutoPreviewSingleMethod: res.posAutoPreviewSingleMethod ?? true
           };
         }
         this.loading = false;
@@ -184,7 +194,12 @@ export class PrintSettingsComponent implements OnInit {
       invoiceShowWarehouse: true,
       invoiceShowCostElements: true,
       invoiceShowQrCode: true,
-      accentColorHex: '#1E40AF'
+      accentColorHex: '#1E40AF',
+
+      posEnableThermal58: true,
+      posEnableThermal80: true,
+      posEnableA4: true,
+      posAutoPreviewSingleMethod: true
     };
     this.toastr.info(this.translate.instant('printSettings.defaultsRestored'));
   }

@@ -38,6 +38,12 @@ export interface PrintSettingResponse {
   invoiceShowCostElements: boolean;
   invoiceShowQrCode: boolean;
   accentColorHex: string;
+
+  // POS Print Configuration
+  posEnableThermal58: boolean;
+  posEnableThermal80: boolean;
+  posEnableA4: boolean;
+  posAutoPreviewSingleMethod: boolean;
 }
 
 export interface PrintSettingRequest {
@@ -75,4 +81,10 @@ export interface PrintSettingRequest {
   invoiceShowCostElements: boolean;
   invoiceShowQrCode: boolean;
   accentColorHex: string;
+
+  // POS Print Configuration
+  posEnableThermal58: boolean;
+  posEnableThermal80: boolean;
+  posEnableA4: boolean;
+  posAutoPreviewSingleMethod: boolean;
 }

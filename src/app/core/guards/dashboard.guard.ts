@@ -7,6 +7,12 @@ export const dashboardGuard: CanActivateFn = (route, state) => {
   const router = inject(Router);
 
   if (authService.getToken()) {
+    const authData = authService.getAuthResponse();
+    if (authData?.isPosOnly === true) {
+      router.navigate(['/pos']);
+      return false;
+    }
+
     if (authService.hasDashboardPermission()) {
       return true;
     }

@@ -64,6 +64,10 @@ export class AuthService {
 
   getLandingPagePreference(): 'dashboard' | 'home' | 'pos' {
     const authData = this.getAuthResponse();
+    if (authData?.isPosOnly === true) {
+      return 'pos';
+    }
+
     const serverPref = authData?.defaultLandingPage?.trim().toLowerCase();
 
     if (serverPref === 'pos' || serverPref === 'quicksale' || serverPref === 'cashier') {
@@ -84,9 +88,19 @@ export class AuthService {
     return this.http.put<void>(`${this.config.apiUrl}/me/landing-page`, { landingPage: page });
   }
 
+  isPosOnlyUser(): boolean {
+    const authData = this.getAuthResponse();
+    return authData?.isPosOnly === true;
+  }
+
   hasDashboardPermission(): boolean {
     const authData = this.getAuthResponse();
     if (!authData || !authData.token) return false;
+
+    // Strict Lockdown: POS-Only users cannot access general ERP dashboard
+    if (authData.isPosOnly === true) {
+      return false;
+    }
 
     const isRestricted = localStorage.getItem('restrictDashboard') === 'true';
     return !isRestricted;
