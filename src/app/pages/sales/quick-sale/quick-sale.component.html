@@ -170,6 +170,97 @@
           </svg>
         </button>
 
+        <!-- Dark / Light Mode Toggle -->
+        <button
+          (click)="toggleTheme()"
+          class="p-1.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors shadow-2xs cursor-pointer"
+          [title]="((themeService.theme$ | async) === 'dark' ? 'quickSale.lightMode' : 'quickSale.darkMode') | translate"
+        >
+          <!-- Sun Icon when dark mode -->
+          <svg *ngIf="(themeService.theme$ | async) === 'dark'" class="w-4 h-4 text-amber-400 hover:text-amber-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+          </svg>
+          <!-- Moon Icon when light mode -->
+          <svg *ngIf="(themeService.theme$ | async) !== 'dark'" class="w-4 h-4 text-slate-700 hover:text-slate-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+          </svg>
+        </button>
+
+        <!-- Language Selector Dropdown -->
+        <div class="relative" (click)="$event.stopPropagation()">
+          <button
+            (click)="toggleLanguageDropdown($event)"
+            class="p-1.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 text-xs font-bold flex items-center gap-1 shadow-2xs transition-colors cursor-pointer"
+            [title]="'quickSale.changeLanguage' | translate"
+          >
+            <!-- Arabic Flag -->
+            <svg *ngIf="currentLang === 'ar'" class="w-4 h-4 rounded-full shadow-2xs border border-emerald-600/40 overflow-hidden shrink-0" viewBox="0 0 36 36" fill="none">
+              <rect width="36" height="36" fill="#006C35"/>
+              <path d="M7 14.5H29M10 12H26M13 17.5H23" stroke="white" stroke-width="1.8" stroke-linecap="round"/>
+              <path d="M8 21H25C26.5 21 27.5 20 27.5 20M21 19.5V22.5" stroke="white" stroke-width="1.4" stroke-linecap="round"/>
+            </svg>
+            <!-- UK Flag -->
+            <svg *ngIf="currentLang !== 'ar'" class="w-4 h-4 rounded-full shadow-2xs border border-blue-600/30 overflow-hidden shrink-0" viewBox="0 0 32 32">
+              <rect width="32" height="32" fill="#012169"/>
+              <path d="M0 0l32 32M32 0L0 32" stroke="#FFF" stroke-width="4"/>
+              <path d="M0 0l32 32M32 0L0 32" stroke="#C8102E" stroke-width="2"/>
+              <path d="M16 0v32M0 16h32" stroke="#FFF" stroke-width="7"/>
+              <path d="M16 0v32M0 16h32" stroke="#C8102E" stroke-width="4"/>
+            </svg>
+            <span class="text-[11px] font-bold uppercase">{{ currentLang === 'ar' ? 'عربي' : 'EN' }}</span>
+          </button>
+
+          <!-- Dropdown Options -->
+          <div
+            *ngIf="isLanguageDropdownOpen"
+            class="absolute ltr:right-0 rtl:left-0 top-full mt-1.5 w-36 rounded-2xl border border-gray-200 dark:border-gray-700 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md p-1.5 shadow-xl z-50"
+          >
+            <button
+              (click)="changeLanguage('ar')"
+              class="flex items-center justify-between w-full px-2.5 py-1.5 text-xs font-semibold rounded-xl transition-all cursor-pointer"
+              [ngClass]="{
+                'bg-brand-50 text-brand-600 dark:bg-brand-500/15 dark:text-brand-400': currentLang === 'ar',
+                'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800': currentLang !== 'ar'
+              }"
+            >
+              <div class="flex items-center gap-2">
+                <svg class="w-4 h-4 rounded-full shadow-xs border border-emerald-600/40 overflow-hidden shrink-0" viewBox="0 0 36 36" fill="none">
+                  <rect width="36" height="36" fill="#006C35"/>
+                  <path d="M7 14.5H29M10 12H26M13 17.5H23" stroke="white" stroke-width="1.8" stroke-linecap="round"/>
+                  <path d="M8 21H25C26.5 21 27.5 20 27.5 20M21 19.5V22.5" stroke="white" stroke-width="1.4" stroke-linecap="round"/>
+                </svg>
+                <span>العربية</span>
+              </div>
+              <svg *ngIf="currentLang === 'ar'" class="w-3.5 h-3.5 text-brand-600 dark:text-brand-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+              </svg>
+            </button>
+
+            <button
+              (click)="changeLanguage('en')"
+              class="flex items-center justify-between w-full px-2.5 py-1.5 text-xs font-semibold rounded-xl transition-all cursor-pointer mt-0.5"
+              [ngClass]="{
+                'bg-brand-50 text-brand-600 dark:bg-brand-500/15 dark:text-brand-400': currentLang === 'en',
+                'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800': currentLang !== 'en'
+              }"
+            >
+              <div class="flex items-center gap-2">
+                <svg class="w-4 h-4 rounded-full shadow-xs border border-blue-600/30 overflow-hidden shrink-0" viewBox="0 0 32 32">
+                  <rect width="32" height="32" fill="#012169"/>
+                  <path d="M0 0l32 32M32 0L0 32" stroke="#FFF" stroke-width="4"/>
+                  <path d="M0 0l32 32M32 0L0 32" stroke="#C8102E" stroke-width="2"/>
+                  <path d="M16 0v32M0 16h32" stroke="#FFF" stroke-width="7"/>
+                  <path d="M16 0v32M0 16h32" stroke="#C8102E" stroke-width="4"/>
+                </svg>
+                <span>English</span>
+              </div>
+              <svg *ngIf="currentLang === 'en'" class="w-3.5 h-3.5 text-brand-600 dark:text-brand-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
         <!-- Sound Toggle Button -->
         <button
           (click)="toggleSound()"
